@@ -1,0 +1,40 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/skill_vfc/cpcop/vfc
+tmp=/cpc/home/wd52pp/tmp
+datadir1=/cpc/home/wd52pp/data/cpc_vfc/0data
+datadir2=/cpc/home/wd52pp/data/cpc_vfc/skill
+#
+for var in temp prec; do
+#var=temp
+#var=prec
+nseason=331
+nyears=27
+tool=cpc
+#
+/bin/rm $tmp/fort.*         
+cp $lcdir/ctgcy_tbl.all_season.f $tmp/ctgcy_tbl.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nss=$nseason)
+       parameter(nyr=$nyears)
+       parameter(imx=36,jmx=19)
+eof
+#
+#
+gfortran -o ctgcy_tbl.x ctgcy_tbl.f
+echo "done compiling"
+
+#
+ ln -s $datadir1/mask_2x2.data    fort.11
+ ln -s $datadir1/${var}01_forecast.bi  fort.12
+ ln -s $datadir1/${var}_seas_verif.bi  fort.13
+ ln -s $datadir2/ctgcy_table.$var.95-cur.$tool.txt  fort.61
+#
+ctgcy_tbl.x > $lcdir/out
+#
+done
+

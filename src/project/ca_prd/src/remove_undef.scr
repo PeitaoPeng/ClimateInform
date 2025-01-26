@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/project/ca_prd/src
+tmpdir=/export-6/sgi9/wd52pp/tmp
+datadir=/export-6/cacsrv1/wd52pp/obs
+
+model=olr
+iskip=0
+id=0 # ID=0: covariance matrix; ID>0:correlation matrix
+
+cp $lcdir/remove_undef.f $tmpdir/.
+cd $tmpdir
+
+unlimit
+f77 -o remove_undef.x remove_undef.f
+echo "done compiling"
+
+/bin/rm $tmpdir/fort.*
+#
+ln -s $datadir/$model/olr_pent.7901-0306.i3e  fort.10
+ln -s $datadir/$model/olr_pent.7901-0306.no_undef.i3e  fort.20
+remove_undef.x > $lcdir/out
+
+
+#

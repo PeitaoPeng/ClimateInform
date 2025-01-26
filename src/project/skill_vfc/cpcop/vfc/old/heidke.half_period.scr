@@ -1,0 +1,57 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/cpc_skill/vfc
+tmp=/export/hobbes/wd52pp/tmp
+datadir1=/export-12/cacsrv1/wd52pp/cpc_vfc/0data
+datadir2=/export-12/cacsrv1/wd52pp/cpc_vfc/skill
+#
+var=temp
+nseason=147
+nyears=12
+period=half
+tool=cons
+#
+/bin/rm $tmp/fort.*         
+cp $lcdir/heidke.half_period.f $tmp/heidke.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nss=$nseason)
+       parameter(nyr=$nyears)
+       parameter(imx=36,jmx=19)
+eof
+#
+#
+f77 -o heidke.x heidke.f
+echo "done compiling"
+
+#
+ ln -s $datadir1/mask_2x2.data    fort.11
+#ln -s $datadir1/temp_forecast.bi  fort.12
+ ln -s $datadir1/tempconsfcst.gr   fort.12
+ ln -s $datadir1/temp_seasonal_verif_1961.bi  fort.13
+ ln -s $datadir1/temp_seasonal_verif.bi  fort.14
+ ln -s $datadir2/heidke_t2m_t.$period.$tool.gr  fort.52
+#
+heidke.x > $lcdir/out
+#
+cat>$datadir2/heidke_t2m_t.$period.$tool.ctl<<EOF
+dset $datadir2/heidke_t2m_t.$period.$tool.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef   36 linear -130 2
+ydef   19 LINEAR   20 2
+zdef    1 levels 500
+tdef 999 linear feb1995  1mon
+vars   6
+hs1_1   0 99 all ss
+hs2_1   0 99 all ss
+hs1_2   0 99 all ss
+hs2_2   0 99 all ss
+nec_1   0 99 all ss
+nec_2   0 99 all ss
+endvars
+EOF
+

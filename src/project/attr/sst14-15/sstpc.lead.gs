@@ -1,0 +1,118 @@
+'reinit'
+'run /cpc/home/wd52pp/bin/white.gs'
+'run /cpc/home/wd52pp/bin/rgbset.gs'
+*
+'open /cpc/home/wd52pp/data/attr/sst14-15/corr.sstpc.vs.sst.lag-lead.ctl'
+'open /cpc/home/wd52pp/data/attr/sst14-15/corr.sstpc.vs.uv1000mb.lag-lead.ctl'
+*
+'set string 1 tc 5'
+'set strsiz 0.15 0.15'
+*'draw string 5.5 7.5 Regr&Corr of PSI200 to SST PCs jfm1949-jfm2015'
+*---------------------------set dimsnesion, page size and style
+nframe=8
+nframe2=4
+nframe3=8
+xmin0=0.75;  xlen=3.5;  xgap=0.1
+ymax0=10.5; ylen=-2.5;  ygap=0.2
+*
+iframe=1
+while ( iframe <= nframe )
+  icx=1; if (iframe > nframe2); icx=2; endif
+  if (iframe > nframe3); icx=3; endif
+  xmin=xmin0+(icx-1)*(xlen+xgap)
+  xmax=xmin+xlen
+  icy=iframe; if (iframe > nframe2); icy=iframe-nframe2; endif
+  if (iframe > nframe3); icy=iframe-nframe3; endif
+  ymax=ymax0+(icy-1)*(ylen+ygap)
+  ymin=ymax+ylen
+  tlx=xmin-0.5
+  tly=ymax-1.125
+  bx=xmin+2.25
+  by=ymin-0.5
+* say xmin; say xmax; say ymin; say ymax
+  'set vpage 0 11 0 8.5'
+  'set parea 'xmin' 'xmax' 'ymin' 'ymax
+*
+'define s1=-reg1(t=5)'
+'define s2=-reg1(t=6)'
+'define s3=-reg1(t=7)'
+'define s4=-reg1(t=8)'
+'define s5=-reg3(t=5)'
+'define s6=-reg3(t=6)'
+'define s7=-reg3(t=7)'
+'define s8=-reg3(t=8)'
+'define u1=skip(-ureg1.2(t=5),2,2)'
+'define u2=skip(-ureg1.2(t=6),2,2)'
+'define u3=skip(-ureg1.2(t=7),2,2)'
+'define u4=skip(-ureg1.2(t=8),2,2)'
+'define u5=skip(-ureg3.2(t=5),2,2)'
+'define u6=skip(-ureg3.2(t=6),2,2)'
+'define u7=skip(-ureg3.2(t=7),2,2)'
+'define u8=skip(-ureg3.2(t=8),2,2)'
+'define v1=skip(-vreg1.2(t=5),2,2)'
+'define v2=skip(-vreg1.2(t=6),2,2)'
+'define v3=skip(-vreg1.2(t=7),2,2)'
+'define v4=skip(-vreg1.2(t=8),2,2)'
+'define v5=skip(-vreg3.2(t=5),2,2)'
+'define v6=skip(-vreg3.2(t=6),2,2)'
+'define v7=skip(-vreg3.2(t=7),2,2)'
+'define v8=skip(-vreg3.2(t=8),2,2)'
+'set t 1'
+'set lon 120 290'
+'set lat  -30 60'
+'set yaxis -30 60 20'
+'set xlab off'
+if(iframe = 4); 'set xlab on'; endif
+if(iframe = 8); 'set xlab on'; endif
+if(iframe > 4); 'set ylab off'; endif
+*'set frame off'
+'set grads off'
+*'set grid off'
+*'set map 15 1 2'
+ 'set gxout shaded'
+ 'set clevs   -1.0 -0.8 -0.5 -0.4 -0.3 -0.2 -0.1  0.1 0.2 0.3 0.4 0.5 0.8 1.'
+ 'set ccols   55 53 49 47 45 43 41 0 21 23 25 27 29 63 65'
+'d s'%iframe
+'set ccolor 1'
+'set arrscl  0.5 2'
+'set arrowhead 0.05'
+if(iframe = 1)
+'d maskout(u1,sqrt(u1*u1+v1*v1)-0.2);maskout(v1,sqrt(u1*u1+v1*v1)-0.2)'
+endif
+if(iframe = 2)
+'d maskout(u2,sqrt(u2*u2+v2*v2)-0.2);maskout(v2,sqrt(u2*u1+v2*v2)-0.2)'
+endif
+if(iframe = 3)
+'d maskout(u3,sqrt(u3*u3+v3*v3)-0.2);maskout(v3,sqrt(u3*u3+v3*v3)-0.2)'
+endif
+if(iframe = 4)
+'d maskout(u4,sqrt(u4*u4+v4*v4)-0.2);maskout(v4,sqrt(u4*u4+v4*v4)-0.2)'
+endif
+if(iframe = 5)
+'d maskout(u5,sqrt(u5*u5+v5*v5)-0.15);maskout(v5,sqrt(u5*u5+v5*v5)-0.15)'
+endif
+if(iframe = 6)
+'d maskout(u6,sqrt(u6*u6+v6*v6)-0.15);maskout(v6,sqrt(u6*u6+v6*v6)-0.15)'
+endif
+if(iframe = 7)
+'d maskout(u7,sqrt(u7*u7+v7*v7)-0.15);maskout(v7,sqrt(u7*u7+v7*v7)-0.15)'
+endif
+if(iframe = 8)
+'d maskout(u1,sqrt(u8*u8+v8*v8)-0.15);maskout(v1,sqrt(u8*u8+v8*v8)-0.15)'
+endif
+'run /cpc/home/wd52pp/bin/dline.gs 120 0 290 0'
+'run /cpc/home/wd52pp/bin/dline.gs 180 -30 180 60'
+'set string 1 tc 5 90'
+'set strsiz 0.13 0.13'
+if(iframe = 1); 'draw string 'tlx' 'tly'  Lag 0(MAM)'; endif
+if(iframe = 2); 'draw string 'tlx' 'tly'  Lag 1(JJA)'; endif
+if(iframe = 3); 'draw string 'tlx' 'tly'  Lag 2(SON)'; endif
+if(iframe = 4); 'draw string 'tlx' 'tly'  Lag 3(DJF)'; endif
+'set string 1 tl 5 0'
+
+if(iframe = 8);'run /cpc/home/wd52pp/bin/cbarn2.gs 0.8 0 3.0 'by'';endif
+iframe=iframe+1
+endwhile
+'print'
+'printim sstuv.lag.pc3.png gif x1200 y1600'
+

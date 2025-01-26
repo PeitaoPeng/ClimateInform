@@ -1,0 +1,208 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/attr/diag
+tmp=/export/hobbes/wd52pp/tmp
+datadir=/export-12/cacsrv1/wd52pp/attr
+#
+ var=z200
+#var=u200
+#
+nyear=63  # 1949-curr; current year is counted
+#nyear=62  # 1949-curr; current year is counted
+tot_month=746  # total month number; tot_month=747 for jfm2011
+#tot_month=741  # total month number; tot_month=747 for jfm2011
+season=djf
+#season=jas
+#
+cp $lcdir/diag.nino34.regr.reanal.f $tmp/nino34.f
+cd $tmp
+#
+if [ "$season" = jfm ]; then mons=1; fi
+if [ "$season" = fma ]; then mons=2; fi
+if [ "$season" = mam ]; then mons=3; fi
+if [ "$season" = amj ]; then mons=4; fi
+if [ "$season" = mjj ]; then mons=5; fi
+if [ "$season" = jja ]; then mons=6; fi
+if [ "$season" = jas ]; then mons=7; fi
+if [ "$season" = aso ]; then mons=8; fi
+if [ "$season" = son ]; then mons=9; fi
+if [ "$season" = ond ]; then mons=10; fi
+if [ "$season" = ndj ]; then mons=11; fi
+if [ "$season" = djf ]; then mons=12; fi
+#
+imax=144
+jmax=73
+#
+#=======================================
+# rewrite z200 data from grib to ieee
+#=======================================
+cat >havedata<<EOF
+run data_rewrite.gs
+EOF
+#
+if [ "$var" = z200 ]; then
+cat >data_rewrite.gs<<EOF2
+    'reinit'
+'open /export-8/cacsrv1/cpc/anal/cdas/month/prs/mean/prs.grib.mean.y1949-cur.ctl'
+'set x 1 $imax'
+'set y 1 $jmax'
+'set z 10'
+'set gxout fwrite'
+'set fwrite $datadir/$var.1949_cur.gr'
+'set t 1 $tot_month'
+'d hgt'
+'c'
+EOF2
+fi
+#
+#=======================================
+# rewrite prec data
+#=======================================
+if [ "$var" = u200 ]; then
+cat >data_rewrite.gs<<EOF3
+    'reinit'
+'open /export-8/cacsrv1/cpc/anal/cdas/month/prs/mean/prs.grib.mean.y1949-cur.ctl'
+'set x 1 $imax'
+'set y 1 $jmax'
+'set z 10'
+'set gxout fwrite'
+'set fwrite $datadir/$var.1949_cur.gr'
+'set t 1 $tot_month'
+'d ugrd'
+'c'
+EOF3
+fi
+#=======================================
+# have 1949.1-curr nino34 index from ersst
+#=======================================
+long_ersst=`expr $tot_month + 1140`
+cat >havesst1<<EOF4
+run ersst.gs
+EOF4
+cat >ersst.gs<<EOF5
+    'reinit'
+'open /export/lnx196/wd52ml/enso/oni.v3b/data/errsst.v3b/ersst.v3b.1854.2010.ctl'
+'set x 180'
+'set y 90'
+'set gxout fwrite'
+'set fwrite $datadir/nino34.jan1949-cur.gr'
+'set t 1141 $long_ersst'
+'d tloop(aave(sst,lon=180,lon=230,lat=-5,lat=5))'
+'c'
+EOF5
+#=======================================
+# have 1949.1-curr total sst from ersst
+#=======================================
+cat >havesst2<<EOF6
+run ersst_tot.gs
+EOF6
+cat >ersst_tot.gs<<EOF7
+    'reinit'
+'open /export/lnx196/wd52ml/enso/oni.v3b/data/errsst.v3b/ersst.v3b.1854.2010.ctl'
+'set x 180'
+'set y 90'
+'set gxout fwrite'
+'set fwrite $datadir/sst.jan1949-cur.gr'
+'set t 1141 $long_ersst'
+'d sst'
+'c'
+EOF7
+
+
+#===========================================
+# excute grads data process
+#===========================================
+/usr/local/bin/grads -l <havedata
+/usr/local/bin/grads -l <havesst1
+/usr/local/bin/grads -l <havesst2
+#
+cat > parm.h << eof8
+       parameter(nyr=$nyear)
+       parameter(ltime=$tot_month)
+       parameter(imx=$imax,jmx=$jmax)
+       parameter(iseason=$mons)
+eof8
+#
+f77 -o nino34.x nino34.f
+echo "done compiling"
+#
+/bin/rm $tmp/fort.*         
+#
+ ln -s $datadir/$var.1949_cur.gr        fort.10
+ ln -s $datadir/nino34.jan1949-cur.gr   fort.11
+#
+ ln -s $datadir/diag.$var.regr_vs_nino34.$season.gr  fort.20
+ ln -s $datadir/diag.nino34.$season.1949-cur.gr        fort.21
+#
+nino34.x > $lcdir/regr.out
+#
+cat>$datadir/diag.$var.regr_vs_nino34.$season.ctl<<EOF9
+dset $datadir/diag.$var.regr_vs_nino34.$season.gr
+undef -99999.0
+ydef  73 linear -90. 2.5
+xdef 144 linear   0. 2.5
+tdef 9999 linear jan1949 1mo
+zdef 1 linear 1 1
+vars 2
+reg  0 99 regression
+cor  0 99 correlation
+ENDVARS
+EOF9
+#
+cat>$datadir/diag.nino34.$season.1949-cur.ctl<<EOF10
+dset $datadir/diag.nino34.$season.1949-cur.gr
+undef 999.0
+title Realtime Surface Obs
+xdef    1 linear    0.000  1
+ydef    1 linear    0.000  1
+zdef    1 levels 500
+tdef 999 linear jan1949 1yr
+vars   1
+sst   0 99 Type of Ob
+endvars
+EOF10
+#
+if [ "$var" = prec ]; then
+undef_data=-999.0
+else
+undef_data=-9.999E+20
+fi
+cat>$datadir/$var.1949_cur.ctl<<EOF11
+dset $datadir/$var.1949_cur.gr
+undef $undef_data
+ydef  73 linear -90. 2.5
+xdef 144 linear   0. 2.5
+tdef 9999 linear jan1949 1mo
+zdef 1 linear 1 1
+vars 1
+$var  0 99 regression
+ENDVARS
+EOF11
+#
+cat>$datadir/nino34.jan1949-cur.ctl<<EOF12
+dset $datadir/nino34.jan1949-cur.gr
+undef 999.0
+title Realtime Surface Obs
+xdef    1 linear    0.000  1
+ydef    1 linear    0.000  1
+zdef    1 levels 500
+tdef 999 linear jan1949 1mon
+vars   1
+sst   0 99 Type of Ob
+endvars
+EOF12
+#
+cat>$datadir/sst.jan1949-cur.ctl<<EOF13
+dset $datadir/sst.jan1949-cur.gr
+undef -99.99
+title Realtime Surface Obs
+xdef  180 LINEAR  0.  2.0
+ydef   89 LINEAR  -88.  2.0
+zdef    1 levels 500
+tdef 999 linear jan1949 1mon
+vars   1
+sst   0 99 Type of Ob
+endvars
+EOF13

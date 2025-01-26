@@ -1,0 +1,295 @@
++ codedir=/home/ppeng/src/opr/src
++ bash /home/ppeng/src/opr/src/pcr_ersst_2_sst.3mon.mics_meofs.sh
++ lcdir=/home/ppeng/src/opr/src
++ tmp=/home/ppeng/data/tmp_opr
++ '[' '!' -d /home/ppeng/data/tmp_opr ']'
++ datain1=/home/ppeng/data/sst
++ datain2=/home/ppeng/data/tpz
++ dataot1=/home/ppeng/data/pcr_prd
++ imx=180
++ jmx=89
++ var1=ersst
++ var2=sst
++ eof_area=tp_nml
++ lagmax=24
++ mics=4
++ id_ceof=1
++ id_detrd=0
++ ncut=1
++ mlead=7
++ ncv=1
++ mcut=4
++ icut1=15
++ icut2=15
++ icut3=25
++ icut4=40
++ modmax=15
++ nclm_start=1981
+++ expr 1981 - 1947 - 24 / 12
++ its_clm=32
+++ expr 32 + 39
++ ite_clm=71
+++ expr 71 - 32 + 1
++ ny_clm=40
++ undef_data=-9.99E+8
++ undef=-999.0
++ cd /home/ppeng/data/tmp_opr
++ for curyr in 2021 2022 2023 2024
++ for curmo in 01 02 03 04 05 06 07 08 09 10 11 12
++ '[' 01 = 01 ']'
++ cmon=1
++ icmon=12
++ icmonc=dec
++ tgtmon=feb
++ tgtss=fma
++ '[' 01 = 02 ']'
++ '[' 01 = 03 ']'
++ '[' 01 = 04 ']'
++ '[' 01 = 05 ']'
++ '[' 01 = 06 ']'
++ '[' 01 = 07 ']'
++ '[' 01 = 08 ']'
++ '[' 01 = 09 ']'
++ '[' 01 = 10 ']'
++ '[' 01 = 11 ']'
++ '[' 01 = 12 ']'
++ yyyy=2021
+++ expr 2021 - 1
++ yyym=2020
+++ expr 2021 + 1
++ yyyp=2022
++ tgtmoyr=feb2021
++ outyr_s=1981
++ '[' 12 -eq 11 ']'
+++ expr 2021 - 1854
++ yrn1=167
++ '[' 1 = 1 ']'
+++ expr 2020 - 1854
++ yrn1=166
+++ expr 166 '*' 12
++ mmn1=1992
+++ expr 1992 + 12
++ ttlong=2004
+++ expr 2021 - 1948
++ yrn2=73
++ '[' 1 = 1 ']'
+++ expr 2020 - 1948
++ yrn2=72
+++ expr 72 '*' 12
++ mmn2=864
+++ expr 864 + 12
++ montot=876
+++ expr 876 - 2
++ nsstot=874
++ icyr=2021
++ '[' 12 = 12 ']'
+++ expr 2021 - 1
++ icyr=2020
+++ expr 2020 - 1947
++ nyear=73
+++ expr 73 - 32 - 24 / 12
++ ny_out=39
+++ expr 73 - 32 - 24 / 12 + 1
++ ny_out2=40
++ outd=/home/ppeng/data/ss_fcst/pcr/2020
++ outdata=/home/ppeng/data/ss_fcst/pcr/2020/12
++ '[' '!' -d /home/ppeng/data/ss_fcst/pcr/2020 ']'
++ '[' '!' -d /home/ppeng/data/ss_fcst/pcr/2020/12 ']'
++ dataot2=/home/ppeng/data/ss_fcst/pcr/2020/12
++ '[' tp_nml = tp_nml ']'
++ lons=1
++ lone=180
++ lats=22
++ late=68
++ '[' ersst = ersst ']'
++ '[' tp_nml = tp_nml ']'
++ ngrd=6438
++ sstfile=ersst.3mon.1948-curr.total
++ cp /home/ppeng/src/opr/src/pcr_ersst_2_sst.3mon.mics_meofs.f /home/ppeng/data/tmp_opr/pcr.f
++ cp /home/ppeng/src/opr/src/backup/reof.s.f /home/ppeng/data/tmp_opr/reof.s.f
++ cat
++ gfortran -mcmodel=medium -o pcr.x pcr.f reof.s.f
+reof.s.f:34:72:
+
+   34 |         DO 110 J=1,N
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 110 at (1)
+reof.s.f:35:72:
+
+   35 |  110    PC(I,J)=EVCT(J,I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 110 at (1)
+reof.s.f:93:72:
+
+   93 |         DO 110 J=1,N
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 110 at (1)
+reof.s.f:94:72:
+
+   94 |  110    PC(I,J)=EVCT(J,I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 110 at (1)
+reof.s.f:102:72:
+
+  102 |       DO 208 J=1,NMOD
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 208 at (1)
+reof.s.f:116:72:
+
+  116 |       do 6001 ks = 1, M
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 6001 at (1)
+reof.s.f:132:72:
+
+  132 |       DO 207 J=1,N
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 207 at (1)
+reof.s.f:133:72:
+
+  133 |  207     PC(I,J)=PC(I,J)/SQRT(EVAL(I))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 207 at (1)
+reof.s.f:135:72:
+
+  135 |       DO 206 J=1,N
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 206 at (1)
+reof.s.f:137:72:
+
+  137 |          DO 206 K=1,NMOD
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 206 at (1)
+reof.s.f:138:72:
+
+  138 |  206     RPC(I,J)=RPC(I,J)+T(K,I)*PC(K,J)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 206 at (1)
+reof.s.f:153:72:
+
+  153 |  101  SV=SV+ABS(EVAL(I))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 101 at (1)
+reof.s.f:155:72:
+
+  155 |  102  EVAL(I)=EVAL(I)/SV
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 102 at (1)
+reof.s.f:165:72:
+
+  165 |  100  SEV=SEV+EVAL(I)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 100 at (1)
+reof.s.f:169:72:
+
+  169 |  101  SV=SV+ABS(REVAL(I))
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 101 at (1)
+reof.s.f:171:72:
+
+  171 |  102  REVAL(I)=SEV*REVAL(I)/SV
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 102 at (1)
+reof.s.f:187:72:
+
+  187 |  102     DV=DV+A(I,J)*A(I,J)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 102 at (1)
+reof.s.f:190:72:
+
+  190 |  103     A(I,J)=A(I,J)/DV
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 103 at (1)
+reof.s.f:197:72:
+
+  197 |  202     DV=DV+A(I,J)*A(I,J)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 202 at (1)
+reof.s.f:200:72:
+
+  200 |  203     A(I,J)=A(I,J)/DV
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 203 at (1)
+reof.s.f:219:72:
+
+  219 |  102    AM=AM+A(I,J)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 102 at (1)
+reof.s.f:222:72:
+
+  222 |  103      A(I,J)=A(I,J)-AM
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 103 at (1)
+reof.s.f:229:72:
+
+  229 |  202  DV=DV+A(I,J)*A(I,J)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 202 at (1)
+reof.s.f:231:72:
+
+  231 |       DO 201 J=1,N
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 201 at (1)
+reof.s.f:243:72:
+
+  243 |         DO 105 J=1,I
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 105 at (1)
+reof.s.f:246:72:
+
+  246 |  104      R(I,J)=R(I,J)+A(I,K)*A(J,K)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 104 at (1)
+reof.s.f:252:72:
+
+  252 |         DO 106 J=1,I
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 106 at (1)
+reof.s.f:255:72:
+
+  255 |  107      R(I,J)=R(I,J)+A(K,I)*A(K,J)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 107 at (1)
+reof.s.f:269:72:
+
+  269 |       DO 104 J=1,N
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 104 at (1)
+reof.s.f:272:72:
+
+  272 |  105  TC(I,J)=TC(I,J)+VT(KK,I)*A(KK,J)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 105 at (1)
+reof.s.f:283:72:
+
+  283 |       DO 104 J=1,K
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 104 at (1)
+reof.s.f:286:72:
+
+  286 |  105  EVT(I,J)=EVT(I,J)+A(I,KK)*TC(J,KK)
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: DO termination statement which is not END DO or CONTINUE with label 105 at (1)
+reof.s.f:657:72:
+
+  657 |       do 20 j=i+1,mod
+      |                                                                        1
+Warning: Fortran 2018 deleted feature: Shared DO termination label 20 at (1)
++ echo 'done compiling'
+done compiling
++ '[' -f fort.10 ']'
++ outfile1=pc.ersst.icmon_12
++ outfile2=eof.ersst.icmon_12
++ outfile3=fcst.ersst.2.sst.mics4.mlead7.ncut1.nmod1_15.id_ceof1.id_detrd0.cv1.3mon
++ outfile4=skill_1d.ersst.2.sst.mics4.mlead7.ncut1.nmod1_15.id_ceof1.id_detrd0.cv1.3mon
++ outfile5=hcst.ersst.2.sst.mics4.mlead7.ncut1.nmod1_15.id_ceof1.id_detrd0.cv1.3mon
++ outfile8=ersst_ic_mics.3mon
++ outfile9=nino34.prd.icmon_12
++ outfile10=nino34.obs.icmon_12
++ ln -s /home/ppeng/data/sst/ersst.3mon.1948-curr.total.gr fort.10
++ ln -s /home/ppeng/data/ss_fcst/pcr/2020/12/pc.ersst.icmon_12.gr fort.20
++ ln -s /home/ppeng/data/ss_fcst/pcr/2020/12/eof.ersst.icmon_12.gr fort.21
++ ln -s /home/ppeng/data/ss_fcst/pcr/2020/12/nino34.prd.icmon_12.gr fort.22
++ ln -s /home/ppeng/data/ss_fcst/pcr/2020/12/nino34.obs.icmon_12.gr fort.23
++ ln -s /home/ppeng/data/ss_fcst/pcr/2020/12/fcst.ersst.2.sst.mics4.mlead7.ncut1.nmod1_15.id_ceof1.id_detrd0.cv1.3mon.gr fort.30
++ ln -s /home/ppeng/data/ss_fcst/pcr/2020/12/skill_1d.ersst.2.sst.mics4.mlead7.ncut1.nmod1_15.id_ceof1.id_detrd0.cv1.3mon.gr fort.31
+ln: failed to create symbolic link 'fort.31': File exists

@@ -1,0 +1,69 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/prd_skill
+tmp=/export/hobbes/wd52pp/tmp
+datadir=/export-12/cacsrv1/wd52pp/prd_skill
+#
+#var=temp
+ var=prec
+#
+#cate=enso
+#nseasons=104 
+ cate=no-enso
+ nseasons=76 
+#
+ model=gocnv1
+#model=gocn
+#model=eocn
+#model=nino34
+#
+/bin/rm $tmp/fort.*         
+cp $lcdir/hss_t_s.f $tmp/.
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nss=$nseasons)
+       parameter(ncd=102)
+eof
+#
+#
+f77 -o hss_t_s.x hss_t_s.f
+echo "done compiling"
+
+#
+ ln -s $datadir/${model}prd_${var}_102CD.jfm1995-djf2009.$cate.i3e   fort.10
+ ln -s $datadir/wmoobs_${var}_102CD.jfm1995-djf2009.$cate.i3e        fort.20
+ ln -s $datadir/hss_$model.${var}.uscd.jfm95-djf09.ts.$cate.gr    fort.30
+ ln -s $datadir/hss_$model.${var}.uscd.jfm95-djf09.cd.$cate.gr    fort.40
+#
+hss_t_s.x > $datadir/hss.${model}.${var}.jfm1995-djf2009.$cate.out
+#
+
+cat>$datadir/hss_$model.${var}.uscd.jfm95-djf09.ts.$cate.ctl<<EOF
+dset ^hss_$model.${var}.uscd.jfm95-djf09.ts.$cate.gr
+undef 999.0
+title Realtime Surface Obs
+xdef    1 linear    0.000  1
+ydef    1 linear    0.000  1
+zdef    1 levels 500
+tdef 999 linear jan1995  1mon
+vars   1
+hss    0 99 Type of Ob
+endvars
+EOF
+#
+cat>$datadir/hss_$model.${var}.uscd.jfm95-djf09.cd.$cate.ctl<<EOF2
+dset ^hss_$model.${var}.uscd.jfm95-djf09.cd.$cate.gr
+undef 999.0
+title Realtime Surface Obs
+xdef    102 linear    0.000  1
+ydef    1 linear    0.000  1
+zdef    1 levels 500
+tdef 999 linear jan1995  1mon
+vars   1
+hss    0 99 Type of Ob
+endvars
+EOF2
+

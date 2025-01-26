@@ -1,0 +1,5 @@
+#crontab on cpcwork2 is UTC time
+MAILTO=peitao.peng@noaa.gov
+
+###run wk34 forecast job
+08 00 * * * /cpc/home/wd52pp/data/wk34_fcst/ca/realtime.mkdir.sh > /cpc/home/wd52pp/data/wk34_fcst/ca/0log1 2>&1 

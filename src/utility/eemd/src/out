@@ -1,0 +1,19 @@
+1c1
+<       subroutine eemd2(LXY,data,An,Nesb,Nm,rslt,idum,Nsifting)
+---
+>       subroutine eemd(LXY,data,An,Nesb,Nm,rslt,idum,Nsifting)
+9a10
+> c  Nsifting: sifting number for EMD, usually set to 10
+46c47
+<             ximf(i)=data(i)-An*gasdev(idum)
+---
+>             ximf(i)=data(i)+An*gasdev(idum)
+72c73
+< c           if(mod(ii,1000).eq.1 .and. im.eq.1) then
+---
+>             if(mod(ii,1000).eq.0 .and. im.eq.1) then
+74c75,76
+< c           endif
+---
+>             endif
+> 

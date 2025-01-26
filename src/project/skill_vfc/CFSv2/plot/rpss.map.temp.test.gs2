@@ -1,0 +1,75 @@
+* hss map
+'reinit'
+'run /cpc/home/wd52pp/bin/white.gs'
+*
+'open /cpc/home/wd52pp/data/CFSv2_vfc/skill/rpss_test.temp.95-cur.cfsv1_v2.ctl'
+'run /cpc/home/wd52pp/bin/rgbset2.gs'
+*'enable print rpss.map.temp.test.mega'
+*
+*---------------------------string/caption
+*
+'define sk1=rpssv1'
+'define sk2=rpssv2'
+'define sk3=df12'
+'define sk4=hbnd'
+'define sk5=df12-hbnd'
+
+'set string 1 tc 6 0'
+'set strsiz 0.18 0.18'
+'draw string 5.5 7.8 Comparison of CFSv1&v2 in RPSS of Temp Forecast'
+*---------------------------set dimsnesion, page size and style
+nframe=5
+nframe2=2
+nframe3=4
+xmin0=0.5;  xlen=3.0;  xgap=0.25
+ymax0=7.0; ylen=-2.0;  ygap=-0.5
+*
+iframe=1
+while ( iframe <= nframe )
+  icx=1; if (iframe > nframe2); icx=2; endif
+  if (iframe > nframe3); icx=3; endif
+  xmin=xmin0+(icx-1)*(xlen+xgap)
+  xmax=xmin+xlen
+  icy=iframe; if (iframe > nframe2); icy=iframe-nframe2; endif
+  if (iframe > nframe3); icy=iframe-nframe3; endif
+  ymax=ymax0+(icy-1)*(ylen+ygap)
+  ymin=ymax+ylen
+  titlx=xmin+1.5
+  titly=ymax+0.1
+  xbar=xmin+1.375
+  ybar=ymin-1.5
+* say xmin; say xmax; say ymin; say ymax
+  'set vpage 0 8.5 0 11'
+  'set parea 'xmin' 'xmax' 'ymin' 'ymax
+*
+'set t 1'
+*'set frame off'
+'set xlab off'
+'set ylab off'
+'set grads off'
+'set grid off'
+'set gxout grfill'
+'set mpdset mres'
+'set clevs  0 0.03 0.06 0.09 0.12 0.15 0.18 0.21 0.24'
+'set ccols  0 21 22 23 24 25 26 27 28 29'
+'d sk'%iframe
+*'set string 1 tc 6 90'
+ 'set string 1 tc 6 0'
+ 'set strsiz 0.13 0.13'
+*----------
+ if(iframe = 1); 'draw string 'titlx' 'titly' (a) RPSS of CFSv1'; endif
+ if(iframe = 2); 'draw string 'titlx' 'titly' (b) RPSS of CFSv2'; endif
+ if(iframe = 3); 'draw string 'titlx' 'titly' (c) CFSv2-CFSv1'; endif
+ if(iframe = 4); 'draw string 'titlx' 'titly' (d) Upper Boundary of 95%'; endif
+ if(iframe = 5); 'draw string 'titlx' 'titly' (e) c-d'; endif
+*
+  iframe=iframe+1
+endwhile
+ 'set string 1 tc 5 0'
+ 'run /cpc/home/wd52pp/bin/cbarn2.gs 1. 0 5.5 2.0'
+'print'
+*'printim rpss.map.temp.test.mixed.png gif x800 y600'
+'printim rpss.map.temp.test.new.png gif x800 y600'
+*'c'
+ 'set vpage off'
+*----------

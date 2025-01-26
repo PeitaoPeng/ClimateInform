@@ -1,0 +1,40 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ lib=/cpc/home/wd52pp/lib/transf_lib.a
+ lcdir=/cpc/home/wd52pp/utility/uv_vs_vd
+datadir=/cpc/home/wd52pp/project/attr/win13-14
+#datadir=/cpc/home/wd52pp/data/para
+ tmp=/cpc/home/wd52pp/tmp
+#
+#nmonth=10
+ nmonth=5
+ iskip=0
+#
+ cp $lcdir/* $tmp
+ cd $tmp
+
+  /bin/rm fort.*
+#  ln -s $datadir/u200.clim_anom.ndjfm2013-14.mon.para.esm.T40.gr fort.11
+#  ln -s $datadir/v200.clim_anom.ndjfm2013-14.mon.para.esm.T40.gr fort.12
+#  ln -s $datadir/psi_div.clim_anom.ndjfm2013-14.mon.para.esm.T40.gr fort.60
+#  ln -s $datadir/psi_div.clim_anom.ndjfm2013-14.mon.para.esm.R15.gr fort.65
+#   ln -s $datadir/u200.ndjfm2013-14.mon.para.toga.esm.T40.gr fort.11
+#   ln -s $datadir/v200.ndjfm2013-14.mon.para.toga.esm.T40.gr fort.12
+#   ln -s $datadir/psi_div.ndjfm2013-14.mon.para.toga.esm.T40.gr fort.60
+#   ln -s $datadir/psi_div.ndjfm2013-14.mon.para.toga.esm.R15.gr fort.65
+    ln -s $datadir/u200.nov13-mar14.esm.T40.gr fort.11
+    ln -s $datadir/v200.nov13-mar14.esm.T40.gr fort.12
+    ln -s $datadir/psi_div.ndjfm2013-14.mon.para.esm.T40.gr fort.60
+    ln -s $datadir/psi_div.ndjfm2013-14.mon.para.esm.R15.gr fort.65
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth,iskip=$iskip)
+eof
+#
+ cat ffts.f cfgdconv.f legpv1.f intp2d.f intp1d.f setxy.f > lib.f
+ gfortran  uv_2_psidiv.f uv_2_psidivT40.s.f T40_2_R15.s.f lib.f
+ a.out
+#

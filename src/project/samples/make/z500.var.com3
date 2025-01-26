@@ -1,0 +1,13 @@
+reinit
+open /export-6/cacsrv1/wd52pp/b9x/var_z500_5094jfm.reg.ctl
+open /export-6/cacsrv1/wd52pp/echam/var_z500_5094jfm.reg.ctl
+open /export-6/cacsrv1/wd52pp/ccm3/var_z500_5094jfm.reg.ctl
+open /export-6/cacsrv1/wd52pp/gfdl/var_z500_5094jfm.reg.ctl
+define ve1=aave(esm,lon=0,lon=360,lat=25,lat=90)
+define vi1=aave(int,lon=0,lon=360,lat=25,lat=90)
+define ve2=aave(esm.2,lon=0,lon=360,lat=25,lat=90)
+define vi2=aave(int.2,lon=0,lon=360,lat=25,lat=90)
+define ve3=aave(esm.3,lon=0,lon=360,lat=25,lat=90)
+define vi3=aave(int.3,lon=0,lon=360,lat=25,lat=90)
+define ve4=aave(esm.4,lon=0,lon=360,lat=25,lat=90)
+define vi4=aave(int.4,lon=0,lon=360,lat=25,lat=90)

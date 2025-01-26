@@ -1,0 +1,12 @@
+* have var for esm & intsmp
+'reinit'
+'open z500_intsmp_5094jfm_run1_12.reg.ctl'
+'open z500_5094jfm.esm.reg.ctl'
+'set x 1 72'
+'set y 1 37'
+'set gxout fwrite'
+'set fwrite var_z500_5094jfm.reg.gr'
+'define var=ave(z*z,t=1,t=540)'
+'d var'
+'define var2=ave(z.2*z.2,t=1,t=45)'
+'d var2'

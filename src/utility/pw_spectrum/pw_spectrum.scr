@@ -1,0 +1,56 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/utility/pw_spectrum
+tmpdir=/export-6/sgi9/wd52pp/tmp
+datadir=/export-6/cacsrv1/wd52pp
+model=LF_prd
+
+longtime=72
+lag=36
+ndata=3
+maxperiod=72
+minperiod=2
+
+cp $lcdir/pw_spectrum.F $tmpdir/.
+cd $tmpdir
+
+#
+cat > parm.h << eof
+       PARAMETER (NDYS=$longtime)
+       PARAMETER (LAG=$lag,LLAG=LAG+1,neofs=$ndata)
+       PARAMETER (DELTAT=1.)
+       PARAMETER (ntopper=$maxperiod,nbotper=$minperiod)
+eof
+#
+cat > parm2.h << eof
+       PARAMETER (MAXLAG=$lag+1)
+eof
+#
+#
+f77 -o pw_spectrum.x pw_spectrum.F
+echo "done compiling"
+
+/bin/rm $tmpdir/fort.*
+#
+ln -s $datadir/$model/coef.temp_102_anom_1931-2002.djf.i3e fort.10
+#ln -s $datadir/$model/pwspec_coef.temp_102_anom_1931-2002.djf.i3e  fort.60
+ln -s $datadir/$model/pwspec_coef.temp_102_anom_1931-2002.djf.txt  fort.70
+
+pw_spectrum.x > $lcdir/out
+
+cat>$datadir/$model/pwspec_coef.temp_102_anom_1931-2002.djf.ctl<<EOF
+dset ^pwspec_coef.temp_102_anom_1931-2002.i3e
+*options big_endian
+undef -9.99E+33
+title EXP1
+xdef  69 linear  0 1
+ydef   1 linear -90.  5
+zdef   1 levels 500
+tdef 99 linear jan94  1mon
+vars  1
+ps    1 99 pwspec
+endvars
+EOF
+

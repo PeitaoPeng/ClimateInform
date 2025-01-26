@@ -1,0 +1,54 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/ca_prd/sst/src
+tmp=/cpc/home/wd52pp/tmp/test
+datadir1=/export/cpc-lw-mlheureux/wd52ml/enso/oni.v3b/data/errsst.v3b
+datadir2=/cpc/home/wd52pp/data/ca_prd
+#
+icmon_beg=jun2015
+icmon_end=aug2015
+#
+clm_add=1524  #dec1980
+clm_end=`expr $clm_add + 360`
+
+outfile=sst.3mon.ic
+
+cd $tmp
+#\rm *.*
+#======================================
+# read er_sst data and calculate anom wrt all year clim 
+#======================================
+cat >havesstic<<EOF
+run sstic.gs
+EOF
+cat >sstic.gs<<EOF
+'reinit'
+'open $datadir1/ersst.v3b.1854.2010.ctl'
+'set x 1 180'
+'set y 1  89'
+'set t 1 12'
+'define clm=ave(sst,t+$clm_add, t=$clm_end,1yr)'
+'modify clm seasonal'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+'d ave(sst-clm,time=$icmon_beg,time=$icmon_end)'
+'c'
+EOF
+grads -l <havesstic
+cat>$outfile.ctl<<EOF
+dset ^$outfile.gr
+undef -999000000
+*
+TITLE Tsfc
+*
+xdef  180 linear   0. 2.
+ydef   89 linear -89. 2.
+zdef   1 linear 1 1
+tdef   9999 linear jan2015 1mo
+vars 1
+t  1 99 3-mon mean (C)
+ENDVARS
+EOF
+cp $outfile* $datadir2

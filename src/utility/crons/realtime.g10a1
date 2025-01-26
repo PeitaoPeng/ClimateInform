@@ -1,0 +1,17 @@
+##backup files once a month
+00 05 01 * * /cpc/save/Mingyue.Chen/back/0saveHpsstar.sh
+#
+#CFS 
+#30 16 * * * /cpc/save/Mingyue.Chen/CoralWatch/realTime/0dlyUpdate.sh
+#30 02 25 * * /cpc/save/Mingyue.Chen/CFSfcst/realTime/monthlyVerif/0SubmitMonthlyUpdateIS.sh
+#30 02 26 * * /cpc/save/Mingyue.Chen/CFSfcst/realTime/monthlyVerif/0SubmitMonthlyUpdateIS.sh
+#30 02 27 * * /cpc/save/Mingyue.Chen/CFSfcst/realTime/monthlyVerif/0SubmitMonthlyUpdateIS.sh
+#30 02 28 * * /cpc/save/Mingyue.Chen/CFSfcst/realTime/monthlyVerif/0SubmitMonthlyUpdateIS.sh
+#30 02 29 * * /cpc/save/Mingyue.Chen/CFSfcst/realTime/monthlyVerif/0SubmitMonthlyUpdateIS.sh
+
+#OBS
+50 23 * * * /cpc/save/Mingyue.Chen/OBS/Prec/cmorph/0SubmitDailyUpdate.sh 1>/dev/null 2 >/dev/null
+45 13 * * * /cpc/save/Mingyue.Chen/OBS/Prec/cpcUniGauge/0copyCFrt.sh > /cpc/save/Mingyue.Chen/OBS/Prec/cpcUniGauge/0Logs/0copyCFrt.log
+
+#CDAS2
+#00 12 * * * /cpc/save/Mingyue.Chen/OBS/CDAS2/backCOM/0SubmitDailyUpdate.sh 1>/dev/null 2>/dev/null

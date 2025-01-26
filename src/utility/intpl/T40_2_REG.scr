@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ datadir=/disk50/data/wd52pp/echam_5000
+#
+ nmonth=52
+ iskip=0
+#
+#for irun in 1 2 3 4 5 6 7 8 9 10 11 12; do
+  /bin/rm fort.11 fort.61
+   ln -s $datadir/z200_5000jfm.esm.i3e   fort.11
+   ln -s $datadir/z200_5000jfm.esm.reg.i3e   fort.61
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth,iskip=$iskip)
+eof
+#
+ f77  T40_2_REG.f setxy.f intp2d.f
+ a.out
+#done
+#
+ja -s

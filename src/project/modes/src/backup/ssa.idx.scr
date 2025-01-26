@@ -1,0 +1,110 @@
+#!/bin/sh
+########################################################
+# use SSA to decompose a time series and reconstruct with 
+# with increasing # of modes
+########################################################
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/modes/src
+tmp=/cpc/home/wd52pp/tmp
+#
+datadir=/cpc/home/wd52pp/data/modes
+#datadir2=/cpc/home/wd52pp/data/obs/nino34_idx
+#datadir2=/cpc/home/wd52pp/data/obs/pdo_idx
+datadir2=/cpc/home/wd52pp/data/obs/amo_idx
+#
+var=amo_mon
+#var=pdo_mon
+#var=nino34_mon
+ltime=1320
+lag=132  # 1/10 of ltime
+nmode=$lag
+#
+nt=`expr $ltime - $lag`
+echo "nt=" $nt
+#
+cp $lcdir/ssa.idx.f $tmp/ssa.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nd=$ltime,lag=$lag)
+       parameter(nmode=$nmode)
+eof
+#
+#\rm fort.*
+#
+gfortran -o ssa.x ssa.f
+#
+echo "done compiling"
+#ln -s $datadir2/${var}.1900-2010.anom.gr fort.10
+ln -s $datadir2/${var}.1900-2010.gr fort.10
+ln -s $datadir/ssa_pc.$var.gr       fort.20
+ln -s $datadir/ssa_eof.$var.gr      fort.30
+ln -s $datadir/ssa_eigenv.$var.txt  fort.40
+ln -s $datadir/ssa_recons.$var.gr   fort.50
+ln -s $datadir/ssa_recons.$var.alt.gr   fort.60
+#
+ssa.x > $lcdir/out
+#
+cat>$datadir/ssa_pc.$var.ctl<<EOF
+dset $datadir/ssa_pc.$var.gr
+undef -9999.0
+title ssa pc
+xdef  $nt linear 0 1
+ydef  1 linear -90 2.8125
+zdef  1 levels 1 1
+tdef 9999 linear jan1951  1yr
+vars   1
+pc     0 99 corr to obs
+endvars
+EOF
+#
+cat>$datadir/ssa_eof.$var.ctl<<EOF1
+dset $datadir/ssa_eof.$var.gr
+undef -9999.0
+title ssa eof
+xdef  $lag linear 0 2.8125
+ydef  1 linear -90 2.8125
+zdef  1 levels 1 1
+tdef 9999 linear jan1951  1yr
+vars   1
+eof    0 99 eof
+endvars
+EOF1
+#
+cat>$datadir/ssa_recons.$var.ctl<<EOF2
+dset $datadir/ssa_recons.$var.gr
+undef -9999.0
+title ssa eof
+xdef  $ltime linear 0 0.1
+ydef  1 linear -90 2.8125
+zdef  1 levels 1 1
+tdef 9999 linear jan1951  1yr
+vars   1
+t   0 99 t=1 for original, t>1 for recons
+endvars
+EOF2
+#
+cat>$datadir/ssa_recons.$var.alt.ctl<<EOF3
+dset $datadir/ssa_recons.$var.alt.gr
+undef -9999.0
+title ssa eof
+xdef  1 linear 0 0.1
+ydef  1 linear -90 2.8125
+zdef  1 levels 1 1
+tdef 9999 linear jan1951  1mon
+vars   9
+to   0 99 ori
+t1   0 99 nmode=1
+t2   0 99 nmode=2
+t3   0 99 nmode=3
+t4   0 99 nmode=4
+t5   0 99 nmode=5
+t6   0 99 nmode=6
+t7   0 99 nmode=7
+t8   0 99 nmode=8
+endvars
+EOF3
+
+#/bin/rm $tmp/fort.*

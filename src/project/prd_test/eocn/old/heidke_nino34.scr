@@ -1,0 +1,46 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/project/prd_skill
+tmp=/export-6/sgi9/wd52pp/tmp
+datadir1=/export-6/cacsrv1/wd52pp/LF_prd
+datadir2=/export-6/cacsrv1/wd52pp/obs/sst
+#
+nyr=54 #1950-2003
+#
+#/bin/rm $tmp/fort.*         
+cp $lcdir/heidke_nino34.f $tmp/.
+cd $tmp
+unlimit
+#
+cat > parm.h << eof
+       parameter(nyr=$nyr)
+       parameter(ncd=102)
+eof
+#
+#
+f77 -o heidke_nino34.x heidke_nino34.f
+echo "done compiling"
+
+#
+ ln -s $datadir1/temp_102.txt    fort.10
+ ln -s $datadir2/sst_nino34_5001-0407.i3e           fort.20
+ ln -s $datadir1/heidke_nino34_temp.1950-2003.gr    fort.30
+#
+heidke_nino34.x > $lcdir/out
+#
+
+cat>$datadir1/heidke_nino34_temp.1950-2003.ctl<<EOF
+dset $datadir1/heidke_nino34_temp.1950-2003.gr
+undef 999.0
+title Realtime Surface Obs
+xdef    1 linear    0.000  1
+ydef    1 linear    0.000  5
+zdef    1 levels 500
+tdef 999 linear jan1950  1mon
+vars   2
+ss1   0 99 Type of Ob
+ss2   0 99 Type of Ob
+endvars
+EOF

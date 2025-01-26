@@ -1,0 +1,272 @@
+8c8
+< lcdir=/cpc/home/wd52pp/project/NA_prd/src
+---
+> lcdir=/cpc/home/wd52pp/project/NA_prd/src/backup
+29,30c29,30
+< mm_eof=4 # mode cut off for model data
+< mo_eof=8 # mode cut off for OBS
+---
+> mm_eof=4 # mode cut for model data
+> mo_eof=8 # model cut off for OBS
+42,43c42,43
+<  ngrdm=2480  # prate
+<  ngrdo=1690  # prec
+---
+> ngrdm=2480  # prate
+> ngrdo=1690  # prec
+121,124c121,124
+<        parameter(isv1=221,iev1=300,jsv1=111,jev1=141) !2480
+<        parameter(isv2=221,iev2=300,jsv2=111,jev2=141) !1690
+< c      parameter(isv1=191,iev1=300,jsv1=111,jev1=161) !5610
+< c      parameter(isv2=191,iev2=300,jsv2=111,jev2=161) !3808
+---
+>        parameter(isv1=221,iev1=300,jsv1=111,jev1=141) !1128
+>        parameter(isv2=221,iev2=300,jsv2=111,jev2=141) !1128
+> c      parameter(isv1=191,iev1=300,jsv1=111,jev1=161) !1128
+> c      parameter(isv2=191,iev2=300,jsv2=111,jev2=161) !1128
+141,142c141,142
+<       dimension w3dvm(imx,jmx,nt),w3dvo(imx,jmx,nt)
+<       dimension w3do(imx,jmx,ntm)
+---
+>       dimension w3dv1(imx,jmx,nt),w3dv2(imx,jmx,nt)
+>       dimension w3dvm(imx,jmx,nt)
+153,154c153,166
+<       real corr(imx,jmx),regr(imx,jmx)
+<       real rpcm(modm,nt),rpco(modo,nt)
+---
+>       dimension aam(ngrdm,nt),wk(nt,ngrdm)
+>       dimension aao(ngrdo,ntm),wk2(ntm,ngrdo)
+>       dimension eval(nt),evec(ngrdm,nt),coef(nt,nt)
+>       dimension eval2(ntm),evec2(ngrdo,ntm),coef2(ntm,ntm)
+>       real weval(nt),wevec(ngrdm,nt),wcoef(nt,nt)
+>       real weval2(ntm),wevec2(ngrdo,ntm),wcoef2(ntm,ntm)
+>       real reval(modm),revec(ngrdm,modm),rcoef(modm,nt)
+>       real reval2(modo),revec2(ngrdo,modo),rcoef2(modo,ntm)
+>       real tt(modm,modm),rwk(ngrdm),rwk2(ngrdm,modm)
+>       real tt2(modo,modo),rwk3(ngrdo),rwk4(ngrdo,modo)
+> 
+>       real corr(imx,jmx),regr(imx,jmx),regro(imx,jmx,modo)
+>       real rpcm(modm,nt),rpcm2(modm,nt),rpcmtgt(modm)
+>       real rpco(modo,nt),rpcf(modo)
+156,157c168,169
+<       real corm(imx,jmx,modm),regm(imx,jmx,modm)
+<       real coro(imx,jmx,modo),rego(imx,jmx,modo)
+---
+>       real corm(imx,jmx),regm(imx,jmx)
+>       real coro(imx,jmx),rego(imx,jmx)
+171a184,187
+>       real w3d1(imx,jmx,ntm),w3d2(imx,jmx,ntm)
+>       real w3dm(imx,jmx,ntm)
+>       real std1(imx,jmx),std2(imx,imx),stdm(imx,imx)
+> c
+200c216
+<            w3dvo(i,j,it)=w2d(i,j)
+---
+>            w3dv2(i,j,it)=w2d(i,j)
+210,211c226,274
+<       call reof_s(w3dvm,cosr,nt,ngrdm,modm,undef,
+<      &imx,jmx,isv1,iev1,jsv1,jev1,rpcm,corm,regm,id)
+---
+> C select grid data
+>       do it=1,nt
+>       ig=0
+>       do i=isv1,iev1
+>       do j=jsv1,jev1
+>         if(w3dvm(i,j,1).gt.-1000) then
+>         ig=ig+1
+>         aam(ig,it)=cosr(j)*w3dvm(i,j,it)
+>         endif
+>       enddo
+>       enddo
+>       print *, 'ngrdm=',ig
+>       enddo
+> C EOF analysis
+>       call REOFS(aam,ngrdm,nt,nt,wk,id,weval,wevec,wcoef,
+>      &           modm,reval,revec,rcoef,tt,rwk,rwk2)
+> c     print *, 'eval=',eval
+> C
+> C normalize rcoef and have patterns
+>       do m=1,modm
+>         do it=1,nt
+>         ts1(it)=rcoef(m,it)
+>         enddo
+>         call normal(ts1,nt)
+> 
+>         do it=1,nt
+>         rpcm(m,it)=ts1(it)
+>         enddo
+> c
+>         do j=1,jmx
+>         do i=1,imx
+> 
+>         if(w3dvm(i,j,1).gt.-1000) then
+> 
+>         do it=1,nt
+>         ts2(it)=w3dvm(i,j,it)
+>         enddo
+> 
+>         call regr_t(ts1,ts2,nt,corm(i,j),regm(i,j))
+>         else
+> 
+>         corm(i,j)=undef
+>         regm(i,j)=undef
+> 
+>         endif
+> 
+>         enddo
+>         enddo
+>       enddo  ! m loop
+238c301
+<           w3do(i,j,it)=w3dvo(i,j,iy)
+---
+>           w3d2(i,j,it)=w3dv2(i,j,iy)
+244,246d306
+< c
+<       call reof_s(w3do,cosr,ntm,ngrdo,modo,undef,
+<      &imx,jmx,isv2,iev2,jsv2,jev2,rpcom,coro,rego,id)
+249a310,360
+> C select grid data
+>       do it=1,ntm
+>       ig=0
+>       do i=isv2,iev2
+>       do j=jsv2,jev2
+>         if(w3dv2(i,j,1).gt.-1000) then
+>         ig=ig+1
+>         aao(ig,it)=cosr(j)*w3d2(i,j,it)
+>         endif
+>       enddo
+>       enddo
+> c     print *, 'ngrdo=',ig
+>       enddo
+> C
+> C EOF analysis
+>       call REOFS(aao,ngrdo,ntm,ntm,wk2,id,weval2,wevec2,wcoef2,
+>      &           modo,reval2,revec2,rcoef2,tt2,rwk3,rwk4)
+> c     print *, 'eval=',eval
+> C
+> C normalize rcoef2 and have patterns
+>       do m=1,modo
+>         do it=1,ntm
+>         ts3(it)=rcoef2(m,it)
+>         enddo
+>         call normal(ts3,nt)
+> 
+>         do it=1,ntm
+>         rpcom(m,it)=ts3(it)
+>         enddo
+> c
+>         do j=1,jmx
+>         do i=1,imx
+> 
+>         if(w3dv2(i,j,1).gt.-1000) then
+> 
+>         do it=1,ntm
+>         ts4(it)=w3d2(i,j,it)
+>         enddo
+> 
+>         call regr_t(ts3,ts4,ntm,coro(i,j),regro(i,j,m))
+>         else
+> 
+>         coro(i,j)=undef
+>         regro(i,j,m)=undef
+> 
+>         endif
+> 
+>         enddo
+>         enddo
+>       enddo  ! m loop
+> 
+373c484
+<       if(abs(w3dvo(i,j,1)).lt.999) then
+---
+>       if(abs(w3dv2(i,j,1)).lt.999) then
+375c486
+<         prdgrd(i,j,itgt)=prdgrd(i,j,itgt)+prdspc(m,itgt)*rego(i,j,m)
+---
+>         prdgrd(i,j,itgt)=prdgrd(i,j,itgt)+prdspc(m,itgt)*regro(i,j,m)
+389c500
+<       if(abs(w3dvo(i,j,1)).lt.999) then
+---
+>       if(abs(w3dv2(i,j,1)).lt.999) then
+391c502
+<           tso(it)=w3dvo(i,j,it)
+---
+>           tso(it)=w3dv2(i,j,it)
+409c520
+<       print *, 'svdmod=',msvd,'avg corp =', avgp
+---
+>       print *, 'nmod=',nmod,'avg corp =', avgp
+416c527
+<             w2d(i,j)=w3dvo(i,j,it)
+---
+>             w2d(i,j)=w3dv2(i,j,it)
+431c542
+<           w2d(i,j)=w3dvo(i,j,it)
+---
+>           w2d(i,j)=w3dv2(i,j,it)
+444,508d554
+<       subroutine reof_s(fin,cosr,nt,ng,nmod,undef,
+<      &im,jm,is,ie,js,je,rpc,cor,reg,id)
+< c
+<       dimension fin(im,jm,nt),cosr(jm)
+<       dimension aaa(ng,nt),wk(nt,ng)
+<       dimension weval(nt),wevec(ng,nt),wcoef(nt,nt)
+<       dimension reval(nmod),revec(ng,nmod),rpc(nmod,nt)
+<       dimension tt(nmod,nmod),rwk(ng),rwk2(ng,nmod)
+< 
+<       dimension ts1(nt),ts2(nt)
+<       dimension cor(im,jm,nmod),reg(im,jm,nmod)
+< c
+< C select grid data
+<       do it=1,nt
+<       ig=0
+<       do i=is,ie
+<       do j=js,je
+<         if(fin(i,j,1).gt.-1000) then
+<         ig=ig+1
+<         aaa(ig,it)=cosr(j)*fin(i,j,it)
+<         endif
+<       enddo
+<       enddo
+< c     print *, 'ngrd=',ig
+<       enddo
+< C EOF analysis
+<       call REOFS(aaa,ng,nt,nt,wk,id,weval,wevec,wcoef,
+<      &           nmod,reval,revec,rpc,tt,rwk,rwk2)
+< C
+< C normalize rpc and have cor&reg patterns
+<       do m=1,nmod
+<         do it=1,nt
+<         ts1(it)=rpc(m,it)
+<         enddo
+<         call normal(ts1,nt)
+< 
+<         do it=1,ntm
+<         rpc(m,it)=ts1(it)
+<         enddo
+< c
+<         do j=1,jm
+<         do i=1,im
+< 
+<         if(fin(i,j,1).gt.-1000) then
+< 
+<         do it=1,nt
+<         ts2(it)=fin(i,j,it)
+<         enddo
+< 
+<         call regr_t(ts1,ts2,nt,cor(i,j,m),reg(i,j,m))
+< 
+<         else
+< 
+<         cor(i,j,m)=undef
+<         reg(i,j,m)=undef
+< 
+<         endif
+< 
+<         enddo
+<         enddo
+<       enddo  ! m loop
+< 
+<       return
+<       end
+< 

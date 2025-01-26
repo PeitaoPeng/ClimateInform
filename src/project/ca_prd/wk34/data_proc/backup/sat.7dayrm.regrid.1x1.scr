@@ -1,0 +1,89 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/ca_prd/wk34/data_proc
+tmp=/cpc/home/wd52pp/tmp/test
+datadir1=/cpc/sfc_temp/ARCHIVE/GRID
+datadir2=/cpc/home/wd52pp/data/ca_prd
+#
+outfile=sat.7drm.1979-curr
+#totday=15706  #  12/31/2021
+totday=15765   #  2/28/2022
+rmday=`expr $totday - 6`
+rmend=`expr $totday - 3`
+
+cd $tmp
+#\rm *.*
+#======================================
+# read olra data and saved as a tmp.gr 
+#======================================
+cat >runmean<<EOF
+run mean.gs
+EOF
+
+cat >mean.gs<<EOF
+'reinit'
+'open $datadir1/CPC_GLOBAL_T_V0.x_0.5deg.lnx.ctl'
+'set x 1 720'
+'set y 1 360'
+'set gxout fwrite'
+'set fwrite tmp.gr'
+'set t 4 $rmend'
+'d ave(0.5*(tmax+tmin),t-3,t+3)'
+'c'
+EOF
+grads -l <runmean
+#
+cat>tmp.ctl<<EOF
+dset ^tmp.gr
+undef -999000000
+*
+TITLE Tsfc
+*
+xdef  720 linear   0.25 0.5
+ydef  360 linear -89.75 0.5
+zdef   1 linear 1 1
+tdef 20000 linear 04jan1979 1dy
+vars 1
+t  1 99 7-day run_mean (C)
+ENDVARS
+EOF
+#======================================
+# regrid to 1x1 grid
+#======================================
+cat >regrid<<EOF
+run lterp.gs
+EOF
+cat >lterp.gs<<EOF
+'reinit'
+'open $datadir2/mask.1x1.prate.ctl'
+'open tmp.ctl'
+'set x 1 360'
+'set y 1 181'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+'set t 1 $rmday'
+'d lterp(t.2,mask.1(t=1))'
+'c'
+EOF
+
+grads -l <regrid
+#
+cat>$outfile.ctl<<EOF
+dset ^$outfile.gr
+undef -999000000
+*
+TITLE Tsfc
+*
+xdef  360 linear 0 1.
+ydef  181 linear -90 1.
+zdef   1 linear 1 1
+tdef 20000 linear 04jan1979 1dy
+vars 1
+t  1 99 Tsfc (C)
+ENDVARS
+EOF
+#
+cp $outfile.* $datadir2
+

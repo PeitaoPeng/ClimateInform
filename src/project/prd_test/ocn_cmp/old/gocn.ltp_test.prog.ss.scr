@@ -1,0 +1,88 @@
+#!/bin/sh
+##########################################
+# Using independent data, K is dependent on LTP
+#########################################
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/prd_test/ocn_mvw
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/prd_skill
+#
+last_yr=2012
+longtime=82
+ntprd=52  # ntprd=longtime-30
+mode=6  #cut off modes
+var=temp
+#KP=15  #for prec
+ KP=30  #for temp
+ ltp=30 #  maxmum length of testing period
+ irms=1  # =1: rms metric; =0: acc metrics
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/gocn.ltp_test.prog.f $tmp/gocn_prd_hss.f
+cp $lcdir/reof.s.f $tmp/reof.s.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(imax=102)
+       parameter(mmax=$mode)
+       parameter(ntprd=$ntprd,kp=$KP)
+       parameter(ndec=6)
+       parameter(ltp=$ltp)
+       parameter(irms=$irms)
+eof
+#
+gfortran -o gocn_prd_hss.x reof.s.f gocn_prd_hss.f
+echo "done compiling"
+
+#
+ ln -s /cpc/home/wd52pp/data/LF_prd/${var}_102.txt      fort.10
+#
+if [ "$irms" = 1 ]; then
+ln -s $datadir/gocn_skill.vs.ltp.prog.rms.gr  fort.60
+#
+gocn_prd_hss.x > $datadir/gocn.ltp_test.rms.out
+#
+cat>$datadir/gocn_skill.vs.ltp.prog.rms.ctl<<EOF
+#
+dset $datadir/gocn_skill.vs.ltp.prog.rms.gr
+undef 999.0
+title Realtime Surface Obs
+xdef    $ltp linear 1  1
+ydef    22   linear 1  1
+zdef     1   linear 1  1
+tdef    12   linear jan1991  1mon
+vars   5
+rms   0 99 rmse of fcst
+acc   0 99 acc of fcst
+hss   0 99 hss of fcst
+mk    0 99 hss optmal K
+wrms  0 99 rmse with wmo clim
+endvars
+EOF
+#
+else
+#
+ln -s $datadir/gocn_skill.vs.ltp.prog.acc.gr  fort.60
+gocn_prd_hss.x > $datadir/gocn.ltp_test.acc.out
+#
+cat>$datadir/gocn_skill.vs.ltp.prog.acc.ctl<<EOF
+dset $datadir/gocn_skill.vs.ltp.prog.acc.gr
+undef 999.0
+title Realtime Surface Obs
+xdef    $ltp linear 1  1
+ydef    22   linear 1  1
+zdef     1   linear 1  1
+tdef    12   linear jan1991  1mon
+vars   5
+rms   0 99 rmse of fcst
+acc   0 99 acc of fcst
+hss   0 99 hss of fcst
+mk    0 99 hss optmal K
+wrms  0 99 rmse with wmo clim
+endvars
+EOF
+fi
+#
+/bin/rm $tmp/fort.*         

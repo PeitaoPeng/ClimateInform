@@ -1,0 +1,153 @@
+*-------------------------------figure b1-------------------
+'set ylpos 0.0 r'
+'set grads off'
+'set grid off'
+'set mproj scaled'
+'set xlab on'
+'set ylab on'
+'set yflip on'
+'set xlint 20'
+'set ylint 10'
+'set xlopts 1 -1 0.11'
+'set ylopts 1 -1 0.11'
+
+'set dfile 1'
+'set lon 'LON1' 'LON2
+'set lat 'LAT1' 'LAT2
+'set z 1'
+'set parea 5.6 10.0 6.0 8.0'
+
+Time0=Jan1976
+'set time 'Time0
+'set gxout shaded'
+'set gxout shaded'
+'set clevs  -2.5 -2 -1.5 -1 -.5 0 .5 1. 1.5 2. 2.5 3. 3.5'
+'set ccols 49  47  46  45  44  43 22 23 24 25 26 27 28 29'
+'d SLP'
+
+'set dfile 3'
+'set gxout contour'
+'set lon 'LON1' 'LON2
+'set lat 'LAT1' 'LAT2
+'set z 1'
+'set cthick 5'
+'set ccolor 0'
+*'set black -0.001 0.001'
+'set cint 10'
+'d OLR'
+
+'set dfile 1'
+'set gxout vector'
+'set ccolor 1'
+'set cthick 5'
+'set arrscl 'len' 'scale
+'set arrlab off'
+'set arrowhead 0.05'
+'d skip(u,5,2);skip(v,5,2)'
+
+'set strsiz 0.12 0.12'
+'set string 1 c 3 00'
+'draw string 7.8 8.15 (d) 'Time0
+'print'
+
+*-------------------------------figure b2-------------------
+'set grads off'
+'set grid off'
+'set mproj scaled'
+'set xlab on'
+'set ylab on'
+'set yflip on'
+'set xlint 20'
+'set ylint 10'
+'set xlopts 1 -1 0.11'
+'set ylopts 1 -1 0.11'
+
+'set dfile 1'
+'set lon 'LON1' 'LON2
+'set lat 'LAT1' 'LAT2
+'set z 1'
+'set parea 5.6 10.0 3.5 5.5'
+
+Time0=Apr1976
+'set time 'Time0
+'set gxout shaded'
+'set gxout shaded'
+'set clevs  -2.5 -2 -1.5 -1 -.5 0 .5 1. 1.5 2. 2.5 3. 3.5'
+'set ccols 49  47  46  45  44  43 22 23 24 25 26 27 28 29'
+'d SLP'
+
+'set dfile 3'
+'set gxout contour'
+'set lon 'LON1' 'LON2
+'set lat 'LAT1' 'LAT2
+'set z 1'
+'set cthick 5'
+'set ccolor 0'
+*'set black -0.001 0.001'
+'set cint 10'
+'d OLR'
+
+'set dfile 1'
+'set gxout vector'
+'set ccolor 1'
+'set cthick 5'
+'set arrscl 'len' 'scale
+'set arrlab off'
+'set arrowhead 0.05'
+'d skip(u,5,2);skip(v,5,2)'
+
+'set strsiz 0.12 0.12'
+'set string 1 c 3 00'
+'draw string 7.8 5.65 (e) 'Time0
+'print'
+
+*-------------------------------figure b3-------------------
+'set grads off'
+'set grid off'
+'set mproj scaled'
+'set xlab on'
+'set ylab on'
+'set yflip on'
+'set xlint 20'
+'set ylint 10'
+'set xlopts 1 -1 0.11'
+'set ylopts 1 -1 0.11'
+
+'set dfile 1'
+'set lon 'LON1' 'LON2
+'set lat 'LAT1' 'LAT2
+'set z 1'
+'set parea 5.6 10.0 1.0 3.0'
+
+Time0=Jul1976
+'set time 'Time0
+'set gxout shaded'
+'set gxout shaded'
+'set clevs  -2.5 -2 -1.5 -1 -.5 0 .5 1. 1.5 2. 2.5 3. 3.5'
+'set ccols 49  47  46  45  44  43 22 23 24 25 26 27 28 29'
+'d SLP'
+
+'set dfile 3'
+'set gxout contour'
+'set lon 'LON1' 'LON2
+'set lat 'LAT1' 'LAT2
+'set z 1'
+'set cthick 5'
+'set ccolor 0'
+*'set black -0.001 0.001'
+'set cint 10'
+'d OLR'
+
+'set dfile 1'
+'set gxout vector'
+'set ccolor 1'
+'set cthick 5'
+'set arrscl 'len' 'scale
+'set arrlab off'
+'set arrowhead 0.05'
+'d skip(u,5,2);skip(v,5,2)'
+
+'set strsiz 0.12 0.12'
+'set string 1 c 3 00'
+'draw string 7.8 3.15 (f) 'Time0
+'print'

@@ -1,0 +1,26 @@
+5c5
+< zonal=raw
+---
+> zonal=eddy
+8d7
+< eof_range=tp
+11c10
+< 'open /cpc/home/wd52pp/data/attr/telcon/z200_17.'ts'.djf.contrib.'zonal'.ctl'
+---
+> 'open /cpc/home/wd52pp/data/attr/telcon/z200_20.'ts'.djf.contrib.'zonal'.ctl'
+16c15
+<  'draw string 4.25 10.75 Reconstruction of Z200 for 2016/17 DJF'
+---
+>  'draw string 4.25 10.75 Reconstruction of Z200 for 2019/20 DJF'
+33c32
+< 'define p8=n34+trd+c1+c2+c3+c4'
+---
+> 'define p8=n34+trd++c1+c2+c3+c4'
+100c99
+< if(iframe = 6);'draw string 'xstr' 'ystr' f)RCP4'; endif
+---
+> if(iframe = 6);'draw string 'xstr' 'ystr' f)RPC4'; endif
+115c114
+< 'printim z200.'ts'.contrib.17.'area'.'zonal'.png gif x600 y800'
+---
+> 'printim z200.'ts'.contrib.20.'area'.'zonal'.png gif x600 y800'

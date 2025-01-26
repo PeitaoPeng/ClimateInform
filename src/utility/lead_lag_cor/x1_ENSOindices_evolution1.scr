@@ -1,0 +1,379 @@
+#! /bin/sh
+#------/cpc/home/hzz/CPChu/CoastalENSO/x1_ENSOindices_evolution1.scr---------------c
+set verbose
+# Nino3.4 evolution in extreme Nino1+2-Nino4/FAM yea: ERSSTv5/HadISST
+
+rm tmp1.gs
+cat << EOR > tmp1.gs
+*-----------------------------------------------------------
+'reinit'
+'c'
+*-----GODAS SST: Jan1979-present
+*'open /cpc/GODAS/month/mnth.temp.ctl'
+
+*----HadISST
+*'sdfopen /cpc/home/hzz/DATAhu/HadISST/HadISST_sst.nc_Jan1854_May2017'
+
+**----ERSSTv5: Jan1854-Current, 2x2 grid
+'open /export/cpc-lw-mlheureux/wd52ml/enso/oni.v5/data/ersst.v5/ersst.v5.1854.pres.ctl'
+'open /export/cpc-lw-mlheureux/wd52ml/enso/oni.v5/data/ersst.v5/mnth.clim.ersst.v5.1981-2010.ctl'
+
+LASTmon=Aug2017
+Tmonth=(2016-1854+1)*12+7
+VAR=sst
+LON1=0
+LON2=360
+LAT1=-90
+LAT2=90
+
+T0=(1854-1854)*12
+*T0=(1981-1854)*12
+T2=(2016-1854+1)*12
+
+'set dfile 1'
+'set lon 'LON1' 'LON2
+'set lat 'LAT1' 'LAT2
+'set z 1'
+*-----1981-2010 climatology
+'set time jan1981 dec1981'
+'define s0='VAR'.2'
+
+'set time Jan1854 'LASTmon
+'modify s0 seasonal'
+'define SSTa='VAR'.1-s0'
+
+'set x 1'
+'set y 1'
+'set z 1'
+'set time Jan1854 'LASTmon
+*--Nino3.4
+lon1=360-170
+lon2=360-120
+lat1=-5
+lat2=5
+'define N34=tloop(aave(SSTa,lon='lon1',lon='lon2',lat='lat1',lat='lat2'))'
+
+*--Nino1+2
+lon1=360-90
+lon2=360-80
+lat1=-10
+lat2=0
+'define N12=tloop(aave(SSTa,lon='lon1',lon='lon2',lat='lat1',lat='lat2'))'
+
+*--Nino4
+lon1=160
+lon2=360-150
+lat1=-5
+lat2=5
+'define N4=tloop(aave(SSTa,lon='lon1',lon='lon2',lat='lat1',lat='lat2'))'
+
+'set t 1 24'
+
+*--- Top 4 years with positive (Nino2+1-Nino34) and Nino1+2 since 1948
+Pyear1=1983
+T0=(Pyear1-1854)*12
+'define X34year1=ave(N34,t+'T0',t+'T0'))'
+'define X12year1=ave(N12,t+'T0',t+'T0'))'
+'define x1234year1=ave(N12-N34,t+'T0',t+'T0'))'
+
+Pyear2=1998
+T0=(Pyear2-1854)*12
+'define X34year2=ave(N34,t+'T0',t+'T0'))'
+'define X12year2=ave(N12,t+'T0',t+'T0'))'
+'define x1234year2=ave(N12-N34,t+'T0',t+'T0'))'
+
+Pyear3=2008
+T0=(Pyear3-1854)*12
+'define X34year3=ave(N34,t+'T0',t+'T0'))'
+'define X12year3=ave(N12,t+'T0',t+'T0'))'
+'define x1234year3=ave(N12-N34,t+'T0',t+'T0'))'
+
+Pyear4=2012
+T0=(Pyear4-1854)*12
+'define X34year4=ave(N34,t+'T0',t+'T0'))'
+'define X12year4=ave(N12,t+'T0',t+'T0'))'
+'define x1234year4=ave(N12-N34,t+'T0',t+'T0'))'
+
+Pyear5=2014
+T0=(Pyear5-1854)*12
+'define X34year5=ave(N34,t+'T0',t+'T0'))'
+'define X12year5=ave(N12,t+'T0',t+'T0'))'
+'define x1234year5=ave(N12-N34,t+'T0',t+'T0'))'
+
+Pyear6=2017
+T0=(Pyear6-1854)*12
+'define X34year6=ave(N34,t+'T0',t+'T0'))'
+'define X12year6=ave(N12,t+'T0',t+'T0'))'
+'define x1234year6=ave(N12-N34,t+'T0',t+'T0'))'
+
+*-----------------------------------------------------------
+'run /cpc/home/hzz/bin/rgbset2.gs'
+'enable print x1_ENSOindices_evolution1.met'
+*-------------------------------figure A1-------------------
+'set grads off'
+'set xlab on'
+'set ylab on'
+'set grid off'
+*'set yflip off'
+'set mproj scaled'
+'set vrange -2 4.8'
+'set ylint 2'
+*'set xlabs Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec'
+*'set xlabs Jan|Apr|Jul|Oct|Jan|Apr|Jul|'
+'set xlabs Jan|Mar|May|Jul|Sep|Nov|Jan|'
+
+'set x 1'
+'set y 1'
+'set z 1'
+'set t 1 15'
+'set parea 1.0 5.4 4.5 8.0'
+
+'set cmark 0'
+'set cstyle 1'
+'set cthick 5'
+'set ccolor 97'
+'set bargap 50'
+'set barbase 0'
+'set gxout bar'
+*'set lfcols 26 16'
+*'set gxout linefill'
+*'d (PPyear1+PPyear2+PPyear3+PPyear4+PPyear5)/5.0'
+
+'set cmark 0'
+'set cstyle 1'
+'set ccolor 1'
+'set cthick 8'
+'set gxout line'
+'d x1234year1'
+
+'set cmark 0'
+'set cstyle 2'
+'set ccolor 2'
+'set cthick 8'
+'set gxout line'
+'d x1234year2'
+
+'set cmark 0'
+'set cstyle 3'
+'set ccolor 3'
+'set cthick 8'
+'set gxout line'
+'d x1234year3'
+
+'set cmark 0'
+'set cstyle 4'
+'set ccolor 4'
+'set cthick 8'
+'set gxout line'
+'d x1234year4'
+
+'set cmark 0'
+'set cstyle 6'
+'set ccolor 14'
+'set cthick 8'
+'set gxout line'
+'d x1234year5'
+
+'set cmark 0'
+'set cstyle 7'
+'set ccolor 97'
+'set cthick 8'
+'set gxout line'
+'d x1234year6'
+
+'set cmark 0'
+'set cstyle 1'
+'set cthick 5'
+'set ccolor 15'
+'set gxout line'
+'d x1234year1-x1234year1'
+
+'set string 1 c 3 0'
+'set strsiz 0.13 0.13'
+'draw string 5.5 8.35  Coastal El Nino Evolution'
+'draw string 3.2 8.15 (a) Nino1+2-Nino3.4'
+
+'set line 1 1 6' 
+'draw line 1.5 3.5 2.9 3.5' 
+'set string 1 l 3 00'
+'draw string 3.0 3.5 'Pyear1
+
+'set line 2 2 6' 
+'draw line 1.5 3.1 2.9 3.1' 
+'set string 2 l 3 00'
+'draw string 3.0 3.1 'Pyear2
+
+'set line 3 3 6' 
+'draw line 1.5 2.7 2.9 2.7' 
+'set string 3 l 3 00'
+'draw string 3.0 2.7 'Pyear3
+
+'set line 4 4 6' 
+'draw line 1.5 2.3 2.9 2.3' 
+'set string 4 l 3 00'
+'draw string 3.0 2.3 'Pyear4
+
+'set line 14 6 6' 
+'draw line 1.5 1.9 2.9 1.9' 
+'set string 14 l 3 00'
+'draw string 3.0 1.9 'Pyear5
+
+'set line 97 7 6' 
+'draw line 1.5 1.5 2.9 1.5' 
+'set string 97 l 3 00'
+'draw string 3.0 1.5 'Pyear6
+
+'set strsiz 0.07 0.07'
+'set string 3 c 3 90'
+'draw string 10.8 4.2 /cpc/home/hzz/CPChu/CoastalENSO/x1_ENSOindices_evolution1.scr'
+
+*'run /cpc/home/hzz/bin/cbarn.gs 0.75 0 5.6 0.5'
+'print'
+
+*-------------------------------figure A2-------------------
+'set grads off'
+'set xlab on'
+'set ylab on'
+'set grid off'
+'set mproj scaled'
+'set vrange -2 4.8'
+'set ylint 2'
+'set ylpos 0.0 r'
+
+'set x 1'
+'set y 1'
+'set z 1'
+'set t 1 15'
+'set parea 5.6 10.0 4.5 8.0'
+'set cmark 0'
+'set cstyle 1'
+'set ccolor 1'
+'set cthick 8'
+'set gxout line'
+'d X12year1'
+
+'set cmark 0'
+'set cstyle 2'
+'set ccolor 2'
+'set cthick 8'
+'set gxout line'
+'d X12year2'
+
+'set cmark 0'
+'set cstyle 3'
+'set ccolor 3'
+'set cthick 8'
+'set gxout line'
+'d X12year3'
+
+'set cmark 0'
+'set cstyle 4'
+'set ccolor 4'
+'set cthick 8'
+'set gxout line'
+'d X12year4'
+
+'set cmark 0'
+'set cstyle 6'
+'set ccolor 14'
+'set cthick 8'
+'set gxout line'
+'d X12year5'
+
+'set cmark 0'
+'set cstyle 7'
+'set ccolor 97'
+'set cthick 8'
+'set gxout line'
+'d X12year6'
+
+'set cmark 0'
+'set cstyle 1'
+'set cthick 5'
+'set ccolor 15'
+'set gxout line'
+'d X12year1-X12year1'
+
+'set string 1 c 3 0'
+'set strsiz 0.13 0.13'
+'draw string 7.8 8.15 (b) Nino1+2'
+'print'
+
+*-------------------------------figure A3-------------------
+'set grads off'
+'set xlab on'
+'set ylab on'
+'set grid off'
+'set mproj scaled'
+'set vrange -2 4.8'
+'set ylint 2'
+
+'set x 1'
+'set y 1'
+'set z 1'
+'set t 1 15'
+'set parea 5.6 10.0 0.5 4.0'
+'set cmark 0'
+'set cstyle 1'
+'set ccolor 1'
+'set cthick 8'
+'set gxout line'
+'d X34year1'
+
+'set cmark 0'
+'set cstyle 2'
+'set ccolor 2'
+'set cthick 8'
+'set gxout line'
+'d X34year2'
+
+'set cmark 0'
+'set cstyle 3'
+'set ccolor 3'
+'set cthick 8'
+'set gxout line'
+'d X34year3'
+
+'set cmark 0'
+'set cstyle 4'
+'set ccolor 4'
+'set cthick 8'
+'set gxout line'
+'d X34year4'
+
+'set cmark 0'
+'set cstyle 6'
+'set ccolor 14'
+'set cthick 8'
+'set gxout line'
+'d X34year5'
+
+'set cmark 0'
+'set cstyle 7'
+'set ccolor 97'
+'set cthick 8'
+'set gxout line'
+'d X34year6'
+
+'set cmark 0'
+'set cstyle 1'
+'set cthick 5'
+'set ccolor 15'
+'set gxout line'
+'d X34year1-X34year1'
+
+'set string 1 c 3 0'
+'set strsiz 0.13 0.13'
+'draw string 7.8 4.15 (c) Nino3.4'
+'print'
+
+*'printim x1_ENSOindices_evolution1.jpeg jpeg white'
+*'printim x1_ENSOindices_evolution1.gif gif white'
+'disable print'
+pull dummy 
+*'quit'
+EOR
+/usr/local/grads/2.0.1/grads -lc "run tmp1.gs"
+
+gxeps -c -i x1_ENSOindices_evolution1.met -o x1_ENSOindices_evolution1.eps
+rm tmp1.gs x1_ENSOindices_evolution1.met

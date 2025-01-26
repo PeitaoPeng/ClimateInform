@@ -1,0 +1,117 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ lcdir=/cpc/home/wd52pp/project/attr/telcon
+ datadir=/cpc/home/wd52pp/data/attr/telcon
+ tmp=/cpc/home/wd52pp/tmp
+#
+tmax=40 
+dtype=rsd # raw or rsd
+#
+cp repeat_molteni.cmap.f $tmp/corr.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(imx=144,jmx=72)
+       parameter(im=144,jm=73)
+       parameter(ims=360,jms=180)
+       parameter(ltime=$tmax)
+       parameter(iskip_idx=0)
+       parameter(iskip_fld=0)
+       parameter(is1=17,ie1=36)
+       parameter(is2=37,ie2=56)
+       parameter(is3=65,ie3=84)
+       parameter(js=32,je=41)
+eof
+#
+
+\rm fort.*
+
+   infile1=$datadir/cmap.djf.7980-1819.gr
+   infile2=$datadir/z200.djf.1980-cur.gr
+   infile3=$datadir/hadoisst.djf.80-cur.gr
+if [ $dtype = 'rsd' ]; then 
+   infile1=$datadir/cmap.djf.7980-1819.rsd.gr
+fi
+   ln -s $infile1 fort.11 
+   ln -s $infile2 fort.12
+   ln -s $infile3 fort.13
+   ln -s $datadir/regr.${dtype}_cmap_boxes.vs.cmap.djf.80-cur.gr fort.21
+   ln -s $datadir/regr.${dtype}_cmap_boxes.vs.z200.djf.80-cur.gr fort.22
+   ln -s $datadir/regr.${dtype}_cmap_boxes.vs.sst.djf.80-cur.gr fort.23
+   ln -s $datadir/ts.${dtype}_cmap_boxes.djf.80-cur.gr fort.31
+#
+gfortran corr.f
+a.out
+#
+cat > $datadir/regr.${dtype}_cmap_boxes.vs.cmap.djf.80-cur.ctl << eof
+dset ^regr.${dtype}_cmap_boxes.vs.cmap.djf.80-cur.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  144 linear 1.25 2.5
+ydef   72 linear -88.75 2.5
+zdef    1 levels 200
+tdef 999 linear jan1980  1yr
+vars   6
+cor1   0 99 corr of box1
+reg1   0 99 regr of box1
+cor2   0 99 corr of box2
+reg2   0 99 regr of box2
+cor3   0 99 corr of box3
+reg3   0 99 regr of box3
+endvars
+eof
+#
+cat > $datadir/ts.${dtype}_cmap_boxes.djf.80-cur.ctl << EOF
+dset ^ts.${dtype}_cmap_boxes.djf.80-cur.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  144 linear   0. 2.5
+ydef   73 linear -90. 2.5
+zdef  1 levels 200
+tdef 999 linear jan1980  1yr
+vars 3
+b1   0 99 ts of box1
+b2   0 99 ts of box2
+b3   0 99 ts of box3
+endvars
+EOF
+#
+cat > $datadir/regr.${dtype}_cmap_boxes.vs.z200.djf.80-cur.ctl << eof
+dset ^regr.${dtype}_cmap_boxes.vs.z200.djf.80-cur.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  144 linear   0. 2.5
+ydef   73 linear -90. 2.5
+zdef    1 levels 200
+tdef 999 linear jan1980  1yr
+vars   6
+cor1   0 99 corr of box1
+reg1   0 99 regr of box1
+cor2   0 99 corr of box2
+reg2   0 99 regr of box2
+cor3   0 99 corr of box3
+reg3   0 99 regr of box3
+endvars
+eof
+#
+cat > $datadir/regr.${dtype}_cmap_boxes.vs.sst.djf.80-cur.ctl << eof
+dset ^regr.${dtype}_cmap_boxes.vs.sst.djf.80-cur.gr
+undef -9999.0
+title Realtime Surface Obs
+TITLE  3mon avg
+XDEF 360 LINEAR    1.25  2.5
+YDEF 180 LINEAR    -88.75
+zdef    1 levels 200
+tdef 999 linear jan1980  1yr
+vars   6
+cor1   0 99 corr of box1
+reg1   0 99 regr of box1
+cor2   0 99 corr of box2
+reg2   0 99 regr of box2
+cor3   0 99 corr of box3
+reg3   0 99 regr of box3
+endvars
+eof

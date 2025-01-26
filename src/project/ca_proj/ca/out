@@ -1,0 +1,375 @@
+8,11c8,9
+<       parameter(imss=101,imse=281)   ! 100->280
+<       parameter(jmss=76,jmse=115)     ! 25S->25N
+<       parameter(inas=231,inae=300)   ! 230-300 for CONUS
+<       parameter(jnas=115,jnae=140)   ! 25N->75N
+---
+>       parameter(imss=76,imse=141)   ! 150->280
+>       parameter(jmss=33,jmse=58)     ! 25S->25N
+13d10
+<       parameter(icttm=modemax*mseason)   ! total mode in msseason ICs
+23d19
+<       dimension ac1d2(mldp,ntt2),rms1d2(mldp,ntt2)
+35,36c31
+<       dimension wk2d5(ims,jms),wk2d6(ims,jms)
+<       dimension allsst(ims,jms,12+26,nyear)
+---
+>       dimension allsst(ims,jms,12+20,nyear)
+38d32
+<       dimension fldms(imp,jmp,mseason,nseason)
+45c39
+<       dimension efld3d(modemax,mseason,nseason)
+---
+>       dimension efld3d(modemax,nps,nseason)
+48c42
+<       dimension ana(icttm,nhs+1)
+---
+>       dimension ana(modemax,nhs+1)
+57,69d50
+< c
+<       dimension alltpz(ims,jms,12+26,nyear)
+<       dimension tpz4d(ims,jms,nps,nseason)
+<       dimension tpz4d2(ims,jms,nps,nseason)
+<       dimension tpzana(ims,jms,nhs+1)
+<       dimension tpzprd(ims,jms,mldp),tpz2d(ims,jms)
+<       dimension tpzprd4d(ims,jms,nseason,mldp)
+<       dimension tgttpz4d(ims,jms,1,nseason)
+<       dimension tpzac(ims,jms,mldp),tpzrms(ims,jms,mldp)
+<       dimension tpzstdf(ims,jms,mldp)
+<       dimension tpzstdo(ims,jms,mldp)
+<       dimension obstpz(ims,jms)
+<       dimension prdtpz(ims,jms)
+72d52
+<       open(unit=12,form='unformatted',access='direct',recl=4*ims*jms) !input historical tpz
+73a54
+>       open(unit=70,form='unformatted',access='direct',recl=4*imp*jmp) !EOFs for proj use
+87c68
+<       xlat(j)=eoflats+(j-1)*1.0
+---
+>       xlat(j)=eoflats+(j-1)*2.0
+94c75
+<       xlat2(j)=-89.5+(j-1)*1.0
+---
+>       xlat2(j)=-89.+(j-1)*2.0
+106d86
+<       iu2=12
+112,114c92
+<       itr=it+12
+<         read(iu1,rec=itr) fldin
+<         read(iu2,rec=it) fldin2
+---
+>         read(iu1,rec=it) fldin
+119d96
+<         alltpz(i,j,iw+nwextb,iy)=fldin2(i,j)
+128c105
+<       DO iy=2,nyear-2
+---
+>       DO iy=2,nyear-1
+136d112
+<         alltpz(i,j,iw,iy)=alltpz(i,j,12+iw,iy-1)
+143c119
+<         Do iw=1,12
+---
+>         Do iw=1,nwexte
+148,160d123
+<         alltpz(i,j,12+nwextb+iw,iy)=alltpz(i,j,nwextb+iw,iy+1)
+<         enddo
+<         enddo
+< c
+<         Enddo
+< c
+<         next2=nwexte-12
+<         Do iw=1,next2
+< c
+<         do j=1,jms
+<         do i=1,ims
+<         allsst(i,j,12+nwextb+12+iw,iy)=allsst(i,j,nwextb+iw,iy+2)
+<         alltpz(i,j,12+nwextb+12+iw,iy)=alltpz(i,j,nwextb+iw,iy+2)
+167c130
+< c data for EOF and projection analysis
+---
+> c data for EOF analysis
+171a135
+>       irec=0
+173c137
+<       DO iy=2,nyear-2        ! number of years used for EOF
+---
+>       DO iy=2,nyear-1        ! number of years used for EOF
+176a141
+>         irec=irec+1
+183c148
+< c have whole field for later CA use
+---
+> c have whole field fld4d for later use
+187,196d151
+<             tpz4d2(i,j,np,is)=alltpz(i,j,nwextb+iw,iy)  
+<           enddo
+<           enddo
+<         enddo
+< c multi-season IC data for EOF analysis
+<         do im=1,mseason  
+<           jm=3*(im-1)
+<           do j=1,jmp
+<           do i=1,imp
+<           fldms(i,j,im,is)=allsst(i+lons-1,j+lats-1,nwextb+itgtm-jm,iy)  
+205,207d159
+<       ieof=0
+<       DO im=1,mseason  ! EOF for each 
+< 
+209a162
+>       do ip=1,npp
+214c167
+<           if(abs(fld4d(i,j,1,is)).lt.999) then
+---
+>           if(abs(fld4d(i,j,ip,is)).lt.999) then
+216c169
+<           aaa(id,it)=fldms(i,j,im,is)*sqrt(cosl(j))
+---
+>           aaa(id,it)=fld4d(i,j,ip,is)*sqrt(cosl(j))
+220a174
+>       enddo
+236c190
+<           if(abs(fld4d(i,j,1,nseason)).lt.999) then
+---
+>           if(abs(fld4d(i,j,npp,nseason)).lt.999) then
+240c194
+<           eof(nm,i,j)=undef1
+---
+>           eof(nm,i,j)=undef2
+254c208
+<           if(abs(fld4d(i,j,1,nseason)).lt.999) then
+---
+>           if(abs(fld4d(i,j,npp,nseason)).lt.999) then
+265,267c219
+<         ieof=ieof+1
+< c       write(70,rec=ieof) fld2d ! write out EOFs
+<       write(6,*) 'ieof=',ieof
+---
+>         write(70,rec=m1) fld2d ! write out EOFs
+269c221
+<       write(6,*) 'finishxed eof'
+---
+>       write(6,*) 'finish3ed eof'
+276c228,229
+<         call f4d_2_f2d(imp,jmp,mseason,nseason,im,is,fld2d,fldms)
+---
+>         do ip=1,npp
+>         call f4d_2_f2d(imp,jmp,nps,nseason,ip,is,fld2d,fld4d)
+279c232,233
+<           efld3d(nmode,im,is)=anorm
+---
+>           efld3d(nmode,ip,is)=anorm
+>         enddo
+282,283d235
+< 
+<         ENDDO  ! loop im=1,mseason 
+313a266,267
+>       DO ntgtp=1,npp          !loop over target mon
+> 
+320a275
+>           do ip=1,npp
+323d277
+<             mm=0
+325,328c279
+<             do im=1,mseason
+<             mm=mm+1
+<               ana(mm,it)=efld3d(nmode,im,is)
+<             enddo
+---
+>               ana(nmode,it)=efld3d(nmode,ip,is)
+332,333c283
+<               sstana(i,j,it)=fld4d2(i,j,ldpen,is)
+<               tpzana(i,j,it)=tpz4d2(i,j,ldpen,is)
+---
+>               sstana(i,j,it)=fld4d2(i,j,ip+ldpen-1,is)
+336a287
+>           enddo           !loop for the non-target month
+342d292
+<         mm=0
+344,347c294
+<         do im=1,mseason
+<         mm=mm+1
+<         ana(mm,nhs+1)=efld3d(nmode,im,ntgts)
+<         enddo
+---
+>         ana(nmode,nhs+1)=efld3d(nmode,ntgtp,ntgts)
+350c297
+<         ridge=0.05
+---
+>         ridge=0.01
+353c300
+<         ridge=ridge+0.05
+---
+>         ridge=ridge+0.01
+356c303,306
+<         call getalpha(ana,alpha,icttm,nhs,fak,ridge)
+---
+>         call getalpha(ana,alpha,modemax,nhs,fak,ridge)
+>         if(ntgts.eq.1.and.ntgtp.eq.1) then
+> c       write(6,*) 'alpha=',alpha
+>         endif
+359c309
+<         alpha3d(k,1,ntgts)=alpha(k)
+---
+>         alpha3d(k,ntgtp,ntgts)=alpha(k)
+370a321
+> c for sst
+373,374c324
+<       tgtsst4d(i,j,1,ntgts)=0.
+<       tgttpz4d(i,j,1,ntgts)=0.
+---
+>       tgtsst4d(i,j,ntgtp,ntgts)=0.
+380d329
+< c for sst
+383,384c332,333
+<       tgtsst4d(i,j,1,ntgts)=tgtsst4d(i,j,1,ntgts)+
+<      &           sstana(i,j,ntime)*alpha3d(ntime,1,ntgts)
+---
+>       tgtsst4d(i,j,ntgtp,ntgts)=tgtsst4d(i,j,ntgtp,ntgts)+
+>      &           sstana(i,j,ntime)*alpha3d(ntime,ntgtp,ntgts)
+387c336
+<       tgtsst4d(i,j,1,ntgts)=undef1
+---
+>       tgtsst4d(i,j,ntgtp,ntgts)=undef2
+389,398d337
+< c for var
+<       if(abs(tpz4d2(i,j,1,nseason)).lt.999) then
+<       do ntime=1,nhs
+<       tgttpz4d(i,j,1,ntgts)=tgttpz4d(i,j,1,ntgts)+
+<      &           tpzana(i,j,ntime)*alpha3d(ntime,1,ntgts)
+<       enddo
+<       else
+<       tgttpz4d(i,j,1,ntgts)=undef1
+<       endif
+< c
+401a341
+>       ENDDO  !loop over target month
+408d347
+<         tpzprd4d(i,j,is,ldpen)=tgttpz4d(i,j,1,is)
+421c360
+< c for tpz
+---
+> c for sst
+424c363
+<       if(abs(tpz4d2(i,j,1,nseason)).lt.999) then
+---
+>       if(abs(fld4d2(i,j,npp,nseason)).lt.999) then
+429,430c368,369
+<         ts1(it)=tpz4d2(i,j,ip+ldpen-1,is)
+<         ts2(it)=tpzprd4d(i,j,is,ldpen)
+---
+>         ts1(it)=fld4d2(i,j,ip+ldpen-1,is)
+>         ts2(it)=sstprd4d(i,j,is,ldpen)
+433,434c372,373
+<       call have_std(ts1,ntt2,tpzstdo(i,j,ldpen))
+<       call have_std(ts2,ntt2,tpzstdf(i,j,ldpen))
+---
+>       call have_std(ts1,ntt2,sststdo(i,j,ldpen))
+>       call have_std(ts2,ntt2,sststdf(i,j,ldpen))
+436,437c375,376
+<       tpzstdo(i,j,ldpen)=undef1
+<       tpzstdf(i,j,ldpen)=undef1
+---
+>       sststdo(i,j,ldpen)=undef2
+>       sststdf(i,j,ldpen)=undef2
+445c384
+< c for tpz
+---
+> c for sst
+448c387
+<       if(abs(tpz4d2(i,j,1,nseason)).lt.999) then
+---
+>       if(abs(fld4d2(i,j,npp,nseason)).lt.999) then
+450,451c389,390
+<         tpzprd4d(i,j,is,ldpen)=tpzprd4d(i,j,is,ldpen)
+< c    &*sststdo(i,j,ldpen)/sststdf(i,j,ldpen)
+---
+>         sstprd4d(i,j,is,ldpen)=sstprd4d(i,j,is,ldpen)
+>      &*sststdo(i,j,ldpen)/sststdf(i,j,ldpen)
+454c393
+<         tpzprd4d(i,j,is,ldpen)=undef1
+---
+>         sstprd4d(i,j,is,ldpen)=undef2
+463d401
+< c* have spatial corr
+464a403,406
+> c* have spatial corr
+>       write(6,*) 'spatial corr'
+> c for sst
+>       write(6,*) 'for sst data'
+472,473d413
+<            obstpz(i,j)=tpz4d2(i,j,ldpen,is)
+<            prdtpz(i,j)=tpzprd4d(i,j,is,ldpen)
+477d416
+< c for tropical Pacific
+480,482d418
+< c for CONUS
+<       call rmsd1(obstpz,prdtpz,ims,jms,inas,inae,jnas,jnae,cosl2,
+<      &rms1d2(ldpen,np),ac1d2(ldpen,np))
+485c421
+<       ENDDO  ! is
+---
+>        ENDDO
+490a427
+> c* for sst
+493d429
+< c
+495,497c431,433
+<         do is=1,nseason-nskip
+<           ts1(is)=fld4d2(i,j,ldpen,is+nskip)
+<           ts2(is)=sstprd4d(i,j,is+nskip,ldpen)
+---
+>         do is=1,nseason-32
+>           ts1(is)=fld4d2(i,j,ldpen,is+32)
+>           ts2(is)=sstprd4d(i,j,is+32,ldpen)
+502,503c438,439
+<       sstac(i,j,ldpen)=undef1
+<       sstrms(i,j,ldpen)=undef1
+---
+>       sstac(i,j,ldpen)=undef2
+>       sstrms(i,j,ldpen)=undef2
+505,517d440
+< c
+<       if(abs(tpz4d2(i,j,1,nseason)).lt.999) then
+<         do is=1,nseason-nskip
+<           ts1(is)=tpz4d2(i,j,ldpen,is+nskip)
+<           ts2(is)=tpzprd4d(i,j,is+nskip,ldpen)
+<         enddo
+<         call corr_1d(ntt2,ts1,ts2,tpzac(i,j,ldpen))
+<         call rms_1d(ntt2,ts1,ts2,tpzrms(i,j,ldpen))
+<       else
+<       tpzac(i,j,ldpen)=undef1
+<       tpzrms(i,j,ldpen)=undef1
+<       endif
+< c
+526c449
+<        do is=1,nseason-nskip
+---
+>        do is=1,nseason-32
+544,549c467,470
+<         wk2d(i,j)=tpzstdo(i,j,ldpen)
+<         wk2d2(i,j)=tpzstdf(i,j,ldpen)
+<         wk2d3(i,j)=tpzac(i,j,ldpen)
+<         wk2d4(i,j)=tpzrms(i,j,ldpen)
+<         wk2d5(i,j)=sstac(i,j,ldpen)
+<         wk2d6(i,j)=sstrms(i,j,ldpen)
+---
+>         wk2d(i,j)=sststdo(i,j,ldpen)
+>         wk2d2(i,j)=sststdf(i,j,ldpen)
+>         wk2d3(i,j)=sstac(i,j,ldpen)
+>         wk2d4(i,j)=sstrms(i,j,ldpen)
+560,563d480
+<       iwr=iwr+1
+<       write(85,rec=iwr) wk2d5
+<       iwr=iwr+1
+<       write(85,rec=iwr) wk2d6
+569c486
+<       DO is=nskip+1,nseason
+---
+>       DO is=33,nseason
+574,575c491,492
+<         wk2d(i,j)=tpz4d2(i,j,ldpen,is)
+<         wk2d2(i,j)=tpzprd4d(i,j,is,ldpen)
+---
+>         wk2d(i,j)=fld4d2(i,j,ldpen,is)
+>         wk2d2(i,j)=sstprd4d(i,j,is,ldpen)

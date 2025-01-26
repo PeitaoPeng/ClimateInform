@@ -1,0 +1,59 @@
+#!/bin/sh
+########################################
+#  K is fixed to be 10
+########################################
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/prd_skill
+tmp=/export/hobbes/wd52pp/tmp
+datadir=/export-12/cacsrv1/wd52pp/prd_skill
+#
+last_yr=2012
+longtime=82
+ntprd=52  # ntprd=longtime-30
+mode=6
+KP=10
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/gocnv1.test.f $tmp/gocn_prd.f
+cp $lcdir/reof.s.f $tmp/reof.s.f
+cd $tmp
+#for season in jfm fma mam amj mjj jja jas aso son ond ndj djf; do
+ for season in mam jja son djf; do
+#
+if [ "$season" = jfm ]; then mons=1; fi
+if [ "$season" = fma ]; then mons=2; fi
+if [ "$season" = mam ]; then mons=3; fi
+if [ "$season" = amj ]; then mons=4; fi
+if [ "$season" = mjj ]; then mons=5; fi
+if [ "$season" = jja ]; then mons=6; fi
+if [ "$season" = jas ]; then mons=7; fi
+if [ "$season" = aso ]; then mons=8; fi
+if [ "$season" = son ]; then mons=9; fi
+if [ "$season" = ond ]; then mons=10; fi
+if [ "$season" = ndj ]; then mons=11; fi
+if [ "$season" = djf ]; then mons=12; fi
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(imax=102)
+       parameter(iseason=$mons)
+       parameter(mmax=$mode)
+       parameter(ntprd=$ntprd,kp=$KP)
+       parameter(ndec=5)
+eof
+#
+#
+f77 -o gocn_prd.x reof.s.f gocn_prd.f
+echo "done compiling"
+
+#
+ ln -s /export-12/cacsrv1/wd52pp/LF_prd/temp_102.txt      fort.10
+ ln -s $datadir/gocnv1prd_temp.$season.1991-$last_yr.test.gr   fort.20
+#
+gocn_prd.x
+#
+/bin/rm $tmp/fort.*         
+
+done

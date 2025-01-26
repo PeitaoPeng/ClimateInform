@@ -1,0 +1,493 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/id/vfc/src
+tmp=/cpc/home/tmp
+if [ ! -d $tmp ] ; then
+  mkdir -p $tmp
+fi
+datadir1=/cpc/consistency/id/nmme/hcst
+datadir2=/cpc/consistency/id/obs
+dataout=/cpc/consistency/id/nmme/skill
+#
+cd $tmp
+#
+yrs=2012
+yre=2017  # last year
+ntotyr=`expr $yre - 1982 +1`  # total year for calculating HSS (2012-last yr)
+fskip=`expr 2011 - 1982 + 1`  # skip for fcast data
+oskip=`expr 2011 - 1980`      # skip for obs data
+nvyr=`expr $yre - $yrs + 1`   # total year for calculating HSS
+nvmon=`expr $nvyr \* 5`      # total months or seasons for calculating HSS
+nlead=5
+
+for var in tmp2m prate; do
+for icmon in jan feb mar apr may jun jul aug sep oct nov dec; do
+for tmean  in mon ss; do
+#
+infile1=NMME.$var.$tmean.${icmon}_ic.1982-2017.ld1-5.esm
+infile2=NMME.$var.$tmean.clim_std.${icmon}_ic.1982-2010.ld1-5.esm
+infile3=obs.$var.$tmean.${icmon}_ic.1981-$yre.ld1-5
+infile4=obs.$var.$tmean.clim_std.${icmon}_ic.1981-2010
+
+outfile1=HSS.NMME.$var.$tmean.${icmon}_ic.2012-$yre
+
+cp $datadir1/infile1 .
+cp $datadir1/infile2 .
+cp $datadir1/infile3 .
+cp $datadir1/infile4 .
+#
+xdim=360
+ydim=181
+nlead=5
+undef=-9.99e+8
+#=======================================
+# hss calculation for 2012-last_year
+#=======================================
+cat >have.hss.f<<EOF
+      parameter(im=$xdim,jm=$ydim)
+      parameter(undef=$undef)
+      parameter(nvy=$nvyr,nld=$nlead)
+c
+      real*4 w1d1(nyr),w1d2(nyr),w1d3(nyr)
+      real*4 w2d(im,jm),w2d2(im,jm)
+      real*4 clmo(im,jm,nld),clmf(im,jm,nld)
+      real*4 stdo(im,jm,nld),stdf(im,jm,nld)
+      real*4 fldo(im,jm,nvy,nld),fldf(im,jm,nvy,nld)
+      dimension mfo(im,jm,nvy,nld),mff(im,jm,nvy,nld)
+      dimension m1d1(nvy),m1d2(nvy)
+c
+      open(11,
+     &file='$infile1.gr',
+     &access='direct',form='unformatted',recl=im*jm*4)
+      open(12,
+     &file='$infile2.gr',
+     &access='direct',form='unformatted',recl=im*jm*4)
+      open(13,
+     &file='$infile3.gr',
+     &access='direct',form='unformatted',recl=im*jm*4)
+      open(14,
+     &file='$infile4.gr',
+     &access='direct',form='unformatted',recl=im*jm*4)
+C
+      open(20,
+     &file='$outfile1',
+     &access='direct',form='unformatted',recl=im*jm*4)
+
+c read in f&o data
+      nskipo=${oskip}*nld
+      nskipf=${fskip}*nld
+
+      iro=nskipo+1
+      irf=nskipf+1
+
+      do iy=1,nvy
+      do il=1,nld
+
+      read(11,rec=irf) w2d
+      read(13,rec=iro) w2d2
+
+        do i=1,im
+        do j=1,jm
+          fldf(i,j,iy,il)=w2d(i,j)
+          fldo(i,j,iy,il)=w2d2(i,j)
+        enddo
+        enddo
+
+      iro=iro+1
+      irf=irf+1
+
+      enddo
+      enddo
+
+c read in clm and std data
+      ir=1
+      do il=1,nld
+        read(12,rec=ir) w2d
+        read(14,rec=ir) w2d2
+        do i=1,im
+        do j=1,jm
+          clmf(i,j,il)=w2d(i,j)
+          clmo(i,j,il)=w2d2(i,j)
+        enddo
+        enddo
+        ir=ir+1
+        read(12,rec=ir) w2d
+        read(14,rec=ir) w2d2
+        do i=1,im
+        do j=1,jm
+          stdf(i,j,il)=w2d(i,j)
+          stdo(i,j,il)=w2d2(i,j)
+        enddo
+        enddo
+      ir=ir+1
+      enddo
+
+c normalizing anomalies
+      
+      do iy=1,nvy
+      do il=1,nld
+
+      do i=1,im
+      do j=1,jm
+      if(abs(clmo(i,j,1)).lt.999) then
+        fldf(i,j,iy,il)=(fldf(i,j,iy,il)-clmf(i,j,il))/stdf(i,j,il)
+        fldo(i,j,iy,il)=(fldo(i,j,iy,il)-clmo(i,j,il))/stdo(i,j,il)
+      else
+        fldf(i,j)=undef
+        fldo(i,j)=undef
+      endif
+      enddo
+      enddo
+
+      enddo
+      enddo
+
+c convert to categorical numbe -1 0 -1
+      aa=0.43
+      bb=-0.43
+      do iy=1,nvy
+      do il=1,nld
+
+      do i=1,im
+      do j=1,jm
+      if(abs(clmo(i,j,1)).lt.999) then
+       if (fldf(i,j,iy,il).lt.bb) mff(i,j,iy,il)=-1
+       if (fldf(i,j,iy,il).gt.aa) mff(i,j,iy,il)= 1
+       if (fldf(i,j,iy,il).lt.aa.and.fldf(i,j,iy,il).gt.bb) mff(i,j)=0
+
+       if (fldo(i,j,iy,il).lt.bb) mfo(i,j,iy,il)=-1
+       if (fldo(i,j,iy,il).gt.aa) mfo(i,j,iy,il)= 1
+       if (fldo(i,j,iy,il).lt.aa.and.fldf(i,j,iy,il).gt.bb) mfo(i,j)=0
+      else
+       mff(i,j)=undef
+       mfo(i,j)=undef
+      endif
+      enddo
+      enddo
+
+      enddo
+      enddo
+
+c have hss
+      do il=1,nld
+
+      do i=1,im
+      do j=1,jm
+      if(abs(clmo(i,j,1)).lt.999) then
+        do iy=1,nvy
+        m1d1(iy)=fldf(im,jm,iy,il)
+        w1d2(iy)=fldo(im,jm,iy,il)
+        enddo
+        call 
+
+      else
+         hss(i,j)=undef
+      endif
+
+      enddo ! i loop
+      enddo ! j loop
+
+      write(20,rec=il) hss
+
+      enddo ! il loop
+
+      STOP  
+      END
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C  change num of verification to -1,0,+1,9
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+      subroutine change_numb(mw,m,n)
+      dimension mw(m,n)
+c
+      do i=1,m
+      do j=1,n
+      if(mw(i,j).eq.0) mw(i,j)=9
+      if(mw(i,j).eq.1) mw(i,j)=-1
+      if(mw(i,j).eq.2) mw(i,j)=0
+      if(mw(i,j).eq.3) mw(i,j)=1
+      end do
+      end do
+c
+      return
+      end
+c====================================
+      subroutine hss_t(mw1,mw2,hs,n)
+      dimension mw1(n),mw2(n)
+
+      h=0.
+      do i=1,n
+        if (mw1(i).eq.mw2(i)) h=h+1
+      enddo
+      tot=float(n)
+      hs=100*(h-tot/3.)/(tot-tot/3.)
+      return
+      end
+EOF
+#
+#=======================================
+# rewrite prec data
+#=======================================
+undef_data=-9.99E+8
+#
+if [ $var = 'prec' ]; then
+cat >data_rewrite.gs<<EOF3
+    'reinit'
+'open /cpc/home/mingyue/PRODUCTS/50YR/gauge/grid05m/precl_mon_v1.0.ctl'
+'set x 1 $imax'
+'set y 1 $jmax'
+'set t 1 12'
+*anom wrt wmo clim 1981-2010
+'define clm=ave(rain,t+$clm_bgn, t=$clm_end,1yr)'
+*anom wrt clim from 1948 to curr
+*'define clm=ave(rain,t+0, t=$tmax,1yr)'
+'modify clm seasonal'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+'set t $nts $nte'
+'d ave(rain-clm,t-1,t+1)*0.1'
+'c'
+EOF3
+fi
+cat>$outfile.ctl<<EOF
+dset $outfile.gr
+undef $undef_data
+ydef 360 linear -89.750000 0.5
+xdef 720 linear 0.250000 0.500000
+tdef 9999 linear feb1949 1mo
+zdef  01 levels 1
+vars 1
+$var  0 99 obs
+ENDVARS
+EOF
+#=======================================
+# rewrite hgt
+#=======================================
+if [ $var = 'hgt' ]; then
+tmaxz=`expr $tmax - 12` # from jan1949
+clm_bgn=384  #dec1980
+clm_end=`expr $clm_bgn + 360`
+nts=2  # feb1949
+nte=`expr $tmaxz - 1` # mid-mon of the latest season
+cat >data_rewrite.gs<<EOF3
+    'reinit'
+'open /cpc/analysis/cdas/month/prs/mean/prs.grib.mean.y1949-cur.ctl'
+'set x 1 144'
+'set y 1  73'
+'set z 10'
+'set t 1 12'
+*anom wrt wmo clim 1981-2010
+'define clm=ave(HGT,t+$clm_bgn, t=$clm_end,1yr)'
+*anom wrt clim from 1948 to curr
+*'define clm=ave(HGT,t+0, t=$tmaxz,1yr)'
+'modify clm seasonal'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+'set t $nts $nte'
+'d ave(HGT-clm,t-1,t+1)'
+'c'
+EOF3
+cat>$outfile.ctl<<EOF
+dset $outfile.gr
+undef $undef_data
+xdef 144 linear 0 2.5
+ydef  73 linear -90 2.5
+tdef 9999 linear feb1949 1mo
+zdef  01 levels 1
+vars 1
+$var  0 99 regression
+ENDVARS
+EOF
+fi
+#
+/usr/local/bin/grads -bl <havedata
+#
+#=======================================
+# regrid to 1x1
+#=======================================
+ntend=`expr $tmax - 12 - 2` # from feb1949 to the mid of latest season
+cat >int<<fEOF
+reinit
+run regrid.gs
+fEOF
+
+cat >regrid.gs<<gsEOF
+'reinit'
+'open $outfile.ctl'
+'open /cpc/home/wd52pp/data/obs/sst/grid.1x1.ctl'
+'set gxout fwrite'
+'set fwrite $datadir/$outfile.1x1.gr'
+nt=1
+while ( nt <= $ntend)
+
+'set t 'nt
+say 'time='nt
+'set lon   0.5 359.5'
+'set lat -89.5  89.5'
+'d lterp($var,sst.2(time=jan1950))'
+
+nt=nt+1
+endwhile
+gsEOF
+
+/usr/local/bin/grads -pb <int
+
+cat>$datadir/$outfile.1x1.ctl<<EOF
+dset ^$outfile.1x1.gr
+undef -9.99E+8
+*
+options little_endian
+*
+XDEF 360 LINEAR    0.5  1.0
+YDEF 180 LINEAR  -89.5  1.0
+zdef  01 levels 1 
+tdef   9999 linear feb1949 1mo
+*
+VARS 1
+$var 1  99   3mon ave
+ENDVARS
+EOF
+#=======================================
+#
+outfile2=${sst_analysis}.msic.ic
+cat >haveic<<EOF
+run sstic.gs
+EOF
+ic1=`expr $tmax - 2`
+ic2=`expr $ic1 - 3`
+ic3=`expr $ic1 - 6`
+ic4=`expr $ic1 - 9`
+cat >sstic.gs<<EOF
+'reinit'
+'open $datadir/${sst_analysis}.3mon.1948-curr.1x1.ctl'
+'set x 1 360'
+'set y 1 180'
+'set gxout fwrite'
+'set fwrite $datadir/$outfile2.gr'
+'set t $ic1'
+'d sst'
+'set t $ic2'
+'d sst'
+'set t $ic3'
+'d sst'
+'set t $ic4'
+'d sst'
+'c'
+EOF
+#
+/usr/local/bin/grads -bl <haveic
+#
+cat>$datadir/$outfile2.ctl<<EOF
+dset ^$outfile2.gr
+undef -999000000
+*
+TITLE Tsfc
+*
+XDEF 360 LINEAR    0.5  1.0
+YDEF 180 LINEAR  -89.5  1.0
+zdef   1 linear 1 1
+tdef   9999 linear jan2015 1mo
+vars 1
+t  1 99 3-mon mean (C)
+ENDVARS
+EOF
+#
+nps=17     #width of data window in season
+nwextb=10  # 3mon season number to be extended at begining of a row of the array
+nwexte=16  # 3mon season number to be extended at the end of a row of the array
+runeof=1 # 0: read in ; 1: run eof
+nseason=`expr $nyear - 3` #for eof and ca analysis
+#
+mlead=16   #maximum lead
+mldp=`expr $mlead + 1` 
+#
+#
+for msic in 1 2 3 4; do
+for modemax in 15 25 40; do
+#
+cp $lcdir/realtime.ca_msic.season.sst_tpz.f $tmp/sst_prd.f
+cp $lcdir/eof_4_ca.s.f $tmp/eof_4_ca.s.f
+
+#
+cat > parm.h << eof
+      parameter(nruneof=$runeof)
+c
+      parameter(ims=360,jms=180)   !input sst dimension
+c
+      parameter(lons=1,lone=360)   !lon range for EOFs analysis (0-360)
+      parameter(eoflats=$eoflats,lats=$lats,late=$late)  !lat range for EOFs analysis (25S-65N)
+      parameter(imp=lone-lons+1,jmp=late-lats+1)
+c
+      parameter(modemax=$modemax)
+      parameter(nyear=$nyear)
+      parameter(nseason=$nseason)
+      parameter(nps=$nps)
+      parameter(nwextb=$nwextb)
+      parameter(nwexte=$nwexte)
+c
+      parameter(kocn=$kocn)
+      parameter(ndec=$ndec)
+      parameter(itgtm=$icseason)
+      parameter(mlead=$mlead)
+      parameter(mldp=$mldp)
+      parameter(ngrd=$ngrd)
+      parameter(msic=$msic)
+eof
+#
+gfortran -mcmodel=medium -g -o ca.x sst_prd.f eof_4_ca.s.f
+echo "done compiling"
+
+#if [ -d fort.10 ] ; then
+/bin/rm $tmp/fort.*
+#fi
+#
+ln -s $datadir/${sst_analysis}.msic.ic.gr fort.10
+ln -s $datadir/${sst_analysis}.3mon.1948-curr.1x1.gr fort.11
+ln -s $datadir/$outfile.1x1.gr fort.12
+#
+ln -s $outdata/eof.${sst_analysis}.${eof_range}.${msic}ics.3mon.gr fort.70
+#
+ln -s $outdata/real_ca_prd.$var.${sst_analysis}.${eof_range}.$modemax.${msic}ics.3mon.gr fort.85
+#
+#ca.x > $outdata/realtime.$var.${sst_analysis}.${eof_range}.$modemax.${msic}ics.out
+./ca.x 
+#
+cat>$outdata/eof.${sst_analysis}.${eof_range}.${msic}ics.3mon.ctl<<EOF
+dset ^eof.${sst_analysis}.${eof_range}.${msic}ics.3mon.gr
+undef -9.99E+33
+title EXP1
+XDEF  360 LINEAR    0.5  1.0
+ydef  $neoflat linear $eoflats 1.
+zdef  1 linear 1 1
+tdef  999 linear jan1949 1mon
+vars  1
+eof   1 99 constructed
+endvars
+EOF
+#
+cat>$outdata/real_ca_prd.$var.${sst_analysis}.${eof_range}.$modemax.${msic}ics.3mon.ctl<<EOF
+dset ^real_ca_prd.$var.${sst_analysis}.${eof_range}.$modemax.${msic}ics.3mon.gr
+undef $undef_data
+title EXP1
+XDEF 360 LINEAR    0.5  1.0
+YDEF 180 LINEAR  -89.5  1.0
+zdef  1 linear 1 1
+tdef  $mldp linear $icmomidyr 1mon
+vars  8
+$var  1 99 $var prd
+sdo   1 99 std of obs $var
+sdf   1 99 std of prd $var
+ac    1 99 ac skill since 1981
+rms   1 99 rms skill since 1981
+sst   1 99 sst prd
+sac   1 99 ac skill of sst
+srms  1 99 rms skill of sst
+endvars
+EOF
+#
+done  # for EOF cut off
+done  # for msic, the # of IC season
+done  # for eof_range
+done  # for sst analysis
+done  # for var

@@ -1,0 +1,58 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/prd_skill
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/prd_skill
+#
+var=temp
+#var=prec
+nyear=21
+eyear=2011
+#
+#model=gocnv1
+#model=gocn
+#model=eocn
+#model=nino34
+#model=nino34_noflt
+#model=ensocmp_3ctg
+#model=ensocmp_5ctg
+#model=ensocmp_noflt  #without filtering
+#
+ncd=102
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/sequence_short-out.f $tmp/sequence.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nyr=$nyear,ncd=$ncd)
+eof
+#
+#
+gfortran -o sequence.x sequence.f
+echo "done compiling"
+#
+ ln -s $datadir/${model}prd_${var}.jfm.1991-$eyear.i3e  fort.11
+ ln -s $datadir/${model}prd_${var}.fma.1991-$eyear.i3e  fort.12
+ ln -s $datadir/${model}prd_${var}.mam.1991-$eyear.i3e  fort.13
+ ln -s $datadir/${model}prd_${var}.amj.1991-$eyear.i3e  fort.14
+ ln -s $datadir/${model}prd_${var}.mjj.1991-$eyear.i3e  fort.15
+ ln -s $datadir/${model}prd_${var}.jja.1991-$eyear.i3e  fort.16
+ ln -s $datadir/${model}prd_${var}.jas.1991-$eyear.i3e  fort.17
+ ln -s $datadir/${model}prd_${var}.aso.1991-$eyear.i3e  fort.18
+ ln -s $datadir/${model}prd_${var}.son.1991-$eyear.i3e  fort.19
+ ln -s $datadir/${model}prd_${var}.ond.1991-$eyear.i3e  fort.20
+ ln -s $datadir/${model}prd_${var}.ndj.1991-$eyear.i3e  fort.21
+ ln -s $datadir/${model}prd_${var}.djf.1991-$eyear.i3e  fort.22
+
+ ln -s $datadir/${model}prd_${var}_102CD.jfm1995-djf$eyear.i3e  fort.30
+ ln -s $datadir/${model}prd_${var}_102CD.jfm1995-djf$eyear.txt  fort.40
+#
+ ln -s $datadir/${model}prd_${var}_102CD.1995-$eyear.winter.i3e  fort.41
+ ln -s $datadir/${model}prd_${var}_102CD.1995-$eyear.summer.i3e  fort.42
+#
+sequence.x
+#
+

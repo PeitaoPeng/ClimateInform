@@ -1,0 +1,2 @@
+To make 16 bit grib files
+copygb -N namelist16 -X in out

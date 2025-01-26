@@ -1,0 +1,96 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/project/ca_prd/src
+tmpdir=/export-6/sgi9/wd52pp/tmp
+datadir=/export-6/cacsrv1/wd52pp/obs
+outdata=/export-6/cacsrv1/wd52pp/ca_prd
+
+
+model=prcp
+iskip=0
+imp=72
+jmp=32
+npp=2
+#modemax=5
+#for modemax in  5 10 15; do
+ for modemax in 10; do
+id=0 # ID=0: covariance matrix; ID>0:correlation matrix
+
+cp $lcdir/capp.mon.f $tmpdir/capp.f
+cp $lcdir/eof_4_ca.s.f $tmpdir/.
+cd $tmpdir
+
+#
+cat > parm.h << eof
+      parameter(modemax=$modemax)
+eof
+#
+
+unlimit
+f77 -o ca.x capp.f eof_4_ca.s.f
+echo "done compiling"
+
+/bin/rm $tmpdir/fort.*
+#
+ln -s $datadir/$model/opi_7901-0309.72x72.anom_clim.i3e  fort.10
+ln -s $datadir/$model/opi_mon.7980-0102DJFM.trop.anom.i3e  fort.20
+ln -s $outdata/opi_mon.7980-0102DJFM.trop.cnst.i3e  fort.21
+ln -s $outdata/opi_mon.7980-0102DJFM.trop.prd1.i3e  fort.22
+ln -s $outdata/opi_mon.7980-0102DJFM.trop.prd2.i3e  fort.23
+ln -s $outdata/opi_mon.7980-0102DJFM.trop.prd3.i3e  fort.24
+ln -s $outdata/opi_mon.filtered.trop.i3e  fort.25
+ln -s $outdata/eof.opi_mon.DJFM.i3e                 fort.30
+ln -s $outdata/alpha.opi_mon.DJFM.mm$modemax.i3e              fort.35
+ln -s $outdata/ac_1d_ca_opi_mon.7980-0102DJFM.mm$modemax.i3e fort.40
+#ln -s $outdata/ac_1d_ca_opi_mon.7980-0102DJFM.mm$modemax.txt  fort.40
+ln -s $outdata/ac_2d_ca_opi_mon.7980-0102DJFM.mm$modemax.i3e fort.50
+ca.x > $outdata/ca_opi_mon.7980-0102DJFM.out
+#ca.x 
+
+cat>$outdata/eof.opi_mon.DJFM.ctl<<EOF
+dset ^eof.opi_mon.DJFM.i3e
+options big_endian
+undef -9.99E+33
+title EXP1
+xdef  72 linear  0  5.
+ydef  $jmp linear -28.75 2.5
+zdef     1 levels 500
+tdef 999 linear     jan94     1mon
+vars  1
+eof   1 99 ca_opi
+endvars
+EOF
+
+cat>$outdata/ac_1d_ca_opi_mon.7980-0102DJFM.mm$modemax.ctl<<EOF
+dset ^ac_1d_ca_opi_mon.7980-0102DJFM.mm$modemax.i3e
+options big_endian
+undef -9.99E+33
+title EXP1
+xdef  $npp linear  0  1.
+ydef   1   linear -28.75 2.5
+zdef  23   linear  1 1
+tdef 99 linear     jan94     1mon
+vars  1
+ac    23 99 ca_opi
+endvars
+EOF
+
+cat>$outdata/ac_2d_ca_opi_mon.7980-0102DJFM.mm$modemax.ctl<<EOF
+dset ^ac_2d_ca_opi_mon.7980-0102DJFM.mm$modemax.i3e
+options big_endian
+undef -9.99E+33
+title EXP1
+xdef  72 linear  0  5.
+ydef  $jmp linear -28.75 2.5
+zdef     1 levels 500
+tdef 99 linear     jan94     1mon
+vars  2
+ac    1 99 ca_opi
+pp    1 99 ac of persistency prd
+endvars
+EOF
+
+#
+done

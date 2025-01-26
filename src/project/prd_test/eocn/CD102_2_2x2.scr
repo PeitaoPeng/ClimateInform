@@ -1,0 +1,67 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ lcdir=/cpc/home/wd52pp/project/prd_test/eocn
+
+ tmp=/cpc/home/wd52pp/tmp
+ datadir1=/cpc/home/wd52pp/data/prd_test
+ datadir2=/cpc/home/wd52pp/data/prd_test
+#
+eyear=2016
+#model=nino34
+#model=gocnv1
+#model=gocn
+model=eocn
+ var=temp
+#var=prec
+#var=prcp
+#
+tlong=1
+#tlong=264
+#tlong=81
+#
+ /bin/rm $tmp/*.*
+cp $lcdir/CD102_2_2x2.f $tmp/.
+cd $tmp
+#
+   ln -s $datadir1/hss_${model}.${var}.uscd.jfm1995-djf$eyear.cd.gr  fort.20
+   ln -s $datadir2/hss_${model}.${var}.jfm1995-djf$eyear.2x2.gr      fort.21
+#   ln -s $datadir1/reof.${var}_102_anom_1931-2011.jfm.i3e fort.20
+#   ln -s $datadir2/reof.${var}_102_anom_1931-2011.jfm.2x2.gr  fort.21
+#  ln -s $datadir1/eocnprd_reof.djf.1961-2009.gr fort.20
+#  ln -s $datadir2/eocnprd_reof.djf.1961-2009.2x2.gr  fort.21
+#  ln -s $datadir1/${var}_102_anom_1931-2011.jas.gr fort.20
+#  ln -s $datadir2/${var}_anom_1931-2011.jas.2x2.gr  fort.21
+#  ln -s $datadir1/gocnv1prd_${var}.son.1991-2009.non-norm.gr  fort.20
+#  ln -s $datadir2/gocnv1prd_${var}.son.1991-2009.non-norm.2x2.gr  fort.21
+#  ln -s $datadir1/gocnv1prd_${var}.son.1991-2009.test.gr  fort.20
+#  ln -s $datadir2/gocnv1prd_${var}.son.1991-2009.test.2x2.gr  fort.21
+#  ln -s $datadir1/acc_rms_${model}.${var}.uscd.jfm95-djf09.cd.gr fort.20
+#  ln -s $datadir2/acc_rms_${model}.${var}.uscd.jfm95-djf09.2x2.gr fort.21
+#  ln -s $datadir1/regr_corr.nino34_2_${var}.jja.1991-2009.gr fort.20
+#  ln -s $datadir2/regr_corr.nino34_2_${var}.jja.1991-2009.2x2.gr fort.21
+#  ln -s $datadir1/gocnv1prd_${var}_102CD.jfm1995-djf2010.i3e  fort.20
+#  ln -s $datadir1/gocnv1prd_${var}_102CD.jfm1995-djf2010.2x2.i3e  fort.21
+#  ln -s $datadir1/nino34_nofltprd_sfcT_102CD.jfm1995-djf2010.i3e  fort.20
+#  ln -s $datadir1/nino34_nofltprd_sfcT_102CD.jfm1995-djf2010.2x2.i3e  fort.21
+#  ln -s $datadir1/eocnprd_sfcT_102CD.jfm1995-djf2010.i3e  fort.20
+#  ln -s $datadir1/eocnprd_sfcT_102CD.jfm1995-djf2010.2x2.i3e  fort.21
+#  ln -s $datadir1/nino34_nofltprd_${var}.djf.1991-2010.non-norm.gr  fort.20
+#  ln -s $datadir1/nino34_nofltprd_${var}.djf.1991-2010.non-norm.2x2.i3e  fort.21
+#
+#  ln -s $datadir1/hss_$model.$var.uscd.jfm95-djf09.cd.no-enso.gr         fort.20
+#  ln -s $datadir1/hss_$model.$var.jfm95-djf09.no-enso.2x2.gr        fort.21
+#
+#  ln -s $datadir1/temp_102_anom_1931-2012.jja.gr    fort.20
+#  ln -s $datadir1/temp_102_anom_1931-2012.jja.2x2.gr        fort.21
+
+cat > parm.h << eof
+      parameter(ltime=$tlong)
+eof
+#
+gfortran  CD102_2_2x2.f 
+a.out
+#
+ja -s

@@ -1,0 +1,36 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/project/LF_prd/src
+tmp=/export-6/sgi9/wd52pp/tmp
+datadir=/export-6/cacsrv1/wd52pp/LF_prd
+#
+longtime=71
+ntprd=41
+mode=6
+#
+cp $lcdir/exp_pc_test_K.31-01.f $tmp/.
+cd $tmp
+/bin/rm fort.*
+unlimit
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(mmax=$mode)
+       parameter(ntprd=$ntprd)
+eof
+#
+#
+f77 -o exp_pc_test_K.31-01.x exp_pc_test_K.31-01.f
+echo "done compiling"
+
+#
+ ln -s $datadir/coef.temp_102_anom_1931-2001.djf.i3e        fort.10
+#ln -s $datadir/proj_onto_LP_eof.temp_102_1931-2001.djf.i3e        fort.10
+#ln -s $datadir/coef.temp_102_1931-2001.jfm.wang_HP.i3e     fort.10
+ ln -s /export-6/sgi9/wd52pp/project/LF_prd/src/out         fort.20
+ ln -s $datadir/cor_vs_K.temp_102_1931-2001.djf.i3e         fort.30
+ ln -s $datadir/exp_prd_pc.temp_102_1931-2001.djf.i3e         fort.40
+#
+exp_pc_test_K.31-01.x

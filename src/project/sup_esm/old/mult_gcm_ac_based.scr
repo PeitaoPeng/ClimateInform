@@ -1,0 +1,33 @@
+#!/bin/sh
+
+set -eaux
+
+filedir=/export-6/sgi9/wd52pp/project/sup_esm
+datadir=/export-6/cacsrv1/wd52pp
+TMPDIR=/export-6/sgi9/wd52pp/tmp/test
+
+cp $filedir/mult_gcm_ac_based.f $TMPDIR/mult.f
+cd $TMPDIR
+
+#
+f77 -o mult.x mult.f
+echo "done compiling"
+
+/bin/rm $TMPDIR/fort.*
+#
+#
+ ln -s $datadir/obs/reanl/z500_5099jfm.reg.i3e          fort.10
+ ln -s $datadir/obs/reanl/z500_5094jfm_tpfrcd.reg.i3e   fort.11
+ ln -s $datadir/b9x/z500_5094jfm.esm.dtd.reg.i3e        fort.20
+ ln -s $datadir/echam/z500_5094jfm.esm.reg.i3e          fort.30
+ ln -s $datadir/ccm3/z500_5094jfm.esm.reg.i3e           fort.40
+ ln -s $datadir/gfdl/z500_5094jfm.esm.reg.i3e           fort.50
+
+ln -s $datadir/sup_esm/z500_prd_ac_based.i3e             fort.60
+ln -s $datadir/sup_esm/acc_in_t_ac_based.i3e                    fort.70
+ln -s $datadir/sup_esm/out                             fort.15
+ 
+unlimit
+mult.x
+cp $datadir/sup_esm/out $filedir/out
+ja -s

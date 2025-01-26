@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ datadir=/export-6/cacsrv1/wd52pp/obs/prcp
+#
+ nmonth=25
+ iskip=0
+#
+  /bin/rm fort.11 fort.61
+   ln -s $datadir/cmap_8004djf.T40.i3e fort.11
+   ln -s $datadir/cmap_8004djf.R15.i3e fort.61
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth,iskip=$iskip)
+eof
+#
+ f77  T40_2_R15.f setxy.f intp2d.f
+ a.out
+#
+ja -s

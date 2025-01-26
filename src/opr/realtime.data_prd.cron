@@ -1,0 +1,8 @@
+#crontab on ppeng workstation is Estern Time (ET)
+MAILTO=peitaopeng@hotmail.com
+
+# Data ftp & process
+00 16 5 * * bash /home/ppeng/src/opr/src/ftp_data.sh > /home/ppeng/data/downloads/0log1 2>&1
+00 18 5 * * bash /home/ppeng/src/develop/data_proc/run.data_process.sh > /home/ppeng/src/develop/data_proc/0log1 2>&1
+# seasonal prd
+00 20 5 * * /home/ppeng/src/opr/src/run.fcst.sh > /home/ppeng/src/opr/src/0log1 2>&1

@@ -1,0 +1,70 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/win13-14
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/para
+#
+var=z200
+model=R1 #R1 or amip
+#nyr=65
+nyr=57
+nmon=5 # mon# of each season
+ct=0.5 #criterion of patt corr
+area=na
+nrun=18
+#nrun=1
+#
+cp $lcdir/patt_persist.para.f $tmp/proj.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nyr=$nyr,nmon=$nmon,ct=$ct)
+       parameter(nrun=$nrun)
+       parameter(imx=144,jmx=73)
+c      parameter(lons=1,lone=144,lats=45,late=73) !NH
+c      parameter(lons=63,lone=121,lats=37,late=73) !PNA
+c      parameter(lons=84,lone=125,lats=43,late=73) !NA(210E-310E;15N-90N)
+c      parameter(lons=81,lone=125,lats=43,late=73) !NA(200E-310E;15N-90N)
+       parameter(lons=81,lone=125,lats=47,late=73) !NA(200E-310E;25N-90N)
+eof
+#
+\rm $tmp/fort.*         
+#
+gfortran -o proj.x proj.f 
+echo "done compiling"
+
+#
+#ln -s $lcdir/z200.esm.anom.para.gr  fort.11
+ln -s $datadir/z200.1957-2014.anom.para.run1.gr  fort.11
+ln -s $datadir/z200.1957-2014.anom.para.run2.gr  fort.12
+ln -s $datadir/z200.1957-2014.anom.para.run3.gr  fort.13
+ln -s $datadir/z200.1957-2014.anom.para.run4.gr  fort.14
+ln -s $datadir/z200.1957-2014.anom.para.run5.gr  fort.15
+ln -s $datadir/z200.1957-2014.anom.para.run6.gr  fort.16
+ln -s $datadir/z200.1957-2014.anom.para.run7.gr  fort.17
+ln -s $datadir/z200.1957-2014.anom.para.run8.gr  fort.18
+ln -s $datadir/z200.1957-2014.anom.para.run9.gr  fort.19
+ln -s $datadir/z200.1957-2014.anom.para.run10.gr  fort.20
+ln -s $datadir/z200.1957-2014.anom.para.run11.gr  fort.21
+ln -s $datadir/z200.1957-2014.anom.para.run12.gr  fort.22
+ln -s $datadir/z200.1957-2014.anom.para.run13.gr  fort.23
+ln -s $datadir/z200.1957-2014.anom.para.run14.gr  fort.24
+ln -s $datadir/z200.1957-2014.anom.para.run15.gr  fort.25
+ln -s $datadir/z200.1957-2014.anom.para.run16.gr  fort.26
+ln -s $datadir/z200.1957-2014.anom.para.run17.gr  fort.27
+ln -s $datadir/z200.1957-2014.anom.para.run18.gr  fort.28
+
+#ln -s $lcdir/nino34.ndjfm.para.1957-2013.gr  fort.30
+ln -s $lcdir/nino34.ndjfm.oisst.1957-2013.gr  fort.30
+
+ln -s $lcdir/pcor_hstg.z200.ndjfm1957-2013.para.gr  fort.50
+ln -s $lcdir/pers_vs_yr.1957-2013.para.gr  fort.60
+#ln -s $lcdir/pcor_hstg.z200.ndjfm1957-2013.esm.gr  fort.50
+#ln -s $lcdir/pers_vs_yr.1957-2013.esm.gr  fort.60
+#
+proj.x > $lcdir/ptcor.para.$area.out
+#proj.x > $lcdir/ptcor.esm.$area.out
+#
+

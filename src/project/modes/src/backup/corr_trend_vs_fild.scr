@@ -1,0 +1,31 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ lcdir=/export-6/sgi9/wd52pp/project/modes/src
+ datadir=/export-6/cacsrv1/wd52pp/modes
+ datadir2=/export-6/cacsrv1/wd52pp/obs/sst
+ tmp=/export-6/sgi9/wd52pp/tmp
+#
+ cp corr_trend_vs_fild.f $tmp/.
+ cd $tmp
+ \rm fort.*
+#
+cat > parm.h << eof
+       parameter(imax=72, jmax=37)
+       parameter(ltime=52)
+eof
+#
+   ln -s $datadir/a1_b1_of_z500_4950-0001djfm.reg.i3e fort.10
+#  ln -s $datadir/z500_4950-0001djfm.reg.i3e  fort.20
+   ln -s $datadir/trs_hgt500.4950-0001_djfm.HP.reg.i3e  fort.20
+#
+   ln -s $datadir/corr.trs_hgt500.vs.trend.i3e  fort.30
+   ln -s $datadir/trend_coef.i3e  fort.40
+#
+#
+ f77  corr_trend_vs_fild.f
+ a.out > $lcdir/out
+#
+ja -s

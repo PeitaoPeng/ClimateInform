@@ -1,0 +1,295 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/prd_test/pls/hrcn
+tmp=/cpc/home/wd52pp/tmp
+sstdir=/cpc/home/wd52pp/data/obs/sst
+hurdir=/cpc/home/wd52pp/utility/hurricane/OBS
+ 
+season=jfm
+prctand=hrcn
+prctor=hadoisst
+
+cd $tmp
+
+infile1=$prctor.1948-2016.$season.gr
+infile2=mask_oi.gr
+infile3=hurr_ATL_1948-2016.txt
+cp $sstdir/$infile1 $tmp/.
+cp $sstdir/$infile2 $tmp/.
+cp $hurdir/$infile3 $tmp/.
+
+outfile1=${prctand}_$prctor.$season.hcst.pat
+outfile2=${prctand}_$prctor.$season.hcst.ts
+
+cp $lcdir/pls_hcst.s.f $tmp/.
+
+xdim=360
+ydim=180
+is=100
+ie=360
+js=60
+je=150
+undef=-999000000
+nyear=69
+mode=6
+istd=1 #=1 standardize; =0 none
+
+cat>hrcn_sst.f<<EOF
+      parameter(im=$xdim,jm=$ydim)
+      parameter(nyr=$nyear)
+      parameter(undef=$undef)
+      parameter(mode=$mode)
+      parameter(ID=$istd)
+c
+      real*4 hur0(4,nyr)
+      real*4 hur(nyr),f1(nyr),f2(nyr)
+      real*4 w2d(im,jm),w2d2(im,jm)
+      real*4 sst(im,jm,nyr),sstic(im,jm)
+      real*4 xlat(jm),cosl(jm)
+      real*4 mask(im,jm)
+      real*4 pc(nyr-1,mode),pat(im,jm,mode),pat2(im,jm,mode)
+      real*4 var(mode),corr(mode),pcprd(nyr,mode),pco(mode)
+      real*4 w1d(nyr-1),w1d2(nyr-1),w3d(im,jm,nyr-1)
+      real*4 avg(nyr)
+c
+c sst data
+      open(11,
+     1file='$infile1',
+     2access='direct',form='unformatted',recl=im*jm*4)
+      open(12,
+     1file='$infile2',
+     2access='direct',form='unformatted',recl=im*jm*4)
+c
+c OBS total hurricane 1981-2008
+      OPEN(13,file='$infile3')
+c
+      open(21,
+     1file='$outfile1.gr',
+     2access='direct',form='unformatted',recl=im*jm*4)
+      open(22,
+     1file='$outfile2.gr',
+     2access='direct',form='unformatted',recl=4)
+c
+      PI=4.*atan(1.)
+      CONV=PI/180.
+
+      do j=1,jm
+      xlat(j)=-89.5+(j-1)*1.0
+      enddo
+
+      do j=1,jm
+        cosl(j)=COS(xlat(j)*CONV)
+      enddo
+c
+c read in data
+      write(6,*) 'read in data'
+      read(12,rec=1) mask
+c
+      do iy=1,nyr
+        read(11,rec=iy) w2d
+        do i=1,im
+        do j=1,jm
+          if(mask(i,j).ne.0) then
+          sst(i,j,iy)=w2d(i,j)
+          else
+          sst(i,j,iy)=undef
+          endif
+        enddo
+        enddo
+      enddo
+c
+c read in hur0
+117   format(8x,4f8.1)
+      do iy=1,nyr
+      read(13,117) (hur0(i,iy),i=1,4)
+      end do
+c
+      do iy=1,nyr
+c       hur(iy)=hur0(4,iy)
+        hur(iy)=hur0(1,iy)
+      enddo
+      write(6,*) 'hur=',hur
+c
+c hcst start
+      DO ity=1,nyr
+
+        it=0
+        do iy=1,nyr
+
+        if(iy.eq.ity) go to 100
+        it=it+1
+          w1d(it)=hur(iy)
+        do i=1,im
+        do j=1,jm
+          w3d(i,j,it)=sst(i,j,iy)
+        enddo
+        enddo
+
+100     continue
+        enddo !iy loop
+
+        do i=1,im
+        do j=1,jm
+          sstic(i,j)=sst(i,j,ity)
+        enddo
+        enddo
+        
+      call anom(w1d,nyr-1,av)
+      avg(ity)=av
+c anom input sst w3d
+      do i=1,im
+      do j=1,jm
+        if(abs(sst(i,j,1)).lt.999) then
+
+        do iy=1,nyr-1
+          w1d2(iy)=w3d(i,j,iy)
+        enddo
+
+        call anom(w1d2,nyr-1,av)
+
+        do iy=1,nyr-1
+          w3d(i,j,iy)=w1d2(iy)
+        enddo
+
+c       sstic(i,j)=sstic(i,j)-av
+
+        endif
+      enddo
+      enddo
+
+      call pls_hcst(nyr-1,im,jm,$is,$ie,$js,$je,mode,
+     &w1d,w3d,sstic,pc,pco,pat,pat2,var,cosl,undef,ID)
+c
+      do m=1,mode
+        pcprd(ity,m)=pco(m)
+      enddo
+c
+      ENDDO !ity loop
+c
+c write out
+c cor pattern of pcprd to raw sst
+      iw=0
+      do m=1,mode
+        do iy=1,nyr
+          f1(iy)=pcprd(iy,m)
+        enddo
+
+        do i=1,im
+        do j=1,jm
+        if(abs(sst(i,j,1)).lt.999) then
+          do iy=1,nyr
+            f2(iy)=sst(i,j,iy)
+          enddo
+          call cor_reg(nyr,f1,f2,cor,reg)
+          w2d(i,j)=cor
+c         w2d(i,j)=pat2(i,j,m)
+        else
+          w2d(i,j)=undef
+        endif
+        enddo
+        enddo
+c
+        iw=iw+1
+        write(21,rec=iw) w2d
+      enddo
+c
+      call anom(hur,nyr,av)
+      write(6,*) 'avg of hur=',av
+      iw=0
+      do iy=1,nyr
+        iw=iw+1
+        obs=hur(iy)
+        write(22,rec=iw) obs
+      do m=1,mode
+        pcx=pcprd(iy,m)
+        iw=iw+1
+        write(22,rec=iw) pcx
+      enddo
+      enddo
+c
+c explained variance by mode m
+      do m=1,mode
+        do iy=1,nyr
+          f1(iy)=hur(iy)
+          f2(iy)=pcprd(iy,m)
+        enddo
+        call cor_reg(nyr,f1,f2,cor,reg)
+        var(m)=cor*cor
+        corr(m)=cor
+      enddo
+c
+      write(6,*) 'var=',var
+      write(6,*) 'cor=',corr
+      vt=0
+      do m=1,mode
+      vt=vt+var(m)
+      enddo
+      write(6,*) 'accumulated var=',vt
+      write(6,*) 'hur_avg=',avg
+c
+      stop
+      end
+c
+c========================
+      subroutine anom(ts,nt,avg)
+      dimension ts(nt)
+        av=0
+        do i=1,nt
+          av=av+ts(i)
+        end do
+        avg=av/float(nt)
+        do i=1,nt
+          ts(i)=ts(i)-avg
+        end do
+      return
+      end
+ccccccccccccccccccccccc
+EOF
+#
+#gfortran -mcmodel=medium -g -o avg.x avg_anom.f
+#\rm avg.x
+#\rm t2m*anom*
+gfortran -o hur.x hrcn_sst.f pls_hcst.s.f
+echo "done compiling"
+./hur.x > $lcdir/out.$prctand.$prctor.$season.hcst
+#
+cat>$outfile1.ctl<<EOF
+dset ^$outfile1.gr
+undef $undef
+*
+TITLE pls cor pattern
+*
+xdef  360 linear 0 1.
+ydef  180 linear -89.5 1.
+zdef   1 linear 1 1
+tdef  $mode linear jan1979 1mo
+vars 1
+cor 1 99 from original data
+ENDVARS
+EOF
+#
+cat>$outfile2.ctl<<EOF
+dset ^$outfile2.gr
+undef $undef
+*
+TITLE pls time series
+*
+xdef  1 linear 0 1.
+ydef  1 linear -89.5 1.
+zdef  1 linear 1 1
+tdef $nyear linear aug1948 1yr
+vars 7
+obs  1 99 ts of obs
+ts1  1 99 ts of pls
+ts2  1 99 ts of pls
+ts3  1 99 ts of pls
+ts4  1 99 ts of pls
+ts5  1 99 ts of pls
+ts6  1 99 ts of pls
+ENDVARS
+EOF
+#
+cp $outfile1.* $lcdir/.
+cp $outfile2.* $lcdir/.

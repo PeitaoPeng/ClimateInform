@@ -1,0 +1,398 @@
+3c3
+< !! added AC error, sScale_Back
+---
+> !! change data I/O
+44,45d43
+< 
+< 
+47a46,50
+> INTEGER :: iFILEROWS,iDATAFIELDS
+> INTEGER :: iTRAINPATS, iTESTPATS, iVALIDPATS
+> INTEGER :: iEPOCHS, iHIDDDEN
+> REAL :: ra
+>       include "parm.h"
+107c110,111
+< INTEGER :: giDATAFIELDS, giFILEROWS, giSKIPLINES
+---
+> INTEGER :: giDATAFIELDS = iDATAFIELDS
+> INTEGER :: giFILEROWS = iFILEROWS
+110c114,117
+< INTEGER :: giPATS,giTRAINPATS,giTESTPATS,giVALIDPATS
+---
+> INTEGER :: giPATS
+> INTEGER :: giTRAINPATS = iTRAINPATS
+> INTEGER :: giTESTPATS = iTESTPATS
+> INTEGER :: giVALIDPATS = iVALIDPATS
+121c128
+< INTEGER :: giHIDDDEN      
+---
+> INTEGER :: giHIDDDEN = iHIDDDEN
+124c131
+< INTEGER :: giEPOCHS       
+---
+> INTEGER :: giEPOCHS = iEPOCHS
+127c134
+< REAL    :: grALR
+---
+> REAL    :: grALR = ra
+143c150
+<         CALL sTrain_Net(giIOERR_OK)
+---
+>         CALL sTrain_Net(giEPOCHS,grALR,giIOERR_OK)
+164c171
+< SUBROUTINE sTrain_Net(iIOERR_OK)
+---
+> SUBROUTINE sTrain_Net(giEPOCHS,grALR,iIOERR_OK)
+166a174,176
+> INTEGER, INTENT(IN) ::  giEPOCHS
+> REAL, INTENT(IN) :: grALR
+> REAL ::  grBLR
+174,178c184,185
+<         !get the number of epochs to train for or EXIT
+<         IF (.NOT. flGet_Number_Of_Epochs(giEPOCHS, iIOERR_OK)) EXIT
+< 
+<         !get the learning rates
+<         CALL fGet_Learning_Rates(grALR,grBLR,iIOERR_OK)
+---
+>         !have the learning rates
+>         grBLR = grALR/10.
+183,185d189
+<         CALL sDisplay_Headers
+< 
+< 
+365,366d368
+<         CALL sOpen_DataFile(giUNIT)
+<         CALL sScan_File(giUNIT,giDATAFIELDS, giFILEROWS, giSKIPLINES,giIOERR_OK)
+368,370c370
+<              giFILEROWS,giSKIPLINES,giDATAFIELDS)
+<         CALL sGet_Set_Sizes(giTRAINPATS,giTESTPATS,giVALIDPATS,giPATS, &
+<          giIOERR_OK)
+---
+>              giFILEROWS,giDATAFIELDS)
+372c372
+<         CALL sRead_Data(giUNIT,giPATS,giNDU,garDataArray,giSKIPLINES,giIOERR_OK)
+---
+>         CALL sRead_Data(giUNIT,giPATS,giNDU,garDataArray)
+522,560c522
+< SUBROUTINE sOpen_DataFile(iUNITNUMBER)
+< ! prompt user to enter data file name
+<         
+<         INTEGER, INTENT(IN) :: iUNITNUMBER
+<         CHARACTER*20000 cFILENAME
+< 
+<         CLOSE(iUNITNUMBER)
+< 
+<         PRINT *, 'Enter the datafile name'
+<         PRINT *, 'it must be comma delimited'
+<         PRINT *, 'with the the prediction variable in the last column.'
+<         PRINT *, 'If it is in the same folder as this executable just &
+<                  type the name'
+<         PRINT *, '?'
+< 
+<         DO 
+<                 READ *, cFILENAME
+<                 IF (cFILENAME == 'q' .or. cFILENAME == 'Q') STOP
+< 
+<                 ! open data file
+<                 OPEN(UNIT=iUNITNUMBER, ERR=100, FILE=cFILENAME, &
+<                      STATUS='OLD')
+< 
+<                 ! File Opened OK so Exit
+<                 EXIT
+< 
+<                 ! File not found
+<                 100 PRINT *, 'Cannot find file ' // TRIM(cFILENAME) // &
+<                 ', re-enter or "Q" to quit'
+< 
+<         END DO
+< 
+< END SUBROUTINE sOpen_DataFile
+< 
+< 
+< 
+< SUBROUTINE sRead_Data &
+< (iUNITNUMBER, iPATTERNS, iFIELDS, arDATAARRAY, iHEADERROWS, iIOERR_OK)
+< ! read in data  
+---
+> SUBROUTINE sRead_Data(iUNITNUMBER, iPATTERNS, iFIELDS, arDATAARRAY)
+562,599c524,541
+<         INTEGER, INTENT(IN)  :: iUNITNUMBER     
+<         INTEGER, INTENT(IN)  :: iPATTERNS
+<         INTEGER, INTENT(IN)  :: iFIELDS
+<         INTEGER, INTENT(IN)  :: iHEADERROWS
+<         INTEGER, INTENT(IN)  :: iIOERR_OK
+<         REAL, INTENT(OUT)    :: arDATAARRAY(iPATTERNS,iFIELDS)
+< 
+<         CHARACTER (LEN = 1)  :: cHEAD   
+<         
+<         INTEGER :: I,K
+<         INTEGER :: mis
+< 
+<         REWIND(UNIT=iUNITNUMBER)
+<         
+<         IF (iHEADERROWS > 0) THEN       
+<                 DO I = 1,iHEADERROWS
+<                         READ(UNIT=iUNITNUMBER, FMT='(A)',END=100) cHEAD
+<                 ENDDO
+<                 100 IF (I < iHEADERROWS) PRINT *,'Too many header &
+< rows...' 
+<         END IF  
+<         
+<         PRINT *, ' Reading data...'
+<         
+<         DO I=1,iPATTERNS
+<                 READ(UNIT=iUNITNUMBER, FMT=*,iostat=mis, &
+< END=200)(arDATAARRAY(I,K),K=1,iFIELDS)
+<                 IF(mis /= iIOERR_OK) then
+<                   PRINT *, 'Invalid data on line ', i + iHEADERROWS
+<                   STOP
+<                 ENDIF
+<         ENDDO
+<         
+<         PRINT *, ' Data read OK!'
+< 
+<         200 IF (I < iPATTERNS) PRINT *,'Too many header rows...'
+< 
+<         CLOSE(iUNITNUMBER)
+---
+>       INTEGER, INTENT(IN)  :: iUNITNUMBER     
+>       INTEGER, INTENT(IN)  :: iPATTERNS
+>       INTEGER, INTENT(IN)  :: iFIELDS
+>       INTEGER  :: I
+>       REAL :: fldin(iFIELDS)
+>       REAL :: arDATAARRAY(iPATTERNS,iFIELDS)
+> 
+>       CLOSE(iUNITNUMBER)
+> 
+> !! open binary data file
+> 
+>       OPEN(UNIT=iUNITNUMBER, &
+> form='unformatted',access='direct',recl=4*iFIELDS)
+> 
+>       DO I = 1, iPATTERNS
+>         read (iUNITNUMBER, rec = I) fldin
+>         arDATAARRAY(I,1:iFIELDS) = fldin(1:iFIELDS)
+>       ENDDO
+604,658d545
+< 
+< SUBROUTINE sScan_File(iUNITNUMBER, iDATAFIELDS, iFILEROWS, iSKIPLINES, &
+< iIOERR_OK)
+< 
+<         INTEGER, INTENT(IN)   :: iUNITNUMBER    
+<         INTEGER, INTENT(OUT)  :: iDATAFIELDS
+<         INTEGER, INTENT(OUT)  :: iFILEROWS
+<         INTEGER, INTENT(OUT)  :: iSKIPLINES
+<         INTEGER, INTENT(INOUT)   :: iIOERR_OK   
+< 
+<         PRINT *, 'Scanning file...'
+< 
+<         REWIND(UNIT=iUNITNUMBER)
+< 
+<         iDATAFIELDS = fiCount_Fields(iUNITNUMBER)
+<         iFILEROWS = fiCount_Rows(iUNITNUMBER)
+< 
+<         PRINT * , 'Fields = ',iDATAFIELDS
+<         PRINT * , 'Rows   = ',iFileRows
+< 
+<         DO
+<           iSKIPLINES = fiGet_Header_Rows(iIOERR_OK)
+<                 IF (iSKIPLINES < iFILEROWS) THEN
+<                         EXIT
+<                 ELSE
+<                         PRINT *, 'You have more header rows than &
+<                         there are rows in the data!'
+<                 ENDIF
+<         END DO
+< 
+< END SUBROUTINE sScan_File
+< 
+< 
+< 
+< INTEGER FUNCTION fiGet_Header_Rows(iIOERR_OK)
+< 
+<         INTEGER, INTENT(IN)             :: iIOERR_OK
+<         INTEGER :: I
+< 
+<         DO
+<          WRITE(*,'(A)',advance='no',iostat=I) 'How many header rows in &
+< the file?'
+<          IF(I /= iIOERR_OK) EXIT
+<                 READ(*,*,iostat=I) fiGet_Header_Rows
+<                 IF(I /= iIOERR_OK) CYCLE
+<                 IF (fiGet_Header_Rows< 0) THEN
+<                  PRINT *, 'OK - no header row...'
+<                  fiGet_Header_Rows= 0
+<                 ENDIF
+<          EXIT
+<         ENDDO
+< 
+< END FUNCTION fiGet_Header_Rows
+< 
+< 
+662,814d548
+< INTEGER FUNCTION fiGet_Hidden_Neurons(iIOERR_OK)
+< 
+<         INTEGER, INTENT(IN)             :: iIOERR_OK
+<         INTEGER :: I
+< 
+<         DO
+<          WRITE(*,'(A)',advance='no',iostat=I) 'How many hidden neurons?'
+<          IF(I /= iIOERR_OK) EXIT
+<                 READ(*,*,iostat=I) fiGet_Hidden_Neurons
+<                 IF(I /= iIOERR_OK) CYCLE
+<                 IF (fiGet_Hidden_Neurons< 1) THEN
+<                  PRINT *, 'Hidden neurons set to 1'
+<                  fiGet_Hidden_Neurons = 1
+<                 ENDIF
+<          EXIT
+<         ENDDO
+< 
+< END FUNCTION fiGet_Hidden_Neurons
+< 
+< 
+< 
+< SUBROUTINE sGet_Set_Sizes(iTRAIN,iTEST,iVALID,iTOTAL,iIOERR_OK)
+< 
+<         INTEGER, INTENT(IN)     :: iIOERR_OK, iTOTAL
+<         INTEGER, INTENT(OUT)    :: iTRAIN, iTEST, iVALID
+< 
+<         INTEGER :: I, iPERCTR, iPERCTE
+< 
+<         iTRAIN = iTOTAL
+<         iTEST = 0
+<         iVALID = 0
+<         iPERCTR = 33
+<         iPERCTE = 0
+< 
+<         DO
+<                 iPERCTR = 33
+<                 WRITE(*,'(A)',advance='no',iostat=I) &
+<                 'What percent do you want to use for the training &
+< sample? '
+< 
+<                 IF(I /= iIOERR_OK) EXIT
+<                 READ(*,*,iostat=I) iPERCTR
+<                 IF(I /= iIOERR_OK) CYCLE
+< 
+<                 IF (iPERCTR >= 100) THEN
+<                         PRINT *, 'OK - all the data will be used for &
+< training...'
+<                         iPERCTR = 100
+<                 ENDIF
+< 
+<                 IF (iPERCTR<33) THEN
+<                         PRINT *, 'We will use 33%...'
+<                         iPERCTR = 33
+<                 ENDIF
+< 
+<                 iTRAIN = iTOTAL * iPERCTR / 100
+< 
+<                 EXIT
+< 
+<         ENDDO
+< 
+< 
+<         IF (iPERCTR < 100) THEN
+< 
+<          DO
+< 
+<                 WRITE(*,'(A)',advance='no',iostat=I) &
+<                 'What percent do you want to use for the testing sample?'
+< 
+<                 IF(I /= iIOERR_OK) EXIT
+<                 READ(*,*,iostat=I) iPERCTE
+<                 IF(I /= iIOERR_OK) CYCLE
+< 
+<                 IF (iPERCTE>100-iPERCTR) CYCLE
+<                 IF (iPERCTE<=0) CYCLE
+< 
+<                 iTEST = iTOTAL * iPERCTE / 100
+<                 IF (iTEST<1) iTEST = 1
+< 
+<                 EXIT
+< 
+<          ENDDO
+< 
+<         ENDIF
+< 
+< 
+<         iVALID = iTOTAL - iTRAIN - iTEST
+<         PRINT * , ' '
+<         PRINT * , ' ' 
+<         PRINT 100 ,iTOTAL
+<         PRINT 110 ,iPERCTR,iTRAIN
+<         PRINT 120 ,iPERCTE,iTEST
+<         PRINT 130 ,100-iPERCTR-iPERCTE,iVALID
+<         PRINT * , '' 
+< 
+< 100 FORMAT ('Total patterns = ',I10)
+< 110 FORMAT ('Train =',1X,I3,'%',I7,1X,'Patterns')
+< 120 FORMAT ('Test  =',1X,I3,'%',I7,1X,'Patterns')
+< 130 FORMAT ('Valid =',1X,I3,'%',I7,1X,'Patterns')
+< 
+< END SUBROUTINE sGet_Set_Sizes
+< 
+< 
+< 
+< LOGICAL FUNCTION flGet_Number_Of_Epochs(iEPOCHS, iIOERR_OK)
+< 
+<         INTEGER, INTENT(OUT)    :: iEPOCHS
+<         INTEGER, INTENT(IN)     :: iIOERR_OK
+<         INTEGER                 :: i
+< 
+<         DO
+< 
+<          WRITE(*,'(A)',advance='no',iostat=i) &
+<          'How many epochs to train for (0 to exit) ?'
+< 
+<          IF(i /= iIOERR_OK) EXIT
+<                 READ(*,*,iostat=i) iEPOCHS
+<                 IF(i /= iIOERR_OK) CYCLE
+< 
+<          IF (iEPOCHS <= 0) THEN
+<                 flGet_Number_Of_Epochs = .FALSE.
+<          ELSE
+<                 flGet_Number_Of_Epochs = .TRUE.
+<          ENDIF  
+<         
+<          EXIT
+< 
+<         ENDDO
+< 
+< 
+< END FUNCTION flGet_Number_Of_Epochs
+< 
+< 
+< 
+< SUBROUTINE fGet_Learning_Rates(ra,rb, iIOERR_OK)
+< 
+<         REAL, INTENT(OUT)       :: ra
+<         REAL, INTENT(OUT)       :: rb
+<         INTEGER, INTENT(IN)     :: iIOERR_OK
+<         INTEGER                 :: I
+< 
+<         DO
+<          WRITE(*,'(A)',advance='no',iostat=I) 'Learning Rate (>0 - 2) ?'
+<          IF(I /= iIOERR_OK) EXIT
+<          READ(*,*,iostat=I) ra
+<          IF(i /= iIOERR_OK) CYCLE
+<          rb = ra/10
+<          EXIT
+<         ENDDO
+< 
+< END SUBROUTINE fGet_Learning_Rates
+< 
+< 
+878c612
+<         (iNPATS,iINPUTS,iNOUTPUTS,iNDU,iINPPB,iFILEROWS,iSKIPLINES,iDATAFIELDS)
+---
+>         (iNPATS,iINPUTS,iNOUTPUTS,iNDU,iINPPB,iFILEROWS,iDATAFIELDS)
+887d620
+<         INTEGER, INTENT (IN)    :: iSKIPLINES   
+891c624
+<         iNPATS = iFILEROWS - iSKIPLINES
+---
+>         iNPATS = iFILEROWS
+906,907d638
+<         giHIDDDEN = fiGet_Hidden_Neurons(iIOERR_OK)  
+< 

@@ -1,0 +1,112 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/djf15-16
+tmp=/cpc/home/wd52pp/tmp
+datadir0=/cpc/home/wd52pp/data/attr/trend
+datadir=/cpc/home/wd52pp/data/attr/djf15-16
+#
+var=z200
+model=R1 
+tmax=67 
+tmaxsst=67 
+nmod=7 
+hs=tpnh    # hemisphere 
+mtx=var    # hemisphere 
+#
+cp $lcdir/contrib_z.f $tmp/rec.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$tmax)
+       parameter(imx=144,jmx=73)
+       parameter(nmod=$nmod)
+eof
+#
+for season in djf; do
+#
+\rm $tmp/fort.*         
+#
+gfortran -o rec.x rec.f
+echo "done compiling"
+
+#
+ ln -s $datadir0/$var.$season.1949-cur.gr                 fort.10
+ ln -s $datadir0/rsd_eof.$var.$model.$season.$hs.$mtx.gr  fort.11
+ ln -s $datadir0/rsd_pc.$var.$model.$season.$hs.$mtx.gr   fort.12
+
+ ln -s $datadir/${var}_16.$model.$season.contrib.gr       fort.50
+ ln -s $datadir/${var}_82.$model.$season.contrib.gr       fort.51
+ ln -s $datadir/${var}_98.$model.$season.contrib.gr       fort.52
+#
+rec.x
+#
+cat>$datadir/${var}_16.$model.$season.contrib.ctl<<EOF
+dset $datadir/${var}_16.$model.$season.contrib.gr
+undef -9999.0
+title contribution from each mode
+xdef  144 linear 0 2.5
+ydef   73 linear -90 2.5
+zdef    1 levels 200
+tdef 999 linear jan1949  1yr
+vars   10
+obs 0 99 obs z200(m)
+n34 0 99 from enso
+trd 0 99 from trd
+c1  0 99 nao
+c2  0 99 pna
+c3  0 99 wpo
+c4  0 99 reof
+c5  0 99 reof
+c6  0 99 reof
+c7  0 99 reof
+endvars
+EOF
+#
+cat>$datadir/${var}_82.$model.$season.contrib.ctl<<EOF
+dset $datadir/${var}_82.$model.$season.contrib.gr
+undef -9999.0
+title contribution from each mode
+xdef  144 linear 0 2.5
+ydef   73 linear -90 2.5
+zdef    1 levels 200
+tdef 999 linear jan1949  1yr
+vars   12
+obs 0 99 obs z200(m)
+n34 0 99 from ENSO
+trd 0 99 from trd(m)
+c1  0 99 nao
+c2  0 99 pna
+c3  0 99 wpo
+c4  0 99 reof
+c5  0 99 reof
+c6  0 99 reof
+c7  0 99 reof
+endvars
+EOF
+#
+cat>$datadir/${var}_98.$model.$season.contrib.ctl<<EOF
+dset $datadir/${var}_98.$model.$season.contrib.gr
+undef -9999.0
+title contribution from each mode
+xdef  144 linear 0 2.5
+ydef   73 linear -90 2.5
+zdef    1 levels 200
+tdef 999 linear jan1949  1yr
+vars   12
+obs 0 99 obs z200(m)
+n34 0 99 from ENSO
+trd 0 99 from trd(m)
+c1  0 99 nao
+c2  0 99 pna
+c3  0 99 wpo
+c4  0 99 reof
+c5  0 99 reof
+c6  0 99 reof
+c7  0 99 reof
+endvars
+EOF
+#
+done
+

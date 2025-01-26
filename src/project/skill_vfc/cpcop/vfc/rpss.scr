@@ -1,0 +1,84 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/skill_vfc/cpcop/vfc
+tmp=/cpc/home/wd52pp/tmp
+datadir1=/cpc/home/wd52pp/data/cpc_vfc/0data
+datadir2=/cpc/home/wd52pp/data/cpc_vfc/skill
+#
+for var in temp prec; do
+#var=temp
+#var=prec
+nseason=331
+nyears=27
+tool=cpc
+#
+/bin/rm $tmp/fort.*         
+cp $lcdir/rpss.f $tmp/.
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nss=$nseason)
+       parameter(nyr=$nyears)
+       parameter(imx=36,jmx=19)
+eof
+#
+#
+gfortran -o rpss.x rpss.f
+echo "done compiling"
+
+#
+ ln -s $datadir1/mask_2x2.data    fort.11
+ ln -s $datadir1/${var}01_forecast_below.bi  fort.12
+ ln -s $datadir1/${var}01_forecast_above.bi  fort.13
+ ln -s $datadir1/${var}_seas_verif.bi           fort.14
+ ln -s $datadir2/rpss_$var.95-cur.$tool.gr  fort.51
+ ln -s $datadir2/rpss_${var}_t.95-cur.$tool.gr  fort.52
+ ln -s $datadir2/rpss_cyc_$var.95-cur.$tool.gr  fort.53
+ ln -s $datadir2/rpss.$var.txt fort.60
+#
+rpss.x > $lcdir/out
+#
+
+cat>$datadir2/rpss_$var.95-cur.$tool.ctl<<EOF
+dset $datadir2/rpss_$var.95-cur.$tool.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    1 linear -130 2
+ydef    1 LINEAR   20 2
+zdef    1 levels 500
+tdef 999 linear jan1995  1mon
+vars   1
+rpss   0 99 percent of nonec grids
+endvars
+EOF
+
+cat>$datadir2/rpss_cyc_$var.95-cur.$tool.ctl<<EOF
+dset $datadir2/rpss_cyc_$var.95-cur.$tool.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    1 linear    0.000  1
+ydef    1 linear    0.000  5
+zdef    1 levels 500
+tdef 999 linear jan1995  1mon
+vars   1
+rpss   0 99 percent of nonec grids
+endvars
+EOF
+
+cat>$datadir2/rpss_${var}_t.95-cur.$tool.ctl<<EOF
+dset $datadir2/rpss_${var}_t.95-cur.$tool.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef   36 linear -130 2
+ydef   19 LINEAR   20 2
+zdef    1 levels 500
+tdef 999 linear jan1995  1mon
+vars   3
+rpss   0 99 all ss
+rps_sum 0 99 all ss
+rps_win 0 99 all ss
+endvars
+EOF
+done

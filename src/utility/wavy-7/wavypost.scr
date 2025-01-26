@@ -1,0 +1,41 @@
+#!/bin/sh
+
+set -eaux
+ 
+#
+# Shell script post processing for wavy basic state linear model
+#
+TMPDIR=/cpc/home/wd52pp/tmp
+pstdir=/cpc/home/wd52pp/utility/wavy-7/src_post
+datadir=/cpc/home/wd52pp/utility/wavy-7/e001
+cd $TMPDIR
+/bin/rm $TMPDIR/*.*
+#
+#  get object files from dti
+#
+cp $pstdir/pstlrs.9L.f $TMPDIR/pstlrs.f
+cp $pstdir/fft.f $TMPDIR/fft.f
+ gfortran  -o pst.x pstlrs.f fft.f
+# get data and directory
+ln -s  $pstdir/wavy.9L.outdrct   fort.10
+ln -s  $datadir/e001.result      fort.19
+# get spectral topography
+ln -s  $datadir/top_cdas_R15.i3e fort.16
+# get derived field table
+ln -s $pstdir/dft                fort.14
+# get requested field directory
+ln -s $pstdir/rfd fort.12
+# get unit conversion tables
+ln -s $pstdir/vunits     fort.34
+ln -s $pstdir/aunits     fort.35
+ln -s $pstdir/punits     fort.36
+ln -s $pstdir/cnfactbl   fort.37
+ln -s $pstdir/cnfc2tbl   fort.38
+ln -s $pstdir/lookutbl   fort.39
+# output
+ln -s  /cpc/home/wd52pp/utility/wavy-7/wavy.out fort.9
+#     run post processing
+ pst.x < $pstdir/post.indeck
+#
+ mv fort.18 $pstdir/dir.pp                  
+#

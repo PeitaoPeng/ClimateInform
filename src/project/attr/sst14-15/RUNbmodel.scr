@@ -1,0 +1,30 @@
+set -x  
+#
+# run bmodel R15 version on sgi9
+#
+lcdir=/cpc/home/wd52pp/project/attr/djf14-15
+modelsrc=/cpc/home/wd52pp/utility/barotr/src_model
+datadir=/cpc/home/wd52pp/data/attr/djf14-15
+wkdir=/cpc/home/wd52pp/tmp
+#
+/bin/rm $wkdir/*.*
+#
+cp $modelsrc/*.f $wkdir/.   
+cp $lcdir/bmodelR15.f $wkdir/.   
+#
+cd     $wkdir
+#    ln -s $datadir/bminput.psi_div.200mb.djf2014-15.cfsr.gr  fort.20
+     ln -s $datadir/bminput.1979-2015.cfsr.djf.gr  fort.20
+     ln -s $datadir/prate.1979-2015.cmap.djf.R15.gr           fort.21
+#    ln -s $datadir/bminput.psi_div.200mb.sstpc2_regr.gr  fort.20
+#    ln -s $datadir/corr.sstpc.vs.zsvp.gr           fort.21
+
+#    ln -s $datadir/vortfrc200_enso_djfm.R15.gr   fort.30
+
+     ln -s $datadir/matix.R2_clim_200             fort.34
+     ln -s $lcdir/bmodel_out.gr                   fort.80
+gfortran -o bmR15.x bmodelR15.f bmodelR15.s.f ttforce.s.f \
+               wvflx.tn.s.f norsou.f lae_sol.s.f \
+               hsmooth.s.f 
+bmR15.x > out
+mv out $lcdir

@@ -1,0 +1,101 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/ca_proj/src
+tmp=/cpc/home/wd52pp/tmp
+datain=/cpc/home/wd52pp/data/attr/telcon
+dataout=/cpc/home/wd52pp/data/ca_proj
+#
+var=cmap
+mtx=var
+tmax=42
+nmod=6 
+hs=tp
+#
+cp $lcdir/rsd_eof.obs.wtd.f $tmp/eof.f
+cp $lcdir/reof.s.f  $tmp/.
+cd $tmp
+#
+if [ "$mtx" = cor ]; then id=1; fi
+if [ "$mtx" = var ]; then id=0; fi
+cat > parm.h << eof
+       parameter(ltime=$tmax)
+       parameter(imx=144,jmx=72)
+       parameter(nmod=$nmod)
+       parameter(lons=1,lone=144,lats=30,late=43)! tp 16.25-16.25
+       parameter(iskip_idx=0) 
+       parameter(iskip_fld=0)
+       parameter(id=$id)
+eof
+#
+for season in djf; do
+#
+\rm $tmp/fort.*         
+#
+gfortran -o eof.x reof.s.f eof.f
+echo "done compiling"
+
+#
+ ln -s $datain/$var.$season.80-cur.gr    fort.10
+#
+ ln -s $dataout/rpc.sst.had-oi.79-21.$season.tp.gr  fort.11
+#
+ ln -s $dataout/$var.$season.79-cur.dtrd.gr   fort.31
+ ln -s $dataout/$var.$season.79-cur.rsd.gr    fort.32
+#
+ ln -s $dataout/rsd_reof.cmap.$var.$season.$hs.$mtx.wtd.gr       fort.51
+ ln -s $dataout/rsd_rpc.cmap.$var.$season.$hs.$mtx.wtd.gr        fort.52
+#
+eof.x > $dataout/out.rsd_eof.cmap.$var.$season.$hs.$mtx.wtd
+#
+cat>$dataout/rsd_reof.cmap.$var.$season.$hs.$mtx.wtd.ctl<<EOF
+dset $dataout/rsd_reof.cmap.$var.$season.$hs.$mtx.wtd.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  144 linear 1.25 2.5
+ydef   72 linear -88.75 2.5
+zdef    1 levels 1
+tdef 9999 linear jan1980  1yr
+vars   16
+censo  0 99 corr to 1st sst rpc
+renso  0 99 regr to 1st sst rpc
+cmdk  0 99 corr to 2nd sst  rpc
+rmdk  0 99 regr to 2nd sst rpc
+eof1  0 99 corr to rsd_rpc1
+reg1  0 99 regr to rsd_rpc2
+eof2  0 99 corr of mode 1
+reg2  0 99 regr of mode 1
+eof3  0 99 corr of mode 1
+reg3  0 99 regr of mode 1
+eof4  0 99 corr of mode 1
+reg4  0 99 regr of mode 1
+eof5  0 99 corr of mode 1
+reg5  0 99 regr of mode 1
+eof6  0 99 corr of mode 1
+reg6  0 99 regr of mode 1
+endvars
+EOF
+#
+cat>$dataout/rsd_rpc.cmap.$var.$season.$hs.$mtx.wtd.ctl<<EOF2
+dset $dataout/rsd_rpc.cmap.$var.$season.$hs.$mtx.wtd.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  1 linear 1.25 2.5
+ydef  1 linear -88.75 2.5
+zdef    1 levels 1
+tdef 9999 linear jan1980  1yr
+vars  8
+cf1   0 99 enso
+cf2   0 99 mdk
+cf3   0 99 rsd_rpc1
+cf4   0 99 rsd_rpc2
+cf5   0 99 PC3
+cf6   0 99 PC4
+cf7   0 99 PC4
+cf8   0 99 PC4
+endvars
+EOF2
+#
+done
+

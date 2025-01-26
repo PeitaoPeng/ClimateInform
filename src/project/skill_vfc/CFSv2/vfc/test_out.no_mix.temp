@@ -1,0 +1,7 @@
+ avg skill of v1 & v2= -3.7719857E-02  4.9009003E-02 v2-v1=  8.6728856E-02
+ passed grids and total=          55         154          10         232
+ upbnd rpss v12&df: -8.0853723E-02 -3.1732123E-02  9.9324241E-02
+ Highest RPSS in all= -3.3522226E-02  5.0554490E-03  0.1367685    
+ ensav1&2&df= -0.1333256     -8.0329038E-02  5.2996784E-02 std1&2&df=  2.6759919E-02  2.5042515E-02  2.3932207E-02
+ the data is beyond the range of the array
+ ranking of v1&2&df=        9998       10001        9207

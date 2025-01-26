@@ -1,0 +1,353 @@
+#-----/u/Zeng-Zhen.Hu/nfs/WorkGroup/CFSV2skill/Prec/Heidke10_skill01.scr
+#
+# Heidke10 (10 Deciles) of  CFSv2 hindcasts
+#
+# (4) Heidke10_skill01.scr
+#
+# (3) DATA_CFSv2_CMAS.scr
+#   the output data in "/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec"
+
+# (2) download data from Wanqiu's tape in "/5year/NCEPDEV/cpc-om/Wanqiu.Wang/cfsrr/CFSv2Hcst4FCST/Prec"
+#   save in "/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec" by conducting following commends
+#   GET_CFSv2_month.scr
+#
+# (1) scp observed data:
+# scp hzz@cpc-ls-work1:/cpc/home/mingyue/PRODUCTS/50YR/gauge/grid10m/precl_mon_v1.0.lnx.* .
+# scp hzz@cpc-ls-work1:/cpc/home/mingyue/PRODUCTS/50YR/gauge/grid10m/precl_mon_v1.0.lnx.1948-curr.gri1.0m.ctl .
+
+rm a.out tmp.f
+set verbose
+cat << EOR > tmp.f
+      parameter(IYR=(2015-1982+1),nn=IYR*12,IYR2=IYR-1)
+      parameter(mon0=0,nn1=nn+mon0,MLD=9)
+      parameter(mlo=360,mla=180,nxy=mlo*mla*4)
+
+      real*4 OBS(mlo,mla,nn1),CFSv2(mlo,mla,nn,MLD)
+     *,x(IYR2),y(IYR2),Heidke(mlo,mla,12,MLD),tmp(mlo,mla)
+
+c-------------------------------------------------------------c
+c (1) INPUT data
+c-------------------------------------------------------------c
+c----Hindcasts
+      open(25,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &xPrec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+c?     & form='unformatted',access='direct',recl=nxy,type='unknown')
+
+      do 25 k=1,nn
+      do 25 L=1,MLD
+       KL=L+(k-1)*MLD
+c?         read(25,rec=KL)((tmp(i,j),i=1,mlo),j=1,mla)
+         read(25,rec=KL)((CFSv2(i,j,k,L),i=1,mlo),j=1,mla)
+
+c?       do 15 i=1,mlo
+c?       do 15 j=1,mla
+c?15       CFSv2(i,j,k,L)=tmp(i,j)
+
+c---check the data: NO DATA for JAN1982!!!!
+c?      write (66,39)k,l
+c?      write (66,19)((CFSv2(i,j,k,L),i=1,50),j=1,50)
+25    continue
+      close(25)
+39    format('k=',I3,'   L=',I3)
+19    format(20f12.3)
+
+c-------------------------------------------------------------c
+c----Observations
+      open(35,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &xPrec.CAMS_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      do 5 k=1,nn1
+      read(35,rec=k)((OBS(i,j,k),i=1,mlo),j=1,mla)
+
+c---check the data
+c?      write (77,29)k
+c?      write (77,*)((OBS(i,j,k),i=1,50),j=1,50)
+c?      write (77,19)((OBS(i,j,k),i=1,50),j=1,50)
+5     continue
+      close(35)
+29    format('k=',I3)
+
+c-------------------------------------------------------------c
+C (2) CALCULATE Heidke10
+c-------------------------------------------------------------c
+c--(2.1) normalized/anomalized the data
+c-------------------------------------------------------------c
+      Xmiss0=-9999.0
+      Xmiss=Xmiss0+100.0
+c-------------------------------------------------------------c
+c---CFSv2
+      Do 30 i=1,mlo
+      DO 30 j=1,mla
+      DO 30 L=1,MLD
+      DO 30 mon=1,12
+
+c------remove the annual cycle
+       a0=0.0
+       b0=0.0
+       Do iy=1,IYR
+        kk=(iy-1)*12+mon
+        If(CFSv2(i,j,kk,L).gt.Xmiss)then
+          a0=a0+CFSv2(i,j,kk,L)
+          b0=b0+1.0
+        Endif 
+       Enddo
+
+       Do iy=1,IYR
+        kk=(iy-1)*12+mon
+        If(b0.gt.0.0)then
+         CFSv2(i,j,kk,L)=CFSv2(i,j,kk,L)-a0/b0
+        Endif 
+       Enddo
+ 
+cx-----divided by stdv
+c?       a0=0.0
+c?       b0=0.0
+c?       Do iy=1,IYR
+c?        kk=(iy-1)*12+mon
+c?        If(CFSv2(i,j,kk,L).gt.Xmiss)then
+c?          a0=a0+CFSv2(i,j,kk,L)*CFSv2(i,j,kk,L)
+c?          b0=b0+1.0
+c?        Endif
+c?       Enddo
+c?
+c?       Do iy=1,IYR
+c?        kk=(iy-1)*12+mon
+c?        If(CFSv2(i,j,kk,L).gt.Xmiss)then
+c?         CFSv2(i,j,kk,L)=CFSv2(i,j,kk,L)/(a0/b0)**0.5
+c?        else
+c?         CFSv2(i,j,kk,L)=Xmiss0
+c?        Endif
+c?       Enddo
+30    CONTINUE
+c?        write(66,19)((CFSv2(i,j,2,2),i=1,mlo),j=1,mla)
+     
+c-------------------------------------------------------------c
+c---Observation
+      Do 35 i=1,mlo
+      DO 35 j=1,mla
+      DO 35 mon=1,12
+
+c------remove the annual cycle
+       a0=0.0
+       b0=0.0
+       Do iy=1,IYR
+        kk=(iy-1)*12+mon
+        If(OBS(i,j,kk).gt.Xmiss)then
+          a0=a0+OBS(i,j,kk)
+          b0=b0+1.0
+        Endif
+       Enddo
+
+       Do iy=1,IYR
+        kk=(iy-1)*12+mon
+        If(b0.gt.0.0)then
+          OBS(i,j,kk)=OBS(i,j,kk)-a0/b0
+        Endif
+       Enddo
+
+cx-----divided by stdv
+c?       a0=0.0
+c?       b0=0.0
+c?       Do iy=1,IYR
+c?        kk=(iy-1)*12+mon
+c?        If(OBS(i,j,kk).gt.Xmiss)then
+c?          a0=a0+OBS(i,j,kk)*OBS(i,j,kk)
+c?          b0=b0+1.0
+c?        Endif
+c?       Enddo
+
+c?       Do iy=1,IYR
+c?        kk=(iy-1)*12+mon
+c?        If(OBS(i,j,kk).gt.Xmiss)then
+c?         OBS(i,j,kk)=OBS(i,j,kk)/(a0/b0)**0.5
+c?        Else
+c?         OBS(i,j,kk)=Xmiss0
+c?        Endif
+c?      Enddo
+35    CONTINUE
+c?        write(77,19)((OBS(i,j,1),i=1,mlo),j=1,mla)
+
+c-------------------------------------------------------------c
+c--(2.2) Heidke10
+c-------------------------------------------------------------c
+      Do 45 i=1,mlo
+      DO 45 j=1,mla
+      DO 45 L=1,MLD
+      DO 45 Mon=1,12
+
+C?      DO 47 k=1,nn-MLD
+c--- Remove last year to avoide data missing due to the lag
+      DO 47 IY=1,IYR2
+
+       k=Mon+(IY-1)*12
+       k0=k+(L-1)
+       x(IY)=OBS(i,j,k0)
+       y(IY)=CFSv2(i,j,k,L)
+       call Heidke10(IYR2,x,y,score)
+47    CONTINUE
+      Heidke(i,j,Mon,L)=score
+45    CONTINUE
+c-------------------------------------------------------------c
+C (3) OUTPUT data
+c-------------------------------------------------------------c
+      open(40,file='Heidke10_skill01.data'
+     &,form='unformatted',access='direct',recl=nxy)
+      do L=1,MLD
+        write(40,rec=(L-1)*12+1)((Heidke(i,j,1,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+2)((Heidke(i,j,2,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+3)((Heidke(i,j,3,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+4)((Heidke(i,j,4,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+5)((Heidke(i,j,5,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+6)((Heidke(i,j,6,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+7)((Heidke(i,j,7,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+8)((Heidke(i,j,8,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+9)((Heidke(i,j,9,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+10)((Heidke(i,j,10,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+11)((Heidke(i,j,11,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+12)((Heidke(i,j,12,L),i=1,mlo),j=1,mla)
+c?        write(99,19)((Heidke(i,j,L),i=1,mlo),j=1,mla)
+      enddo
+      stop
+      end
+       
+      subroutine Heidke10(n,x0,y0,score)
+      REAL*4 x0(n),y0(n),x(n),y(n),rdx(n),rdy(n)
+c---rank the data
+      do k=1,n
+        x(k)=x0(k)
+        rdx(k)=k
+      enddo
+c----Input "x"=original time series
+c----Output "x"=ranked (from small to large) time series
+      call hpsort(n,n,x,rdx)
+
+c--- 10 Deciles
+       n1=int(1*n/10+1)
+       n2=int(2*n/10+1)
+       n3=int(3*n/10+1)
+       n4=int(4*n/10+1)
+       n5=int(5*n/10+1)
+       n6=int(6*n/10+1)
+       n7=int(7*n/10+1)
+       n8=int(8*n/10+1)
+       n9=int(9*n/10+1)
+
+       x1=x(n1)
+       x2=x(n2)
+       x3=x(n3)
+       x4=x(n4)
+       x5=x(n5)
+       x6=x(n6)
+       x7=x(n7)
+       x8=x(n8)
+       x9=x(n9)
+
+      do k=1,n
+        y(k)=y0(k)
+        rdy(k)=k
+      enddo
+      call hpsort(n,n,y,rdy)
+       y1=y(n1)
+       y2=y(n2)
+       y3=y(n3)
+       y4=y(n4)
+       y5=y(n5)
+       y6=y(n6)
+       y7=y(n7)
+       y8=y(n8)
+       y9=y(n9)
+
+      do k=1,n
+        x(k)=1.0
+       if (x0(k).ge.x1.and.x0(k).lt.x2)x(k)=2.0
+       if (x0(k).ge.x2.and.x0(k).lt.x3)x(k)=3.0
+       if (x0(k).ge.x3.and.x0(k).lt.x4)x(k)=4.0
+       if (x0(k).ge.x4.and.x0(k).lt.x5)x(k)=5.0
+       if (x0(k).ge.x5.and.x0(k).lt.x6)x(k)=6.0
+       if (x0(k).ge.x6.and.x0(k).lt.x7)x(k)=7.0
+       if (x0(k).ge.x7.and.x0(k).lt.x8)x(k)=8.0
+       if (x0(k).ge.x8.and.x0(k).lt.x9)x(k)=9.0
+       if (x0(k).ge.x9)x(k)=10.0
+
+        y(k)=1.0
+       if (y0(k).ge.y1.and.y0(k).lt.y2)y(k)=2.0
+       if (y0(k).ge.y2.and.y0(k).lt.y3)y(k)=3.0
+       if (y0(k).ge.y3.and.y0(k).lt.y4)y(k)=4.0
+       if (y0(k).ge.y4.and.y0(k).lt.y5)y(k)=5.0
+       if (y0(k).ge.y5.and.y0(k).lt.y6)y(k)=6.0
+       if (y0(k).ge.y6.and.y0(k).lt.y7)y(k)=7.0
+       if (y0(k).ge.y7.and.y0(k).lt.y8)y(k)=8.0
+       if (y0(k).ge.y8.and.y0(k).lt.y9)y(k)=9.0
+       if (y0(k).ge.y9)y(k)=10.0
+      enddo
+     
+      hit=0.0
+      do k=1,n
+       if(x(k).eq.y(k))hit=hit+1.0
+      enddo
+       score=100.0*(hit-n/10.0)/(9.0/10.0*n)
+c?       score=100.0*(hit-n/3.0)/(2.0/3.0*n)
+      return
+      end
+
+      SUBROUTINE hpsort(n,n2,ra,rb)
+c---ra(n): input/output variable
+c---output ra(n) rank: small -> large
+      INTEGER n,n2
+      REAL ra(n),rb(n)
+      INTEGER i,ir,j,l
+      REAL rra
+
+      if (n2.lt.2) return
+      l=n2/2+1
+      ir=n2
+10    continue
+
+        if(l.gt.1)then
+          l=l-1
+          rra=ra(l)
+          rrb=rb(l)
+        else
+          rra=ra(ir)
+          rrb=rb(ir)
+          ra(ir)=ra(1)
+          rb(ir)=rb(1)
+          ir=ir-1
+          if(ir.eq.1)then
+            ra(1)=rra
+            rb(1)=rrb
+            return
+          endif
+        endif
+
+        i=l
+        j=l+l
+20      if(j.le.ir)then
+          if(j.lt.ir)then
+            if(ra(j).lt.ra(j+1))j=j+1
+          endif
+          if(rra.lt.ra(j))then
+            ra(i)=ra(j)
+            rb(i)=rb(j)
+            i=j
+            j=j+j
+          else
+            j=ir+1
+          endif
+        goto 20
+        endif
+
+        ra(i)=rra
+        rb(i)=rrb
+      goto 10
+      END
+
+EOR
+#/usr/bin/f90 tmp.f
+#/usr/bin/f77 tmp.f
+ifort -assume byterecl tmp.f
+a.out
+
+rm tmp.f a.out 

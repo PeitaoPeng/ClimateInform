@@ -1,0 +1,90 @@
+#
+# QSUB -lT  65:30.00 -lM 4Mw
+# QSUB
+#
+ set echo
+ /bin/rm $TMPDIR/*.*
+ set wkh=/wd5/wd52/wd52xw      
+#
+ set nyr=82
+ set sn=ond
+ set mon1=10
+ set mon2=11
+ set mon3=12
+ set nday1=31
+ set nday2=30
+ set nday3=31
+#
+ dmget /dm/wd52xw/reanal/sigma/cdas.sig$nyr$sn.tar
+ cp /dm/wd52xw/reanal/sigma/cdas.sig$nyr$sn.tar $TMPDIR/cdas.sig$nyr$sn.tar
+ cp sigavg.cds.F $TMPDIR/sigavg.cds.F
+ cd $TMPDIR
+ tar xvf cdas.sig$nyr$sn.tar
+FILENV=.assign
+export FILENV
+#
+cat > parm.h << eof
+      parameter(nday=$nday1)
+eof
+#
+ set ndy=1
+ while ($ndy <= $nday1)
+   set ndyy=$ndy
+   if($ndy < 10) set ndyy="0"$ndy
+   @ iunit = $ndy + 10
+   assign -a sig$nyr$mon1$ndyy -Ff77  -Nieee -Cascii fort.$iunit
+   @ ndy++
+ end
+   assign  -Ff77 -Nieee    fort.90 
+ cf77  -Wf -o sig.x sigavg.cds.F -l$wkh/lib/xwlib.a
+ chmod 744 sig.x
+ sig.x > out1
+ if($status != 0) exit 1
+ cp fort.90 /dm/wd52pp/cdas/sigT40.$nyr$mon1
+ mv out1 /wd5/wd52/wd52pp/ftran/out1    
+ /bin/rm .assign
+#
+#
+cat > parm.h << eof
+      parameter(nday=$nday2)
+eof
+#
+ set ndy=1
+ while ($ndy <= $nday2)
+   set ndyy=$ndy
+   if($ndy < 10) set ndyy="0"$ndy
+   @ iunit = $ndy + 10
+   assign -a sig$nyr$mon2$ndyy -Ff77  -Nieee -Cascii fort.$iunit
+   @ ndy++
+ end
+   assign  -Ff77 -Nieee    fort.90 
+ cf77  -Wf -o sig.x sigavg.cds.F -l$wkh/lib/xwlib.a
+ chmod 744 sig.x
+ sig.x > out2
+ if($status != 0) exit 1
+ cp fort.90 /dm/wd52pp/cdas/sigT40.$nyr$mon2
+ mv out2 /wd5/wd52/wd52pp/ftran/out2    
+ /bin/rm .assign
+#
+#
+cat > parm.h << eof
+      parameter(nday=$nday3)
+eof
+#
+ set ndy=1
+ while ($ndy <= $nday3)
+   set ndyy=$ndy
+   if($ndy < 10) set ndyy="0"$ndy
+   @ iunit = $ndy + 10
+   assign -a sig$nyr$mon3$ndyy -Ff77  -Nieee -Cascii fort.$iunit
+   @ ndy++
+ end
+   assign  -Ff77 -Nieee    fort.90 
+ cf77  -Wf -o sig.x sigavg.cds.F -l$wkh/lib/xwlib.a
+ chmod 744 sig.x
+ sig.x > out3
+ if($status != 0) exit 1
+ cp fort.90 /dm/wd52pp/cdas/sigT40.$nyr$mon3
+ mv out3 /wd5/wd52/wd52pp/ftran/out3    
+#
+ja -s

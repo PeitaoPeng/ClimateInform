@@ -1,0 +1,26 @@
+
+CV evalution: 
+
+input nino indices for nino34 forecast: input_nino.sh
+run it: mlp_bp.CV.nino.sh
+
+input grid sst for nino34 forecast: 
+input_grdsst_2_n34.10x5.sh (coars resolution for save time)
+input_grdsst_2_n34.2.5x2.5.sh (finer resolution for local NWTP testing)
+run it: mlp_bp.CV.grdsst_2_n34.sh
+
+fld-to-fld grd forecast: mlp_bp.fld.CV.sh
+
+for eof_2_n34
+input_grdsst_2_n34.eof.sh
+mlp_bp.CV.grdsst_2_n34.eof.sh
+ac.mlp_bp.CV.grdsst_2_n34.sh
+
+for the eof_2_eof:
+input_fld_CV.eof.sh
+mlp_bp.fld_eof.CV.sh
+output_fld_CV.eof.sh
+ac.mlp_bp.fld.CV.eof.sh
+
+
+

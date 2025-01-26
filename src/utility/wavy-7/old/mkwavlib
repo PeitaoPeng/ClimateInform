@@ -1,0 +1,17 @@
+#
+
+#QSUB -lT 50
+
+#   create object library of resolution independent routines for
+#     wavy basic state linear model
+
+set verbose
+cd /tmp/wd52pp
+cp /wd5/wd52/wd52pp/wavy/model/*.f /tmp/wd52pp
+cat *.f >> wlib
+mv wlib wlib.f
+cft77 wlib.f
+bld q wavy.lib wlib.o
+bld t wavy.lib
+cp wavy.lib /wd5/wd52/wd52pp/wavy/e001/libwavy.a
+/bin/rm *

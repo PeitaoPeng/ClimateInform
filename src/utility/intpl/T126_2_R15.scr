@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ datadir1=/cpc/home/mingyue/0dataPeitao
+ datadir2=/cpc/home/wd52pp/data/wavy
+#
+ nmonth=1
+ iskip=0
+#
+ /bin/rm fort.11 fort.61
+   ln -s $datadir1/AMIPPrecNDJ201718 fort.11
+   ln -s $datadir2/AMIPPrecNDJ201718.R15.gr fort.61
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth,iskip=$iskip)
+eof
+#
+ gfortran -o int.x  T126_2_R15.f setxy.f intp2d.f
+ int.x
+#
+ja -s

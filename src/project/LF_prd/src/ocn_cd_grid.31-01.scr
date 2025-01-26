@@ -1,0 +1,45 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/project/LF_prd/src
+tmp=/export-6/sgi9/wd52pp/tmp
+datadir=/export-6/cacsrv1/wd52pp/LF_prd
+#
+longtime=71
+ntprd=41
+ngrd=102
+#
+mend=6
+mode=6
+while [ $mode -le $mend ]
+do
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/ocn_cd_grid.31-01.f $tmp/.
+cd $tmp
+unlimit
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(ntprd=$ntprd)
+       parameter(ngrd=$ngrd)
+       parameter(mmax=$mode)
+eof
+#
+#
+f77 -o ocn_cd_grid.31-01.x ocn_cd_grid.31-01.f
+echo "done compiling"
+
+#
+ ln -s $datadir/temp_102_anom_1931-2001.son.txt              fort.10
+ ln -s $datadir/coef.temp_102_anom_1931-2001.son.i3e         fort.11
+ ln -s $datadir/regr.temp_102_anom_1931-2001.son.i3e         fort.12
+ ln -s /export-6/sgi9/wd52pp/project/LF_prd/src/out          fort.20
+ ln -s $datadir/temp_102_anom_1931-2001.son.eof_rcstct.txt      fort.40
+ ln -s $datadir/skill_cd_grid_ocn_prd_temp_1931-2001.son.i3e                 fort.30
+#
+ocn_cd_grid.31-01.x
+
+mode=`expr $mode + 1`
+done

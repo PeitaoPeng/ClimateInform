@@ -1,0 +1,236 @@
+48c48
+< INTEGER :: iEPOCHS, iHIDDDEN
+---
+> INTEGER :: iEPOCHS, iHIDDDEN0, iHIDDDEN
+60c60
+< INTEGER :: giIOERR_OK   =   0
+---
+> INTEGER :: giIOERR_OK = 0
+74c74
+< REAL,ALLOCATABLE :: garDataArray(:,:)
+---
+> REAL,ALLOCATABLE :: garDataArray(:,:),garDataArray2(:,:)
+136c136,137
+< INTEGER :: giHIDDDEN = iHIDDDEN
+---
+> INTEGER :: giHIDDDEN0 = iHIDDDEN
+> INTEGER :: giHIDDDEN
+148c149
+< 
+---
+> INTEGER :: it, iy, itgt
+153,155d153
+<         
+<         ! setup 
+<         CALL sSetUp
+157,158c155,193
+<         ! neural network training
+<         CALL sTrain_Net(giEPOCHS,grALR,giIOERR_OK)
+---
+>     ! setup parameters & read in data 
+>       CALL sSetUp_1
+> 
+>     ! arrange data for CV
+>       DO itgt = 1, giFILEROWS
+> 
+>         PRINT *,'itgt=',itgt
+>         PRINT *,'start reading data'
+> 
+>         it = 0
+>         DO iy = 1, giFILEROWS 
+> 
+>         IF(iy == itgt)  PRINT *,'iy=',iy
+> 
+>         if(iy /= itgt)  then
+> 
+>         it = it + 1
+> 
+>         garDataArray(it, 1:giNDU) = garDataArray2(iy, 1:giNDU)
+> 
+>         ENDIF
+> 
+>         ENDDO  ! iy loop
+> 
+>         garDataArray(giFILEROWS,1:giNDU) = garDataArray2(itgt,1:giNDU)
+> 
+>         PRINT *,'finished reading data'
+> 
+>     ! setup arrays 
+>       CALL sSetUp_2
+> 
+>     ! neural network training
+>       CALL sTrain_Net(giEPOCHS,grALR,giIOERR_OK,itgt)
+> 
+>     ! delocate Weight_Arrays
+>       CALL sDeAllocate_Weight_Arrays
+> 
+>       ENDDO  ! itgt loop
+> 
+165,167d199
+< 
+< 
+< 
+179c211
+< SUBROUTINE sTrain_Net(giEPOCHS,grALR,iIOERR_OK)
+---
+> SUBROUTINE sTrain_Net(giEPOCHS,grALR,iIOERR_OK,itgt)
+185c217
+< INTEGER :: I,J,iPAT_NUM 
+---
+> INTEGER :: I,J,iPAT_NUM,itgt
+238c270
+<         CALL sDisplay_Errors
+---
+>         CALL sDisplay_Errors(itgt)
+297c329
+< rAC, rSTDO, rSTDP,iUNIT,WOUT,NT)
+---
+> rAC, rSTDO, rSTDP,iUNIT,WOUT,NT,itgt)
+311c343,344
+<         REAL :: WOUT(NT)   
+---
+>         REAL, INTENT(OUT) :: WOUT(NT)   
+>         INTEGER, INTENT(IN) :: itgt
+331a365,366
+> !       if (iunit.eq.30) print *, 'rOUTPUTD=',rOUTPUT
+> !       if (iunit.eq.30) print *, 'rOUTPRD=',rOUTPRD
+342c377
+<         CALL sWrite_Out(iUNIT,NT,WOUT)
+---
+>         CALL sWrite_Out(iUNIT,NT,WOUT,itgt)
+362,363c397,398
+<      !  write(6,*) 'garWIH_best=',garWIH_Best
+<      !  write(6,*) 'garWIO_best=',garWHO_Best
+---
+>         write(6,*) 'garWIH_best=',garWIH_Best
+>         write(6,*) 'garWIO_best=',garWHO_Best
+379c414
+< SUBROUTINE sSetUp
+---
+> SUBROUTINE sSetUp_1
+385c420,427
+<         CALL sRead_Data(giUNITIN,giPATS,giNDU,garDataArray)
+---
+>         CALL sRead_Data(giUNITIN,giPATS,giNDU,garDataArray2)
+> 
+> END SUBROUTINE sSetUp_1
+> 
+> SUBROUTINE sSetUp_2
+> 
+>         CALL Random_Seed
+>         print *, 'Random_Seed'
+386a429
+>         print *, 'sCreate_Training_Data'
+387a431
+>         print *, 'sScale_Data'
+388a433
+>         print *, 'sSet_Weight_Constants(giIOERR_OK)'
+389a435
+>         print *, 'sAllocate_Weight_Arrays'
+390a437
+>         print *, 'sInitiate_Weights'
+392c439
+< END SUBROUTINE sSetUp
+---
+> END SUBROUTINE sSetUp_2
+410c457
+< SUBROUTINE sDisplay_Errors
+---
+> SUBROUTINE sDisplay_Errors(itgt)
+412a460
+>         INTEGER, INTENT(IN) :: itgt
+414c462
+<    !    CALL sScale_Back()  ! no need to scale back here, scale OUTPRD is enough
+---
+>       ! CALL sScale_Back()
+435c483
+<         giUNIT_TRAIN, gaWOUT_TRAIN, giTRAINPATS)
+---
+>         giUNIT_TRAIN, gaWOUT_TRAIN, giTRAINPATS,itgt)
+443c491
+<         giUNIT_TEST, gaWOUT_TEST, giTESTPATS)
+---
+>         giUNIT_TEST, gaWOUT_TEST, giTESTPATS,itgt)
+453c501
+<         giUNIT_VAL, gaWOUT_VAL, giVALIDPATS)
+---
+>         giUNIT_VAL, gaWOUT_VAL, giVALIDPATS,itgt)
+505c553
+<       CLOSE(iUNITNUMBER)
+---
+>  !    CLOSE(iUNITNUMBER)
+507c555
+< !! open for binary data file
+---
+>  ! open for binary data file
+509,510c557,558
+<       OPEN(UNIT=iUNITNUMBER, &
+< form='unformatted',access='direct',recl=4*iFIELDS)
+---
+>       OPEN(UNIT=iUNITNUMBER,form='unformatted',&
+>  access='direct',recl=4*iFIELDS)
+513a562
+>         PRINT *, 'fldin=', fldin
+523c572
+< SUBROUTINE sWrite_Out(iUNITNUMBER, iPATTERNS, arDATAARRAY)
+---
+> SUBROUTINE sWrite_Out(iUNITNUMBER, iPATTERNS, arDATAARRAY,itgt)
+527a577
+>       INTEGER, INTENT(IN) :: itgt
+533,534c583,584
+<       OPEN(UNIT=iUNITNUMBER, &
+< form='unformatted',access='direct',recl=4*iPATTERNS)
+---
+>        OPEN(UNIT=iUNITNUMBER, &
+>  form='unformatted',access='direct',recl=4*iPATTERNS)
+536c586
+<         write (iUNITNUMBER, rec = 1) arDATAARRAY
+---
+>        WRITE (iUNITNUMBER, rec = itgt) arDATAARRAY
+553c603,604
+<         ALLOCATE(garDataArray(giPATS,giNDU)) !raw data read from file
+---
+>         ALLOCATE(garDataArray(giPATS,giNDU)) !rearranged raw data
+>         ALLOCATE(garDataArray2(giPATS,giNDU)) !raw data read from file
+583a635,646
+> SUBROUTINE sDeAllocate_Weight_Arrays()
+> 
+>         DEALLOCATE(garWIH)     !input-hidden weights
+>         DEALLOCATE(garWIH_Best)!best weights 
+>         DEALLOCATE(garWHO)             !hidden-output weights
+>         DEALLOCATE(garWHO_Best)        !best weights
+>         DEALLOCATE(garHVAL)            !hidden neuron outputs
+>         DEALLOCATE(garDUMMY1)              !dummy matrix
+>         DEALLOCATE(garDUMMY2)                  !dummy matrix
+> 
+> END SUBROUTINE sDeAllocate_Weight_Arrays
+> 
+615c678
+<         giHIDDDEN=giHIDDDEN+1          !accounts for bias to output
+---
+>         giHIDDDEN=giHIDDDEN0+1          !accounts for bias to output
+634a698
+>         
+641c705
+< DO I=1,giPATS
+---
+>  DO I=1,giPATS
+645c709
+<                 iTRAINCOUNT = iTRAINCOUNT + 1
+---
+>                 iTRAINCOUNT = iTRAINCOUNT + 1 
+650c714
+<         ELSE
+---
+>         ELSE 
+660,661d723
+<  ENDDO
+< 
+663c725
+<         DEALLOCATE(garDataArray)                                
+---
+> !       DEALLOCATE(garDataArray)                                
+784c846
+<         PRINT *, ' Scale back data begin...'
+---
+>      !  PRINT *, ' Scale back prd data begin...'

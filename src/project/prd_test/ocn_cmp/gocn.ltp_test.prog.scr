@@ -1,0 +1,124 @@
+#!/bin/sh
+##########################################
+# K is not seasonally dependent, K is dependent on LTP
+# independent of both season and climate division(cd)
+#########################################
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/prd_test/ocn_cmp
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/prd_test
+#
+last_yr=2012
+longtime=82
+ntprd=52  # ntprd=longtime-30
+ntout=22  # ntprd=longtime-60
+mode=6  #cut off modes
+var=temp
+KP=30  #for temp
+ltp=30 #  maxmum length of testing period
+irms=1  # =1: rms metric; =0: acc metrics
+metrics=rms  # =acc if irms=0
+
+
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/gocn.ltp_test.prog.f $tmp/gocn_prd_hss.f
+cp $lcdir/reof.s.f $tmp/reof.s.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(imax=102)
+       parameter(mmax=$mode)
+       parameter(ntprd=$ntprd,kp=$KP)
+       parameter(ndec=6)
+       parameter(ltp=$ltp)
+       parameter(irms=$irms)
+eof
+#
+gfortran -o gocn_prd_hss.x reof.s.f gocn_prd_hss.f
+echo "done compiling"
+
+#
+ ln -s /cpc/home/wd52pp/data/LF_prd/${var}_102.txt      fort.10
+#
+ln -s $datadir/gocn_skill.vs.ltp.prog.$metrics.gr  fort.60
+ln -s $datadir/gocn.prog.ocn.vs.ltp_t.$metrics.gr  fort.61
+ln -s $datadir/gocn.ltp.vs.k.prog.$metrics.gr  fort.65
+ln -s $datadir/gocn.prog.m_$metrics.gr  fort.66
+ln -s $datadir/gocn.prog.skill.vs.ltp.1991-$last_yr.$metrics.gr  fort.67
+#
+gocn_prd_hss.x > $datadir/gocn.ltp_test.$metrics.out
+#
+cat>$datadir/gocn_skill.vs.ltp.prog.$metrics.ctl<<EOF
+dset $datadir/gocn_skill.vs.ltp.prog.$metrics.gr
+undef 999.0
+title fcst skill and ocn for each ltest, year and season
+xdef    $ltp linear 1  1
+ydef     1  linear 1  1
+zdef     1  linear 1  1
+tdef    $ntout linear jan1991  1mon
+vars   4
+rms   0 99 rmse of fcst
+acc   0 99 acc of fcst
+hss   0 99 hss of fcst
+wrms  0 99 hss of rms of wmo clim
+endvars
+EOF
+#
+cat>$datadir/gocn.ltp.vs.k.prog.$metrics.ctl<<EOF
+dset $datadir/gocn.ltp.vs.k.prog.$metrics.gr
+undef 999.0
+title metric vs k for each ltest and year
+xdef    $ltp linear 1  1
+ydef    $KP  linear 1  1
+zdef      1  linear 1  1
+tdef    $ntout linear jan1991  1yr
+vars   1
+$metrics 0 99 metrics for OCN
+endvars
+EOF
+#
+cat>$datadir/gocn.prog.m_$metrics.ctl<<EOF
+dset $datadir/gocn.prog.m_$metrics.gr
+undef 999.0
+title max or min metric coresponding to ocn
+xdef    $ltp linear 1  1
+ydef    $ntout  linear 1  1
+zdef      1  linear 1  1
+tdef      1  linear jan1991  1yr
+vars   1
+m$metrics 0 99 metrics for OCN
+endvars
+EOF
+#
+cat>$datadir/gocn.prog.skill.vs.ltp.1991-$last_yr.$metrics.ctl<<EOF
+dset $datadir/gocn.prog.skill.vs.ltp.1991-$last_yr.$metrics.gr
+undef 999.0
+title max or min metric coresponding to ocn
+xdef    $ltp linear 1  1
+ydef      1  linear 1  1
+zdef      1  linear 1  1
+tdef      1  linear jan1991  1yr
+vars   3
+acc  0 99 acc vs ltp for OCN
+rms  0 99 rmse
+wrms  0 99 wmo rmse
+endvars
+EOF
+#
+cat>$datadir/gocn.prog.ocn.vs.ltp_t.$metrics.ctl<<EOF
+dset $datadir/gocn.prog.ocn.vs.ltp_t.$metrics.gr
+undef 999.0
+title OCN(K) vs ltp and year
+xdef    $ltp linear 1  1
+ydef      1  linear 1  1
+zdef      1  linear 1  1
+tdef    $ntout linear jan1991  1yr
+vars   1
+mk   0 99 acc vs ltp for OCN
+endvars
+EOF
+#
+/bin/rm $tmp/fort.*         

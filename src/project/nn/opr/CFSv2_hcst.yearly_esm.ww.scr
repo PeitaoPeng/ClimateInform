@@ -1,0 +1,102 @@
+#!/bin/sh
+
+set -eaux
+#cccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+# have ensemble mean for WW processed CFSv2 monthly data
+#ccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+ 
+lcdir=/cpc/home/wd52pp/project/nn/opr
+tmp=/cpc/home/wd52pp/tmp
+if [ ! -d $tmp ] ; then
+  mkdir -p $tmp
+fi
+datain=/cpc/cfsr_ipvcdb/ipv/CFSv2/CFSv2HCSTmonpost/SST
+dataout=/cpc/consistency/nn/CFSv2SSTem
+#
+cd $tmp
+#
+ybgn=1982
+yend=2020
+
+yy=$ybgn
+while [ $yy -le $yend ]; do
+
+cp $datain/CFSv2SST$yy*.gr .
+
+cat>CFSv2SST.ctl<<EOF
+dset ^CFSv2SST%y4e%e.gr
+undef -9999.00
+options template big_endian
+title CFSv2 SST
+ydef 181 linear -90.000000 1
+xdef 360 linear 0.000000 1.000000
+* ZDEF target month: z=1 for month one
+zdef 10 linear 1 1
+* Month of TDEF first target month
+tdef 600 linear jan$yy 1mo
+edef 10 names 01 02 03 04 05 06 07 08 09 10
+vars 4
+f00   10   99 CFSv2 SST
+f06   10   99 CFSv2 SST
+f12   10   99 CFSv2 SST
+f18   10   99 CFSv2 SST
+ENDVARS
+EOF
+
+cat >have_data<<EOF
+run read_write.gs
+EOF
+cat >read_write.gs<<EOF
+'reinit'
+'open CFSv2SST.ctl'
+'set x 1 360'
+'set y 1 181'
+'set gxout fwrite'
+'set fwrite $dataout/CFSv2SSTem$yy.gr'
+
+'set e 4'
+it=1
+while ( it <= 12)
+'set t 'it
+
+'set e 4'
+ ee=8
+ if(yyyy=1982&mm=1); ee=7;endif
+
+ nz=1
+while ( nz <= 9)
+'set z 'nz
+  'define esm=ave((f00+f06+f12+f18)/4.,e=4,e='ee')'
+  'define esmmsk=esm+f00-f00'
+  'd const(esmmsk,-9999.00,-u)'
+ nz=nz+1
+endwhile
+
+it=it+1
+endwhile
+'disable fwrite'
+EOF
+#
+grads -bl <have_data
+#
+\rm CFSv2SST$yy*.gr
+#
+yy=`expr $yy + 1`
+done  # yy loop
+cat >CFSv2SSTem.ctl<< ctlEOF
+dset ^CFSv2SSTem%y4.gr
+undef -9999.0
+options template little_endian
+* /cpc/home/wd20wq/projx/CFSv2/CFSv2Hcst/Ensemble_mean_mon.sh
+title CFSv2 SST
+ydef 181 linear -90.000000 1
+xdef 360 linear 0.000000 1.000000
+* ZDEF target month: z=1 for month one; z=9 for month nine
+zdef 9 linear 1 1
+* TDEF: First target month
+tdef 600 linear jan1982 1mo
+vars 1
+SSTem 9  99 CFSv2 SST
+ENDVARS
+ctlEOF
+mv CFSv2SSTem.ctl $dataout

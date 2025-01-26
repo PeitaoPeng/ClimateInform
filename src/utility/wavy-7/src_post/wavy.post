@@ -1,0 +1,59 @@
+#
+ 
+#QSUB -lT 360 -lM 5Mw
+
+# Shell script post processing for wavy basic state linear model
+#
+ set echo
+ set verbose
+ set timestamp
+#ja
+ mkdir /tmp/wd52pp
+ mkdir /tmp/wd52pp/postwavy
+TEMP=/tmp/wd52pp/postwavy
+TEMP2=/ptmp2/wd52pp
+ cd $TEMP
+FILENV=.assign
+#
+#  get object files from dti
+#
+cp /wd5/wd52/wd52pp/wavy/pstlrs.18L.f $TEMP/pstlrs.f
+cft77 pstlrs.f
+cp /wd5/wd52/wd52pp/wavy/e001/NCARFFTB  ncarfft.o 
+ segldr -o pstwavy pstlrs.o ncarfft.o
+# get data and directory
+ assign -a /wd5/wd52/wd52pp/wavy/e001/wavy.18L.outdrct   fort.10
+#assign -a $TEMP2/e001.result fort.19
+ cp $TEMP2/e001.result fort.19
+# get spectral topography
+ assign -a /wd5/wd52/wd52pp/wavy/e001/top.nmc.data   fort.16
+#assign -a /wd5/wd52/wd52pp/wavy/e001/top.pst.data   fort.16
+#assign -a /wd5/wd52/wd52pp/wavy/e001/nontop.pst.data   fort.16
+#assign -a /wd5/wd52/wd52pp/wavy/e001/ectop.pst.data fort.16
+# get derived field table
+ assign -a /wd5/wd52/wd52pp/wavy/e001/dft fort.14
+# get requested field directory
+ assign -a /wd5/wd52/wd52pp/wavy/e001/rfd fort.12
+# get unit conversion tables
+ assign -a /wd5/wd52/wd52pp/wavy/e001/vunits     fort.34
+ assign -a /wd5/wd52/wd52pp/wavy/e001/aunits     fort.35
+ assign -a /wd5/wd52/wd52pp/wavy/e001/punits     fort.36
+ assign -a /wd5/wd52/wd52pp/wavy/e001/cnfactbl   fort.37
+ assign -a /wd5/wd52/wd52pp/wavy/e001/cnfc2tbl   fort.38
+ assign -a /wd5/wd52/wd52pp/wavy/e001/lookutbl   fort.39
+#
+assign -Fnull -Nieee  fort.9                                  
+assign -Fnull -Nieee  fort.19                                  
+#
+#     run post processing
+ pstwavy < /wd5/wd52/wd52pp/wavy/post.indeck
+#
+ mv fort.18 idrct                  
+ cp idrct /wd5/wd52/wd52pp/wavy/e001/dir.pp
+#
+#cp fort.9 /cray1_tmp/wd52pp/wavy.out 
+cp fort.9 /dm/wd52pp/wavyout/wavy.out 
+#
+ rm .assign
+#
+#ja -cst                     # end job accounting

@@ -1,0 +1,244 @@
+#-----/u/Zeng-Zhen.Hu/nfs/WorkGroup/CFSV2skill/Prec/RMSE2_skill01.scr
+#
+# RMSE of  CFSv2 hindcasts
+#
+# (4) RMSE2_skill01.scr
+#
+# (3) DATA_CFSv2_CMAS.scr
+#   the output data in "/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec"
+
+# (2) download data from Wanqiu's tape in "/5year/NCEPDEV/cpc-om/Wanqiu.Wang/cfsrr/CFSv2Hcst4FCST/Prec"
+#   save in "/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec" by conducting following commends
+#   GET_CFSv2_month.scr
+#
+# (1) scp observed data:
+# scp hzz@cpc-ls-work1:/cpc/home/mingyue/PRODUCTS/50YR/gauge/grid10m/precl_mon_v1.0.lnx.* .
+# scp hzz@cpc-ls-work1:/cpc/home/mingyue/PRODUCTS/50YR/gauge/grid10m/precl_mon_v1.0.lnx.1948-curr.gri1.0m.ctl .
+
+rm a.out tmp.f
+set verbose
+cat << EOR > tmp.f
+      parameter(IYR=(2015-1982+1),nn=IYR*12,mon0=0,nn1=nn+mon0,MLD=9)
+      parameter(mlo=360,mla=180,nxy=mlo*mla*4)
+
+      real*4 OBS0(nn1),OBS(mlo,mla,nn1)
+     *,CFS0(nn,MLD),CFSv2(mlo,mla,nn,MLD)
+     *,RMSE(mlo,mla,12,MLD),tmp(mlo,mla)
+
+c-------------------------------------------------------------c
+c (1) INPUT data
+c-------------------------------------------------------------c
+c----Hindcasts
+      open(25,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &xPrec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+c?     & form='unformatted',access='direct',recl=nxy,type='unknown')
+
+      do 25 k=1,nn
+      do 25 L=1,MLD
+       KL=L+(k-1)*MLD
+c?         read(25,rec=KL)((tmp(i,j),i=1,mlo),j=1,mla)
+         read(25,rec=KL)((CFSv2(i,j,k,L),i=1,mlo),j=1,mla)
+
+c?       do 15 i=1,mlo
+c?       do 15 j=1,mla
+c?15       CFSv2(i,j,k,L)=tmp(i,j)
+
+c---check the data: NO DATA for JAN1982!!!!
+c?      write (66,39)k,l
+c?      write (66,19)((CFSv2(i,j,k,L),i=1,50),j=1,50)
+25    continue
+      close(25)
+39    format('k=',I3,'   L=',I3)
+19    format(20f12.3)
+
+c-------------------------------------------------------------c
+c----Observations
+      open(35,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &xPrec.CAMS_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      do 5 k=1,nn1
+      read(35,rec=k)((OBS(i,j,k),i=1,mlo),j=1,mla)
+
+c---check the data
+c?      write (77,29)k
+c?      write (77,*)((OBS(i,j,k),i=1,50),j=1,50)
+c?      write (77,19)((OBS(i,j,k),i=1,50),j=1,50)
+5     continue
+      close(35)
+29    format('k=',I3)
+
+c-------------------------------------------------------------c
+C (2) CALCULATE correlations
+c-------------------------------------------------------------c
+c--(2.1) normalized the data
+c-------------------------------------------------------------c
+      Xmiss0=-9999.0
+      Xmiss=Xmiss0/3.0+10.0
+c-------------------------------------------------------------c
+c---CFSv2
+      Do 28 i=1,mlo
+      DO 28 j=1,mla
+      DO 28 L=1,MLD
+
+      DO 30 mon=1,12
+c------remove the annual cycle
+       a0=0.0
+       b0=0.0
+       Do iy=1,IYR
+        kk=(iy-1)*12+mon
+        If(CFSv2(i,j,kk,L).gt.Xmiss)then
+          a0=a0+CFSv2(i,j,kk,L)
+          b0=b0+1.0
+        Endif 
+       Enddo
+
+       Do iy=1,IYR
+        kk=(iy-1)*12+mon
+        If(b0.gt.0.0)then
+         CFSv2(i,j,kk,L)=CFSv2(i,j,kk,L)-a0/b0
+        Endif 
+       Enddo
+ 
+cx-----divided by stdv
+c?       a0=0.0
+c?       b0=0.0
+c?       Do iy=1,IYR
+c?        kk=(iy-1)*12+mon
+c?        If(CFSv2(i,j,kk,L).gt.Xmiss)then
+c?          a0=a0+CFSv2(i,j,kk,L)*CFSv2(i,j,kk,L)
+c?          b0=b0+1.0
+c?        Endif
+c?       Enddo
+
+       Do iy=1,IYR
+        kk=(iy-1)*12+mon
+        If(CFSv2(i,j,kk,L).gt.Xmiss)then
+         CFS0(kk,L)=CFSv2(i,j,kk,L)
+c?         CFS0(kk,L)=CFSv2(i,j,kk,L)/(a0/b0)**0.5
+        else
+         CFS0(kk,L)=Xmiss0
+        Endif
+       Enddo
+30    CONTINUE
+
+c----3 monthly mean
+      CFSv2(i,j,1,L)=CFS0(1,L)
+      CFSv2(i,j,nn,L)=CFS0(nn,L)
+      Do k=2,nn-1
+       CFSv2(i,j,k,L)=(CFS0(k-1,L)+CFS0(k,L)+CFS0(k+1,L))/3.0
+      Enddo
+28    CONTINUE
+c?        write(66,19)((CFSv2(i,j,2,2),i=1,mlo),j=1,mla)
+     
+c-------------------------------------------------------------c
+c---Observation
+      Do 38 i=1,mlo
+      DO 38 j=1,mla
+
+      DO 35 mon=1,12
+c------remove the annual cycle
+       a0=0.0
+       b0=0.0
+       Do iy=1,IYR
+        kk=(iy-1)*12+mon
+        If(OBS(i,j,kk).gt.Xmiss)then
+          a0=a0+OBS(i,j,kk)
+          b0=b0+1.0
+        Endif
+       Enddo
+
+       Do iy=1,IYR
+        kk=(iy-1)*12+mon
+        If(b0.gt.0.0)then
+          OBS(i,j,kk)=OBS(i,j,kk)-a0/b0
+        Endif
+       Enddo
+
+cx-----divided by stdv
+c?       a0=0.0
+c?       b0=0.0
+c?       Do iy=1,IYR
+c?        kk=(iy-1)*12+mon
+c?        If(OBS(i,j,kk).gt.Xmiss)then
+c?          a0=a0+OBS(i,j,kk)*OBS(i,j,kk)
+c?          b0=b0+1.0
+c?        Endif
+c?       Enddo
+
+       Do iy=1,IYR
+        kk=(iy-1)*12+mon
+        If(OBS(i,j,kk).gt.Xmiss)then
+         OBS0(kk)=OBS(i,j,kk)
+c?         OBS0(kk)=OBS(i,j,kk)/(a0/b0)**0.5
+        Else
+         OBS0(kk)=Xmiss0
+        Endif
+      Enddo
+35    CONTINUE
+
+c----3 monthly mean
+      OBS(i,j,1)=OBS0(1)
+      OBS(i,j,nn)=OBS0(nn)
+      Do k=2,nn-1
+       OBS(i,j,k)=(OBS0(k-1)+OBS0(k)+OBS0(k+1))/3.0
+      Enddo
+38    CONTINUE
+c?        write(77,19)((OBS(i,j,1),i=1,mlo),j=1,mla)
+
+c-------------------------------------------------------------c
+c-------------------------------------------------------------c
+c--(2.2) RMSE
+c-------------------------------------------------------------c
+      Do 45 i=1,mlo
+      DO 45 j=1,mla
+      DO 45 L=1,MLD
+      DO 45 Mon=1,12
+
+       rr=0.0
+       total=0.0
+C?      DO 47 k=1,nn-MLD
+      DO 47 IY=1,IYR
+       k=Mon+(IY-1)*12
+       k0=k+(L-1)
+      if(OBS(i,j,k0).gt.Xmiss.and.CFSv2(i,j,k,L).gt.Xmiss
+     &.and.k0.le.nn1)then
+        total=total+1.0
+        rr=rr+(OBS(i,j,k0)-CFSv2(i,j,k,L))**2
+      endif
+47    CONTINUE
+
+      RMSE(i,j,Mon,L)=xMISS0
+      if(total.gt.2.0)RMSE(i,j,Mon,L)=rr**0.5/(total-2.0)
+45    CONTINUE
+
+c-------------------------------------------------------------c
+C (3) OUTPUT data
+c-------------------------------------------------------------c
+      open(40,file='RMSE2_skill01.data'
+     &,form='unformatted',access='direct',recl=nxy)
+      do L=1,MLD
+        write(40,rec=(L-1)*12+1)((RMSE(i,j,1,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+2)((RMSE(i,j,2,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+3)((RMSE(i,j,3,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+4)((RMSE(i,j,4,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+5)((RMSE(i,j,5,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+6)((RMSE(i,j,6,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+7)((RMSE(i,j,7,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+8)((RMSE(i,j,8,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+9)((RMSE(i,j,9,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+10)((RMSE(i,j,10,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+11)((RMSE(i,j,11,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+12)((RMSE(i,j,12,L),i=1,mlo),j=1,mla)
+c?        write(99,19)((RMSE(i,j,L),i=1,mlo),j=1,mla)
+      enddo
+      stop
+      end
+EOR
+#/usr/bin/f90 tmp.f
+#/usr/bin/f77 tmp.f
+ifort -assume byterecl tmp.f
+a.out
+
+rm tmp.f a.out 

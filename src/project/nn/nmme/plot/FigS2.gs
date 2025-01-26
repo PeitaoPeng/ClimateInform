@@ -1,0 +1,68 @@
+'reinit'
+'run /cpc/home/wd52pp/bin/white.gs'
+'run /cpc/home/wd52pp/bin/rgbset.gs'
+'enable print FigS2.meta'
+*
+'open /cpc/consistency/nn/nmme/ac_t.nmme.sst.may_ic.1982-2019.djf.ctl'
+*
+'set string 1 tc 5'
+'set strsiz 0.12 0.12'
+*'draw string 4.25 9.9 AC(NMME(May IC).vs.OBS) DJF 1983-2020'
+*---------------------------set dimsnesion, page size and style
+nframe=1
+nframe2=1
+nframe3=1
+xmin0=1.5;  xlen=5.5;  xgap=0.2
+ymax0=10.; ylen=-2.2;  ygap=-0.05
+*
+iframe=1
+while ( iframe <= nframe )
+  icx=1; if (iframe > nframe2); icx=2; endif
+  if (iframe > nframe3); icx=3; endif
+  xmin=xmin0+(icx-1)*(xlen+xgap)
+  xmax=xmin+xlen
+  icy=iframe; if (iframe > nframe2); icy=iframe-nframe2; endif
+  if (iframe > nframe3); icy=iframe-nframe3; endif
+  ymax=ymax0+(icy-1)*(ylen+ygap)
+  ymin=ymax+ylen
+  tlx=xmin
+  tly=ymax-0.1
+  bx=4.25
+  by=ymin-0.2
+* say xmin; say xmax; say ymin; say ymax
+  'set vpage 0 8.5 0 11'
+  'set parea 'xmin' 'xmax' 'ymin' 'ymax
+*
+'define p1=cmo'
+'set t 1'
+'set lon 120 285'
+'set lat  -20 20'
+'set yaxis -20 20 10'
+*'set frame off'
+'set grads off'
+*'set grid off'
+*'set xlab off'
+*if(iframe = 3); 'set xlab on'; endif
+*'set map 15 1 2'
+'set gxout shaded'
+'set clevs  -0.4 -0.3 -0.2 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9'
+'set ccols   44 43 42 0 21 22 23 24 25 26 27 29'
+'d p'%iframe
+*'run /cpc/home/wd52pp/bin/dline.gs 120 0 285 0'
+*'run /cpc/home/wd52pp/bin/dline.gs 180 -20 180 20'
+
+'run /cpc/home/wd52pp/bin/dline.gs 190 -5 190 5'
+'run /cpc/home/wd52pp/bin/dline.gs 240 -5 240 5'
+'run /cpc/home/wd52pp/bin/dline.gs 190 -5 240 -5'
+'run /cpc/home/wd52pp/bin/dline.gs 190 5 240 5'
+'set string 1 tl 5 0'
+'set strsiz 0.13 0.13'
+*if(iframe = 1); 'draw string 'tlx' 'tly' a) OBS vs OBS'; endif
+'set string 1 tl 5 0'
+
+iframe=iframe+1
+endwhile
+'run /cpc/home/wd52pp/bin/cbarn2.gs 0.75 0 'bx' 'by''
+'print'
+'printim FigS2.png gif x600 y800'
+

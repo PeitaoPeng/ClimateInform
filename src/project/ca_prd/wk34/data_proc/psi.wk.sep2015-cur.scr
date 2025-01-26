@@ -1,0 +1,40 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/ca_prd/wk34/data_proc
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/ca_prd
+#
+infile=psi.7drm.1979-curr
+outfile=psi.wk.sep2015-cur
+#
+ts=13389 #31aug2015 is central pint of IC for the 1st Friday run (4sep2015)
+te=13900 #23jan2017 is central pint of IC for the last Friday run (27sep2015)
+#======================================
+# read psi200 for each year
+#======================================
+cd $tmp
+
+cat >psiread<<EOF
+run read.gs
+EOF
+cat >read.gs<<EOF
+'reinit'
+'open $datadir/psi.7drm.1979-curr.ctl'
+'set x 1 144'
+'set y 1 73'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+it=$ts
+while ( it <= $te )
+'set t 'it''
+'d psi'
+it=it+7
+endwhile
+'c'
+EOF
+grads -l <psiread
+
+cp $outfile.* $datadir
+

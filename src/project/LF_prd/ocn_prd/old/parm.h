@@ -1,0 +1,5 @@
+       parameter(ltime=76)
+       parameter(imax=102)
+       parameter(mmax=6)
+       parameter(ntprd=ltime-30)
+       parameter(iseason=10)

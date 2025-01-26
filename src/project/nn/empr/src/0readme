@@ -1,0 +1,8 @@
+1. prepare data in /cpc/home/wd52pp/project/nn/empr/data_proc
+2. have input: input_grdsst_2_n34.eof.sh; or for testing: input_grdsst_2_n34.eof.random.sh
+3. run ANN: mlp_bp.CV.grdsst_2_n34.eof.sh
+4. have skill: skill.grdsst_2_n34.gs
+5. skill(1V var_cov or cor_cov): ANN.empr_skill.sst_2_nino34.1V.sh, MLR.empr_skill.sst_2_nino34.1V.sh
+6. 2V skill: ANN.empr_skill.sst_2_nino34.2V.sh, MLR.empr_skill.sst_2_nino34.2V.sh
+7. 2V_eeof skill: ANN.empr_skill.sst_2_nino34.eeof.sh, MLR.empr_skill.sst_2_nino34.eeof.sh
+8. 3V skill: ANN.empr_skill.sst_2_nino34.3V.sh, MLR.empr_skill.sst_2_nino34.eeof.sh

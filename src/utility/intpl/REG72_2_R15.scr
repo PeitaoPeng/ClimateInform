@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ datadir=/cpc/home/wd52pp/project/attr/win13-14
+#
+# nmonth=6
+ nmonth=34
+ iskip=0
+#
+ /bin/rm fort.11 fort.21
+#   ln -s $datadir/prate.oct13-mar14.gr fort.11
+#   ln -s $datadir/prate.oct13-mar14.R15.gr fort.21
+   ln -s $datadir/prate.djfm.1981-curr.gr fort.11
+   ln -s $datadir/prate.djfm.1981-curr.R15.gr fort.21
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth,iskip=$iskip)
+eof
+#
+ gfortran  REG72_2_R15.f setxy.f intp2d.f
+ a.out
+#

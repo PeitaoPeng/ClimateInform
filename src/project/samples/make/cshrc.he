@@ -1,0 +1,192 @@
+From lukehe@hp15  Fri Aug 14 12:07:52 1998
+Received: from sun1.wwb.noaa.gov by sgi57.wwb.noaa.gov via SMTP (940816.SGI.8.6.9/940406.SGI.AUTO)
+	for <wd52pp@sgi57.wwb.noaa.gov> id MAA01470; Fri, 14 Aug 1998 12:07:51 -0400
+Received: Fri, 14 Aug 98 12:07:49 EDT from hp15.wwb.noaa.gov by sun1.wwb.noaa.gov (4.1/1.5)
+Received: (from lukehe@localhost) by hp15.wwb.noaa.gov (8.7.5/8.7.3) id MAA02029 for wd52pp@sun1; Fri, 14 Aug 1998 12:07:49 -0400 (EDT)
+Date: Fri, 14 Aug 1998 12:07:49 -0400 (EDT)
+From: Luke Y He <lukehe@hp15>
+Message-Id: <199808141607.MAA02029@hp15.wwb.noaa.gov>
+Apparently-To: <wd52pp@sun1>
+Status: O
+
+# @(#)Cshrc 1.3 88/02/08 SMI
+#################################################################
+#
+#         Dual system .cshrc file
+#
+#         Initial setup file for both interactive and noninteractive
+#         C-Shells. This script checks to see if the user is logging
+#	  in from a Sun 4/65 or an SGI 4d/25, and sets search paths
+#	  and environment variables accordingly.
+#	
+#	  Created on 26 March 1991 by Barney Quinn
+#		
+#
+#################################################################
+
+# Decide if the user has logged in from a Sun or an SGI workstation, and
+# set the search paths accordingly......
+
+if ( -e /etc/sys_sgi ) then
+	set path = ( /home/sgi85/wd52wh/sgi.grads ~/gradstest /usr/gnu/bin /usr/bin/X11 /usr/local/bin /usr/sbin /usr/bsd /bin /usr/bin/sh /usr/bin ~ . )
+        set path = ( $path /usr/explorer/explorer/bin)
+#        set path = ( $path /export/sgi39/wd22sl/grads)
+#        set path = ( $path /export/sgi80/wd20mf/grads)
+#         setenv TERM xterm;
+         setenv TERM vt100;
+
+	setenv DISPLAY 140.90.132.51:0
+	setenv GADDIR /home/hp15/lukehe/gradstest
+##        setenv GADDIR ~wd52mc/gradssun
+##        setenv GADDIR /export/sgi39/wd22sl/grads
+          setenv GAUDFT /export/sgi39/wd22sl/grads/udefs/udft
+##	setenv GAUDFT /export/sgi80/wd20mf/grads/udf/sgi/udft
+##        setenv GASCRP /export/sgi59/wd51js/gradsproc
+#        setenv NNTPSERVER sun1.wwb.noaa.gov
+        setenv NNTPSERVER "nih-csl.dcrt.nih.gov"
+endif
+
+if ( -e /etc/sys_hp ) then
+	set path = ( /usr/frame/bin /usr/vue/bin /usr/contrib/bin \
+		/usr/local/bin /usr/bin/X11 /usr/local/bin /usr/sbin \
+        	/usr/gnu/bin /usr/bsd /bin /usr/bin  /home/hp15/lukehe/newgrads ~ . )
+	setenv DISPLAY 140.90.132.51:0
+	setenv GAUDFT /usr/local/lib/grads/udf/udft.regrid  
+#	setenv GADDIR /export/sgi59/wd51js/newgrads
+	setenv GADDIR /home/hp15/lukehe/newgrads
+#        setenv GASCRP /export/sgi59/wd51js/gradsproc
+#        setenv NNTPSERVER sun1.wwb.noaa.gov
+        setenv NNTPSERVER "nih-csl.dcrt.nih.gov"
+	echo "sys_hp ..."
+endif
+if ( -e /etc/sys_sun ) then
+	#  add directories for local commands
+	set lpath = (/export/sgi80/fiorino/grads /usr/bin/X11 /usr/local/bin /var/sundesk/bin )
+	set path = ( /usr/ucb /usr/lang $lpath /bin /usr/local ) 
+	set path = ( $path /usr/bin /usr/etc /usr/games . ~ )
+	setenv MANPATH /usr/lang/man:/usr/openwin/man:/usr/man
+	# set up OpenWindows default location
+	setenv OPENWINHOME /usr/openwin
+	#         cd path
+	set lcd = ( )  #  add parents of frequently used directories
+	set cdpath = (.. ~ ~/bin ~/src $lcd)
+	unset noclobber
+	setenv SUNDESK /var/sundesk
+	setenv LD_LIBRARY_PATH /usr/openwin/lib
+	#setenv FONTPATH /usr/openwin/lib/fonts
+        setenv DISPLAY hp15:0
+	setenv GAUDFT /export/sgi80/wd20mf/grads/udf/sun/udft
+        setenv GASCRP /export/sgi59/wd51js/gradsproc
+#        setenv NNTPSERVER sun1.wwb.noaa.gov
+        setenv NNTPSERVER "nih-csl.dcrt.nih.gov"
+
+endif
+
+
+#if(-e ~nawipsop/.cshrc) then
+#       source ~nawipsop/.cshrc
+#else
+#       source /export/nmc05/nawipsop/cshrc.nawips
+#endif
+
+#       setenv NNTPSERVER sun1.wwb.noaa.gov
+        setenv NNTPSERVER "nih-csl.dcrt.nih.gov"
+
+# aliases for all shells
+alias ls      'ls -p'
+alias yanmail 'yyuan@fenix2.dol-esa.gov' 
+alias a      'alias'
+alias l      'ls -l |pg'
+alias kl     'kill -9'
+alias h      'history'
+alias s      'source'
+alias t      'touch'
+alias luke1    'setenv DISPLAY r-lukehe:0'
+alias xv1      '/usr/local/bin/display'
+alias cd45      'cd /export-6/sgi45/cac/lukehe'
+alias c90       'rlogin 140.90.57.22 -l wd51lh'
+alias f90       'ftp 140.90.57.22'
+alias cdsd       'cd /export-6/cacsrv1/data/daily/sfcs'
+alias uhunix2   'telnet uhunix2.uhcc.hawaii.edu'
+alias ftpuhunix2   'ftp uhunix2.uhcc.hawaii.edu'
+alias cdda      'cd /export-6/sgi45/cac/lukehe/NDAdir'
+#alias display   'setenv DISPLAY 140.90.132.51:0'
+alias gro       '/home/hp15/lukehe/gradstest/grads'
+alias grn       '/home/hp15/lukehe/newgrads/grads'
+alias grsst       '/export/sgi80/wd20mf/grads'
+alias net       '~wd20yz/net95/netscape'
+alias gxpsco         '/home/hp15/lukehe/gradstest/gxpscw'
+alias gxpso         '/home/hp15/lukehe/gradstest/gxps'
+alias gxpscn         '/home/hp15/lukehe/newgrads/gxps -c'
+alias gxpsn         '/home/hp15/lukehe/newgrads/gxps'
+alias rm            'rm -i'
+alias pwd           'echo $cwd'
+alias xt         'xterm -sb -sl 2000 &'
+##CHANGE
+xset fp+ ~wd20yz/xfonts
+#-----print
+alias lprhp         'lp -d predhpPS'
+#alias lpqhp         'lpstat -d predhpAS'
+alias lpqhp         'lpq -P predhpPS'
+alias lprhpa        'lp -d predhpAS'
+#----clolour printer
+#alias lprc2   'lpr -P ph200e'
+alias lprc2   'lpr -Pph200e'
+alias lpqc2   'lpq -Pph200e'
+alias lprc3   'lpr -Pph200i '
+alias lpqc3   'lpq -Pph200i '
+alias lprc4   'lpr -Ppredcolor'
+alias lpqc4   'lpq -Ppredcolor'
+alias lpr5ps   'lpr -PreanalhpPS'
+alias lpq5   'lpq -PreanalhpPS'
+alias lpr5as   'lpr -PreanalhpAS'
+#---white printer
+alias lpr8 'lpr -P predhpPS'
+alias lpq8 'lpq -P predhpPS'
+alias lpr8a 'lpr -P predhpAS'
+alias lpr5a       'lpr -h -P predhpAS'
+alias lpr5       'lpr -h -P predhpPS'
+alias lpr5q        'lpq -P predhpAS'
+alias lpr1 'lpr -h -Psparky'
+alias lprm1 'lprm -Psparky'
+alias lpq1 'lpq  -Psparky'
+alias lpr2 'lpr -P qms1725PS'
+alias lpq2 'lpq -P qms1725PS'
+alias lpr2a 'lpr -P qms1725AS'
+alias lprm2 'lprm -P qms1725PS'
+alias fing1 'finger shea@cola.iges.org' 
+alias fing2 'finger hilton@ua.soest.hawaii.edu' 
+#alias gxps '/export-6/sgi45/cac/lukehe/gradstest/gxps'
+#alias gxpscw '/export-6/sgi45/cac/lukehe/gradstest/gxpscw'
+umask 022
+
+# skip remaining setup if not an interactive shell
+
+#if ($?USER == 0 || $?prompt == 0) exit
+
+#          settings  for interactive shells
+
+set history=40
+set ignoreeof
+#set notify
+set savehist=40
+set prompt="`hostname`{ `whoami` } (\!)->"
+stty erase ^H
+
+#          commands for interactive shells
+
+#date
+#pwd
+
+#         other aliases
+##CHANGE
+alias lock	'xlock +nolock'
+#alias seterm    'setenv TERM vt100'
+# FMHOME line added by the FrameMaker setup program
+
+setenv FMHOME /usr/frame; set path=( $FMHOME/bin $path )
+alias swin /export/sgi79/wd23mk/bin/swin
+##-CHANGE
+xhost +
+setenv LD_LIBRARY_PATH  /usr/local/lib
+

@@ -1,0 +1,111 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/djf14-15
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/attr/djf2014-15
+#=======================================
+# have hgt and psi
+#=======================================
+#
+outfile=prate.1979-2015.cmap.djf
+tmax=434
+mseason=36
+#
+cat >havedata<<EOF
+run data_rewrite.gs
+EOF
+#
+cat >data_rewrite.gs<<EOF
+'reinit'
+'open /cpc/prcp/PRODUCTS/CMAP/monthly/current/cmap_mon.lnx.ctl'
+'set gxout fwrite'
+'set fwrite $datadir/$outfile.gr'
+'set x 1 144'
+'set y 1 72'
+'set t 1 12'
+'define pc=ave(cmap,t+0,t=$tmax,1yr)'
+'modify pc seasonal'
+'set t 1'
+k=11
+while ( k <= $tmax)
+ks=k+1
+ke=k+3
+'d ave(cmap-pc,t='ks',t='ke')'
+k=k+12
+endwhile
+'c'
+EOF
+#
+#===========================================
+# excute grads data process
+#===========================================
+grads -l <havedata
+#
+cat>$datadir/$outfile.ctl<<EOF
+dset $datadir/$outfile.gr
+undef -9999.0
+*
+XDEF 144 LINEAR 1.25 2.5
+YDEF  72 LINEAR -88.75 2.5
+*
+tdef 9999 linear jan1979 1mon
+*
+zdef 1 linear 1 1
+vars 1
+p  0 99 prate
+ENDVARS
+EOF
+#===========================================
+# regrid to R15
+#===========================================
+#
+cat >int<<fEOF
+reinit
+run regrid.gs
+fEOF
+
+cat >regrid.gs<<gsEOF
+'reinit'
+'open $datadir/$outfile.ctl'
+'open $datadir/out.64x40.ctl'
+'set gxout fwrite'
+'set fwrite $datadir/$outfile.R15.gr'
+nt=1
+while ( nt <= $mseason)
+
+'set t 'nt
+say 'time='nt
+'set lon    0. 354.375'
+'set lat  -86.6 86.6'
+'d lterp(p,p.2(t=1))'
+
+nt=nt+1
+endwhile
+gsEOF
+
+grads -pb <int
+
+#
+cat>$datadir/$outfile.R15.ctl<<EOF
+dset $datadir/$outfile.R15.gr
+*
+options little_endian
+*
+UNDEF  -9999.0
+*
+TITLE  R15 prate
+*
+XDEF  64 LINEAR 0 5.625
+*
+YDEF  40 GAUSR15 1
+*
+ZDEF  1 linear 1 1
+*
+TDEF   $mseason LINEAR dec1979 1yr
+*
+VARS 1
+p  0 99  z200
+ENDVARS
+EOF

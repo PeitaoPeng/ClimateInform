@@ -1,0 +1,62 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/ca_proj/src
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/ca_proj
+#
+var=precip
+mtx=var
+tmax=43
+nmod=8 
+ts=rpc
+ncut=nmod
+#ts=pc
+#ncut=5
+hs=tp  #hemisphere
+#
+cp $lcdir/trd_rsd.wtd.f $tmp/trd.f
+cd $tmp
+#
+if [ "$mtx" = cor ]; then id=1; fi
+if [ "$mtx" = var ]; then id=0; fi
+cat > parm.h << eof
+       parameter(ltime=$tmax)
+       parameter(imx=360,jmx=180)
+       parameter(nmod=$nmod)
+       parameter(ncut=$ncut)
+eof
+#
+#for season in djf mam jja son; do
+for season in djf; do
+#
+gfortran -o trd.x trd.f
+echo "done compiling"
+#
+\rm $tmp/fort.*         
+#
+
+#
+ ln -s $datadir/FV3amip100runs.$var.djf.ensm_anom.gr   fort.10
+ ln -s $datadir/rsd_${ts}.$var.$season.$hs.$mtx.wtd.gr   fort.11
+ ln -s $datadir/corr.preciprsd_${ts}_vs_precip.djf.wtd.gr    fort.12
+ ln -s $datadir/trd_rsd_${ts}.$var.$season.wtd.gr   fort.20
+#
+trd.x
+#
+cat>$datadir/trd_rsd_${ts}.$var.$season.wtd.ctl<<EOF
+dset $datadir/trd_rsd_${ts}.$var.$season.wtd.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  360 linear   0.5 1.
+ydef  180 linear -89.5 1.
+zdef    1 levels 1
+tdef 999 linear jan1980  1yr
+vars   1
+trd 0 99 trd of rsd
+endvars
+EOF
+#
+done
+

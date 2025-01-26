@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ datadir1=/cpc/home/wd52pp/data/obs/R1
+ datadir2=/cpc/home/wd52pp/data/obs/R1
+#
+ nmonth=70
+#
+ /bin/rm fort.11 fort.21
+   ln -s $datadir1/u850.djf.1949-cur.gr  fort.11
+   ln -s $datadir2/u850.djf.1949-cur.R15.gr      fort.21
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth)
+eof
+#
+ gfortran REG73_2_R15.f setxy.f intp2d.f
+ a.out
+#
+ja -s

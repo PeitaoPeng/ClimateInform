@@ -1,0 +1,54 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/prd_test/eocn
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/prd_test
+#
+nyear=26
+eyear=2016
+ncd=102
+#
+ampl=non-norm   #not normalized prd output
+#
+model=gocnv1
+#model=gocn
+#model=eocn
+#model=nino34
+#model=ensocmp_3ctg
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/sequence_short-out.f $tmp/sequence.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nyr=$nyear,ncd=$ncd)
+eof
+#
+#
+gfortran -o sequence.x sequence.f
+echo "done compiling"
+#
+ ln -s $datadir/${model}prd_temp.jfm.1991-$eyear.$ampl.gr  fort.11
+ ln -s $datadir/${model}prd_temp.fma.1991-$eyear.$ampl.gr  fort.12
+ ln -s $datadir/${model}prd_temp.mam.1991-$eyear.$ampl.gr  fort.13
+ ln -s $datadir/${model}prd_temp.amj.1991-$eyear.$ampl.gr  fort.14
+ ln -s $datadir/${model}prd_temp.mjj.1991-$eyear.$ampl.gr  fort.15
+ ln -s $datadir/${model}prd_temp.jja.1991-$eyear.$ampl.gr  fort.16
+ ln -s $datadir/${model}prd_temp.jas.1991-$eyear.$ampl.gr  fort.17
+ ln -s $datadir/${model}prd_temp.aso.1991-$eyear.$ampl.gr  fort.18
+ ln -s $datadir/${model}prd_temp.son.1991-$eyear.$ampl.gr  fort.19
+ ln -s $datadir/${model}prd_temp.ond.1991-$eyear.$ampl.gr  fort.20
+ ln -s $datadir/${model}prd_temp.ndj.1991-$eyear.$ampl.gr  fort.21
+ ln -s $datadir/${model}prd_temp.djf.1991-$eyear.$ampl.gr  fort.22
+
+ ln -s $datadir/${model}prd_temp_102CD.jfm1995-djf$eyear.$ampl.i3e  fort.30
+ ln -s $datadir/${model}prd_temp_102CD.jfm1995-djf$eyear.$ampl.txt  fort.40
+#
+ ln -s $datadir/${model}prd_temp_102CD.1995-$eyear.winter.$ampl.i3e  fort.41
+ ln -s $datadir/${model}prd_temp_102CD.1995-$eyear.summer.$ampl.i3e  fort.42
+#
+sequence.x
+#
+

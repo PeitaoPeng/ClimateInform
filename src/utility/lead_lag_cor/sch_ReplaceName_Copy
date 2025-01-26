@@ -1,0 +1,17 @@
+#!/bin/sh
+# seach and replace name
+
+find . -name "*.[gfFsc]*" > zz
+
+while read fname
+do 
+sed -e "s,OceanBrief/OB_analy/2017,CoastalENSO/Coastal_,g"              $fname > tmp.8
+#sed -e "s, FSv2,CFSv2,g"              $fname > tmp.8
+#sed -e "s,Prec,T2m,g"              $fname > tmp.8
+#sed -e "s,mlo=360,mlo=121,g"              $fname > tmp.8
+#sed -e "s,mla=90,mla=56,g"              $fname > tmp.8
+#sed -e "s,mla=180,mla=56,g"              $fname > tmp.8
+
+mv tmp.8 $fname
+done < zz
+\rm zz

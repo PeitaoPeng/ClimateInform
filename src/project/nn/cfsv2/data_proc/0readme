@@ -1,0 +1,4 @@
+
+have CFSv2 esm: CFSv2_hcst_esm.scr
+have CFSv2 anom: CFSv2_clim_std.scr
+have data paralell to model data: OBS_clim_std.vfc_data.scr 

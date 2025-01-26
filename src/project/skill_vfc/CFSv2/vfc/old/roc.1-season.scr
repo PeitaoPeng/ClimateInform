@@ -1,0 +1,63 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/CFS_skill/vfc
+tmp=/export/hobbes/wd52pp/tmp
+datadir1=/export-12/cacsrv1/wd52pp/CFS_vfc/0data
+datadir2=/export-12/cacsrv1/wd52pp/CFS_vfc/skill
+datadir3=/export/hobbes/wd52pp/project/CFS_skill/plot
+datadir4=/export-12/cacsrv1/wd52pp/cpc_vfc/0data
+#
+#var=temp
+ var=prec
+nseason=181
+nyears=15
+#season=winter
+ season=summer
+#
+/bin/rm $tmp/fort.*         
+cp $lcdir/roc.$season.f $tmp/roc.f
+cp $lcdir/roc_area.s.f $tmp/.
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nss=$nseason)
+       parameter(nyr=$nyears)
+       parameter(imx=36,jmx=19)
+eof
+#
+#
+f77 -o roc.x roc_area.s.f roc.f
+echo "done compiling"
+
+#
+ ln -s $datadir1/mask_2x2.data    fort.11
+ ln -s $datadir1/$var.jfm95-jfm10.cfs.below.gr  fort.12
+ ln -s $datadir1/$var.jfm95-jfm10.cfs.above.gr  fort.13
+ ln -s $datadir4/${var}_seas_verif.bi             fort.14
+#
+ ln -s $datadir3/roc_a_$var.95-cur.$season.txt  fort.61
+ ln -s $datadir3/roc_b_$var.95-cur.$season.txt  fort.62
+ ln -s $datadir2/rlb_hsg.$var.95-cur.$season.gr fort.65
+#
+roc.x > $lcdir/out
+#
+
+cat>$datadir2/rlb_hsg.$var.95-cur.$season.ctl<<EOF
+dset $datadir2/rlb_hsg.$var.95-cur.$season.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  10 linear    0.000  1
+ydef   1 linear    0.000  5
+zdef   1 levels 500
+tdef   1 linear feb1995  1mon
+vars   6
+hoa    0 99 percent of nonec grids
+hob    0 99 percent of nonec grids
+hon    0 99 percent of nonec grids
+foa    0 99 percent of nonec grids
+fob    0 99 percent of nonec grids
+fon    0 99 percent of nonec grids
+endvars
+EOF

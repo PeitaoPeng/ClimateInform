@@ -1,0 +1,58 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/project/emd_prd/src
+tmpdir=/export-6/sgi9/wd52pp/tmp
+datadir=/export-6/cacsrv1/wd52pp
+model=emd
+ltime=432
+lwrtout=660
+sd_cri=0.001  #nao=0.0005;pna=0.0001;ao=0.001
+
+cp $lcdir/ao_monthly_emd.f $tmpdir/emd.f
+cp $lcdir/emd.s.f $tmpdir/.
+cd $tmpdir
+
+#
+cat > parm.h << eof
+      parameter(LXY=$ltime,LEX=3*LXY,nout=$lwrtout)
+      parameter(n_ext=200,sd_cri=$sd_cri)
+eof
+#
+unlimit
+f77 -o emd.x emd.s.f emd.f
+echo "done compiling"
+
+/bin/rm $tmpdir/fort.*
+#
+ ln -s $datadir/$model/monthly.ao.index.b50.current.ascii fort.10
+#ln -s $datadir/$model/norm.nao.monthly.b5001.current.ascii fort.10
+#ln -s $datadir/$model/norm.pna.monthly.b5001.current.ascii fort.10
+
+ ln -s $datadir/$model/imf_monthly.ao.index.5001-8512.i3e fort.80
+#ln -s $datadir/$model/imf_monthly.nao.index.5001-8512.i3e fort.80
+#ln -s $datadir/$model/imf_monthly.pna.index.5001-8512.i3e fort.80
+emd.x > $lcdir/out
+
+cat>$datadir/$model/imf_monthly.ao.index.5001-8512.ctl<<EOF
+dset ^imf_monthly.ao.index.5001-8512.i3e
+*options big_endian
+undef -999.9
+title EXP1
+xdef  $lwrtout  linear 0.0  0.01
+ydef  1  linear -90.  1
+zdef  1 levels 1
+tdef  15 linear jan1949     1mo
+vars  6
+ori     1 99 original data
+ximf    1 99 The IMF
+spmax   1 99 upper envelope, cubic spline
+spmin   1 99 lower envelope, cubic spline
+rem     1 99 (remp-ximf) the remainder
+omega   1 99 d(theta)/dt
+endvars
+EOF
+
+
+#

@@ -1,0 +1,371 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/prd_test/pls/hrcn
+tmp=/cpc/home/wd52pp/tmp/test
+sstdir=/cpc/home/wd52pp/data/obs/sst
+hurdir=/cpc/home/wd52pp/utility/hurricane/OBS
+ 
+season=apr
+prctand=hrcn
+prctor=hadoisst
+
+cd $tmp
+
+infile1=$prctor.1948-2016.$season.gr
+infile2=mask_oi.gr
+infile3=hurr_ATL_1948-2016.txt
+cp $sstdir/$infile1 $tmp/.
+cp $sstdir/$infile2 $tmp/.
+cp $hurdir/$infile3 $tmp/.
+
+outfile1=${prctand}_$prctor.$season.fcst.pat.increment
+outfile2=${prctand}_$prctor.$season.fcst.ts.increment
+
+cp $lcdir/pls_fcst.s.f $tmp/.
+
+xdim=360
+ydim=180
+is=100
+ie=360
+js=60
+je=150
+undef=-999000000
+nyear=69
+nyr=`expr $nyear - 1`
+nfstart=34
+nfend=$nyr
+mode=2
+istd=1 #=1 standardize; =0 none
+
+cat>hrcn_sst.f<<EOF
+      parameter(im=$xdim,jm=$ydim)
+      parameter(nyr=$nyr)
+      parameter(nfs=$nfstart,nfe=$nfend)
+      parameter(nto=nfe-nfs+1)
+      parameter(undef=$undef)
+      parameter(mode=$mode)
+      parameter(ID=$istd)
+c
+      real*4 hur0(4,nyr+1)
+      real*4 hur(nyr),f1(nto-1),f2(nto-1)
+      real*4 f3(nto),f4(nto)
+      real*4 w2d(im,jm),w2d2(im,jm)
+      real*4 t3d(im,jm,nyr+1)
+      real*4 sst(im,jm,nyr),sstic(im,jm)
+      real*4 xlat(jm),cosl(jm)
+      real*4 mask(im,jm)
+      real*4 pc(nyr,mode),pat(im,jm,mode),pat2(im,jm,mode)
+      real*4 var(mode),corr(mode),pcprd(nyr,mode),pco(mode)
+      real*4 t1d(nyr+1)
+      real*4 w1d(nyr),w1d2(nyr),w3d(im,jm,nyr)
+      real*4 avg(nto)
+      real*4 pat3d(im,jm,mode,nto)
+c
+c sst data
+      open(11,
+     1file='$infile1',
+     2access='direct',form='unformatted',recl=im*jm*4)
+      open(12,
+     1file='$infile2',
+     2access='direct',form='unformatted',recl=im*jm*4)
+c
+c OBS total hurricane 1948-2008
+      OPEN(13,file='$infile3')
+c
+      open(21,
+     1file='$outfile1.gr',
+     2access='direct',form='unformatted',recl=im*jm*4)
+      open(22,
+     1file='$outfile2.gr',
+     2access='direct',form='unformatted',recl=4)
+c
+      PI=4.*atan(1.)
+      CONV=PI/180.
+
+      do j=1,jm
+      xlat(j)=-89.5+(j-1)*1.0
+      enddo
+
+      do j=1,jm
+        cosl(j)=COS(xlat(j)*CONV)
+      enddo
+c
+c read in data
+      write(6,*) 'read in data'
+      read(12,rec=1) mask
+c
+      do iy=1,nyr+1
+        read(11,rec=iy) w2d
+        do i=1,im
+        do j=1,jm
+          if(mask(i,j).ne.0) then
+          t3d(i,j,iy)=w2d(i,j)
+          else
+          t3d(i,j,iy)=undef
+          endif
+        enddo
+        enddo
+      enddo
+c
+c read in hur0
+117   format(8x,4f8.1)
+      do iy=1,nyr+1
+      read(13,117) (hur0(i,iy),i=1,4)
+      end do
+c
+      do iy=1,nyr+1
+c       hur(iy)=hur0(4,iy)
+        t1d(iy)=hur0(1,iy)
+      enddo
+      write(6,*) 't1d=',t1d
+c
+c have increment for SST and hurrican data
+c
+      do iy=1,nyr
+        hur(iy)=t1d(iy+1)-t1d(iy)
+        do i=1,im
+        do j=1,jm
+          if(mask(i,j).ne.0) then
+          sst(i,j,iy)=t3d(i,j,iy+1)-t3d(i,j,iy)
+          else
+          sst(i,j,iy)=undef
+          endif
+        enddo
+        enddo
+      enddo
+      write(6,*) 'hur=',hur
+c forecast  start
+      DO ity=nfs,nfe
+
+        it=0
+        do iy=1,ity-1
+
+          w1d(iy)=hur(iy)
+        do i=1,im
+        do j=1,jm
+          w3d(i,j,iy)=sst(i,j,iy)
+        enddo
+        enddo
+
+        enddo !iy loop
+
+        do i=1,im
+        do j=1,jm
+          sstic(i,j)=sst(i,j,ity)
+        enddo
+        enddo
+        
+c anom input data
+      call anom(w1d,nyr,ity-1,av)
+      avg(ity-33)=av
+
+      do i=1,im
+      do j=1,jm
+        if(abs(sst(i,j,1)).lt.999) then
+
+        do iy=1,ity-1
+          w1d2(iy)=w3d(i,j,iy)
+        enddo
+
+        call anom(w1d2,nyr,ity-1,av)
+
+        do iy=1,ity-1
+          w3d(i,j,iy)=w1d2(iy)
+        enddo
+
+        sstic(i,j)=sstic(i,j)-av
+
+        endif
+      enddo
+      enddo
+
+      call pls_fcst(nyr,ity-1,im,jm,$is,$ie,$js,$je,mode,
+     &w1d,w3d,sstic,pco,pat,pat2,var,cosl,undef,ID)
+c
+      do m=1,mode
+        pcprd(ity,m)=pco(m)
+        do i=1,im
+        do j=1,jm
+          pat3d(i,j,m,ity-33)=pat2(i,j,m)
+        enddo
+        enddo
+      enddo
+c
+c variance explained in the training data
+      vt=0
+      iyr=1948+ity
+      do m=1,mode
+      vt=vt+var(m)
+      enddo
+      write(6,*) ' for year',iyr
+      write(6,*) 'training var=',var
+      write(6,*) 'accumulated var=',vt
+
+      ENDDO !ity loop
+c
+      write(6,*) 'hur_avg=',avg
+c
+c write out
+c sst cor pattern for each target year
+      iw=0
+      do iy=1,nto
+
+        do m=1,mode
+          do i=1,im
+          do j=1,jm
+            w2d(i,j)=pat3d(i,j,m,iy)
+c           w2d(i,j)=pat2(i,j,m)
+          enddo
+          enddo
+
+          iw=iw+1
+          write(21,rec=iw) w2d
+        enddo
+c
+      enddo
+c
+      do iy=1,nfs-1
+      do m=1,mode
+        pcprd(iy,m)=undef
+      enddo
+      enddo
+
+      iw=0
+      do iy=1,nyr
+        iw=iw+1
+        obs=hur(iy)
+        write(22,rec=iw) obs
+        iw=iw+1
+        write(22,rec=iw) t1d(iy)
+      do m=1,mode
+        pcx=pcprd(iy,m)
+        iw=iw+1
+        write(22,rec=iw) pcx
+      enddo
+      enddo
+c
+c cor skill of pls mode
+      do m=1,mode
+        it=0
+c       do iy=nfs,nfe
+        do iy=nfs+1,nfe
+        it=it+1
+          f1(it)=hur(iy)
+          f2(it)=pcprd(iy,m)
+        enddo
+c     write(6,*) 'f1=',f1
+c     write(6,*) 'f2=',f2
+c     write(6,*) 'pcprd',pcprd
+        call anom(f1,nto-1,nto-1,avg)
+        call anom(f2,nto-1,nto-1,avg)
+        call cor_reg(nto-1,f1,f2,cor,reg)
+        var(m)=cor*cor
+        corr(m)=cor
+      enddo !m loop
+      write(6,*) 'var of fcst',var
+      write(6,*) 'cor of fcst',corr
+c cor skill of summation of a few of pls mode
+        it=0
+        do iy=nfs+1,nfe
+        it=it+1
+          f1(it)=hur(iy)
+          f2(it)=pcprd(iy,1)+pcprd(iy,2)
+        enddo
+        call anom(f1,nto-1,nto-1,avg)
+        call anom(f2,nto-1,nto-1,avg)
+        call cor_reg(nto-1,f1,f2,cor,reg)
+        sumvar=cor*cor
+        sumcor=cor
+      write(6,*) 'sum var of fcst',sumvar
+      write(6,*) 'sum cor of fcst',sumcor
+c cor skill of real anomles 
+        it=0
+        do iy=nfs,nfe
+        it=it+1
+          f3(it)=t1d(iy)
+        enddo
+c     write(6,*) 'total hurr',f3
+        call anom(f3,nto,nto,avg)
+c     write(6,*) 'anomalous hurr',f3
+c
+        it=0
+        do iy=nfs+1,nfe
+        it=it+1
+          f1(it)=f3(it+1)
+          f2(it)=pcprd(iy,1)+pcprd(iy,2)+f3(it)
+        enddo
+c     write(6,*) 'f1=',f1
+c     write(6,*) 'f2=',f2
+c       call anom(f1,nto-1,nto-1,avg)
+c       call anom(f2,nto-1,nto-1,avg)
+        call cor_reg(nto-1,f1,f2,cor,reg)
+        sumvar=cor*cor
+        sumcor=cor
+      write(6,*) 'for real anomalies'
+      write(6,*) 'sum var of fcst',sumvar
+      write(6,*) 'sum cor of fcst',sumcor
+c
+      stop
+      end
+c
+c========================
+      subroutine anom(ts,nt,nt2,avg)
+      dimension ts(nt)
+        av=0
+        do i=1,nt2
+          av=av+ts(i)
+        enddo
+        avg=av/float(nt2)
+        do i=1,nt2
+          ts(i)=ts(i)-avg
+        enddo
+      return
+      end
+ccccccccccccccccccccccc
+EOF
+#
+#gfortran -mcmodel=medium -g -o avg.x avg_anom.f
+#\rm avg.x
+#\rm t2m*anom*
+gfortran -o hur.x hrcn_sst.f pls_fcst.s.f
+echo "done compiling"
+./hur.x > $lcdir/out.$prctand.$prctor.$season.fcst.increment
+#
+cat>$outfile1.ctl<<EOF
+dset ^$outfile1.gr
+undef $undef
+*
+TITLE pls cor pattern
+*
+xdef  360 linear 0 1.
+ydef  180 linear -89.5 1.
+zdef    1 linear 1 1
+tdef 999 linear jan1979 1mo
+vars $mode
+cor1 1 99 from original data
+cor2 1 99 from original data
+ENDVARS
+EOF
+#
+cat>$outfile2.ctl<<EOF
+dset ^$outfile2.gr
+undef $undef
+*
+TITLE pls time series
+*
+xdef  1 linear 0 1.
+ydef  1 linear -89.5 1.
+zdef  1 linear 1 1
+tdef $nyr linear aug1949 1yr
+vars 4
+obs  1 99 ts of obs
+tot   1 99 tot of yr-1
+ts1  1 99 ts of pls
+ts2  1 99 ts of pls
+ENDVARS
+EOF
+#
+cp $outfile1.* $lcdir/.
+cp $outfile2.* $lcdir/.

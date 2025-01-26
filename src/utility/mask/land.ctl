@@ -1,0 +1,11 @@
+DSET ^land.gr
+UNDEF -8888.8
+TITLE Monthly Sea Level Pressure
+XDEF 144 LINEAR 0.0 2.5
+YDEF 73 LINEAR -90 2.5
+ZDEF 1 LINEAR 1 1
+TDEF 1 LINEAR 0Z00JAN1900 1mo
+VARS 1
+land 1 99 precipitation climatology mm/day
+ENDVARS
+

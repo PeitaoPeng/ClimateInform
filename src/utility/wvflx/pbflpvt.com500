@@ -1,0 +1,71 @@
+*set mproj nps
+*set mpvals 0 360 0 90
+set mproj latlon
+set lon 0 360
+set lat 10 90
+set z 4         
+set gxout contour
+set csmooth on
+set vpage 0 8 7.4 11 
+d ens
+draw title avg eddy enstrophy  500mb NDJ8788
+set vpage 0 8 3.7 7.3 
+d xmm       
+draw title M(lp)  500mb NDJ8788
+print
+set vpage off
+c
+set gxout vector
+set vpage 0 8 7.4 11 
+d avu;avv
+draw title avg Velocity  500mb NDJ8788
+set vpage 0 8 3.7 7.3 
+set arrscl 0.4 50 
+d evx;evy
+set gxout contour
+set csmooth on
+set clevs -6e-05 -2e-05  2e-05 6e-05 
+d hdivg(evx,evy)
+draw title E VECTOR(lp)  500mb NDJ8788
+set gxout vector
+set vpage 0 8 0 3.6
+set arrscl 0.4 50  
+d mrx;mry
+set gxout contour
+set csmooth on
+set clevs -1.5e-05 -5e-06  5e-06 1.5e-05 
+d hdivg(mrx,mry)
+draw title MR(lp)  500mb NDJ8788
+print
+set vpage off
+c
+set gxout vector
+set vpage 0 8 7.4 11 
+*set arrscl 0.5 300 
+d mtx;mty
+set gxout contour
+set csmooth on
+set clevs  -2e-05 2e-05   
+d hdivg(mtx,mty)
+draw title MT(lp)  500mb NDJ8788
+set gxout vector
+set vpage 0 8 3.7 7.3 
+*set arrscl 0.4 1e-04 
+d uq;vq
+set gxout contour
+set csmooth on
+set clevs  -3e-11  3e-11  
+d hdivg(uq,vq)
+draw title avg eddy VQ(lp)  500mb NDJ8788
+set gxout vector
+set vpage 0 8 0 3.6
+*set arrscl 0.5 300 
+d avu*xmm;avv*xmm
+set gxout contour
+set csmooth on
+set clevs  -2e-05 2e-05   
+d hdivg(avu*xmm,avv*xmm)
+draw title V*M(lp)  500mb NDJ8788
+print
+set vpage off
+c 

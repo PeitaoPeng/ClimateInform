@@ -1,0 +1,258 @@
+#! /bin/sh
+#---/cpc/home/hzz/CPChu/CoastalENSO/x1_Lead_lag_Corr02.scr
+
+rm tmp1.gs
+set verbose
+# 30-year running lead and lag correlation of Nino3.4 and Nino1+2
+# in 1854-2016 (10 year HF data)
+#
+cat << EOR > tmp1.gs
+*-----------------------------------------------------------
+'reinit'
+'c'
+*(*) Monthly SST, Jan1979-
+*'open /cpc/GODAS/month/mnth.temp.ctl'
+*(*) SST indices--------------------ERv3 SST data: Monthly Jan1854-
+*'open /export/cpc-lw-mlheureux/wd52ml/enso/oni.v3b/data/errsst.v3b/ersst.v3b.1854.2010.ctl'
+
+*(*) SST indices--------------------ERv4 SST data: Monthly Jan1854-
+*'open /export/cpc-lw-mlheureux/wd52ml/enso/oni.v4/data/ersst.v4/ersst.v4.1854.pres.ctl'
+
+**----ERSSTv5: Jan1854-Current, 2x2 grid
+'open /export/cpc-lw-mlheureux/wd52ml/enso/oni.v5/data/ersst.v5/ersst.v5.1854.pres.ctl'
+'open /export/cpc-lw-mlheureux/wd52ml/enso/oni.v5/data/ersst.v5/mnth.clim.ersst.v5.1981-2010.ctl'
+
+*----HadISST
+*'sdfopen /cpc/home/hzz/DATAhu/HadISST/HadISST_sst.nc_Jan1854_May2017'
+
+VAR=sst
+T0=0
+Tmonth=(2016-1854+1)*12
+Tmax1=Tmonth+0
+
+lon1=0
+lon2=360
+lat1=-90
+lat2=90
+
+'set dfile 1'
+'set lon 'lon1' 'lon2
+'set lat 'lat1' 'lat2
+'set z 1'
+*'set time Jan1979 Dec2016'
+*'set time Jan1854 Dec2016'
+'set time jan1981 dec1981'
+'define s0='VAR'.2'
+
+'set t 1 'Tmax1
+'modify s0 seasonal'
+
+'set x 1'
+'set y 1'
+*--NINO3.4
+lon1=360-170
+lon2=360-120
+lat1=-5
+lat2=5
+'define tmp1=tloop(aave('VAR'.1-s0,lon='lon1',lon='lon2',lat='lat1',lat='lat2'))'
+
+*--NINO1+2
+lon1=360-90
+lon2=360-80
+lat1=-10
+lat2=0
+'define tmp2=tloop(aave('VAR'.1(z=1)-s0,lon='lon1',lon='lon2',lat='lat1',lat='lat2'))'
+
+*----10-Year HF filter
+'define Nino34=tmp1-tloop(ave(tmp1,t-60,t+60))'
+'define Nino12=tmp2-tloop(ave(tmp2,t-60,t+60))'
+
+'set fwrite tmp.data_Nino34'
+'set gxout fwrite'
+* setup missing= zero anomaly
+*'d const(Nino34,0,-u)'
+'d Nino34'
+'disable fwrite'
+
+'set fwrite tmp.data_Nino12'
+'set gxout fwrite'
+*'d const(Nino12,0,-u)'
+'d Nino12'
+'disable fwrite'
+'quit'
+EOR
+grads -lcb "run tmp1.gs"
+rm tmp1.gs tmp.f a.out
+
+cat << EOR > tmp.f
+      parameter(nn=(2016-1854+1)*12+0,nxy=4)
+      parameter(mm=30*12+1,mm2=(mm+1)/2)
+      parameter(Lmax=25,LL2=(Lmax+1)/2)
+      parameter(nxy2=4*Lmax,nm=nn-mm)
+c-------------------------------------------------------------c
+      REAL*4 Xnino34(nn),Ynino12(nn),R0(nm,Lmax)
+c-------------------------------------------------------------c
+c I: INPUT & PREPARE DATA
+c-------------------------------------------------------------c
+      open(14,file='tmp.data_Nino34',
+     | form='unformatted',access='direct',recl=nxy)
+      do 15 k=1,nn
+	read(14,rec=k)Xnino34(k)
+15    continue
+        close(14)
+c?        write(*,*)Xnino34
+
+      open(18,file='tmp.data_Nino12',
+     | form='unformatted',access='direct',recl=nxy)
+      do 20 k=1,nn
+20      read(18,rec=k)Ynino12(k)
+        close(18)
+c?        write(*,*)Ynino12
+
+c-------------------------------------------------------------c
+c II: CALCULATION
+c-------------------------------------------------------------c
+c---Normalized data
+       a1=0.0
+       b1=0.0
+       do 30 k=1,nn
+        a1=a1+Ynino12(k)/float(nn)
+30      b1=b1+Xnino34(k)/float(nn)
+
+       c1=0.0
+       d1=0.0
+       do 35 k=1,nn
+        c1=c1+(Ynino12(k)-a1)*(Ynino12(k)-a1)/float(nn)
+35      d1=d1+(Xnino34(k)-b1)*(Xnino34(k)-b1)/float(nn)
+
+       do 40 k=1,nn
+        Ynino12(k)=(Ynino12(k)-a1)/c1**0.5
+40      Xnino34(k)=(Xnino34(k)-b1)/d1**0.5
+
+c?        write(*,*)Ynino12
+c?        write(*,*)Xnino34
+
+c-------------------------------------------------------------c
+c----30 year window running lead&lag correlations
+
+       DO 99 k=mm2,nn-mm2+1
+
+c-----lead/lag -LL2 to LL2 (Lmax)
+       DO 99 L=1,Lmax
+        kx=k-mm2+1
+        R0(kx,L)=0.0
+
+        xyz=0.0
+        abc=0.0
+c-----mm month window
+       do 65 J=1,mm
+         k1=(J+k-mm2)+0
+         k2=(J+k-mm2)+L-LL2
+
+       IF(k2.ge.1.and.k2.le.nn.and.k1.ge.1.and.k1.le.nn)then
+         abc=abc+1.0
+         xyz=xyz+Ynino12(k2)*Xnino34(k1)
+       ENDIF
+65     continue
+
+        R0(kx,L)=-999.0
+        If(abc.ge.1.0)then
+         R0(kx,L)=xyz/abc
+        Endif
+c?        write(*,*)xyz,abc
+99     CONTINUE
+c?        write(*,*)R0
+
+c-------------------------------------------------------------c
+c III: OUTPUT 
+c-------------------------------------------------------------c
+      open (unit=77,file='x1_Lead_lag_Corr02.data',
+     *access='direct',recl=nxy2)
+       do 80 k=1,nm
+	write(77,rec=k)(R0(k,L),L=1,Lmax)
+80     continue
+c?       write (*,*)R0
+        close(77)
+          stop
+          end
+EOR
+gfortran tmp.f
+#/usr/bin/f77 tmp.f
+a.out
+rm tmp.f a.out tmp.data_Nino34 tmp.data_Nino12
+
+rm tmp2.gs
+cat << EOR > tmp2.gs
+*-----------------------------------------------------------
+'reinit'
+'c'
+'run /cpc/home/hzz/bin/rgbset2.gs'
+'open x1_Lead_lag_Corr02.ctl'
+'enable print x1_Lead_lag_Corr02.met'
+*-------------------------------figure A1-------------------
+'set dfile 1'
+*'set frame off'
+'set grads off'
+'set xlab on'
+'set ylab on' 
+'set grid on'
+'set mproj off'
+'set parea 1.2 10.8 0.8 8.0'
+
+'set x 1'
+'set y 1'
+'set z 1 25'
+*'set time Dec1885 Jan2001'
+'set t 0 1596'
+'set xlopts 1 3 0.12'
+'set ylopts 1 3 0.12'
+*'set xlint -3'
+*'set ylint 0.2'
+*'set axlim -1.0 1.0 0.3'
+*'set vrange -0.8 0.8'
+*'define x1=0.0'
+*'set xlabs -24|-20|-16|-12|-8|-4|0|4|8|12|16|20|24'
+'set ylabs -12|-10|-8|-6|-4|-2|0|2|4|6|8|10|12'
+
+'set gxout shaded'
+'set clevs  -0.8 -0.6 -0.4 -0.2 0.0 0.2 0.4 0.6 0.8'
+'set ccols 48   47   46   45   44  24  25  26  27  28'
+'d smth9(R0)'
+
+'set gxout contour'
+'set clopts -1 -1 0.08'
+'set cint 0.2'
+'set cthick 6'
+'set ccolor 0'
+*'d R0'
+'d smth9(R0)'
+
+'set string 1 c 3 00'
+'set strsiz 0.13 0.13'
+'draw string 5.6 8.35 Lead and Lag Correlations between Nino1+2 and Nino3.4'
+'set strsiz 0.12 0.12'
+'draw string 5.5 8.15 (30 Year Running Window; ERSSTv5; 10-Year HF: Jan1854-Dec2016)'
+
+'set string 1 c 3 90'
+'draw string 0.7 2.4 Nino1+2 Leads'
+'draw string 0.7 4.4 Nino3.4'
+'draw string 0.7 6.4 Nino1+2 Lags'
+'set line 9 2 9'
+'draw line 1.2 4.4 10.8 4.4'
+
+'set strsiz 0.09 0.09'
+'set string 3 c 3 0'
+'draw string 5.5 0.2 /cpc/home/hzz/CPChu/CoastalENSO/x1_Lead_lag_Corr02.scr'
+'print'
+
+*'printim x1_Lead_lag_Corr02.jpeg jpeg white'
+*'printim x1_Lead_lag_Corr02.gif gif white'
+'disable print'
+pull dummy
+****'! gxeps -c -i x1_Lead_lag_Corr02.met -o x1_Lead_lag_Corr02.eps'
+
+*'quit'
+EOR
+/usr/local/grads/2.0.1/grads -lc "run tmp2.gs"
+gxeps -c -i x1_Lead_lag_Corr02.met -o x1_Lead_lag_Corr02.eps
+rm tmp2.gs x1_Lead_lag_Corr02.met

@@ -1,0 +1,31 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ lcdir=//export-6/sgi9/wd52pp/utility/intpl
+ tmp=/export-6/sgi9/wd52pp/tmp
+ datadir1=/export/lnx309/wd52qz/hindcast_sgi/pp
+ datadir2=/disk50/data/wd52pp/CFS
+#
+ nmonth=161
+ iskip=0
+#
+  /bin/rm $tmp/*.*
+cp $lcdir/T62_2_CD349.f $tmp/.
+cp $lcdir/setxy.f       $tmp/.
+cd $tmp
+#
+   ln -s $lcdir/us.cdiv.ha.dat  fort.10
+#
+   ln -s $datadir1   fort.11
+   ln -s $datadir2   fort.61
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth,iskip=$iskip)
+eof
+#
+ f77  T62_2_CD349.f setxy.f
+ a.out
+#
+ja -s

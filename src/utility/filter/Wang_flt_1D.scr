@@ -1,0 +1,54 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/utility/filter
+tmp=/export-6/sgi9/wd52pp/tmp
+#datadir=/export-6/cacsrv1/wd52pp/obs/sst
+datadir=/export-6/cacsrv1/wd52pp/test
+#
+#longtime=642
+longtime=540
+ph=8                  #for HP or LP: ph=7,pm=8,pl=9
+pm=10
+pl=12
+#ph=12                  #for HP or LP: ph=7,pm=8,pl=9
+#pm=18
+#pl=24
+fhl=0.9
+dt=1
+#
+#/bin/rm $tmp/*         
+cp $lcdir/Wang_flt.s.f $tmp/.
+cp $lcdir/Wang_flt_1D.f $tmp/Wang_flt.f
+cd $tmp
+unlimit
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(ph=$ph,pl=$pl,pm=$pm,fhl=$fhl,dt=$dt)
+eof
+#
+#
+cat > parm.s.h << eof
+       parameter(ltime=$longtime+4)
+eof
+#
+f77 -r8 -o Wang_flt.x Wang_flt.f Wang_flt.s.f
+echo "done compiling"
+#
+#
+/bin/rm  fort.*
+#ln -s $datadir/zi_t850.4901-0306.i3e fort.10
+#ln -s $datadir/zi_t850.4901-0306.HP.i3e fort.20
+#ln -s $datadir/zi_t850.4901-0306.LP.i3e fort.30
+#ln -s $datadir/sst_nino34_5001-0306.i3e fort.10
+#ln -s $datadir/sst_nino34_5001-0306.HP.i3e fort.20
+#ln -s $datadir/sst_nino34_5001-0306.LP.i3e fort.30
+ ln -s $datadir/Fy35N100hPa.g0 fort.10
+ ln -s $datadir/Fy35N100hPa.HP.b fort.20
+ ln -s $datadir/Fy35N100hPa.LP.b fort.30
+#
+Wang_flt.x
+#
+ja -s

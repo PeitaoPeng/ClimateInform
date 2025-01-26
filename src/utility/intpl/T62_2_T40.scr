@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -eaux
+
+#
+#datadir=/disk50/data/wd52pp/ncep/hcst_t62
+ datadir1=/export/lnx309/wd52qz/hindcast_sgi/pp
+ datadir2=/disk50/data/wd52pp/CFS
+#
+ nmonth=2415
+ iskip=0
+#
+ /bin/rm fort.11 fort.61
+   ln -s $datadir1/0pra_emaFML105_DJF.dat fort.11
+   ln -s $datadir2/0pra_emaFML105_DJF.T40.dat fort.61
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth,iskip=$iskip)
+eof
+#
+ f77  T62_2_T40.f setxy.f intp2d.f
+ a.out
+#
+ja -s

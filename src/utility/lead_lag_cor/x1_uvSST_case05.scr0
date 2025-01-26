@@ -1,0 +1,420 @@
+#! /bin/sh
+#------/cpc/home/hzz/CPChu/CoastalENSO/x1_uvSST_case05.scr---------------c
+set verbose
+# 10S~0 averaged SST/OLR and surface wind stress anomalies 
+#
+rm tmp.gs
+cat << EOR > tmp.gs
+* (*) Monthly GODAS: Jan1979-
+*'open /cpc/GODAS/month/mnth.taux.ctl'
+*'open /cpc/GODAS/month/mnth.tauy.ctl'
+* (*) Monthly R1: Jan1948-
+*'open /cpc/analysis/cdas/month/flux/mean/flx.gau.grib.mean.y1949-cur.ctl'
+*'open /cpc/analysis/cdas/month/prs/mean/prs.grib.mean.y1949-cur.ctl'
+
+* (1) Monthly R2: Jan1979-
+'open /cpc/r2/month/flx/flx.ctl'
+
+* (*) HadISST
+*'sdfopen /cpc/home/hzz/DATAhu/HadISST/HadISST_sst.nc_Jan1854_May2017'
+
+* (2)--ERSSTv5: Jan1854-Current, 2x2 grid
+'open /export/cpc-lw-mlheureux/wd52ml/enso/oni.v5/data/ersst.v5/ersst.v5.1854.pres.ctl'
+*'open /export/cpc-lw-mlheureux/wd52ml/enso/oni.v5/data/ersst.v5/mnth.clim.ersst.v5.1981-2010.ctl'
+
+* (3) Monthly OLR, (Jan1974 –present, but  missing for Jan-May 1974 and Mar-Dec 1978)
+'open /cpc/analysis/verif/sat/cld_rad/olr/mon/olrmonth.ctl'
+
+* (*) Monthly GODAS: Jan1979-
+*'open /cpc/GODAS/month/mnth.temp.ctl'
+* (*) Monthly OI SST, Jan1979
+*'open /cpc/GODAS/month/mnth.oisst.ctl'
+
+var1=uflx
+var2=vflx
+var3=olr
+var4=sst
+
+time1=Jan1979
+time2=Aug2017
+
+LON1=150
+LON2=360-77
+LAT1=-15
+LAT2=15
+
+LATa=-10
+LATb=0
+
+**********************surface wind stress
+'set dfile 1'
+'set lon 'LON1' 'LON2
+'set lat 'LAT1' 'LAT2
+'set z 1'
+'set t 1 12'
+*Climatology: Jan1981-Dec2010
+T1=(1981-1979)*12
+T2=(2010+1-1979)*12
+'define s1=ave('var1'.1,t+'T1',t='T2',12)'
+'define s2=ave('var2'.1,t+'T1',t='T2',12)'
+'set time 'time1' 'time2
+'modify s1 seasonal'
+'modify s2 seasonal'
+*'define SST0=maskout('var4'.1-s4,-const(SOILW10.1,-1.0,-u))'
+
+* itself or anomaly and 5S~5N average
+'set lat 0'
+*----- Reverse sign, N/m**2
+unit1=-1.0
+'define U=(ave('var1'.1-s1,lat='LATa',lat='LATb'))*'unit1
+'define V=(ave('var2'.1-s2,lat='LATa',lat='LATb'))*'unit1
+
+**********************SST
+'set dfile 2'
+'set lon 'LON1' 'LON2
+'set lat 'LAT1' 'LAT2
+'set z 1'
+'set t 1 12'
+*Climatology: Jan1981-Dec2010
+T1=(1981-1854)*12
+T2=(2010+1-1854)*12
+'define s4=ave('var4'.2,t+'T1',t='T2',12)'
+'set time 'time1' 'time2
+'modify s4 seasonal'
+'define SST0='var4'.2-s4'
+
+* itself or anomaly and 5S~5N average
+'set lat 0'
+'define SST=(ave(SST0,lat='LATa',lat='LATb'))'
+
+********************OLR
+'set dfile 3'
+'set lon 'LON1' 'LON2
+'set lat 'LAT1' 'LAT2
+'set z 1'
+'set t 1 12'
+*Climatology: Jan1981-Dec2010
+T0=(1981-1974)*12
+T2=(2010-1974+1)*12
+*'define s0=ave('var3'.3,t+'T0',t='T2',12)'
+*'set time 'time1' 'time2
+*'modify s0 seasonal'
+
+* itself or anomaly and 5S~5N average
+*'set lat 0'
+*'define OLR=ave('var3'.3-s0,lat='LATa',lat='LATb')'
+
+*----------------------------------------------------------
+'run /cpc/home/hzz/bin/rgbset2.gs'
+'enable print x1_uvSST_case05.met'
+*-------------------------------figure a1-------------------
+'clear'
+*'set frame off'
+'set grads off'
+'set grid off'
+'set mproj scaled'
+'set xlab on'
+'set ylab on'
+'set yflip on'
+*'set xyrev on'
+'set xlint 30'
+'set ylint 2'
+'set xlopts 1 -1 0.11'
+'set ylopts 1 -1 0.11'
+*'set ylabs Jan(0)|Apr(0)|Jul(0)|Oct(0)|Jan(1)|Apr(1)|Jul(1)|Oct(1)|Jan(2)|Apr(2)|Jul(2)'
+
+'set dfile 2'
+'set lon 'LON1' 'LON2
+'set lat 0'
+'set z 1'
+'set parea 1.0 3.7 4.7 8.0'
+
+TimeA=Aug1982
+TimeB=Sep1983
+'set time 'TimeA' 'TimeB
+'set gxout shaded'
+'set clevs  -2.5 -2 -1.5 -1 -.5 0 .5 1. 1.5 2. 2.5 3. 3.5'
+'set ccols 49  47  46  45  44  43 22 23 24 25 26 27 28 29'
+'d SST'
+
+'set dfile 1'
+'set gxout contour'
+'set lon 'LON1' 'LON2
+'set lat 0'
+'set z 1'
+'set cthick 6'
+'set ccolor 0'
+'set black -0.001 0.001'
+'set cint 0.5'
+*'d (SST)'
+
+'set gxout contour'
+'set clevs 0'
+'set ccols 38'
+'set cthick 9'
+*'d (SST)'
+
+len = 1.0
+scale = 0.15
+'set gxout vector'
+'set ccolor 1'
+'set cthick 6'
+'set arrscl 'len' 'scale
+'set arrlab off'
+'set arrowhead 0.05'
+'d skip(u,6,1);skip(v,6,1)'
+
+*---------------------------
+x=9.4
+y=8.25
+'set line 1 1 4'
+'draw line 'x-len/2.' 'y' 'x+len/2.' 'y
+'draw line 'x+len/2.-0.05' 'y+0.025' 'x+len/2.' 'y
+'draw line 'x+len/2.-0.05' 'y-0.025' 'x+len/2.' 'y
+'draw line 'x+len/2.-0.05' 'y+0.025' 'x+len/2.' 'y
+'draw line 'x+len/2.-0.05' 'y-0.025' 'x+len/2.' 'y
+'set string 1 c'
+'set strsiz 0.1'
+*'draw string 'x' 'y-0.1' 'scale
+'draw string 'x' 'y+0.10' 'scale 'N/m**2'
+*---------------------------
+
+'set strsiz 0.10 0.10'
+'set string 1 c 3 00'
+'draw string 5.6 8.35 10S~0 ERSSTv5 SST (C; Shading) & R2 Wind Stress (N/m**2) Anomalies'
+'draw string 2.25 8.15 (a) 'TimeA'-'TimeB
+
+'set strsiz 0.08 0.08'
+'set string 1 c 3 0'
+'draw string 8.35 0.15 /cpc/home/hzz/CPChu/CoastalENSO/x1_uvSST_case05.scr'
+
+'set string 3 c 3 0'
+'run /cpc/home/hzz/bin/cbarn.gs 0.75 0 5.5 0.45'
+'print'
+
+*-------------------------------figure a2-------------------
+'set dfile 2'
+'set vpage off'
+'set grads off'
+'set grid off'
+'set mproj scaled'
+'set xlab on'
+'set ylab on'
+'set yflip on'
+'set ylpos 0.0 l'
+*'set xyrev on'
+'set xlint 30'
+'set ylint 2'
+'set xlopts 1 -1 0.11'
+'set ylopts 1 -1 0.11'
+
+'set parea 4.5 7.2 4.7 8.0'
+'set lon 'LON1' 'LON2
+'set lat 0'
+'set z 1'
+
+TimeA=Aug1997
+TimeB=Sep1998
+'set time 'TimeA' 'TimeB
+'set gxout shaded'
+'set clevs  -2.5 -2 -1.5 -1 -.5 0 .5 1. 1.5 2. 2.5 3. 3.5'
+'set ccols 49  47  46  45  44  43 22 23 24 25 26 27 28 29'
+'d SST'
+
+'set dfile 1'
+'set gxout vector'
+'set ccolor 1'
+'set cthick 6'
+'set arrscl 'len' 'scale
+'set arrlab off'
+'set arrowhead 0.05'
+'d skip(u,6,1);skip(v,6,1)'
+
+'set strsiz 0.10 0.10'
+'set string 1 c 3 00'
+'draw string 5.75 8.15 (b) 'TimeA'-'TimeB
+'print'
+
+*-------------------------------figure a3-------------------
+'set dfile 2'
+'set vpage off'
+'set grads off'
+'set grid off'
+'set mproj scaled'
+'set xlab on'
+'set ylab on'
+'set yflip on'
+'set ylpos 0.0 l'
+*'set xyrev on'
+'set xlint 30'
+'set ylint 2'
+'set xlopts 1 -1 0.11'
+'set ylopts 1 -1 0.11'
+
+'set parea 8.0 10.7 4.7 8.0'
+'set lon 'LON1' 'LON2
+'set lat 0'
+'set z 1'
+
+TimeA=Aug2007
+TimeB=Sep2008
+'set time 'TimeA' 'TimeB
+'set gxout shaded'
+'set clevs  -2.5 -2 -1.5 -1 -.5 0 .5 1. 1.5 2. 2.5 3. 3.5'
+'set ccols 49  47  46  45  44  43 22 23 24 25 26 27 28 29'
+'d SST'
+
+'set dfile 1'
+'set gxout vector'
+'set ccolor 1'
+'set cthick 6'
+'set arrscl 'len' 'scale
+'set arrlab off'
+'set arrowhead 0.05'
+'d skip(u,6,1);skip(v,6,1)'
+
+'set strsiz 0.10 0.10'
+'set string 1 c 3 00'
+'draw string 9.25 8.15 (c) 'TimeA'-'TimeB
+'print'
+
+*-------------------------------figure b1-------------------
+'set dfile 2'
+'set vpage off'
+'set grads off'
+'set grid off'
+'set mproj scaled'
+'set ylpos 0.0 l'
+'set xlab on'
+'set ylab on'
+'set yflip on'
+*'set xyrev on'
+'set xlint 30'
+'set ylint 2'
+'set xlopts 1 -1 0.11'
+'set ylopts 1 -1 0.11'
+
+'set parea 1.0 3.7 0.9 4.2'
+'set lon 'LON1' 'LON2
+'set lat 0'
+'set z 1'
+
+TimeA=Aug2011
+TimeB=Sep2012
+'set time 'TimeA' 'TimeB
+'set gxout shaded'
+'set clevs  -2.5 -2 -1.5 -1 -.5 0 .5 1. 1.5 2. 2.5 3. 3.5'
+'set ccols 49  47  46  45  44  43 22 23 24 25 26 27 28 29'
+'d SST'
+
+'set dfile 1'
+'set gxout vector'
+'set ccolor 1'
+'set cthick 6'
+'set arrscl 'len' 'scale
+'set arrlab off'
+'set arrowhead 0.05'
+'d skip(u,6,1);skip(v,6,1)'
+
+'set strsiz 0.10 0.10'
+'set string 1 c 3 00'
+'draw string 2.25 4.35 (d) 'TimeA'-'TimeB
+'print'
+
+*-------------------------------figure b2-------------------
+'set dfile 2'
+'set vpage off'
+'set grads off'
+'set grid off'
+'set mproj scaled'
+'set ylpos 0.0 l'
+'set xlab on'
+'set ylab on'
+'set yflip on'
+*'set xyrev on'
+'set xlint 30'
+'set ylint 2'
+'set xlopts 1 -1 0.11'
+'set ylopts 1 -1 0.11'
+
+'set parea 4.5 7.2 0.9 4.2'
+'set lon 'LON1' 'LON2
+'set lat 0'
+'set z 1'
+
+TimeA=Aug2013
+TimeB=Sep2014
+'set time 'TimeA' 'TimeB
+'set gxout shaded'
+'set clevs  -2.5 -2 -1.5 -1 -.5 0 .5 1. 1.5 2. 2.5 3. 3.5'
+'set ccols 49  47  46  45  44  43 22 23 24 25 26 27 28 29'
+'d SST'
+
+'set dfile 1'
+'set gxout vector'
+'set ccolor 1'
+'set cthick 6'
+'set arrscl 'len' 'scale
+'set arrlab off'
+'set arrowhead 0.05'
+'d skip(u,6,1);skip(v,6,1)'
+
+'set strsiz 0.10 0.10'
+'set string 1 c 3 00'
+'draw string 5.75 4.35 (e) 'TimeA'-'TimeB
+'print'
+
+*-------------------------------figure b3-------------------
+'set dfile 2'
+'set vpage off'
+'set grads off'
+'set grid off'
+'set mproj scaled'
+'set ylpos 0.0 l'
+'set xlab on'
+'set ylab on'
+'set yflip on'
+*'set xyrev on'
+'set xlint 30'
+'set ylint 2'
+'set xlopts 1 -1 0.11'
+'set ylopts 1 -1 0.11'
+
+'set parea 8.0 10.7 0.9 4.2'
+'set lon 'LON1' 'LON2
+'set lat 0'
+'set z 1'
+
+TimeA=Aug2016
+TimeB=Sep2017
+'set time 'TimeA' 'TimeB
+'set gxout shaded'
+'set clevs  -2.5 -2 -1.5 -1 -.5 0 .5 1. 1.5 2. 2.5 3. 3.5'
+'set ccols 49  47  46  45  44  43 22 23 24 25 26 27 28 29'
+'d SST'
+
+'set dfile 1'
+'set gxout vector'
+'set ccolor 1'
+'set cthick 6'
+'set arrscl 'len' 'scale
+'set arrlab off'
+'set arrowhead 0.05'
+'d skip(u,6,1);skip(v,6,1)'
+
+'set strsiz 0.10 0.10'
+'set string 1 c 3 00'
+'draw string 9.25 4.35 (f) 'TimeA'-'TimeB
+'print'
+
+*'printim x1_uvSST_case05.jpeg jpeg white'
+*'printim x1_uvSST_case05.gif gif white'
+'disable print'
+pull dummy
+*'quit'
+EOR
+/usr/local/grads/2.0.1/grads -lc "run tmp.gs"
+
+gxeps -c -i x1_uvSST_case05.met -o x1_uvSST_case05.eps
+#gxps -c -i x1_uvSST_case05.met -o x1_uvSST_case05.ps
+rm x1_uvSST_case05.met tmp.gs

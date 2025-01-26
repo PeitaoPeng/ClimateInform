@@ -1,0 +1,22 @@
+#CFS 
+00 10 * * * /cpc/save/wx52cm/touch.sh
+#00 08 * * * /cpc/save/wx52cm/CFSfcst/realTime/daily/getData/0dlyUpdate.sh
+#40 06 * * * /cpc/save/wx52cm/CFSfcst/cfsIcRtIndia/0dlyUpdate.sh > /cpc/save/wx52cm/CFSfcst/cfsIcRtIndia/0Logs/cfsIcRtIndia.txt
+30 16 * * * /cpc/save/wx52cm/CoralWatch/realTime/0dlyUpdate.sh
+#30 20 12 * * /cpc/save/wx52cm/CFSfcst/realTime/monthlyData/0SubmitMonthlyUpdate.sh
+#30 20 13 * * /cpc/save/wx52cm/CFSfcst/realTime/monthlyData/0SubmitMonthlyUpdate.sh
+#30 20 14 * * /cpc/save/wx52cm/CFSfcst/realTime/monthlyData/0SubmitMonthlyUpdate.sh
+#30 20 15 * * /cpc/save/wx52cm/CFSfcst/realTime/monthlyData/0SubmitMonthlyUpdate.sh
+30 02 25 * * /cpc/save/wx52cm/CFSfcst/realTime/monthlyVerif/0SubmitMonthlyUpdateIS.sh
+30 02 26 * * /cpc/save/wx52cm/CFSfcst/realTime/monthlyVerif/0SubmitMonthlyUpdateIS.sh
+30 02 27 * * /cpc/save/wx52cm/CFSfcst/realTime/monthlyVerif/0SubmitMonthlyUpdateIS.sh
+30 02 28 * * /cpc/save/wx52cm/CFSfcst/realTime/monthlyVerif/0SubmitMonthlyUpdateIS.sh
+30 02 29 * * /cpc/save/wx52cm/CFSfcst/realTime/monthlyVerif/0SubmitMonthlyUpdateIS.sh
+
+#OBS
+00 20 * * * /cpc/save/wx52cm/OBS/Prec/cmorph/0SubmitDailyUpdate.sh 1>/dev/null 2 >/dev/null
+45 09 * * * /cpc/save/wx52cm/OBS/Prec/cpcUniGauge/0copyCFrt.sh > /cpc/save/wx52cm/OBS/Prec/cpcUniGauge/0Logs/0copyCFrt.log
+
+#CDAS2
+00 12 * * * /cpc/save/wx52cm/OBS/CDAS2/backCOM/0SubmitDailyUpdate.sh 1>/dev/null 2>/dev/null
+

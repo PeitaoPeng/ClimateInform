@@ -1,0 +1,63 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ lcdir=/cpc/home/wd52pp/project/attr/sst14-15
+ datadir=/cpc/home/wd52pp/data/attr/sst14-15
+ tmp=/cpc/home/wd52pp/tmp
+#
+ cp corr_pc_vs_prate.f $tmp/.
+#
+ cd $tmp
+ \rm fort.*
+#
+nmod=10
+#tmax=433
+#tmaxp=793
+#nskip=360
+tmax=36
+tmaxp=66
+nskip=30
+#
+cat > parm.h << eof
+       parameter(imx=144,jmx=72)
+       parameter(ltime=$tmax,ltw=ltime,ltsst=$tmaxp)
+       parameter(nmod=$nmod,nskip=$nskip)
+eof
+#
+#  ln -s $datadir/pc.sst.had-oi.feb1949-cur.3mon.tnp.gr fort.10
+#  ln -s $datadir/prate.1979-cur.cmap.3mon.R15.gr fort.11
+   ln -s $datadir/pc.sst.had-oi.dec1949-dec2014.djf.tnp.gr fort.10
+   ln -s $datadir/prate.dec1979-dec2014.djf.gr fort.11
+#
+#  ln -s $datadir/corr.sstpc.vs.prate.1949-cur.gr  fort.50
+   ln -s $datadir/corr.sstpc.vs.prate.1979-cur.djf.gr  fort.50
+#
+#
+ gfortran -o corr.x corr_pc_vs_prate.f
+ corr.x > $lcdir/out
+#
+cat>$datadir/corr.sstpc.vs.prate.1979-cur.djf.ctl<<EOF
+dset $datadir/corr.sstpc.vs.prate.1979-cur.djf.gr
+*
+undef -9999.0
+*
+TITLE  cmap
+*
+XDEF  144 LINEAR 1.25 2.5
+*
+YDEF   72 LINEAR -88.75 2.5
+*
+ZDEF  1 linear 1 1
+*
+TDEF  9999 LINEAR dec2014 1mon
+*
+vars   4
+pcor  0 99 corr of z200
+preg  0 99 regr of z200
+rpcor  0 99 corr of z200
+rpreg  0 99 regr of z200
+ENDVARS
+EOF
+

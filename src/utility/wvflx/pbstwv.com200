@@ -1,0 +1,123 @@
+*set mproj nps
+*set mpvals 0 360 0 90
+set mproj latlon
+set rgb 20 100 30 25
+set rgb 21 150 105 0
+set rgb 22 35 20  100
+set lon 0 360
+set lat 10 90
+set z 6         
+set gxout contour
+set csmooth on
+set vpage 0 8 7.4 11 
+d arv
+draw title avg relative vort  200mb djf8788  
+set vpage 0 8 3.7 7.3 
+d vt3
+draw title baroclinic part of avg q  200mb djf8788  
+set vpage 0 8 0 3.6
+d ptv
+draw title avg q  200mb djf8788  
+print 
+set vpage off
+c
+set vpage 0 8 7.4 11 
+d avh
+draw title avg geoht  200mb djf8788  
+set vpage 0 8 3.7 7.3 
+d avt
+draw title avg temp  200mb djf8788  
+set gxout vector
+set vpage 0 8 0 3.6
+d avu;avv
+draw title avg velocity  200mb djf8788  
+print
+set vpage off
+c
+set gxout contour
+set csmooth on
+set vpage 0 8 7.4 11 
+d edh
+draw title eddy geoht  200mb djf8788  
+set vpage 0 8 3.7 7.3 
+d edt
+draw title eddy temp  200mb djf8788  
+set gxout vector
+set vpage 0 8 0 3.6
+set arrscl 0.4 20
+d edu;edv
+draw title eddy velocity  200mb djf8788  
+print
+set vpage off
+c
+set vpage 0 8 7.4 11 
+set arrscl 0.3 30
+d wvx;wvy
+draw title stwv vector  200mb djf8788  
+set gxout contour
+set csmooth on
+set clevs  -0.04  0.04 0.10
+*d hdivg(wvx,wvy)
+d wvz
+print
+set vpage off
+c
+set z 1 7         
+set lat -90 90
+set lon 0
+set vpage 0 8 5.5 11
+d zmh             
+draw title zonal mean geoght   djf8788  
+set vpage 0 8 0 5.5 
+d zmt           
+draw title zonal mean temp   djf8788  
+print
+set vpage off
+c
+set vpage 0 8 5.5 11
+d zmu             
+draw title zonal mean U  djf8788  
+set vpage 0 8 0 5.5 
+d zmv           
+draw title zonal mean V  djf8788  
+print
+set vpage off
+c
+set lon 0 360
+set z 1 7         
+set gxout vector
+set vpage 0 8 5.5 11
+set lat 20
+d wvx/100;wvz
+draw title stwv vector  lat=20 djf8788  
+set vpage 0 8 0 5.5 
+set lat 30
+d wvx/100;wvz
+draw title stwv vector  lat=30 djf8788  
+print
+set vpage off
+c
+set vpage 0 8 5.5 11
+set lat 40
+d wvx/100;wvz
+draw title stwv vector  lat=40 djf8788  
+set vpage 0 8 0 5.5 
+set lat 50
+d wvx/100;wvz
+draw title stwv vector  lat=50 djf8788  
+print
+set vpage off
+c
+set lat 10 90 
+set lon 170
+set vpage 0 8 5.5 11
+d wvy/100;wvz
+draw title stwv vector  lon=170E djf8788
+set vpage 0 8 0 5.5
+set lon -60
+d wvy/100;wvz
+draw title stwv vector  lon=60W djf8788
+print
+set vpage off
+c
+

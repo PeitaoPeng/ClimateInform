@@ -1,0 +1,56 @@
+yr=   1949  maxp=  1   start mon=  1   cr=   -0.704   -0.700   -0.041    0.123
+yr=   1950  maxp=  1   start mon=  1   cr=    0.735   -0.080   -0.003    0.307
+yr=   1951  maxp=  1   start mon=  1   cr=    0.133   -0.030   -0.006   -0.028
+yr=   1952  maxp=  1   start mon=  1   cr=    0.663    0.178    0.384   -0.138
+yr=   1955  maxp=  1   start mon=  1   cr=    0.599    0.089    0.613    0.288
+yr=   1956  maxp=  1   start mon=  1   cr=    0.368   -0.040   -0.486   -0.179
+yr=   1957  maxp=  1   start mon=  1   cr=   -0.206   -0.194   -0.229   -0.114
+yr=   1958  maxp=  1   start mon=  1   cr=    0.166   -0.043    0.397    0.255
+yr=   1959  maxp=  1   start mon=  1   cr=   -0.446   -0.374   -0.025    0.043
+yr=   1960  maxp=  1   start mon=  1   cr=   -0.244    0.088    0.041   -0.024
+yr=   1961  maxp=  1   start mon=  1   cr=    0.378   -0.589   -0.287    0.161
+yr=   1963  maxp=  1   start mon=  1   cr=    0.058    0.486   -0.138   -0.300
+yr=   1965  maxp=  2   start mon=  3   cr=    0.716    0.509   -9.990   -9.990
+yr=   1966  maxp=  1   start mon=  1   cr=    0.175   -0.155    0.114    0.522
+yr=   1968  maxp=  2   start mon=  2   cr=    0.853    0.822    0.245   -9.990
+yr=   1969  maxp=  1   start mon=  1   cr=    0.444    0.142    0.152    0.471
+yr=   1971  maxp=  2   start mon=  2   cr=    0.748    0.537    0.144   -9.990
+yr=   1974  maxp=  1   start mon=  1   cr=    0.703    0.104    0.225   -0.168
+yr=   1975  maxp=  3   start mon=  2   cr=    0.766    0.624    0.549   -9.990
+yr=   1976  maxp=  3   start mon=  1   cr=    0.737    0.572    0.624   -0.550
+yr=   1981  maxp=  1   start mon=  1   cr=    0.428   -0.674   -0.549   -0.376
+yr=   1982  maxp=  2   start mon=  3   cr=    0.649    0.547   -9.990   -9.990
+yr=   1986  maxp=  1   start mon=  1   cr=    0.437   -0.676   -0.742   -0.683
+yr=   1987  maxp=  1   start mon=  1   cr=    0.502   -0.164   -0.351    0.507
+yr=   1988  maxp=  2   start mon=  2   cr=    0.519    0.543    0.336   -9.990
+yr=   1989  maxp=  1   start mon=  1   cr=    0.450    0.420    0.309    0.027
+yr=   1990  maxp=  1   start mon=  1   cr=    0.604    0.187   -0.030    0.231
+yr=   1992  maxp=  1   start mon=  1   cr=   -0.084    0.245   -0.004    0.376
+yr=   1996  maxp=  1   start mon=  1   cr=    0.539   -0.479   -0.280   -0.569
+yr=   1997  maxp=  1   start mon=  1   cr=    0.581    0.347    0.182    0.202
+yr=   1998  maxp=  1   start mon=  1   cr=    0.423   -0.169    0.145    0.409
+yr=   2003  maxp=  1   start mon=  1   cr=   -0.218   -0.239   -0.199    0.194
+yr=   2004  maxp=  1   start mon=  1   cr=    0.230    0.426    0.685    0.045
+yr=   2005  maxp=  1   start mon=  1   cr=    0.034    0.263    0.542    0.272
+yr=   2006  maxp=  1   start mon=  1   cr=    0.324   -0.040   -0.542    0.298
+yr=   2008  maxp=  1   start mon=  1   cr=   -0.352    0.280    0.225    0.094
+yr=   2009  maxp=  2   start mon=  3   cr=    0.762    0.699   -9.990   -9.990
+yr=   2010  maxp=  2   start mon=  1   cr=    0.520    0.606   -0.266   -0.549
+yr=   2013  maxp=  3   start mon=  2   cr=    0.666    0.685    0.572   -9.990
+ p1=          26 p2=          29 p3=           7 p4=           3 p5=           0
+ pw1=           5 pw2=           9 pw3=           4 pw4=           1 pw5=           0
+ pc1=          11 pc2=           7 pc3=           2 pc4=           1 pc5=           0
+ for percentage
+ p1=   40.00000     p2=   44.61538     p3=   10.76923     p4=   4.615385     p5=   0.000000    
+ pw1=   7.692307     pw2=   13.84615     pw3=   6.153846     pw4=   1.538462     pw5=   0.000000    
+ pc1=   16.92308     pc2=   10.76923     pc3=   3.076923     pc4=   1.538462     pc5=   0.000000    
+ pn1=   15.38462     pn2=   20.00000     pn3=   1.538461     pn4=   1.538461     pn5=   0.000000    
+ warmyr=   19.00000     coldyr=   21.00000    
+ lag=           0  ncase=         260
+ mean=  0.2326322      std=  0.3489218    
+ lag=           1  ncase=         195
+ mean=  7.3541537E-02  std=  0.3769065    
+ lag=           2  ncase=         130
+ mean=  4.2825423E-02  std=  0.3686212    
+ lag=           3  ncase=          65
+ mean=  6.4989299E-02  std=  0.3405806    

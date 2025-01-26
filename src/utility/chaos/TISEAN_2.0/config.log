@@ -1,0 +1,46 @@
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
+
+configure:529: checking whether /export-6/sgi9/wd52pp/bin is a directory and writeable
+configure:550: checking whether (cc -cckr -DUNDERSCORE -DIRIX -I /export-2/sgi100/naemc1/gempak/source/ldmlog ) works
+configure:600: checking for main in -lm
+configure:615: cc -o conftest -cckr -DUNDERSCORE -DIRIX -I /export-2/sgi100/naemc1/gempak/source/ldmlog   conftest.c -lm   1>&5
+ld32: WARNING 84: /usr/lib32/mips4/libm.so is not used for resolving any symbol.
+configure:644: checking how to run the C preprocessor
+configure:665: cc -E  conftest.c >/dev/null 2>conftest.out
+configure:705: checking for ANSI C header files
+configure:718: cc -E  conftest.c >/dev/null 2>conftest.out
+configure:785: cc -o conftest -cckr -DUNDERSCORE -DIRIX -I /export-2/sgi100/naemc1/gempak/source/ldmlog   conftest.c -lm  1>&5
+ld32: WARNING 84: /usr/lib32/mips4/libm.so is not used for resolving any symbol.
+configure:812: checking for limits.h
+configure:822: cc -E  conftest.c >/dev/null 2>conftest.out
+configure:812: checking for malloc.h
+configure:822: cc -E  conftest.c >/dev/null 2>conftest.out
+configure:850: checking for working const
+configure:904: cc -c -cckr -DUNDERSCORE -DIRIX -I /export-2/sgi100/naemc1/gempak/source/ldmlog  conftest.c 1>&5
+"configure", line 880: warning(1551): variable "t" is used before its value is
+          set
+    *t++ = 0;
+     ^
+
+"configure", line 895: warning(1551): variable "b" is used before its value is
+          set
+    struct s *b; b->j = 5;
+                 ^
+
+configure:929: checking for size_t
+configure:963: checking for 8-bit clean memcmp
+configure:981: cc -o conftest -cckr -DUNDERSCORE -DIRIX -I /export-2/sgi100/naemc1/gempak/source/ldmlog   conftest.c -lm  1>&5
+ld32: WARNING 84: /usr/lib32/mips4/libm.so is not used for resolving any symbol.
+configure:1008: checking whether (f77  ) works
+configure:1048: checking whether f77 accepts -O
+configure:1079: checking whether Fortran unit 0 is stderr
+configure:1110: checking for ar
+configure:1138: checking whether ar accepts r
+ar: Warning: creating libtest.a
+
+configure:1186: checking for a BSD compatible install
+configure:1236: checking whether make sets ${MAKE}
+configure:1265: checking for ranlib
+configure:1297: checking for gp
+configure:1297: checking for gnuplot

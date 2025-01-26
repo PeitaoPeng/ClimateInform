@@ -1,0 +1,18 @@
+'open psi_div.200mb.jan1981-cur.mon.R15.cfsr.ctl'
+'set gxout fwrite'
+*'set fwrite /cpc/home/wd52pp/data/attr/djf16-17/bminput.psi_div.200mb.djf2016-17.cfsr.gr'
+'set fwrite bminput.psi_div.200mb.djf2016-17.cfsr.gr'
+'set x 1 64'
+'set y 1 40'
+'set t 1 12'
+'define sc=ave(s,t+0,t=360,1yr)'
+'define dc=ave(d,t+0,t=360,1yr)'
+'modify sc seasonal'
+'modify dc seasonal'
+'set t 1'
+'d ave(sc,t=432,t=434)' 
+'d ave(dc,t=432,t=434)' 
+'d ave(s,t=432,t=434)' 
+'d ave(d,t=432,t=434)' 
+
+

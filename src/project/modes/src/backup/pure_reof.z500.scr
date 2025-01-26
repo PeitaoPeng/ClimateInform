@@ -1,0 +1,108 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/modes/src
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/consistency/telecon
+#
+var=z500
+nyr=30
+nyrs=42 # 32 -> 1981; 42 -> 1991
+nmode=10
+#
+
+/bin/rm $tmp/fort.*         
+cp $lcdir/pure_eof.z200.f $tmp/pure_eof.f
+cp $lcdir/reof.s.f  $tmp/.
+cd $tmp
+#
+for mon in Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec; do
+#
+if [ $mon == Jan ]; then imon=1; fi
+if [ $mon == Feb ]; then imon=2; fi
+if [ $mon == Mar ]; then imon=3; fi
+if [ $mon == Apr ]; then imon=4; fi
+if [ $mon == May ]; then imon=5; fi
+if [ $mon == Jun ]; then imon=6; fi
+if [ $mon == Jul ]; then imon=7; fi
+if [ $mon == Aug ]; then imon=8; fi
+if [ $mon == Sep ]; then imon=9; fi
+if [ $mon == Oct ]; then imon=10; fi
+if [ $mon == Nov ]; then imon=11; fi
+if [ $mon == Dec ]; then imon=12; fi
+#
+cat > parm.h << eof
+       parameter(ltime=$nyr)
+       parameter(imx=144,jmx=73)
+       parameter(nmod=$nmod)
+c      parameter(lons=1,lone=144,lats=37,late=73)
+       parameter(lons=1,lone=144,lats=45,late=73) !NH
+       parameter(id=0)
+eof
+gfortran -o pure_eof.x reof.s.f pure_eof.f
+echo "done compiling"
+
+#
+ ln -s $datadir/$var.$model.$season.gr         fort.10
+#
+ ln -s $datadir/reof.$var.$model.$season.gr    fort.51
+ ln -s $datadir/rpc.$var.$model.$season.gr     fort.52
+#
+pure_eof.x > $datadir/reof.$var.$model.$season.out
+#
+cat>$datadir/reof.$var.$model.$season.ctl<<EOF
+dset $datadir/reof.$var.$model.$season.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  144 linear 0 2.5
+ydef   73 linear -90 2.5
+zdef    1 levels 200
+tdef 999 linear jan1950  1yr
+vars   20
+eof1   0 99 corr of mode 1
+reg1   0 99 regr of mode 1
+eof2   0 99 corr of mode 2
+reg2   0 99 regr of mode 2
+eof3   0 99 corr of mode 3
+reg3   0 99 regr of mode 3
+eof4   0 99 corr of mode 4
+reg4   0 99 regr of mode 4
+eof5   0 99 corr of mode 5
+reg5   0 99 regr of mode 5
+eof6   0 99 corr of mode 6
+reg6   0 99 regr of mode 6
+eof7   0 99 corr of mode 7
+reg7   0 99 regr of mode 7
+eof8   0 99 corr of mode 8
+reg8   0 99 regr of mode 8
+eof9   0 99 corr of mode 9
+reg9   0 99 regr of mode 9
+eof10   0 99 corr of mode 10
+reg10   0 99 regr of mode 10
+endvars
+EOF
+
+cat>$datadir/rpc.$var.$model.$season.ctl<<EOF2
+dset $datadir/rpc.$var.$model.$season.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef   $tmax linear 0 2.8125
+ydef    1 linear -90 2.8125
+zdef    1 levels 200
+tdef 999 linear jan1951  1yr
+vars   10
+cf1   0 99 rpc of mode 1
+cf2   0 99 rpc of mode 2
+cf3   0 99 rpc
+cf4   0 99 rpc
+cf5   0 99 rpc
+cf6   0 99 rpc
+cf7   0 99 rpc
+cf8   0 99 rpc
+cf9   0 99 rpc
+cf10   0 99 rpc
+endvars
+EOF2
+#
+done # mon loop

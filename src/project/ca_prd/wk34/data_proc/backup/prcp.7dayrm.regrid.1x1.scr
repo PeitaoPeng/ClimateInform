@@ -1,0 +1,149 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/ca_prd/wk34/data_proc
+tmp=/cpc/home/wd52pp/tmp/test
+datadir1=/cpc/prcp/PRODUCTS/CPC_UNI_PRCP/GAUGE_GLB/CTL
+datadir2=/cpc/home/wd52pp/data/ca_prd
+#
+outfile=prcp.7drm.1979-cur.1x1
+ndays_1=10227   #1/1/1979 to 12/31/2006
+#ndays_2=3287    #1/1/2007 to 12/31/2015
+ndays_2=5538     #1/1/2007 to 2/28/2022
+totday=`expr $ndays_1 + $ndays_2`
+rmday=`expr $totday - 6`
+rmend=`expr $totday - 3`
+
+cd $tmp
+#\rm *.*
+#======================================
+# read data of 1979-2006
+#======================================
+cat >readdata<<EOF
+run read.gs
+EOF
+cat >read.gs<<EOF
+'c'
+'reinit'
+'open $datadir1/PRCP_CU_GAUGE_V1.0GLB_0.50deg.lnx.ctl'
+*'set dfile 1'
+'set x 1 720'
+'set y 1 360'
+'set z 1'
+'set fwrite prcp1.gr'
+'set gxout fwrite'
+'set t 1 $ndays_1'
+'d rain'
+'disable fwrite'
+EOF
+grads -l <readdata
+#
+cat >readdata<<EOF
+run read.gs
+EOF
+cat >read.gs<<EOF
+'c'
+'reinit'
+'open $datadir1/PRCP_CU_GAUGE_V1.0GLB_0.50deg_RT.lnx.ctl'
+*'set dfile 1'
+'set x 1 720'
+'set y 1 360'
+'set z 1'
+'set fwrite prcp2.gr'
+'set gxout fwrite'
+'set t 1 $ndays_2'
+'d rain'
+'disable fwrite'
+EOF
+grads -l <readdata
+#
+cat prcp1.gr prcp2.gr > tmp.gr
+#
+cat>tmp.ctl<<EOF
+dset ^tmp.gr
+undef -999000000
+*
+TITLE Prcp
+*
+xdef 720 linear  00.250 0.50
+ydef 360  linear -89.75 0.50
+zdef 1 linear 1 1
+tdef $totday linear 01jan1979 1dy
+vars 1
+p  1 99 prcp (0.1mm/day)
+ENDVARS
+EOF
+#
+#======================================
+# regrid to 1.x 1. grid
+#======================================
+cat >regrid<<EOF
+run lterp.gs
+EOF
+cat >lterp.gs<<EOF
+'c'
+'reinit'
+'open $datadir2/mask.1x1.prate.ctl'
+'open $tmp/tmp.ctl'
+'set x 1 360'
+'set y 1 181'
+'set z 1'
+'set fwrite prcp.gr'
+'set gxout fwrite'
+'set t 1 $totday'
+'d lterp(p.2,mask(t=1))'
+EOF
+#
+grads -l <regrid
+#
+cat>prcp.ctl<<EOF
+dset ^prcp.gr
+undef -999000000
+*
+TITLE Prcp
+*
+xdef  360 linear 0 1.
+ydef  181 linear -90 1.
+zdef   1 linear 1 1
+tdef 20000 linear 01jan1979 1dy
+vars 1
+p  1 99 prcp (0.1mm/day)
+ENDVARS
+EOF
+#======================================
+# running mean 
+#======================================
+cat >runmean<<EOF
+run mean.gs
+EOF
+cat >mean.gs<<EOF
+'reinit'
+'open prcp.ctl'
+'set x 1 360'
+'set y 1 181'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+'set t 4 $rmend'
+'d ave(p,t-3,t+3)'
+'c'
+EOF
+grads -l <runmean
+
+cat>$outfile.ctl<<EOF
+dset ^$outfile.gr
+undef -999000000
+*
+TITLE Prcp
+*
+xdef  360 linear 0 1.
+ydef  181 linear -90 1.
+zdef   1 linear 1 1
+tdef 20000 linear 04jan1979 1dy
+vars 1
+p  1 99 7-day run_mean (C)
+ENDVARS
+EOF
+#
+cp $outfile.* $datadir2
+

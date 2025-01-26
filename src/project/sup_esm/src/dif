@@ -1,0 +1,121 @@
+13c13
+<       real smlr3d(mdvs,nyin),ocn3d(mdvs,nyin)
+---
+>       real smlr3d(mdvs,nyin),eca3d(mdvs,nyin)
+17c17
+<       real smlr2d(mdvs),ocn2d(mdvs)
+---
+>       real smlr2d(mdvs),eca2d(mdvs)
+36c36
+<       real smlprd(mdvs,nyr),ocnprd(mdvs,nyr)
+---
+>       real smlprd(mdvs,nyr)
+44c44
+<       open(unit=50,form='formatted')
+---
+> c     open(unit=50,form='unformatted',access='direct',recl=4*mdvs)
+56d55
+<       iocn=1  ! =0 means not include it
+64d62
+<         read(50,444) wk5  !ocn
+70d67
+<           totdata(i,iy,5)=wk5(i)
+95c92
+<      &'CCA','CFS','SML','EOCN'
+---
+>      &'CCA','CFS','SML'
+106d102
+<             ocn2d(i)=totdata(i,iyear,5)
+118d113
+<             ocn3d(i,iy)=totdata(i,iyear,5)
+128d122
+<             ocn3d(i,iy)=totdata(i,iyear,5)
+140d133
+<       call setzero(clim5,mdvs)
+146d138
+<       call timeanom(ocn3d,mdvs,nyin,clim5)
+152d143
+< c     call timespaceanom(ocn3d,mdvs,nyin,stclim5)
+161d151
+<          ocn2d(i)=ocn2d(i)-clim5(i)
+170d159
+<         gcm(4,k,i)=iocn*ocn3d(i,k)
+261,262c250
+<      &            beta(3)*smlr2d(i)+
+<      &            beta(4)*ocn2d(i)
+---
+>      &            beta(3)*smlr2d(i)
+269,270c257
+<      &            smlr2d(i)+
+<      &            ocn2d(i))/float(nmodel)
+---
+>      &            smlr2d(i))/float(nmodel)
+281d267
+<         call acc(obs2d,ocn2d,mdvs,accus(icase,6))
+288d273
+<         call rmss(obs2d,ocn2d,mdvs,rmsus(icase,6))
+302,303d286
+<       write(60,*) 'OCN'
+<       write(60,444) ocn2d
+309,310c292,293
+<      &betaout(iy,4),'acc=',accus(iy,1),accus(iy,2),
+<      &accus(iy,3),accus(iy,4),accus(iy,5),accus(iy,6)
+---
+>      &'acc=',accus(iy,1),accus(iy,2),
+>      &accus(iy,3),accus(iy,4),accus(iy,5)
+317c300
+<      &rmsus(iy,3),rmsus(iy,4),rmsus(iy,5),rmsus(iy,6)
+---
+>      &rmsus(iy,3),rmsus(iy,4),rmsus(iy,5)
+336d318
+<         ocnprd(i,iy)=totdata(i,iy,5)
+344d325
+<       call acc_in_st(verify,ocnprd,accm(6),mdvs,nyr)
+351d331
+<       call rms_in_st(verify,ocnprd,rmsm(6),mdvs,nyr)
+353,356c333,334
+<       write(6,888)'MEAN ACC=',accm(1),accm(2),accm(3),accm(4),accm(5),
+<      &accm(6)
+<       write(6,888)'MEAN RMS=',rmsm(1),rmsm(2),rmsm(3),rmsm(4),rmsm(5),
+<      &rmsm(6)
+---
+>       write(6,888)'MEAN ACC=',accm(1),accm(2),accm(3),accm(4),accm(5)
+>       write(6,888)'MEAN RMS=',rmsm(1),rmsm(2),rmsm(3),rmsm(4),rmsm(5)
+361,362c339,340
+< 888   format(A15,10x,6f6.2)
+< 777   format(I5,2x,A5,1x,3f7.2,1x,A5,6f6.2)
+---
+> 888   format(A15,10x,5f6.2)
+> 777   format(I5,2x,A5,1x,3f7.2,1x,A5,5f6.2)
+377d354
+< c
+382d358
+< c
+387d362
+< c
+392d366
+< c
+397,401d370
+< c
+<       call acc_in_t(ocnprd,verify,wk1,mdvs,nyr)
+<       write(6,*) 'OCN'
+<       write(6,988) wk1
+<       call avg_skill(wk1,mdvs,accm(6))
+409d377
+< c
+414d381
+< c
+419d385
+< c
+424d389
+< c
+429,433d393
+< c
+<       call rms_in_t(ocnprd,verify,wk1,mdvs,nyr)
+<       write(6,*) 'OCN'
+<       write(6,988) wk1
+<       call avg_skill(wk1,mdvs,rmsm(6))
+436d395
+<      &,accm(6)
+438d396
+<      &,rmsm(6)
