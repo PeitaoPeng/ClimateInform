@@ -40,9 +40,10 @@ cd $tmp
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
 for curyr in 2021 2022 2023 2024; do
+#for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
 for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-#for curmo in 01 02 03 04 05 06 07 08 09 10 11; do
+#for curmo in 11; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -91,7 +92,7 @@ fi
 dataot2=$outdata
 #=======================================
 #
-cp $lcdir/ocn_tpz.3mon.f $tmp/ocn.f
+cp $lcdir/ocn_tpz.3mon.cor.f $tmp/ocn.f
 
 imx=360; jmx=180; xds=0.5; yds=-89.5; xydel=1.
 
@@ -179,10 +180,11 @@ ydef $jmx linear $yds $xydel
 zdef  1 linear 1 1
 tdef $ny_out linear ${tgtmon}$outyr_s 1yr
 edef  $mlead names 1 2 3 4 5 6 7 8 9 10
-vars  3
+vars  4
 o  1 99 obs
 p  1 99 hcst
 s  1 99 std of obs
+c  1 99 cv cor
 endvars
 EOF
 #

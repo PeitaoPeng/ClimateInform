@@ -6,7 +6,7 @@
 
 set -eaux
 
-lcdir=/home/ppeng/src/opr/src
+lcdir=/home/ppeng/ClimateInform/src/opr/src
 tmp=/home/ppeng/data/tmp_opr
 if [ ! -d $tmp ] ; then
   mkdir -p $tmp
@@ -60,11 +60,11 @@ cd $tmp
 # have VAR1 IC
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
-#for curyr in 2022 2023; do
-for curyr in 2024; do
+for curyr in 2021 2022 2023 2024; do
+#for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
-#for curmo in 01 02 03 04 05 06 07 08 09 10 11; do
-for curmo in 10; do
+for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+#for curmo in 11; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -104,6 +104,10 @@ icyr=$curyr
 if [ $icmon = 12 ]; then icyr=`expr $curyr - 1`; fi
 
 nyear=`expr $icyr - 1947`  # total full year data used for PCR, 68 for 1948-2015
+
+ny_net=`expr $nyear - $lagmax / 12 - 1 - 20` # from 1951
+nwmo=$(( $ny_net / 10 )) # # of WMO clim
+
 ny_out=`expr $nyear - $its_clm - $lagmax / 12` # from its_clm to 
 
 outd=/home/ppeng/data/ss_fcst/pcr/$icyr
@@ -151,6 +155,7 @@ c
       parameter(id_detrd=$id_detrd)
       parameter(modmax=$modmax,mcut=$mcut,ncut=$ncut)
       parameter(icut1=$icut1,icut2=$icut2,icut3=$icut3,icut4=$icut4)
+      parameter(nwmo=$nwmo)
 c
       parameter(ncv=$ncv)
 c

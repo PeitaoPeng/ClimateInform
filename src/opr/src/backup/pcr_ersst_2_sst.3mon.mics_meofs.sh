@@ -6,7 +6,7 @@
 
 set -eaux
 
-lcdir=/home/ppeng/src/opr/src
+lcdir=/home/ppeng/ClimateInform/src/opr/src
 tmp=/home/ppeng/data/tmp_opr
 if [ ! -d $tmp ] ; then
   mkdir -p $tmp
@@ -28,15 +28,16 @@ lagmax=24   # month number kept for ICs
 id_ceof=1 # =1: eofs of combind ics; =0 not combined
 id_detrd=0 # =1, detrend data first then add trend; =0: no detrend
 
-for mics in 1; do # season or month numbers used as ICs
-for ncut in 1; do # EOF numbers used
+#for mics in 1 2 3 4; do # season or month numbers used as ICs
+for mics in 4; do # season or month numbers used as ICs
+for ncut in 3; do # EOF numbers used
 
 mlead=7   # max lead of ensemble fcst
 ncv=1
 
 mcut=4  # max cuts
 
-icut1=15; icut2=15; icut3=25; icut4=40
+icut1=15; icut2=20; icut3=25; icut4=40
 
 modmax=$icut4
 #
@@ -55,11 +56,10 @@ cd $tmp
 # have SST IC
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
-#for curyr in 2021 2022 2023 2024; do
+for curyr in 2021 2022 2023 2024; do
+#for curyr in 2020; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
-#for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for curyr in 2024; do
-for curmo in 11; do
+for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -158,11 +158,11 @@ fi
 #
 outfile1=pc.${var1}.icmon_$icmon
 outfile2=eof.${var1}.icmon_$icmon
-outfile3=fcst.$var1.2.$var2.mics$mics.mlead$mlead.ncut$ncut.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
-outfile4=skill_1d.$var1.2.$var2.mics$mics.mlead$mlead.ncut$ncut.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
-outfile5=hcst.$var1.2.$var2.mics$mics.mlead$mlead.ncut$ncut.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
+outfile3=fcst.$var1.2.$var2.mics$mics.mlead$mlead.ncut$ncut.icut1_$icut1.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
+outfile4=skill_1d.$var1.2.$var2.mics$mics.mlead$mlead.ncut$ncut.icut1_$icut1.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
+outfile5=hcst.$var1.2.$var2.mics$mics.mlead$mlead.ncut$ncut.icut1_$icut1.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
 outfile8=${var1}_ic_mics.3mon
-outfile9=nino34.prd.mics$mics.mlead$mlead.ncut$ncut.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
+outfile9=nino34.prd.mics$mics.mlead$mlead.ncut$ncut.icut1_$icut1.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
 outfile10=nino34.obs.icmon_$icmon.3mon
 #
 ln -s $datain1/$sstfile.gr  fort.10

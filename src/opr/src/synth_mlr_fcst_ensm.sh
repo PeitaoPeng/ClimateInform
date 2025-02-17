@@ -6,7 +6,7 @@
 
 set -eaux
 
-lcdir=/home/ppeng/src/opr/src
+lcdir=/home/ppeng/ClimateInform/src/opr/src
 tmp=/home/ppeng/data/tmp_opr
 if [ ! -d $tmp ] ; then
   mkdir -p $tmp
@@ -19,11 +19,11 @@ nprd=4  # of input fcst
 kocn=10
 xnino_crt=3.
 
-#for var in prec t2m; do # prec, t2m, hgt
-for var in t2m; do # prec, t2m, hgt
+for var in t2m prec; do # prec, t2m, hgt
+#for var in t2m; do # prec, t2m, hgt
 
-if [ $var = t2m ];  then icut1=3; fi
-if [ $var = prec ]; then icut1=5; fi
+if [ $var = t2m ];  then icut1=3; ivar2=1; fi
+if [ $var = prec ]; then icut1=5; ivar2=2; fi
 
 nclm_start=1981 # to have yrs clm for more stable than 30 yrs 
 its_clm=`expr $nclm_start - 1980`
@@ -43,7 +43,7 @@ cd $tmp
 for curyr in 2024; do
 #curmt=`date --date='today' '+%m'`  # mo of making fcst
 #for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for curmo in 10; do
+for curmo in 05 11; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -89,7 +89,7 @@ fi
 #======================================
 imx=360; jmx=180; xds=0.5; yds=-89.5; xydel=1.
 #
-cp $lcdir/synth_fcst_ensm.f $tmp/syn.f
+cp $lcdir/synth_mlr_fcst_ensm.f $tmp/syn.f
 
 cat > parm.h << eof
 c
@@ -101,12 +101,14 @@ c
       parameter(ny_hcst=$ny_hcst)
       parameter(ny_clm=$ny_clm)
       parameter(xncrt=$xnino_crt)
+      parameter(icmon=$icmon)
+      parameter(ivar2=$ivar2)
 
 eof
 #
 #gfortran -o pcr.x pcr.f reof.s.f
-#gfortran -mcmodel=large -o pcr.x pcr.f reof.s.f
-gfortran -mcmodel=medium -o syn.x syn.f
+#gfortran -mcmodel=medium -o syn.x syn.f
+gfortran -mcmodel=large -o syn.x syn.f
 echo "done compiling"
 
 if [ -f fort.11 ] ; then
@@ -124,10 +126,11 @@ infile7=hcst.$var.kocn_$kocn.mlead$mlead.3mon
 infile8=hcst.slp.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3mon
 
 infile9=nino34.prd.mics4.mlead$mlead.ncut3.icut1_15.id_ceof1.id_detrd0.cv1.3mon
+infile10=frac_rpss.ensmsynth.$var.mlead7.3mon
 #
-outfile1=fcst.ensmsynth.$var.mlead$mlead.3mon
-outfile2=hcst.ensmsynth.$var.mlead$mlead.3mon
-outfile3=skill_1d.ensmsynth.$var.mlead$mlead.3mon
+outfile1=new.fcst.ensmsynth.$var.mlead$mlead.3mon
+outfile2=new.hcst.ensmsynth.$var.mlead$mlead.3mon
+outfile3=new.skill_1d.ensmsynth.$var.mlead$mlead.3mon
 #
 ln -s $ind1/$infile1.gr          fort.11
 ln -s $ind1/$infile2.gr          fort.12
@@ -140,6 +143,7 @@ ln -s $ind1/$infile7.gr          fort.17
 ln -s $ind1/$infile8.gr          fort.18
 
 ln -s $ind1/$infile9.gr          fort.19
+ln -s $ind1/$infile10.gr          fort.20
 
 ln -s $outdata/$outfile1.gr          fort.31
 ln -s $outdata/$outfile2.gr          fort.32

@@ -6,7 +6,7 @@
 
 set -eaux
 
-lcdir=/home/ppeng/src/opr/src
+lcdir=/home/ppeng/ClimateInform/src/opr/src
 tmp=/home/ppeng/data/tmp_opr
 if [ ! -d $tmp ] ; then
   mkdir -p $tmp
@@ -28,8 +28,9 @@ lagmax=24   # month number kept for ICs
 id_ceof=1 # =1: eofs of combind ics; =0 not combined
 id_detrd=0 # =1, detrend data first then add trend; =0: no detrend
 
-for mics in 1 2 3 4; do # season or month numbers used as ICs
-for ncut in 4; do # EOF numbers used
+#for mics in 1 2 3 4; do # season or month numbers used as ICs
+for mics in 4; do # season or month numbers used as ICs
+for ncut in 3; do # EOF numbers used
 
 mlead=7   # max lead of ensemble fcst
 ncv=1
@@ -56,6 +57,7 @@ cd $tmp
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
 for curyr in 2021 2022 2023 2024; do
+#for curyr in 2020; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
 for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
 #

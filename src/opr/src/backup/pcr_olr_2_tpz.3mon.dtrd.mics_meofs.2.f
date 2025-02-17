@@ -25,6 +25,7 @@ C===========================================================
       real hcst(imx2,jmx2,nyr,nlead,mics,ncut)
       real wthcst(imx2,jmx2,nyr,nlead)
       real fcst(imx2,jmx2,nlead,mics,ncut)
+      real avgo(imx2,jmx2),avgf(imx2,jmx2)
       real stdo(imx2,jmx2,nwmo,nlead),stdf(imx2,jmx2)
       real clmo(imx2,jmx2,nwmo,nlead),clmf(imx2,jmx2)
       real wtfcst(imx2,jmx2,nlead)
@@ -45,7 +46,7 @@ C
       open(31,form='unformatted',access='direct',recl=4) !1d_skill
       open(32,form='unformatted',access='direct',recl=4*imx2*jmx2) !hcst
 
-      open(40,form='unformatted',access='direct',recl=4*imx2*jmx2) !ics
+      open(40,form='unformatted',access='direct',recl=4*imx*jmx) !ics
       open(41,form='unformatted',access='direct',recl=4*imx2*jmx2) !regr
 C
 C== have coslat
@@ -76,7 +77,7 @@ C     undef=-999.0
 C
 C=== read in all 3-mon avg tpz
       ir=0
-      do it=1,nsstot ! nsstot=montot-2
+      do it=373,372+nsstot ! nsstot=montot-2
         read(11,rec=it) fld2
         ir=ir+1
         do i=1,imx2
@@ -198,15 +199,16 @@ C have tpz anomalies over period 1 -> ny_tpz
       do i=1,imx2
       do j=1,jmx2
         if(fld2(i,j).gt.-900.) then
+
           do it=1,ny_tpz
             ts2(it)=wtpz(i,j,it)
           enddo
 
           call wmo_clim_tot(ts2,w1d,nyr,nwmo)
 
-           do ii=1,nwmo
+            do ii=1,nwmo
               tpzc_tot(i,j,ii,ld)=w1d(ii)
-           enddo
+            enddo
 
           call clim_anom(ts2,tpzc(i,j),nyr,ny_tpz)
 
@@ -406,7 +408,7 @@ c fcst
 
       if(id_detrd.eq.1) then
         fcst(i,j,ld,ic,mc)=w2d(i,j)+v2trd(i,j,ny_tpz)
-c       fcst(i,j,ld,ic,mc)=w2d(i,j) ! not add trend
+c       fcst(i,j,ld,ic,mc)=w2d(i,j)
       else
         fcst(i,j,ld,ic,mc)=w2d(i,j)
       endif
@@ -477,7 +479,8 @@ c std clm of obs
         do i=1,imx2
         do j=1,jmx2
           if (fld2(i,j).gt.-900.) then
-          do it=1,ny_tpz
+
+        do it=1,ny_tpz
               ts1(it)=vfld(i,j,it,ld)
             enddo
 
@@ -510,10 +513,12 @@ c std clm of obs
 c std clm of wthcst
         do i=1,imx2
         do j=1,jmx2
+
           if (fld2(i,j).gt.-900.) then
+
           do it=1,ny_tpz
               ts1(it)=wthcst(i,j,it,ld)
-          enddo
+            enddo
 
             call wmo_clm_std_anom(ts1,w1d,w1d2,ts4,nyr,ny_tpz,nwmo)
 
@@ -639,6 +644,7 @@ c write out obs and wthcst
           iw=iw+1
           write(32,rec=iw) w2d
 
+          if(it.le.31) md=1
           if(it.gt.31.and.it.le.41) md=1
           if(it.gt.41.and.it.le.51) md=2
           if(it.gt.51.and.it.le.61) md=3
@@ -661,7 +667,6 @@ c write out fcst and skill_t
         iw=0
         ny_prd=ny_tpz+1
        do ld=1,nlead
-
          do i=1,imx2
          do j=1,jmx2
            w2d(i,j)=wtfcst(i,j,ld)
@@ -670,7 +675,8 @@ c write out fcst and skill_t
            w2d4(i,j)=rms3d(i,j,ld)
            w2d5(i,j)=hss3d(i,j,ld)
 
-          if(ny_prd.ge.32.and.it.lt.42) md=1 ! 32-42 for skiping 1950
+          if(ny_prd.lt.32) md=1 
+          if(ny_prd.ge.32.and.it.lt.42) md=1 ! 32-42 for skiping 1980
           if(ny_prd.gt.42.and.it.lt.52) md=2
           if(ny_prd.gt.52.and.it.lt.62) md=3
           if(ny_prd.gt.62.and.it.lt.72) md=4
@@ -678,7 +684,7 @@ c write out fcst and skill_t
           if(ny_prd.gt.82.and.it.lt.92) md=6
           if(ny_prd.gt.92.and.it.lt.102) md=7
 
-           w2d6(i,j)=tpzc_tot(i,j,md,ld)
+           w2d6(i,j)=tpzc_tot(i,j,md,ld) ! latest for fcst
          enddo
          enddo
          iw=iw+1
@@ -693,7 +699,7 @@ c write out fcst and skill_t
          write(30,rec=iw) w2d5
          iw=iw+1
          write(30,rec=iw) w2d6
-         enddo ! ld loop
+       enddo
 c
       stop
       end
@@ -996,21 +1002,6 @@ c
       return
       end
 c
-      SUBROUTINE clim_anom(ts,cc,maxt,nt)
-      DIMENSION ts(maxt)
-      cc=0.
-      do i=1,nt
-         cc=cc+ts(i)
-      enddo
-      cc=cc/float(nt)
-c  
-      do i=1,nt
-        ts(i)=ts(i)-cc
-      enddo
-c
-      return
-      end
-
       SUBROUTINE wmo_clm_std_anom(ts,std,clm,anom,maxt,nt,nwmo)
 C WMO std, clm, and anom
 
@@ -1062,6 +1053,21 @@ C have WMO anom
         anom(i)=(ts(i)-clm(nwmo))/std(nwmo)
       enddo
 
+      return
+      end
+
+      SUBROUTINE clim_anom(ts,cc,maxt,nt)
+      DIMENSION ts(maxt)
+      cc=0.
+      do i=1,nt
+         cc=cc+ts(i)
+      enddo
+      cc=cc/float(nt)
+c  
+      do i=1,nt
+        ts(i)=ts(i)-cc
+      enddo
+c
       return
       end
 

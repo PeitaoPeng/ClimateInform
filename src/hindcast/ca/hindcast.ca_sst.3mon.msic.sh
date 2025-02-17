@@ -5,7 +5,7 @@ set -eaux
 # for skill check and other diagnostics
 #ccccccccccccccccccccccccccccccccccccccccccccccccccccccc
  
-lcdir=/home/ppeng/src/hindcast/ca
+lcdir=/home/ppeng/ClimateInform/src/hindcast/ca
 tmp=/home/ppeng/tmp
 if [ ! -d $tmp ] ; then
   mkdir -p $tmp
@@ -69,8 +69,7 @@ npp=`expr $nps - $mlead`
 mldp=`expr $mlead + 1` 
 #
 for mseason in 1 2 3 4; do
-#for modemax in  10 15 25 30 35 40 45 50 55 60; do
-for modemax in  10 15 25 40; do
+for modemax in  10 15 25 30 35 40 45 50 55 60; do
 cp $lcdir/hindcast.ca_sst.3mon.msic.f $tmp/sst_hcst.f
 cp $lcdir/eof_4_ca.s.f $tmp/eof_4_ca.s.f
 

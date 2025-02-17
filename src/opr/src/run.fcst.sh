@@ -2,10 +2,10 @@
 
 set -eaux
 
-codedir=/home/ppeng/src/opr/src
+codedir=/home/ppeng/ClimateInform/src/opr/src
 #
-bash $codedir/pcr_ersst_2_sst.3mon.mics_meofs.sh
-bash $codedir/pcr_ersst_2_tpz.3mon.dtrd.mics_meofs.sh
-bash $codedir/pcr_olr_2_tpz.3mon.dtrd.mics_meofs.sh
-bash $codedir/pcr_slp_2_tpz.3mon.dtrd.mics_meofs.sh
-bash $codedir/ocn_tpz.3mon.sh
+#bash $codedir/pcr_ersst_2_sst.3mon.mics_meofs.sh
+bash $codedir/pcr_ersst_2_tpz.3mon.dtrd.mics_meofs.cor.sh
+bash $codedir/pcr_olr_2_tpz.3mon.dtrd.mics_meofs.cor.sh
+bash $codedir/pcr_slp_2_tpz.3mon.dtrd.mics_meofs.cor.sh
+bash $codedir/ocn_tpz.3mon.cor.sh

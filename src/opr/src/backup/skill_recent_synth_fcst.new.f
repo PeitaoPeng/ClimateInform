@@ -112,24 +112,23 @@ c== spatial skill
       iw=iw+1
       write(91,rec=iw) xrms
 
-      do i=1,imx
-      do j=1,jmx
-      w2d3(i,j)=pa(i,j,1,it)
-      w2d4(i,j)=pb(i,j,1,it)
-      enddo
-      enddo
-
-      call hss3c_prob_s(w2d,w2d3,w2d4,imx,jmx,1,360,115,160,coslat,h1)
-      call hss3c_prob_s(w2d,w2d3,w2d4,imx,jmx,230,300,115,140,
-     &coslat,h2)
+      call hss3c_s(w2d,w2d2,imx,jmx,1,360,115,160,coslat,h1)
+      call hss3c_s(w2d,w2d2,imx,jmx,230,300,115,140,coslat,h2)
 
       iw=iw+1
       write(91,rec=iw) h1
       iw=iw+1
       write(91,rec=iw) h2
 c rpss 
-      call rpss_s(w2d,w2d4,w2d3,rpss1,imx,jmx,1,360,115,160,coslat)
-      call rpss_s(w2d,w2d4,w2d3,rpss2,imx,jmx,230,300,115,140,coslat)
+      do i=1,imx
+      do j=1,jmx
+      w2d2(i,j)=pb(i,j,1,it)
+      w2d3(i,j)=pa(i,j,1,it)
+      enddo
+      enddo
+
+      call rpss_s(w2d,w2d2,w2d3,rpss1,imx,jmx,1,360,115,160,coslat)
+      call rpss_s(w2d,w2d2,w2d3,rpss2,imx,jmx,230,300,115,140,coslat)
 
       iw=iw+1
       write(91,rec=iw) rpss1
@@ -198,29 +197,22 @@ c write out obs, fcst, and hit
       return
       end
 
-      SUBROUTINE hss3c_prob_s(obs,pa,pb,imx,jmx,is,ie,js,je,coslat,h)
-      dimension obs(imx,jmx),pa(imx,jmx),pb(imx,jmx),pn(imx,jmx)
+      SUBROUTINE hss3c_s(obs,prd,imx,jmx,is,ie,js,je,coslat,h)
+      dimension obs(imx,jmx),prd(imx,jmx)
       dimension nobs(imx,jmx),nprd(imx,jmx)
       dimension coslat(jmx)
-      dimension w1d(3)
 
       do i=is,ie
       do j=js,je
-        if(obs(i,j).gt.-900.and.pa(i,j).gt.-900) then
+        if(obs(i,j).gt.-900.and.prd(i,j).gt.-900) then
 
           if(obs(i,j).gt.0.43) nobs(i,j)=1
           if(obs(i,j).lt.-0.43) nobs(i,j)=-1
           if(obs(i,j).ge.-0.43.and.obs(i,j).le.0.43) nobs(i,j)=0
 
-
-          w1d(3)=pa(i,j)
-          w1d(1)=pb(i,j)
-          w1d(2)=1.- pa(i,j)-pb(i,j)
-          maxp = maxloc(w1d,1)
-
-          if(maxp.eq.3) nprd(i,j)=1
-          if(maxp.eq.1) nprd(i,j)=-1
-          if(maxp.eq.2) nprd(i,j)=0
+          if(prd(i,j).gt.0.43) nprd(i,j)=1
+          if(prd(i,j).lt.-0.43) nprd(i,j)=-1
+          if(prd(i,j).ge.-0.43.and.prd(i,j).le.0.43) nprd(i,j)=0
 
         endif
       enddo
@@ -230,7 +222,7 @@ c write out obs, fcst, and hit
       tot=0.
       do i=is,ie
       do j=js,je
-        if(obs(i,j).gt.-900..and.pa(i,j).gt.-900.) then
+        if(obs(i,j).gt.-900..and.prd(i,j).gt.-900.) then
         tot=tot+coslat(j)
         if (nobs(i,j).eq.nprd(i,j)) h=h+coslat(j)
         endif

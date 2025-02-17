@@ -21,7 +21,7 @@ C===========================================================
       real xn34(ny_hcst+1,mlead)
 
       real w1d(nprd),w1d2(nprd),w1d3(nprd),w1d4(nprd)
-      real ts1(ny_hcst),ts2(ny_hcst),ts3(ny_hcst)
+      real ts1(ny_hcst),ts2(ny_hcst),ts3(ny_hcst),ts4(ny_hcst)
 
       real w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx)
       real w2d4(imx,jmx),w2d5(imx,jmx),w2d6(imx,jmx)
@@ -303,20 +303,21 @@ C 1-D skill
       iw3=iw3+1
       write(33,rec=iw3) xrms
 
-      call hss3c_s(w2d,w2d2,imx,jmx,1,360,115,160,coslat,h1)
-      call hss3c_s(w2d,w2d2,imx,jmx,230,300,115,140,coslat,h2)
- 
-      iw3=iw3+1
-      write(33,rec=iw3) h1
-      iw3=iw3+1
-      write(33,rec=iw3) h2
-
       do i=1,imx
       do j=1,jmx
       w2d2(i,j)=pb(i,j,it)
       w2d3(i,j)=pa(i,j,it)
       enddo
       enddo
+
+      call hss3c_prob_s(w2d,w2d3,w2d2,imx,jmx,1,360,115,160,coslat,h1)
+      call hss3c_prob_s(w2d,w2d3,w2d2,imx,jmx,230,300,115,140,
+     &coslat,h2)
+
+      iw3=iw3+1
+      write(33,rec=iw3) h1
+      iw3=iw3+1
+      write(33,rec=iw3) h2
 
       call rpss_s(w2d,w2d2,w2d3,rpss1,imx,jmx,1,360,115,160,coslat)
       call rpss_s(w2d,w2d2,w2d3,rpss2,imx,jmx,230,300,115,140,coslat)
@@ -338,10 +339,13 @@ c temporal 2D skill calculation
         do it=1,ny_hcst
           ts1(it)=obs(i,j,it)
           ts2(it)=ehcst(i,j,it)
+          ts3(it)=pa(i,j,it)
+          ts4(it)=pb(i,j,it)
         enddo
 
         call cor_rms(ts1,ts2,ny_hcst,ny_hcst,ecor(i,j),erms(i,j))
-        call hss3c_t(ts1,ts2,ny_hcst,ny_hcst,ehss(i,j))
+
+        call hss3c_prob_t(ts1,ts3,ts4,ny_hcst,ny_hcst,ehss(i,j))
 
       else
 
@@ -641,6 +645,49 @@ C== have weights
       return
       end
 
+      SUBROUTINE hss3c_prob_s(obs,pa,pb,imx,jmx,is,ie,js,je,coslat,h)
+      dimension obs(imx,jmx),pa(imx,jmx),pb(imx,jmx)
+      dimension nobs(imx,jmx),nprd(imx,jmx)
+      dimension coslat(jmx)
+      dimension w1d(3)
+
+      do i=is,ie
+      do j=js,je
+        if(obs(i,j).gt.-900.and.pa(i,j).gt.-900) then
+
+          if(obs(i,j).gt.0.43) nobs(i,j)=1
+          if(obs(i,j).lt.-0.43) nobs(i,j)=-1
+          if(obs(i,j).ge.-0.43.and.obs(i,j).le.0.43) nobs(i,j)=0
+
+
+          w1d(3)=pa(i,j)
+          w1d(1)=pb(i,j)
+          w1d(2)=1.- pa(i,j)-pb(i,j)
+          maxp = maxloc(w1d,1)
+
+          if(maxp.eq.3) nprd(i,j)=1
+          if(maxp.eq.1) nprd(i,j)=-1
+          if(maxp.eq.2) nprd(i,j)=0
+
+        endif
+      enddo
+      enddo
+
+      h=0.
+      tot=0.
+      do i=is,ie
+      do j=js,je
+        if(obs(i,j).gt.-900..and.pa(i,j).gt.-900.) then
+        tot=tot+coslat(j)
+        if (nobs(i,j).eq.nprd(i,j)) h=h+coslat(j)
+        endif
+      enddo
+      enddo
+      h=(h-tot/3.)/(tot-tot/3.)*100.
+
+      return
+      end
+
       SUBROUTINE cor_rms(f1,f2,nt,ltime,cor,rms)
 
       real f1(nt),f2(nt)
@@ -902,6 +949,35 @@ c
         if(prd(it).lt.-0.43) nprd(it)=-1
         if(prd(it).ge.-0.43.and.prd(it).le.0.43) nprd(it)=0
       enddo
+      h=0.
+      tot=0.
+      do i=1,nt
+      tot=tot+1
+      if (nobs(i).eq.nprd(i)) h=h+1
+      enddo
+      hs=(h-tot/3.)/(tot-tot/3.)*100.
+      return
+      end
+
+      SUBROUTINE hss3c_prob_t(obs,pa,pb,ny,nt,h)
+      dimension obs(ny),pa(ny),pb(ny)
+      dimension nobs(ny),nprd(ny)
+      dimension w1d(3)
+      do it=1,nt
+        if(obs(it).gt.0.43) nobs(it)=1
+        if(obs(it).lt.-0.43) nobs(it)=-1
+        if(obs(it).ge.-0.43.and.obs(it).le.0.43) nobs(it)=0
+
+        w1d(3)=pa(it)
+        w1d(1)=pb(it)
+        w1d(2)=1.- pa(it)-pb(it)
+        maxp = maxloc(w1d,1)
+
+          if(maxp.eq.3) nprd(it)=1
+          if(maxp.eq.1) nprd(it)=-1
+          if(maxp.eq.2) nprd(it)=0
+      enddo
+
       h=0.
       tot=0.
       do i=1,nt

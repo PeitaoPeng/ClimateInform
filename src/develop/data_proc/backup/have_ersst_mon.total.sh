@@ -2,7 +2,7 @@
 
 set -eaux
 
-lcdir=/home/ppeng/src/forecast/ca_ss
+lcdir=/home/ppeng/ClimateInform/src/develop/data_proc
 tmp=/home/ppeng/data/tmp
 if [ ! -d $tmp ] ; then
   mkdir -p $tmp
@@ -73,11 +73,11 @@ dridge=0.01
 clm_bgn=1644  #dec1990
 #clm_bgn=1524  #dec1980
 clm_end=`expr $clm_bgn + 360`
-nts=1130  # feb1948
-nte=`expr $ttlong - 1` # mid-mon of the latest season
+nts=1129  # feb1948
+nte=`expr $ttlong` # mid-mon of the latest season
 #
-outfile=${sst_analysis}.3mon.1948-curr.total
-cat >sst3monavg<<EOF
+outfile=${sst_analysis}.mon.1948-curr.total
+cat >sstmon<<EOF
 run avg.gs
 EOF
 cat >avg.gs<<EOF
@@ -95,11 +95,11 @@ cat >avg.gs<<EOF
 'set fwrite $datadir/$outfile.gr'
 'set t $nts $nte'
 #'d ave(sst-clm,t-1,t+1)'
-'d ave(sst,t-1,t+1)'
+'d sst'
 'c'
 EOF
 #
-/usr/bin/grads -bl <sst3monavg
+/usr/bin/grads -bl <sstmon
 #
 cat>$datadir/$outfile.ctl<<EOF
 dset ^$outfile.gr
@@ -110,9 +110,9 @@ TITLE SST
 xdef  180 linear   0. 2.
 ydef   89 linear -89. 2.
 zdef   01 levels 1
-tdef   9999 linear feb1948 1mo
+tdef   9999 linear jan1948 1mo
 vars 1
-sst  1 99 3-mon mean (C)
+sst  1 99 mon mean (C)
 ENDVARS
 EOF
 #
@@ -127,11 +127,11 @@ fEOF
 cat >regrid.gs<<gsEOF
 'reinit'
 'open $datadir/$outfile.ctl'
-'open /home/ppeng/src/utility/intpl/grid.360x180.ctl'
+'open /home/ppeng/ClimateInform/src/utility/intpl/grid.360x180.ctl'
 'set gxout fwrite'
 'set fwrite $datadir/$outfile.1x1.gr'
 nt=1
-ntend=$tmax-2
+ntend=$tmax
 while ( nt <= ntend)
 
 'set t 'nt
@@ -155,7 +155,7 @@ options little_endian
 XDEF 360 LINEAR    0.5  1.0
 YDEF 180 LINEAR  -89.5  1.0
 zdef  01 levels 1 
-tdef   9999 linear feb1948 1mo
+tdef   9999 linear jan1948 1mo
 *
 VARS 1
 sst 1  99   sst

@@ -39,11 +39,11 @@ cd $tmp
 # SST IC
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
-for curyr in 2021 2022 2023 2024; do
-#for curyr in 2021; do
+#for curyr in 2021 2022 2023 2024; do
+for curyr in 2024; do
 #curmt=`date --date='today' '+%m'`  # mo of making fcst
-for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-#for curmo in 06; do
+#for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+for curmo in 10; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -89,7 +89,7 @@ fi
 #======================================
 imx=360; jmx=180; xds=0.5; yds=-89.5; xydel=1.
 #
-cp $lcdir/synth_fcst_ensm.f $tmp/syn.f
+cp $lcdir/synth_mlr_fcst_ensm.f $tmp/syn.f
 
 cat > parm.h << eof
 c
@@ -128,9 +128,9 @@ infile8=hcst.slp.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3
 infile9=nino34.prd.mics4.mlead$mlead.ncut3.icut1_15.id_ceof1.id_detrd0.cv1.3mon
 infile10=frac_rpss.ensmsynth.$var.mlead7.3mon
 #
-outfile1=fcst.ensmsynth.$var.mlead$mlead.3mon
+outfile1=new.fcst.ensmsynth.$var.mlead$mlead.3mon
 outfile2=hcst.ensmsynth.$var.mlead$mlead.3mon
-outfile3=skill_1d.ensmsynth.$var.mlead$mlead.3mon
+outfile3=new.skill_1d.ensmsynth.$var.mlead$mlead.3mon
 #
 ln -s $ind1/$infile1.gr          fort.11
 ln -s $ind1/$infile2.gr          fort.12

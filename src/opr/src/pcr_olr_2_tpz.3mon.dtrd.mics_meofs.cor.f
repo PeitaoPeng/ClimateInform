@@ -12,6 +12,7 @@ C===========================================================
       real corr2(imx2,jmx2,nyr),regr2(imx2,jmx2,nyr,nyr)
       real corr3(imx2,jmx2,nyr),regr3(imx2,jmx2,nyr)
       real cor3d(imx2,jmx2,nlead),rms3d(imx2,jmx2,nlead)
+      real cvcor(imx2,jmx2,nyr,nlead)
       real hss3d(imx2,jmx2,nlead)
       real ts1(nyr),ts2(nyr)
       real w2d(imx2,jmx2),w2d2(imx2,jmx2),w2d3(imx2,jmx2)
@@ -521,11 +522,11 @@ c deal with "too small" std
         do i=1,imx2
         do j=1,jmx2
           if(fld2(i,j).gt.-900) then
-            if(stdo(i,j,ld).lt.0.001) then
-              stdo(i,j,ld)=0.001
+            if(stdo(i,j,ld).lt.0.01) then
+              stdo(i,j,ld)=0.01
             endif
-            if(stdf(i,j,ld).lt.0.001) then
-              stdf(i,j,ld)=0.001
+            if(stdf(i,j,ld).lt.0.01) then
+              stdf(i,j,ld)=0.01
             endif
           endif
         enddo
@@ -637,6 +638,52 @@ c     do iy=its_clm,ite_clm
 
       enddo ! iy loop
       enddo ! ld loop
+      c
+c CV corr skill of hcst
+c
+        do ld=1,nlead
+        do itgt=1,ny_tpz
+
+        iym=itgt-1
+        iyp=itgt+1
+        if(itgt.eq.1) iym=3
+        if(itgt.eq.ny_tpz) iyp=ny_tpz-2
+
+        do i=1,imx2
+        do j=1,jmx2
+
+        IF(fld2(i,j).gt.-900.) then
+
+          ir=0
+          do iy=1,ny_tpz
+
+          if(iy.eq.itgt) go to 777
+
+          if(ncv.eq.3) then
+            if(iy.eq.iym)  go to 777
+            if(iy.eq.iyp)  go to 777
+          endif
+
+            ir=ir+1
+            ts1(ir)=wthcst(i,j,iy,ld)
+            ts2(ir)=vfld(i,j,iy,ld)
+  777     continue
+          enddo
+
+          nfld=ir
+          call regr_t(ts1,ts2,nyr,nfld,cvcor(i,j,itgt,ld),w2d(i,j))
+
+        ELSE
+
+          cvcor(i,j,itgt,ld)=undef
+
+        ENDIF
+
+        enddo !i loop
+        enddo !j loop
+
+        enddo !itgt loop
+        enddo !ld loop
 c
 c write out obs and wthcst
         iw=0
@@ -662,6 +709,14 @@ c write out obs and wthcst
           do i=1,imx2
           do j=1,jmx2
             w2d(i,j)=stdo(i,j,ld)
+          enddo
+          enddo
+          iw=iw+1
+          write(32,rec=iw) w2d
+
+          do i=1,imx2
+          do j=1,jmx2
+            w2d(i,j)=cvcor(i,j,it,ld)
           enddo
           enddo
           iw=iw+1

@@ -2,7 +2,7 @@
 
 set -eaux
 
-lcdir=/home/ppeng/src/forecast/ca_ss
+lcdir=/home/ppeng/ClimateInform/src/develop/data_proc
 tmp=/home/ppeng/data/tmp
 if [ ! -d $tmp ] ; then
   mkdir -p $tmp
@@ -127,7 +127,7 @@ fEOF
 cat >regrid.gs<<gsEOF
 'reinit'
 'open $datadir/$outfile.ctl'
-'open /home/ppeng/src/utility/intpl/grid.360x180.ctl'
+'open /home/ppeng/ClimateInform/src/utility/intpl/grid.360x180.ctl'
 'set gxout fwrite'
 'set fwrite $datadir/$outfile.1x1.gr'
 nt=1

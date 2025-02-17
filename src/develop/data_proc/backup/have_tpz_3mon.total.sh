@@ -1,8 +1,9 @@
-#!/bin/sh
+#r
+!/bin/sh
 
 set -eaux
 
-lcdir=/home/ppeng/forecast/ca_ss
+lcdir=/home/ppeng/ClimateInform/src/develop/data_proc
 tmp=/home/ppeng/data/tmp
 if [ ! -d $tmp ] ; then
   mkdir -p $tmp
@@ -61,7 +62,8 @@ dridge=0.01
 #======================================
 #
 #for var in prec; do
-for var in t2m prec hgt; do
+for var in prec hgt t2m; do
+#for var in hgt; do
 #
 clm_bgn=516  #dec1990
 clm_end=`expr $clm_bgn + 360`
@@ -90,12 +92,12 @@ cat >data_rewrite.gs<<EOF
 'sdfopen $datadir0/air.mon.mean.nc'
 'set x 1 $imxt'
 'set y 1 $jmxt'
-'set t 1 12'
+*'set t 1 12'
 *anom wrt wmo clim 1991-2020
-'define clm=ave(air,t+$clm_bgn, t=$clm_end,1yr)'
+*'define clm=ave(air,t+$clm_bgn, t=$clm_end,1yr)'
 *anom wrt clim from 1948 to curr
 *'define clm=ave(air,t+0, t=$tmax,1yr)'
-'modify clm seasonal'
+*'modify clm seasonal'
 'set gxout fwrite'
 'set fwrite $outfile.gr'
 'set t $nts $nte'
@@ -164,7 +166,8 @@ cat >data_rewrite.gs<<EOF3
 'sdfopen $datadir0/hgt.mon.mean.nc'
 'set x 1 144'
 'set y 1  73'
-'set z 10'
+*'set z 10'
+'set z 6'
 'set t 1 12'
 *anom wrt wmo clim 1991-2020
 'define clm=ave(hgt,t+$clm_bgn, t=$clm_end,1yr)'
@@ -205,9 +208,9 @@ fEOF
 cat >regrid.gs<<gsEOF
 'reinit'
 'open $outfile.ctl'
-'open /home/ppeng/src/utility/intpl/grid.360x180.ctl'
+'open /home/ppeng/ClimateInform/src/utility/intpl/grid.360x180.ctl'
 'set gxout fwrite'
-'set fwrite $datadir/$outfile.1x1.gr'
+'set fwrite $outfile.reg.gr'
 nt=1
 while ( nt <= $ntend)
 
@@ -222,6 +225,22 @@ endwhile
 gsEOF
 
 /usr/bin/grads -pb <int
+
+# screen data
+cat > parm.h << eof
+      parameter(ntot=$ntend)
+      parameter(ny=${nyear} + 1)
+      parameter(imx=360,jmx=180)
+eof
+
+cp $lcdir/screendata.f scr.f
+
+gfortran -o scr.x scr.f
+
+ln -s $outfile.reg.gr             fort.10
+ln -s $datadir/$outfile.1x1.gr   fort.20
+
+./scr.x
 
 cat>$datadir/$outfile.1x1.ctl<<EOF
 dset ^$outfile.1x1.gr
@@ -240,4 +259,5 @@ ENDVARS
 EOF
 #=======================================
 #
+\rm fort.*
 done  # for var

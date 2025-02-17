@@ -41,7 +41,7 @@ infile0=$var2.1948_cur.3mon.total.1x1
 infile1=$var2.jan1981_cur.3mon.anom
 infile2=fcst.ensmsynth.$var2.mlead$mlead.3mon
 
-outfile1=new.skill_rct_ensmsynth_1d.$var2.mlead$mlead.3mon
+outfile1=skill_rct_ensmsynth_1d.$var2.mlead$mlead.3mon
 outfile2=skill_rct_ensmsynth_2d.$var2.mlead$mlead.3mon
 #
 # have TPZ anom
@@ -149,66 +149,58 @@ dirin42=/home/ppeng/data/ss_fcst/pcr/2024/5
 dirin43=/home/ppeng/data/ss_fcst/pcr/2024/6
 dirin44=/home/ppeng/data/ss_fcst/pcr/2024/7
 #
-echo "sart idata loop"
+#ich=1
+#while [ $ich -le $nss_vf ]; do
+#ch1=`expr 10 + $ich`
+#ln -s $dirin$ich/$infile2.gr     fort.$ch1
+#ich=`expr $ich + 1`
+#echo $ich
+#done
 
-#############################
-# have fcst data
-#############################
-idata=1
-while [ $idata -le $nss_vf ]; do
-
-din=$(eval echo \${dirin${idata}})
-
-echo $din
-
-cat >havefcst<<EOF
-run fcst.gs
-EOF
-cat >fcst.gs<<EOF
-'reinit'
-'open $din/$infile2.ctl'
-'set x 1 $imx'
-'set y 1 $jmx'
-'set gxout fwrite'
-'set fwrite fcstdata.$idata'
-ld=1
-while ( ld <= $mlead)
-'set t 'ld
-'d $var2'
-'d stdo'
-'d pa'
-'d pb'
-ld=ld+1
-endwhile
-'c'
-EOF
-#
-#
-/usr/bin/grads -bl <havefcst
-#
-idata=`expr $idata + 1`
-echo $idata
-done
-
-# cat themm together
-mv fcstdata.1 fdata.1
-idata=2
-while  [ $idata -le $nss_vf ]
-do
-
-im=$((idata-1))
-
-cat fdata.$im  fcstdata.$idata > fdata.$idata
-
-\rm fdata.$im
-
-idata=$(( idata+1 ))
-done  # for idata
-#
-\rm fcstdata.*
-#
-
-ln -s fdata.$nss_vf     fort.11
+ln -s $dirin1/$infile2.gr     fort.11
+ln -s $dirin2/$infile2.gr     fort.12
+ln -s $dirin3/$infile2.gr     fort.13
+ln -s $dirin4/$infile2.gr     fort.14
+ln -s $dirin5/$infile2.gr     fort.15
+ln -s $dirin6/$infile2.gr     fort.16
+ln -s $dirin7/$infile2.gr     fort.17
+ln -s $dirin8/$infile2.gr     fort.18
+ln -s $dirin9/$infile2.gr     fort.19
+ln -s $dirin10/$infile2.gr     fort.20
+ln -s $dirin11/$infile2.gr     fort.21
+ln -s $dirin12/$infile2.gr     fort.22
+ln -s $dirin13/$infile2.gr     fort.23
+ln -s $dirin14/$infile2.gr     fort.24
+ln -s $dirin15/$infile2.gr     fort.25
+ln -s $dirin16/$infile2.gr     fort.26
+ln -s $dirin17/$infile2.gr     fort.27
+ln -s $dirin18/$infile2.gr     fort.28
+ln -s $dirin19/$infile2.gr     fort.29
+ln -s $dirin20/$infile2.gr     fort.30
+ln -s $dirin21/$infile2.gr     fort.31
+ln -s $dirin22/$infile2.gr     fort.32
+ln -s $dirin23/$infile2.gr     fort.33
+ln -s $dirin24/$infile2.gr     fort.34
+ln -s $dirin25/$infile2.gr     fort.35
+ln -s $dirin26/$infile2.gr     fort.36
+ln -s $dirin27/$infile2.gr     fort.37
+ln -s $dirin28/$infile2.gr     fort.38
+ln -s $dirin29/$infile2.gr     fort.39
+ln -s $dirin30/$infile2.gr     fort.40
+ln -s $dirin31/$infile2.gr     fort.41
+ln -s $dirin32/$infile2.gr     fort.42
+ln -s $dirin33/$infile2.gr     fort.43
+ln -s $dirin34/$infile2.gr     fort.44
+ln -s $dirin35/$infile2.gr     fort.45
+ln -s $dirin36/$infile2.gr     fort.46
+ln -s $dirin37/$infile2.gr     fort.47
+ln -s $dirin38/$infile2.gr     fort.48
+ln -s $dirin39/$infile2.gr     fort.49
+ln -s $dirin40/$infile2.gr     fort.50
+ln -s $dirin41/$infile2.gr     fort.51
+ln -s $dirin42/$infile2.gr     fort.52
+ln -s $dirin43/$infile2.gr     fort.53
+ln -s $dirin44/$infile2.gr     fort.54
 
 ln -s $dataout/$infile1.gr     fort.10
 
@@ -217,7 +209,6 @@ ln -s $dataout/$outfile2.gr  fort.92
 #
 ./skill.x > $dataout/skill_recent.synth.$var2.mlead$mlead.out
 #
-
 cat>$dataout/$outfile1.ctl<<EOF
 dset ^$outfile1.gr
 undef $undef

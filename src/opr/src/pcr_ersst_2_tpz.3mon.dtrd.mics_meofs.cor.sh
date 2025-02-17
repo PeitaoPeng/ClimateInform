@@ -6,7 +6,7 @@
 
 set -eaux
 
-lcdir=/home/ppeng/src/opr/src
+lcdir=/home/ppeng/ClimateInform/src/opr/src
 tmp=/home/ppeng/data/tmp_opr
 if [ ! -d $tmp ] ; then
   mkdir -p $tmp
@@ -68,7 +68,7 @@ for curyr in 2021 2022 2023 2024; do
 #for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
 for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-#for curmo in 11; do
+#for curmo in 05; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -108,6 +108,10 @@ icyr=$curyr
 if [ $icmon = 12 ]; then icyr=`expr $curyr - 1`; fi
 
 nyear=`expr $icyr - 1947`  # total full year data used for PCR, 68 for 1948-2015
+
+ny_net=`expr $nyear - $lagmax / 12 - 1 - 20` # from 1951 
+nwmo=$(( $ny_net / 10 )) # # of WMO clim
+
 ny_out=`expr $nyear - $its_clm - $lagmax / 12` # from its_clm to 
 
 outd=/home/ppeng/data/ss_fcst/pcr/$icyr
@@ -131,7 +135,7 @@ sstfile=${var1}.3mon.1948-curr.total
 #
 #=======================================
 #
-cp $lcdir/pcr_ersst_2_tpz.3mon.dtrd.mics_meofs.f $tmp/pcr.f
+cp $lcdir/pcr_ersst_2_tpz.3mon.dtrd.mics_meofs.cor.f $tmp/pcr.f
 cp $lcdir/backup/reof.s.f $tmp/reof.s.f
 
 imx2=360; jmx2=180; xds=0.5; yds=-89.5; xydel=1.
@@ -152,6 +156,7 @@ c
       parameter(id_ceof=$id_ceof)
       parameter(id_detrd=$id_detrd)
       parameter(modmax=$modmax,mcut=$mcut,ncut=$ncut)
+      parameter(nwmo=$nwmo)
 c
       parameter(ncv=$ncv)
 c
@@ -192,7 +197,7 @@ ln -s $dataot2/$outfile9.gr fort.41
 
 #
 ./pcr.x > $dataot2/$var1.2.$var2.mics$mics.mlead$mlead.out
-#./pcr.x 
+#/pcr.x 
 #
 #
 ny_sst=`expr $icyr - 1950 + 1`  # total full year data used for PCR, 68 for 1948-2015
@@ -288,10 +293,11 @@ ydef $jmx2 linear $yds $xydel
 zdef  1 linear 1 1
 tdef $ny_out linear ${tgtmon}$outyr_s 1yr
 edef  $mlead names 1 2 3 4 5 6 7
-vars  3
+vars  4
 o  1 99 obs
 p  1 99 hcst
 s  1 99 std of obs
+c  1 99 cv cor skill
 endvars
 EOF
 #

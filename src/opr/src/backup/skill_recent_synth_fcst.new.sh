@@ -42,7 +42,7 @@ infile1=$var2.jan1981_cur.3mon.anom
 infile2=fcst.ensmsynth.$var2.mlead$mlead.3mon
 
 outfile1=new.skill_rct_ensmsynth_1d.$var2.mlead$mlead.3mon
-outfile2=skill_rct_ensmsynth_2d.$var2.mlead$mlead.3mon
+outfile2=new.skill_rct_ensmsynth_2d.$var2.mlead$mlead.3mon
 #
 # have TPZ anom
 #
@@ -81,7 +81,7 @@ $var2 1 99 $var2 anom
 endvars
 EOF
 #
-cp $lcdir/skill_recent_synth_fcst.f $tmp/skill.f
+cp $lcdir/skill_recent_synth_fcst.new.f $tmp/skill.f
 
 cat > parm.h << eof
 c
@@ -215,7 +215,7 @@ ln -s $dataout/$infile1.gr     fort.10
 ln -s $dataout/$outfile1.gr  fort.91
 ln -s $dataout/$outfile2.gr  fort.92
 #
-./skill.x > $dataout/skill_recent.synth.$var2.mlead$mlead.out
+./skill.x > $dataout/new.skill_recent.synth.$var2.mlead$mlead.out
 #
 
 cat>$dataout/$outfile1.ctl<<EOF

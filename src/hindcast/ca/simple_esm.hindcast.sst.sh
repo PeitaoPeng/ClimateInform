@@ -28,31 +28,36 @@ if [ $icss = djf ]; then cmon=3; icmomid=jan; icssnmb=12; fi
 #
 icmomidyr=${icmomid}1981
 if [ $icss = djf ]; then icmomidyr=${icmomid}1982; fi
-var2=t2m
+
+var2=sst
+
 nyear=40  # years of forecast to be checked
 nldin=17
 nldout=7
 
-nesm=16
+nesm=16 # ensemble member #
 nics=4
 nmod=4
 
 undef=-9.99e+8
-eof_area=tp_ml
+eof_area=tp_np
 #
 cd $tmp
+#if [ -d fort.11 ] ; then
+/bin/rm -r $tmp/fort.*
+#fi
 #
 #===============have SST climatology
 #
 
-cp $lcdir/simple_esm.hindcast.tpz.f $tmp/esm.f
+cp $lcdir/simple_esm.hindcast.sst.f $tmp/esm.f
 
 #for sst_analysis in ersst hadoisst; do
 for sst_analysis in ersst; do
  
 cat > parm.h << eof
 c
-      parameter(imx=360,jmx=180)
+      parameter(imx=180,jmx=89)
       parameter(nldin=$nldin,nld=$nldout,nesm=$nesm)
       parameter(nyr=$nyear)
       parameter(undef=$undef)
@@ -71,10 +76,6 @@ outfile5=skill_ca_hcst_simple_all_esm.$icss.${sst_analysis}_2_$var2.${eof_area}
 #gfortran -mcmodel=medium -g -o esm.x esm.f
 gfortran -mcmodel=large -g -o esm.x esm.f
 echo "done compiling"
-
-#if [ -d fort.11 ] ; then
-/bin/rm $tmp/fort.*
-#fi
 #
 ifile1=10
 for msic in 1 2 3 4; do
@@ -83,7 +84,7 @@ for modemax in 10 15 25 40; do
 
 ifile1=`expr $ifile1 + 1` 
 #
-ln -s $datadir/$var2/ca_hcst.$var2.${sst_analysis}.$modemax.$icss.${msic}ics.${eof_area}.gr fort.$ifile1
+ln -s $datadir/$var2/ca_hcst.${sst_analysis}.$modemax.$icss.${msic}ics.${eof_area}.gr fort.$ifile1
 #
 done  # maxmode
 done  # msics
@@ -101,8 +102,8 @@ cat>$dataout/$outfile1.ctl<<EOF
 dset ^$outfile1.gr
 undef $undef
 title EXP1
-XDEF  360 LINEAR    0.5  1.0
-YDEF  180 LINEAR  -89.5  1.0
+XDEF  180 LINEAR    0.  2.0
+YDEF   89 LINEAR  -89.  2.0
 zdef  1 linear 1 1
 tdef $nyear linear $icmomidyr 1yr
 EDEF 4 names 1 2 3 4
@@ -128,8 +129,8 @@ cat>$dataout/$outfile2.ctl<<EOF
 dset ^$outfile2.gr
 undef $undef
 title EXP1
-XDEF  360 LINEAR    0.5  1.0
-YDEF  180 LINEAR  -89.5  1.0
+XDEF  180 LINEAR    0.  2.0
+YDEF   89 LINEAR  -89.  2.0
 zdef  1 linear 1 1
 tdef $nyear linear $icmomidyr 1yr
 EDEF 4 names 1 2 3 4
@@ -155,8 +156,8 @@ cat>$dataout/$outfile3.ctl<<EOF
 dset $dataout/$outfile3.gr
 undef $undef
 title Realtime Surface Obs
-xdef  360 linear   0.5 1.
-ydef  180 linear -89.5 1.
+XDEF  180 LINEAR    0.  2.0
+YDEF   89 LINEAR  -89.  2.0
 zdef  1 levels 1
 tdef  $nldout linear jan1991 1mo
 vars  4
@@ -171,8 +172,8 @@ cat>$dataout/$outfile4.ctl<<EOF
 dset $dataout/$outfile4.gr
 undef $undef
 title Realtime Surface Obs
-xdef  360 linear   0.5 1.
-ydef  180 linear -89.5 1.
+XDEF  180 LINEAR    0.  2.0
+YDEF   89 LINEAR  -89.  2.0
 zdef  1 levels 1
 tdef  $nldout linear jan1991 1mo
 vars  4
@@ -187,8 +188,8 @@ cat>$dataout/$outfile5.ctl<<EOF
 dset $dataout/$outfile5.gr
 undef $undef
 title Realtime Surface Obs
-xdef  360 linear   0.5 1.
-ydef  180 linear -89.5 1.
+XDEF  180 LINEAR    0.  2.0
+YDEF   89 LINEAR  -89.  2.0
 zdef  1 levels 1
 tdef  $nldout linear jan1991 1mo
 vars  1

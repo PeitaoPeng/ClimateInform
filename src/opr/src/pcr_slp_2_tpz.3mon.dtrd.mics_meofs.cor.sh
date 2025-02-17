@@ -6,7 +6,7 @@
 
 set -eaux
 
-lcdir=/home/ppeng/src/opr/src
+lcdir=/home/ppeng/ClimateInform/src/opr/src
 tmp=/home/ppeng/data/tmp_opr
 if [ ! -d $tmp ] ; then
   mkdir -p $tmp
@@ -17,38 +17,37 @@ dataot1=/home/ppeng/data/pcr_prd
 #
 # grid of ERSST
 imx=144
-jmx=72
+jmx=73
 # grid of t2m & prec
 imx2=360
 jmx2=180
 #
-var1=olr
+var1=slp
 for var2 in t2m prec; do # prec, t2m, hgt
 #var2=prec
 #eof_area=tp_nml   #30S-60N
-eof_area=tp   #30S-30N
+eof_area=nhml   #20N-90N
 #
-lagmax=12  # month number kept for ICs
+lagmax=24  # month number kept for ICs
 #
-mics=1    # season or month numbers used as ICs
 id_ceof=1 # =1: eofs of combind ics; =0 not combined
 id_detrd=0 # =1, detrend data first then add trend; =0: no detrend
-ncut=1
+
+for mics in 1; do # season or month numbers used as ICs
+for ncut in 1; do # EOF numbers used
 
 mlead=7     # max lead of ensemble fcst
 ncv=1
-
-
+#
 mcut=4  # max cuts
 #if [ $var2 = t2m ];  then icut1=3;  icut2=15; icut3=25; icut4=40; fi
-if [ $var2 = t2m ];  then icut1=5;  icut2=7; icut3=10; icut4=15; fi
+if [ $var2 = t2m ];  then icut1=5;  icut2=5; icut3=7; icut4=10; fi
 #if [ $var2 = prec ]; then icut1=10; icut2=15; icut3=25; icut4=40; fi
 if [ $var2 = prec ]; then icut1=5; icut2=7; icut3=10; icut4=15; fi
 modmax=$icut4
-#
 
 nclm_start=1981 # to have yrs clm for more stable than 30 yrs 
-its_clm=`expr $nclm_start - 1978 - $lagmax / 12`
+its_clm=`expr $nclm_start - 1947 - $lagmax / 12`
 ite_clm=`expr $its_clm + 39` # have 40 yrs clm for more stable than 30 yrs
 ny_clm=`expr $ite_clm - $its_clm + 1`
 
@@ -61,11 +60,11 @@ cd $tmp
 # have VAR1 IC
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
-#for curyr in 2022 2023; do
-for curyr in 2024; do
+for curyr in 2021 2022 2023 2024; do
+#for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
-#for curmo in 01 02 03 04 05 06 07 08 09 10 11; do
-for curmo in 12; do
+for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+#for curmo in 11; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -89,13 +88,13 @@ outyr_s=1981
 #
 if [ $icmon -eq 11 ]; then tgtmoyr=$tgtmon$yyyp; outyr_s=1982; fi
 #
-yrn1=`expr $curyr - 1979`
+yrn1=`expr $curyr - 1948`
 if [ $cmon = 1 ]; then yrn1=`expr $yyym - 1948`; fi
 mmn1=`expr $yrn1 \* 12`
 ttlong=`expr $mmn1 + $icmon` # total mon of ersst data from jan1854 to latest_mon; dec2015=1944
 #
-yrn2=`expr $curyr - 1979` # total full years,=68 for 1948-2015
-if [ $cmon = 1 ]; then yrn2=`expr $yyym - 1979`; fi
+yrn2=`expr $curyr - 1948` # total full years,=68 for 1948-2015
+if [ $cmon = 1 ]; then yrn2=`expr $yyym - 1948`; fi
 mmn2=`expr $yrn2 \* 12`
 #
 montot=`expr $mmn2 + $icmon` # 816=dec2015
@@ -104,7 +103,11 @@ nsstot=`expr $montot - 2` #
 icyr=$curyr
 if [ $icmon = 12 ]; then icyr=`expr $curyr - 1`; fi
 
-nyear=`expr $icyr - 1978`  # total full year data used for PCR, 68 for 1948-2015
+nyear=`expr $icyr - 1947`  # total full year data used for PCR, 68 for 1948-2015
+
+ny_net=`expr $nyear - $lagmax / 12 - 1 - 20` # from 1951
+nwmo=$(( $ny_net / 10 )) # # of WMO clim
+
 ny_out=`expr $nyear - $its_clm - $lagmax / 12` # from its_clm to 
 
 outd=/home/ppeng/data/ss_fcst/pcr/$icyr
@@ -120,15 +123,15 @@ dataot2=$outdata
 # define some parameters
 #======================================
 # need to use the *.f to have exact ngrd
-if [ $eof_area = tp ]; then lons=1;lone=144;lats=25;late=48; fi # 20N-70N
-if [ $var1 = olr ] && [ $eof_area = tp ]; then ngrd=3456; fi
+if [ $eof_area = nhml ]; then lons=1;lone=144;lats=45;late=72; fi # 20N-87.5N
+if [ $var1 = slp ] && [ $eof_area = nhml ]; then ngrd=4032; fi
 echo $ngrd
 #
-var1file=${var1}.3mon.1979-curr.total
+var1file=${var1}.3mon.1948-curr.total
 #
 #=======================================
 #
-cp $lcdir/pcr_olr_2_tpz.3mon.dtrd.mics_meofs.f $tmp/pcr.f
+cp $lcdir/pcr_slp_2_tpz.3mon.dtrd.mics_meofs.f $tmp/pcr.f
 cp $lcdir/backup/reof.s.f $tmp/reof.s.f
 
 #for var2 in prec; do # prec, t2m, hgt
@@ -152,6 +155,7 @@ c
       parameter(id_detrd=$id_detrd)
       parameter(modmax=$modmax,mcut=$mcut,ncut=$ncut)
       parameter(icut1=$icut1,icut2=$icut2,icut3=$icut3,icut4=$icut4)
+      parameter(nwmo=$nwmo)
 c
       parameter(ncv=$ncv)
 c
@@ -189,7 +193,6 @@ ln -s $dataot2/$outfile5.gr fort.32
 ln -s $dataot2/$outfile8.gr fort.40
 ln -s $dataot2/$outfile9.gr fort.41
 
-
 #
 ./pcr.x > $dataot2/$var1.2.$var2.mics$mics.mlead$mlead.out
 #./pcr.x 
@@ -199,7 +202,7 @@ dset ^$outfile2.gr
 undef $undef
 title EXP1
 XDEF  $imx linear   0.  2.5
-ydef  $jmx linear -88.75  2.5
+ydef  $jmx linear -90.  2.5
 zdef  1 linear 1 1
 tdef  999 linear jan1949 1mon
 vars  2
@@ -269,10 +272,11 @@ ydef $jmx2 linear $yds $xydel
 zdef  1 linear 1 1
 tdef $ny_out linear ${tgtmon}$outyr_s 1yr
 edef  $mlead names 1 2 3 4 5 6 7
-vars  3
+vars  4
 o  1 99 obs
 p  1 99 hcst
 s  1 99 std of obs
+c  1 99 cv cor
 endvars
 EOF
 #
@@ -280,15 +284,17 @@ cat>$dataot2/$outfile8.ctl<<EOF
 dset ^$outfile8.gr
 undef $undef
 title EXP1
-XDEF  $imx linear   0.   2.5
-ydef  $jmx linear -88.75 2.5
+XDEF  $imx linear   0. 2.5
+ydef  $jmx linear -90. 2.5
 zdef  1 linear 1 1
 tdef  999 linear jan1948 1mon
 vars  1
-olr   1 99 olr ic
+slp   1 99 slp ic
 endvars
 EOF
 
-done # curmo loop
+done # curyr loop
 done # curyr loop
 done # var2 loop
+done # ncut loop
+done # mics loop

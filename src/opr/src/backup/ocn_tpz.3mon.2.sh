@@ -5,7 +5,7 @@
 
 set -eaux
 
-lcdir=/home/ppeng/src/opr/src
+lcdir=/home/ppeng/ClimateInform/src/opr/src
 tmp=/home/ppeng/data/tmp_opr
 if [ ! -d $tmp ] ; then
   mkdir -p $tmp
@@ -20,8 +20,6 @@ jmx=180
 lagmax=36   # skip 3-yr,starting from 1951
 mlead=7     # fcst lead 
 kocn=10
-#
-ndec=10
 #
 for var in t2m prec; do # prec, t2m, hg
 
@@ -39,11 +37,11 @@ cd $tmp
 # have SST IC
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
-for curyr in 2024; do
 #for curyr in 2021 2022 2023 2024; do
+for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
-for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-#for curmo in 01 02 03 04 05 06 07 08 09 10 11; do
+#for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+for curmo in 11; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -78,6 +76,10 @@ icyr=$curyr
 if [ $icmon = 12 ]; then icyr=`expr $curyr - 1`; fi
 
 nyear=`expr $icyr - 1947`  # total full year data used for PCR, 68 for 1948-2015
+
+ny_net=`expr $nyear - $lagmax / 12 - 1 - 20` # from 1951
+nwmo=$(( $ny_net / 10 )) # # of WMO clim
+
 ny_out=`expr $nyear - $its_clm - $lagmax / 12` # from its_clm to 
 
 #outd=/home/ppeng/data/ss_fcst/ocn/$icyr
@@ -107,10 +109,10 @@ c
       parameter(lagmax=$lagmax,nlead=$mlead) 
       parameter(undef=$undef)
 c
-      parameter(ndec=$ndec)
       parameter(kocn=$kocn)
 c
       parameter(nyr=$nyear)
+      parameter(nwmo=$nwmo)
 eof
 #
 #gfortran -mcmodel=large -o ocn.x ocn.f 
@@ -121,9 +123,9 @@ if [ -f fort.11 ] ; then
 /bin/rm $tmp/fort.*
 fi
 #
-outfile3=fcst.$var.kocn_$kocn.mlead$mlead.3mon
-outfile4=skill_1d.$var.kocn_$kocn.mlead$mlead.3mon
-outfile5=hcst.$var.kocn_$kocn.mlead$mlead.3mon
+outfile3=new.fcst.$var.kocn_$kocn.mlead$mlead.3mon
+outfile4=new.skill_1d.$var.kocn_$kocn.mlead$mlead.3mon
+outfile5=new.hcst.$var.kocn_$kocn.mlead$mlead.3mon
 #
 ln -s $datain/$tpzfile.gr          fort.11
 #

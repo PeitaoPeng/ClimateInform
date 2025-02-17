@@ -521,11 +521,11 @@ c deal with "too small" std
         do i=1,imx2
         do j=1,jmx2
           if(fld2(i,j).gt.-900) then
-            if(stdo(i,j,ld).lt.0.001) then
-              stdo(i,j,ld)=0.001
+            if(stdo(i,j,ld).lt.0.01) then
+              stdo(i,j,ld)=0.01
             endif
-            if(stdf(i,j,ld).lt.0.001) then
-              stdf(i,j,ld)=0.001
+            if(stdf(i,j,ld).lt.0.01) then
+              stdf(i,j,ld)=0.01
             endif
           endif
         enddo

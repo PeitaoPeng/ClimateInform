@@ -21,7 +21,7 @@ C===========================================================
       real xn34(ny_hcst+1,mlead)
 
       real w1d(nprd),w1d2(nprd),w1d3(nprd),w1d4(nprd)
-      real ts1(ny_hcst),ts2(ny_hcst),ts3(ny_hcst)
+      real ts0(ny_hcst),ts1(ny_hcst),ts2(ny_hcst),ts3(ny_hcst)
 
       real w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx)
       real w2d4(imx,jmx),w2d5(imx,jmx),w2d6(imx,jmx)
@@ -29,10 +29,9 @@ C===========================================================
       real xlat(jmx),coslat(jmx),cosr(jmx)
 
       real xbin(kpdf),ypdf(kpdf),prbprd(imx,jmx)
-      real pa(imx,jmx,ny_hcst),pb(imx,jmx,ny_hcst),pn(imx,jmx,ny_hcst)
-      real xpa(imx,jmx),xpb(imx,jmx),xpn(imx,jmx)
-
-      real frac(imx,jmx)
+      real tsobs(ny_hcst),tspa(ny_hcst),tspb(ny_hcst),tspn(ny_hcst)
+      real frac(imx,jmx),rpss(imx,jmx)
+      real trpss(40)
 
 C
 C fcst from sst, olr, slp & ocn
@@ -46,11 +45,8 @@ C hcst from sst, olr, slp & ocn
       open(17,form='unformatted',access='direct',recl=4*imx*jmx) !slp
       open(18,form='unformatted',access='direct',recl=4*imx*jmx) !ocn
       open(19,form='unformatted',access='direct',recl=4) !nino34
-      open(20,form='unformatted',access='direct',recl=4*imx*jmx) !frac
 C synth output
-      open(31,form='unformatted',access='direct',recl=4*imx*jmx) !fcst
-      open(32,form='unformatted',access='direct',recl=4*imx*jmx) !hcst
-      open(33,form='unformatted',access='direct',recl=4) !1d_skill
+      open(31,form='unformatted',access='direct',recl=4*imx*jmx) !rpss
 C
 C== have coslat
 C
@@ -109,15 +105,10 @@ C=== read in fcst and stdo
         enddo ! ld loop
         enddo ! ip loop
 c
-C=== synthesize fcst with max cor
+C=== have wts from max cor
       ir=0
       iw=0
-      iw2=0
-      iw3=0
       do ld=1,mlead
-
-      ir2=ld*2-1
-      read(20,rec=ir2) frac
 
       do i=1,imx
       do j=1,jmx
@@ -133,32 +124,7 @@ C=== synthesize fcst with max cor
           do ip=1,nprd
             wts(i,j,ld,ip)=ws1d(ip)
           enddo
-
-          nmodel=nprd        
-          if(abs(xn34(ny_hcst+1,ld)).gt.xncrt) nmodel=1
-
-          if(nmodel.gt.1) then
-            do ip=1,nprd
-              ws1d(ip)=wts(i,j,ld,ip)
-            enddo
-          else
-            ws1d(1)=1.
-            do ip=2,nprd
-            ws1d(ip)=0.
-            enddo
-          endif
-
-          do ip=1,nprd
-            w1d(ip)=prd(i,j,ld,ip)
-          enddo
-
-          call wtavg(w1d,ws1d,nprd,eprd(i,j))
-
-      else
-          eprd(i,j)=undef
       endif
-
-          ostd(i,j)=stdo(i,j,ld)
 
       enddo
       enddo
@@ -227,6 +193,7 @@ C=== synthesize hcst with max cor
       ir=ir+3
       enddo ! it loopo
 
+      write(6,*) 'start std of ehcst'
 C std of ehcst
       do i=1,imx
       do j=1,jmx
@@ -249,165 +216,64 @@ c normalize eprd with hcst std
       enddo
       enddo
 
-C write out ehcst, prob-hcst and 1-D skill
-      DO it=1,ny_hcst
+C prob-hcst and rpss_t skill
+      write(6,*) 'ld=,start prob-hcst and rpss_t skill',ld
 
-      do i=1,imx
-      do j=1,jmx
+      tdel=0.025
+      ntest=1./tdel
 
-        w2d(i,j)=obs(i,j,it)
+      DO i=1,imx
+      DO j=1,jmx
+
+      IF (ehcst(i,j,1).gt.-900.and.obs(i,j,1).gt.-900) then
+
+C have frac -> max rpss        
+
+      ftest=0.0
+      do kt=1,ntest
+
+c prob for each it
+      do it=1,ny_hcst
+
+        tsobs(it)=obs(i,j,it)
         w2d2(i,j)=ehcst(i,j,it)
 
-c prob-hcst
-      if (w2d2(i,j).gt.-900.and.w2d(i,j).gt.-900) then
-
-        call prob_3c_prd(w2d2(i,j),prbprd(i,j),pa(i,j,it),pb(i,j,it),
-     &pn(i,j,it),kpdf,xbin,xdel,ypdf,frac(i,j))   
-
-      else
-        prbprd(i,j)=undef
-
-        pa(i,j,it)=undef
-        pb(i,j,it)=undef
-        pn(i,j,it)=undef
-      endif
-
-      if(abs(prbprd(i,j)).gt.1.) prbprd(i,j)=undef
-
-      enddo
-      enddo
-
-      iw2=iw2+1
-      write(32,rec=iw2) w2d ! obs
-      iw2=iw2+1
-      write(32,rec=iw2) w2d2  ! esm_hcst
-      iw2=iw2+1
-      write(32,rec=iw2) prbprd  ! prob-prd
-      iw2=iw2+1
-      write(32,rec=iw2) ostd
-
-C 1-D skill
-
-      call sp_cor_rms(w2d2,w2d,coslat,imx,jmx,
-     &1,360,115,160,xcor,xrms)
-
-      iw3=iw3+1
-      write(33,rec=iw3) xcor
-      iw3=iw3+1
-      write(33,rec=iw3) xrms
-
-      call sp_cor_rms(w2d,w2d2,coslat,imx,jmx,
-     &230,300,115,140,xcor,xrms)
-      iw3=iw3+1
-      write(33,rec=iw3) xcor
-      iw3=iw3+1
-      write(33,rec=iw3) xrms
-
-      call hss3c_s(w2d,w2d2,imx,jmx,1,360,115,160,coslat,h1)
-      call hss3c_s(w2d,w2d2,imx,jmx,230,300,115,140,coslat,h2)
- 
-      iw3=iw3+1
-      write(33,rec=iw3) h1
-      iw3=iw3+1
-      write(33,rec=iw3) h2
-
-      do i=1,imx
-      do j=1,jmx
-      w2d2(i,j)=pb(i,j,it)
-      w2d3(i,j)=pa(i,j,it)
-      enddo
-      enddo
-
-      call rpss_s(w2d,w2d2,w2d3,rpss1,imx,jmx,1,360,115,160,coslat)
-      call rpss_s(w2d,w2d2,w2d3,rpss2,imx,jmx,230,300,115,140,coslat)
-
-      iw3=iw3+1
-      write(33,rec=iw3) rpss1
-      iw3=iw3+1
-      write(33,rec=iw3) rpss2
+        call prob_3c_prd(w2d2(i,j),prbprd(i,j),tspa(it),tspb(it),
+     &tspn(it),kpdf,xbin,xdel,ypdf,ftest)
 
       enddo ! it loopo
 
-c temporal 2D skill calculation
+      call rpss_t_1d(tsobs,tspb,tspa,rps,ny_hcst,undef)
 
-      do i=1,imx
-      do j=1,jmx
+        trpss(kt)=rps
 
-      if (w2d(i,j).gt.-900.) then
+      ftest=ftest+tdel
 
-        do it=1,ny_hcst
-          ts1(it)=obs(i,j,it)
-          ts2(it)=ehcst(i,j,it)
-        enddo
+      enddo ! kt loop
 
-        call cor_rms(ts1,ts2,ny_hcst,ny_hcst,ecor(i,j),erms(i,j))
-        call hss3c_t(ts1,ts2,ny_hcst,ny_hcst,ehss(i,j))
+C Find the location of the maximum value
+      mloc = maxloc(trpss,1)
+      rpss(i,j)=trpss(mloc)
+      frac(i,j)=mloc*tdel
 
-      else
-
-        ecor(i,j)=undef
-        erms(i,j)=undef
-        ehss(i,j)=undef
-
+      if(i.eq.130.and.j.eq.65) then
+        write(6,*) 'mloc,frac,trpss=',mloc,frac(i,j),trpss
       endif
 
-      ostd(i,j)=stdo(i,j,ld)
-      oclm(i,j)=clmo(i,j,ld)
+      ELSE
+
+      rpss(i,j)=undef
+      frac(i,j)=undef
+
+      ENDIF
 
       enddo
       enddo
 
       iw=iw+1
-      write(31,rec=iw) eprd
+      write(31,rec=iw) frac
       iw=iw+1
-      write(31,rec=iw) ostd
-      iw=iw+1
-      write(31,rec=iw) ecor
-      iw=iw+1
-      write(31,rec=iw) erms
-      iw=iw+1
-      write(31,rec=iw) ehss
-      iw=iw+1
-      write(31,rec=iw) oclm
-
-c have prob forecast
-c
-      do i=1,imx
-      do j=1,jmx
-
-      if (eprd(i,j).gt.-900.and.ostd(i,j).gt.-900.) then
-        call prob_3c_prd(eprd(i,j),prbprd(i,j),xpa(i,j),xpb(i,j),
-     &xpn(i,j),kpdf,xbin,xdel,ypdf,frac(i,j))
-      else
-        prbprd(i,j)=undef
-        xpa(i,j)=undef
-        xpb(i,j)=undef
-        xpn(i,j)=undef
-      endif
-
-      if (abs(prbprd(i,j)).gt.1.) then
-        prbprd(i,j)=undef
-        xpa(i,j)=undef
-        xpb(i,j)=undef
-        xpn(i,j)=undef
-      endif
-
-      enddo
-      enddo
-c
-      iw=iw+1
-      write(31,rec=iw) prbprd
-      iw=iw+1
-      write(31,rec=iw) xpa
-      iw=iw+1
-      write(31,rec=iw) xpb
-      iw=iw+1
-      write(31,rec=iw) xpn
-
-      call rpss_t(obs,pb,pa,w2d,imx,jmx,ny_hcst,undef)
-
-      iw=iw+1
-      write(31,rec=iw) w2d
+      write(31,rec=iw) rpss
 
       enddo ! ld loopo
 
@@ -465,62 +331,48 @@ c area avg
       return
       end
 
-      SUBROUTINE rpss_t(vfc,pb,pa,rpss,imx,jmx,nt,undef)
+      SUBROUTINE rpss_t_1d(vfc,pb,pa,rpss,nt,undef)
 
-      real pa(imx,jmx,nt),pb(imx,jmx,nt)
-      real vfc(imx,jmx,nt),rpss(imx,jmx)
-      real rps(imx,jmx,nt),rpsc(imx,jmx,nt)
+      real pa(nt),pb(nt)
+      real vfc(nt)
+      real rps(nt),rpsc(nt)
 
 c convert vfc to probilistic form
       do it=1,nt
-        do i=1,imx
-        do j=1,jmx
-        IF(vfc(i,j,it).gt.-900) then
 
           va=0.
           vb=0.
           vn=0.
-          if(vfc(i,j,it).gt.0.43) va=1
-          if(vfc(i,j,it).lt.-0.43) vb=1
-          if(vfc(i,j,it).ge.-0.43.and.vfc(i,j,it).le.0.43) vn=1
+          if(vfc(it).gt.0.43) va=1
+          if(vfc(it).lt.-0.43) vb=1
+          if(vfc(it).ge.-0.43.and.vfc(it).le.0.43) vn=1
 c have rps        
-          pn=1.-pa(i,j,it)-pb(i,j,it)
-          y1=pb(i,j,it)
-          y2=pb(i,j,it)+pn
+          pn=1.-pa(it)-pb(it)
+          y1=pb(it)
+          y2=pb(it)+pn
           y3=1.
           o1=vb
           o2=vb+vn
           o3=1.
-          rps(i,j,it)=(y1-o1)**2 !rps
+          rps(it)=(y1-o1)**2 !rps
      &+(y2-o2)**2
-          rpsc(i,j,it)=(1./3.-o1)**2 !rpsc
+          rpsc(it)=(1./3.-o1)**2 !rpsc
      &+(2./3.-o2)**2
-        END IF
-        enddo
-        enddo
+
       enddo
 c have pattern of rpc_t
-      do i=1,imx
-      do j=1,jmx
-
-        rpss(i,j)=undef
-
-        IF(vfc(i,j,1).gt.-900) then
 
         exp=0.
         expc=0.
         grd=0
         do it=1,nt
-          exp=exp+rps(i,j,it)
-          expc=expc+rpsc(i,j,it)
+          exp=exp+rps(it)
+          expc=expc+rpsc(it)
           grd=grd+1
         enddo
         exp_rps=exp/grd
         exp_rpsc=expc/grd
-        rpss(i,j)=1.-exp_rps/exp_rpsc
-      END IF
-      enddo
-      enddo
+        rpss=1.-exp_rps/exp_rpsc
 
       return
       end

@@ -2,7 +2,7 @@
 
 set -eaux
 
-lcdir=/home/ppeng/src/develop/data_proc
+lcdir=/home/ppeng/ClimateInform/develop/data_proc
 tmp=/home/ppeng/data/tmp
 if [ ! -d $tmp ] ; then
   mkdir -p $tmp
@@ -117,7 +117,7 @@ EOF
 cat >mask.gs<<EOF
 'reinit'
 'open $outsst0.ctl'
-'open /home/ppeng/src/utility/mask/mask1X1.dat.ctl'
+'open /home/ppeng/ClimateInform/src/utility/mask/mask1X1.dat.ctl'
 'set gxout fwrite'
 'set fwrite $outsst1.gr'
 'set x 1 360'
@@ -200,7 +200,7 @@ EOF
 cat >intp.gs<<EOF
 'reinit'
 'open $outsst00.ctl'
-'open /home/ppeng/src/utility/intpl/grid.360x180.ctl'
+'open /home/ppeng/ClimateInform/src/utility/intpl/grid.360x180.ctl'
 'set gxout fwrite'
 'set fwrite $outsst2.gr'
 'set lon   0.5 359.5'

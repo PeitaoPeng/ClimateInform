@@ -5,18 +5,15 @@ C===========================================================
       parameter(kpdf=1000)
 
       real w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx),w2d4(imx,jmx)
-      real tpz(imx,jmx,nt),stdo(imx,jmx,nt),fcst(imx,jmx,nt)
+      real w2d5(imx,jmx),w2d6(imx,jmx)
+      real tpz(imx,jmx,nt),stdo(imx,jmx,nlead,nt),fcst(imx,jmx,nlead,nt)
       real xlat(jmx),coslat(jmx),cosr(jmx)
 
       real xbin(kpdf),ypdf(kpdf),prbprd(imx,jmx)
-      real pa(imx,jmx,nss),pb(imx,jmx,nss),pn(imx,jmx,nss)
+      real pa(imx,jmx,nlead,nss),pb(imx,jmx,nlead,nss)
 C
       open(10,form='unformatted',access='direct',recl=4*imx*jmx) !tpz
-
-      do i=1,nss
-      ich=10+i
-      open(ich,form='unformatted',access='direct',recl=4*imx*jmx)
-      enddo
+      open(11,form='unformatted',access='direct',recl=4*imx*jmx)
 
       open(91,form='unformatted',access='direct',recl=4) !1d_skill
       open(92,form='unformatted',access='direct',recl=4*imx*jmx) !2d
@@ -36,20 +33,29 @@ C
       call pdf_tab(xbin,ypdf,xdel,kpdf)
 C
 C=== read in fcst and stdo
-      ich=10
+      ir=0
       do it=1,nss 
-      ich=ich+1
+      do ld=1,nlead
 
-        read(ich,rec=1) w2d
-        read(ich,rec=2) w2d2
+        ir=ir+1
+        read(11,rec=ir) w2d
+        ir=ir+1
+        read(11,rec=ir) w2d2
+        ir=ir+1
+        read(11,rec=ir) w2d3
+        ir=ir+1
+        read(11,rec=ir) w2d4
 
         do i=1,imx
         do j=1,jmx
-          fcst(i,j,it)=w2d(i,j)
-          stdo(i,j,it)=w2d2(i,j)
+          fcst(i,j,ld,it)=w2d(i,j)
+          stdo(i,j,ld,it)=w2d2(i,j)
+          pa(i,j,ld,it)=w2d3(i,j)
+          pb(i,j,ld,it)=w2d4(i,j)
         enddo
         enddo
 
+      enddo
       enddo
 c
 C=== read in tpz anom
@@ -70,7 +76,7 @@ c standardized tpz
 
       do it=1,nss
       if (w2d(i,j).gt.-900.) then
-        tpz(i,j,it)=tpz(i,j,it)/stdo(i,j,it)
+        tpz(i,j,it)=tpz(i,j,it)/stdo(i,j,1,it)
       else
         tpz(i,j,it)=undef
       endif
@@ -86,19 +92,7 @@ c== spatial skill
       do i=1,imx
       do j=1,jmx
           w2d(i,j)=tpz(i,j,it)
-          w2d2(i,j)=fcst(i,j,it)
-c prob-prd
-      if (w2d2(i,j).gt.-900..and.w2d(i,j).gt.-900) then
-        call prob_3c_prd(w2d2(i,j),prbprd(i,j),pa(i,j,it),pb(i,j,it),
-     &pn(i,j,it),kpdf,xbin,xdel,ypdf)
-      else
-        prbprd(i,j)=undef
-
-        pa(i,j,it)=undef
-        pb(i,j,it)=undef
-        pn(i,j,it)=undef
-      endif
-
+          w2d2(i,j)=fcst(i,j,1,it)
       enddo
       enddo
 
@@ -118,23 +112,24 @@ c prob-prd
       iw=iw+1
       write(91,rec=iw) xrms
 
-      call hss3c_s(w2d,w2d2,imx,jmx,1,360,115,160,coslat,h1)
-      call hss3c_s(w2d,w2d2,imx,jmx,230,300,115,140,coslat,h2)
+      do i=1,imx
+      do j=1,jmx
+      w2d3(i,j)=pa(i,j,1,it)
+      w2d4(i,j)=pb(i,j,1,it)
+      enddo
+      enddo
+
+      call hss3c_prob_s(w2d,w2d3,w2d4,imx,jmx,1,360,115,160,coslat,h1)
+      call hss3c_prob_s(w2d,w2d3,w2d4,imx,jmx,230,300,115,140,
+     &coslat,h2)
 
       iw=iw+1
       write(91,rec=iw) h1
       iw=iw+1
       write(91,rec=iw) h2
 c rpss 
-      do i=1,imx
-      do j=1,jmx
-      w2d2(i,j)=pb(i,j,it)
-      w2d3(i,j)=pa(i,j,it)
-      enddo
-      enddo
-
-      call rpss_s(w2d,w2d2,w2d3,rpss1,imx,jmx,1,360,115,160,coslat)
-      call rpss_s(w2d,w2d2,w2d3,rpss2,imx,jmx,230,300,115,140,coslat)
+      call rpss_s(w2d,w2d4,w2d3,rpss1,imx,jmx,1,360,115,160,coslat)
+      call rpss_s(w2d,w2d4,w2d3,rpss2,imx,jmx,230,300,115,140,coslat)
 
       iw=iw+1
       write(91,rec=iw) rpss1
@@ -150,8 +145,8 @@ c write out obs, fcst, and hit
           do i=1,imx
           do j=1,jmx
             w2d(i,j)=tpz(i,j,it)
-            w2d2(i,j)=fcst(i,j,it)
-            w2d3(i,j)=stdo(i,j,it)
+            w2d2(i,j)=fcst(i,j,1,it)
+            w2d3(i,j)=stdo(i,j,1,it)
           enddo
           enddo
 
@@ -203,22 +198,29 @@ c write out obs, fcst, and hit
       return
       end
 
-      SUBROUTINE hss3c_s(obs,prd,imx,jmx,is,ie,js,je,coslat,h)
-      dimension obs(imx,jmx),prd(imx,jmx)
+      SUBROUTINE hss3c_prob_s(obs,pa,pb,imx,jmx,is,ie,js,je,coslat,h)
+      dimension obs(imx,jmx),pa(imx,jmx),pb(imx,jmx),pn(imx,jmx)
       dimension nobs(imx,jmx),nprd(imx,jmx)
       dimension coslat(jmx)
+      dimension w1d(3)
 
       do i=is,ie
       do j=js,je
-        if(obs(i,j).gt.-900.and.prd(i,j).gt.-900) then
+        if(obs(i,j).gt.-900.and.pa(i,j).gt.-900) then
 
           if(obs(i,j).gt.0.43) nobs(i,j)=1
           if(obs(i,j).lt.-0.43) nobs(i,j)=-1
           if(obs(i,j).ge.-0.43.and.obs(i,j).le.0.43) nobs(i,j)=0
 
-          if(prd(i,j).gt.0.43) nprd(i,j)=1
-          if(prd(i,j).lt.-0.43) nprd(i,j)=-1
-          if(prd(i,j).ge.-0.43.and.prd(i,j).le.0.43) nprd(i,j)=0
+
+          w1d(3)=pa(i,j)
+          w1d(1)=pb(i,j)
+          w1d(2)=1.- pa(i,j)-pb(i,j)
+          maxp = maxloc(w1d,1)
+
+          if(maxp.eq.3) nprd(i,j)=1
+          if(maxp.eq.1) nprd(i,j)=-1
+          if(maxp.eq.2) nprd(i,j)=0
 
         endif
       enddo
@@ -228,7 +230,7 @@ c write out obs, fcst, and hit
       tot=0.
       do i=is,ie
       do j=js,je
-        if(obs(i,j).gt.-900..and.prd(i,j).gt.-900.) then
+        if(obs(i,j).gt.-900..and.pa(i,j).gt.-900.) then
         tot=tot+coslat(j)
         if (nobs(i,j).eq.nprd(i,j)) h=h+coslat(j)
         endif
@@ -488,17 +490,13 @@ c
       return
       end
 
-      SUBROUTINE prob_3c_prd(detp,prbp,pa,pb,pn,kpdf,xbin,xdel,ypdf)
+      SUBROUTINE prob_3c_prd(detp,prbp,pa,pb,pn,kpdf,xbin,xdel,ypdf,
+     &frac)
 c detp: deterministic prd
 c prbp: problistic prd
       real xbin(kpdf),ypdf(kpdf)
 
-c     frac=0.05
-      esm=0.65*detp
-c     esm=0.43+frac*(esm-0.43)
-c     else if(esm.lt.-0.43) then
-c     esm=-0.43+frac*(esm+0.43)
-c     endif
+      esm=frac*detp
 
       b1=-esm-0.43
       b2=-esm+0.43
