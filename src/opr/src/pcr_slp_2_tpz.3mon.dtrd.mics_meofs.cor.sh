@@ -131,7 +131,7 @@ var1file=${var1}.3mon.1948-curr.total
 #
 #=======================================
 #
-cp $lcdir/pcr_slp_2_tpz.3mon.dtrd.mics_meofs.f $tmp/pcr.f
+cp $lcdir/pcr_slp_2_tpz.3mon.dtrd.mics_meofs.cor.f $tmp/pcr.f
 cp $lcdir/backup/reof.s.f $tmp/reof.s.f
 
 #for var2 in prec; do # prec, t2m, hgt

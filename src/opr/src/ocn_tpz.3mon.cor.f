@@ -7,7 +7,7 @@ C===========================================================
       real corr2(imx,jmx,nyr),regr2(imx,jmx,nyr,nyr)
       real corr3(imx,jmx,nyr),regr3(imx,jmx,nyr)
       real cor3d(imx,jmx,nlead),rms3d(imx,jmx,nlead)
-      real cvcor(imx2,jmx2,nyr,nlead)
+      real cvcor(imx,jmx,nyr,nlead)
       real hss3d(imx,jmx,nlead)
       real ts1(nyr),ts2(nyr)
       real w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx)
@@ -339,7 +339,7 @@ c
         do i=1,imx2
         do j=1,jmx2
 
-        IF(fld2(i,j).gt.-900.) then
+        IF(fld(i,j).gt.-900.) then
 
           ir=0
           do iy=1,ny_tpz
@@ -352,7 +352,7 @@ c
           endif
 
             ir=ir+1
-            ts1(ir)=wthcst(i,j,iy,ld)
+            ts1(ir)=hcst(i,j,iy,ld)
             ts2(ir)=vfld(i,j,iy,ld)
   777     continue
           enddo

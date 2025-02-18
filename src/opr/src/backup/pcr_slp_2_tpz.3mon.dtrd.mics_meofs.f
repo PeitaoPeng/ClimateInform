@@ -6,14 +6,16 @@ C===========================================================
       real sst(imx,jmx,nyr,mics)
       real v1dtd(imx,jmx,nyr,mics),v1trd(imx,jmx,nyr)
       real av1(imx,jmx),bv1(imx,jmx)
-      real sstc(imx,jmx),tpzc(imx2,jmx2),tpzc_tot(imx2,jmx2,nlead)
+      real sstc(imx,jmx),tpzc(imx2,jmx2)
+      real tpzc_tot(imx2,jmx2,nwmo,nlead)
       real fld2(imx2,jmx2)
       real corr(imx,jmx,nyr),regr(imx,jmx,nyr)
       real corr2(imx2,jmx2,nyr),regr2(imx2,jmx2,nyr,nyr)
       real corr3(imx2,jmx2,nyr),regr3(imx2,jmx2,nyr)
       real cor3d(imx2,jmx2,nlead),rms3d(imx2,jmx2,nlead)
       real hss3d(imx2,jmx2,nlead)
-      real ts1(nyr),ts2(nyr)
+      real ts1(nyr),ts2(nyr),ts3(nyr),ts4(nyr)
+      real w1d(nwmo),w1d2(nwmo)
       real w2d(imx2,jmx2),w2d2(imx2,jmx2),w2d3(imx2,jmx2)
       real w2d4(imx2,jmx2),w2d5(imx2,jmx2),w2d6(imx2,jmx2)
       real tcof(nyr,nyr,mics)
@@ -23,8 +25,8 @@ C===========================================================
       real hcst(imx2,jmx2,nyr,nlead,mics,ncut)
       real wthcst(imx2,jmx2,nyr,nlead)
       real fcst(imx2,jmx2,nlead,mics,ncut)
-      real avgo(imx2,jmx2),avgf(imx2,jmx2)
-      real stdo(imx2,jmx2,nlead),stdf(imx2,jmx2,nlead)
+      real stdo(imx2,jmx2,nwmo,nlead),stdf(imx2,jmx2)
+      real clmo(imx2,jmx2,nwmo,nlead),clmf(imx2,jmx2)
       real wtfcst(imx2,jmx2,nlead)
       real vfld(imx2,jmx2,nyr,nlead)
       real xn34(nyr)
@@ -199,15 +201,29 @@ C have tpz anomalies over period 1 -> ny_tpz
           do it=1,ny_tpz
             ts2(it)=wtpz(i,j,it)
           enddo
-          call clim_tot(ts2,tpzc_tot(i,j,ld),nyr,1,ny_tpz)
+
+          call wmo_clim_tot(ts2,w1d,nyr,nwmo)
+
+           do ii=1,nwmo
+              tpzc_tot(i,j,ii,ld)=w1d(ii)
+           enddo
+
           call clim_anom(ts2,tpzc(i,j),nyr,ny_tpz)
+
         else
+
           do it=1,ny_tpz
             ts2(it)=undef
           enddo
+
             tpzc(i,j)=undef
-            tpzc_tot(i,j,ld)=undef
+
+            do ii=1,nwmo
+              tpzc_tot(i,j,ii,ld)=undef
+            enddo
+
         endif
+
           do it=1,ny_tpz
             wtpz(i,j,it)=ts2(it)
           enddo
@@ -454,117 +470,81 @@ C== have ensemble fcst
 C
 c normalize both obs and wthcst
 c
-c std of obs
+c std clm of obs
       iw4=0
       do ld=1,nlead
 
         do i=1,imx2
         do j=1,jmx2
           if (fld2(i,j).gt.-900.) then
-            avgo(i,j)=0.
-c           do it=1,ny_tpz
-            do it=its_clm,ite_clm
-            avgo(i,j)=avgo(i,j)+vfld(i,j,it,ld)/float(ny_clm)
+          do it=1,ny_tpz
+              ts1(it)=vfld(i,j,it,ld)
             enddo
+
+            call wmo_clm_std_anom(ts1,w1d,w1d2,ts4,nyr,ny_tpz,nwmo)
+
+            do ii=1,nwmo
+              stdo(i,j,ii,ld)=w1d(ii)
+              clmo(i,j,ii,ld)=w1d2(ii)
+            enddo
+
+            do it=1,ny_tpz
+              vfld(i,j,it,ld)=ts4(it)
+            enddo
+
           else
-            avgo(i,j)=undef
+
+            do ii=1,nwmo
+              stdo(i,j,ii,ld)=undef
+              clmo(i,j,ii,ld)=undef
+            enddo
+
+            do it=1,ny_tpz
+              vfld(i,j,it,ld)=undef
+            enddo
+
           endif
         enddo
         enddo
 
+c std clm of wthcst
         do i=1,imx2
         do j=1,jmx2
           if (fld2(i,j).gt.-900.) then
-            stdo(i,j,ld)=0.
-            do it=its_clm,ite_clm
-            stdo(i,j,ld)=stdo(i,j,ld)+
-     &      (vfld(i,j,it,ld)-avgo(i,j))**2
-            enddo
-            stdo(i,j,ld)=sqrt(stdo(i,j,ld)/float(ny_clm))
-          else
-            stdo(i,j,ld)=undef
-            endif
-        enddo
-        enddo
+          do it=1,ny_tpz
+              ts1(it)=wthcst(i,j,it,ld)
+          enddo
 
-c std of wthcst
-        do i=1,imx2
-        do j=1,jmx2
-          if (fld2(i,j).gt.-900.) then
-            avgf(i,j)=0.
-            do it=its_clm,ite_clm
-            avgf(i,j)=avgf(i,j)+wthcst(i,j,it,ld)/
-     &float(ny_clm)
+            call wmo_clm_std_anom(ts1,w1d,w1d2,ts4,nyr,ny_tpz,nwmo)
+
+              stdf(i,j)=w1d(nwmo)
+              clmf(i,j)=w1d2(nwmo)
+
+            do it=1,ny_tpz
+              wthcst(i,j,it,ld)=ts4(it)
             enddo
+
           else
-            avgf(i,j)=undef
+
+            do it=1,ny_tpz
+              wthcst(i,j,it,ld)=undef
+            enddo
+              stdf(i,j)=undef
+              clmf(i,j)=undef
           endif
         enddo
         enddo
-
-        do i=1,imx2
-        do j=1,jmx2
-          if (fld2(i,j).gt.-900.) then
-            stdf(i,j,ld)=0.
-            do it=its_clm,ite_clm
-            stdf(i,j,ld)=stdf(i,j,ld)+
-     &      (wthcst(i,j,it,ld)-avgf(i,j))**2
-            enddo
-            stdf(i,j,ld)=sqrt(stdf(i,j,ld)/float(ny_clm))
-          else
-            stdf(i,j,ld)=undef
-          endif
-        enddo
-        enddo
-c
-c deal with "too small" std
-        do i=1,imx2
-        do j=1,jmx2
-          if(fld2(i,j).gt.-900) then
-            if(stdo(i,j,ld).lt.0.001) then
-              stdo(i,j,ld)=0.001
-            endif
-            if(stdf(i,j,ld).lt.0.001) then
-              stdf(i,j,ld)=0.001
-            endif
-          endif
-        enddo
-        enddo
-
-c standardized wthcst 
-      do i=1,imx2
-      do j=1,jmx2
-      do it=1,ny_tpz
-      if (fld2(i,j).gt.-900.) then
-        vfld(i,j,it,ld)=(vfld(i,j,it,ld)-avgo(i,j))/stdo(i,j,ld)
-      else
-        vfld(i,j,it,ld)=undef
-      endif
-      enddo
-      enddo
-      enddo
-c
-      do i=1,imx2
-      do j=1,jmx2
-      do it=1,ny_tpz
-      if (fld2(i,j).gt.-900.) then
-        wthcst(i,j,it,ld)=(wthcst(i,j,it,ld)-avgf(i,j))/
-     &stdf(i,j,ld)
-      else
-        wthcst(i,j,it,ld)=undef
-      endif
-      enddo
-      enddo
-      enddo
 c
 c standardized fcsts
       do i=1,imx2
       do j=1,jmx2
+
       if (fld2(i,j).gt.-900.) then
-        wtfcst(i,j,ld)=(wtfcst(i,j,ld)-avgf(i,j))/stdf(i,j,ld)
+        wtfcst(i,j,ld)=(wtfcst(i,j,ld)-clmf(i,j))/stdf(i,j)
       else
         wtfcst(i,j,ld)=undef
       endif
+
       enddo
       enddo
 
@@ -659,9 +639,17 @@ c write out obs and wthcst
           iw=iw+1
           write(32,rec=iw) w2d
 
+          if(it.gt.31.and.it.le.41) md=1
+          if(it.gt.41.and.it.le.51) md=2
+          if(it.gt.51.and.it.le.61) md=3
+          if(it.gt.61.and.it.le.71) md=4
+          if(it.gt.71.and.it.le.81) md=5
+          if(it.gt.81.and.it.le.91) md=6
+          if(it.gt.91.and.it.le.101) md=7
+
           do i=1,imx2
           do j=1,jmx2
-            w2d(i,j)=stdo(i,j,ld)
+            w2d(i,j)=stdo(i,j,md,ld)
           enddo
           enddo
           iw=iw+1
@@ -671,15 +659,26 @@ c write out obs and wthcst
        enddo
 c write out fcst and skill_t
         iw=0
+        ny_prd=ny_tpz+1
        do ld=1,nlead
+
          do i=1,imx2
          do j=1,jmx2
            w2d(i,j)=wtfcst(i,j,ld)
-           w2d2(i,j)=stdo(i,j,ld)
+           w2d2(i,j)=stdo(i,j,nwmo,ld)
            w2d3(i,j)=cor3d(i,j,ld)
            w2d4(i,j)=rms3d(i,j,ld)
            w2d5(i,j)=hss3d(i,j,ld)
-           w2d6(i,j)=tpzc_tot(i,j,ld)
+
+          if(ny_prd.ge.32.and.it.lt.42) md=1 ! 32-42 for skiping 1950
+          if(ny_prd.gt.42.and.it.lt.52) md=2
+          if(ny_prd.gt.52.and.it.lt.62) md=3
+          if(ny_prd.gt.62.and.it.lt.72) md=4
+          if(ny_prd.gt.72.and.it.lt.82) md=5
+          if(ny_prd.gt.82.and.it.lt.92) md=6
+          if(ny_prd.gt.92.and.it.lt.102) md=7
+
+           w2d6(i,j)=tpzc_tot(i,j,md,ld)
          enddo
          enddo
          iw=iw+1
@@ -1012,6 +1011,60 @@ c
       return
       end
 
+      SUBROUTINE wmo_clm_std_anom(ts,std,clm,anom,maxt,nt,nwmo)
+C WMO std, clm, and anom
+
+      DIMENSION ts(maxt),anom(maxt),std(nwmo),clm(nwmo)
+
+C have WMO std and clm
+      do id=1,nwmo ! 51-80,61-90,71-00,81-10,91-20
+
+      its=(id-1)*10+1+1 ! +1 for skiping 1950
+      ite=(id-1)*10+30+1 ! +1 for skip 1950
+
+      cc=0.
+      do i=its,ite
+        cc=cc+ts(i)
+      enddo
+      clm(id)=cc/30.
+c
+      do i=its,ite
+        anom(i)=ts(i)-clm(id)
+      enddo
+
+      sd=0
+      do i=its,ite
+        sd=sd+anom(i)*anom(i)
+      enddo
+      sd=sqrt(sd/30.)
+      if(sd.lt.0.01) sd=0.01
+      std(id)=sd
+
+      enddo !loop id
+
+C have WMO anom
+      do i=1,31 ! i=1 is 1950
+        anom(i)=(ts(i)-clm(1))/std(1)
+      enddo
+
+      do id=1,nwmo-1 ! 81-90,91-00,01-10,11-20,21-cur
+        its=30+(id-1)*10+1+1 ! +1 is for 1950
+        ite=30+id*10+1
+        do i=its,ite
+          anom(i)=(ts(i)-clm(id))/std(id)
+        enddo
+      enddo
+
+      its=30+(nwmo-1)*10+1+1 ! +1 is for 1950
+      ite=nt
+
+      do i=its,ite
+        anom(i)=(ts(i)-clm(nwmo))/std(nwmo)
+      enddo
+
+      return
+      end
+
       SUBROUTINE clim_tot(ts,cc,maxt,its,ite)
       DIMENSION ts(maxt)
       cc=0.
@@ -1024,6 +1077,25 @@ c
       return
       end
 
+      SUBROUTINE wmo_clim_tot(ts,clm,maxt,nwmo)
+      DIMENSION ts(maxt),clm(nwmo)
+
+      do id=1,nwmo ! 51-80,61-90,71-00,81-10,91-20
+
+      its=(id-1)*10+1+1 ! +1 for skiping 1950
+      ite=(id-1)*10+30+1 ! +1 for skip 1950
+
+      cc=0.
+      do i=its,ite
+        cc=cc+ts(i)
+      enddo
+
+      clm(id)=cc/30.
+
+      enddo
+
+      return
+      end
 
       SUBROUTINE normal(rot,rot2,ltime)
       DIMENSION rot(ltime),rot2(ltime)

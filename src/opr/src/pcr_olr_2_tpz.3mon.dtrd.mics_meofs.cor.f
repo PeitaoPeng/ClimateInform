@@ -638,7 +638,6 @@ c     do iy=its_clm,ite_clm
 
       enddo ! iy loop
       enddo ! ld loop
-      c
 c CV corr skill of hcst
 c
         do ld=1,nlead
