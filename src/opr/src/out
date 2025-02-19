@@ -1,0 +1,433 @@
+26c26
+<       real ts0(ny_hcst),ts1(ny_hcst),ts2(ny_hcst),ts3(ny_hcst)
+---
+>       real ts1(ny_hcst),ts2(ny_hcst),ts3(ny_hcst),ts4(ny_hcst)
+34,36c34,37
+<       real tsobs(ny_hcst),tspa(ny_hcst),tspb(ny_hcst),tspn(ny_hcst)
+<       real frac(imx,jmx),rpss(imx,jmx)
+<       real trpss(40)
+---
+>       real pa(imx,jmx,ny_hcst),pb(imx,jmx,ny_hcst),pn(imx,jmx,ny_hcst)
+>       real xpa(imx,jmx),xpb(imx,jmx),xpn(imx,jmx)
+> 
+>       real frac(imx,jmx)
+49d49
+< 
+50a51
+>       open(20,form='unformatted',access='direct',recl=4*imx*jmx) !frac
+52c53,55
+<       open(31,form='unformatted',access='direct',recl=4*imx*jmx) !rpss
+---
+>       open(31,form='unformatted',access='direct',recl=4*imx*jmx) !fcst
+>       open(32,form='unformatted',access='direct',recl=4*imx*jmx) !hcst
+>       open(33,form='unformatted',access='direct',recl=4) !1d_skill
+71,72c74,75
+<         ir=ir+1
+<         read(19,rec=ir) xn34(it,ld)
+---
+>       ir=ir+1
+>       read(19,rec=ir) xn34(it,ld)
+110c113
+< c         
+---
+> c
+113a117,119
+>       ir2=ld*2-1
+>       read(20,rec=ir2) frac
+> 
+127a134,156
+> 
+>           nmodel=nprd        
+>           if(abs(xn34(ny_hcst+1,ld)).gt.xncrt) nmodel=1
+> 
+>           if(nmodel.gt.1) then
+>             do ip=1,nprd
+>               ws1d(ip)=wts(i,j,ld,ip)
+>             enddo
+>           else
+>             ws1d(1)=1.
+>             do ip=2,nprd
+>             ws1d(ip)=0.
+>             enddo
+>           endif
+> 
+>           do ip=1,nprd
+>             w1d(ip)=prd(i,j,ld,ip)
+>           enddo
+> 
+>           call wtavg(w1d,ws1d,nprd,eprd(i,j))
+> 
+>       else
+>           eprd(i,j)=undef
+129a159,160
+>           ostd(i,j)=stdo(i,j,ld)
+> 
+138a170,172
+>       iw2=0
+>       iw3=0
+> 
+144,145c178
+< 
+<         ich=ich+1
+---
+>       ich=ich+1
+162a196
+> 
+175c209
+<           call weights(w1d,nprd,ws1d) 
+---
+>           call weights(w1d,nprd,ws1d)
+226,227d259
+<       write(6,*) 'start std of ehcst'
+< 
+250,251c282,283
+< C prob-hcst and rpss_t skill
+<       write(6,*) 'ld=,start prob-hcst and rpss_t skill',ld
+---
+> C write out ehcst, prob-hcst and 1-D skill
+>       DO it=1,ny_hcst
+253,254c285,286
+<       tdel=0.025
+<       ntest=1./tdel
+---
+>       do i=1,imx
+>       do j=1,jmx
+256,257c288,289
+<       DO i=1,imx
+<       DO j=1,jmx
+---
+>         w2d(i,j)=obs(i,j,it)
+>         w2d2(i,j)=ehcst(i,j,it)
+259c291,292
+<       IF (ehcst(i,j,1).gt.-900.and.obs(i,j,1).gt.-900) then
+---
+> c prob-hcst
+>       if (w2d2(i,j).gt.-900.and.w2d(i,j).gt.-900) then
+261c294,295
+< C have frac -> max rpss        
+---
+>         call prob_3c_prd(w2d2(i,j),prbprd(i,j),pa(i,j,it),pb(i,j,it),
+>      &pn(i,j,it),kpdf,xbin,xdel,ypdf,frac(i,j))   
+263,264c297,298
+<       ftest=0.0
+<       do kt=1,ntest
+---
+>       else
+>         prbprd(i,j)=undef
+266,267c300,303
+< c prob for each it
+<       do it=1,ny_hcst
+---
+>         pa(i,j,it)=undef
+>         pb(i,j,it)=undef
+>         pn(i,j,it)=undef
+>       endif
+269,270c305,334
+<         tsobs(it)=obs(i,j,it)
+<         w2d2(i,j)=ehcst(i,j,it)
+---
+>       if(abs(prbprd(i,j)).gt.1.) prbprd(i,j)=undef
+> 
+>       enddo
+>       enddo
+> 
+>       iw2=iw2+1
+>       write(32,rec=iw2) w2d ! obs
+>       iw2=iw2+1
+>       write(32,rec=iw2) w2d2  ! esm_hcst
+>       iw2=iw2+1
+>       write(32,rec=iw2) prbprd  ! prob-prd
+>       iw2=iw2+1
+>       write(32,rec=iw2) ostd
+> 
+> C 1-D skill
+> 
+>       call sp_cor_rms(w2d2,w2d,coslat,imx,jmx,
+>      &1,360,115,160,xcor,xrms)
+> 
+>       iw3=iw3+1
+>       write(33,rec=iw3) xcor
+>       iw3=iw3+1
+>       write(33,rec=iw3) xrms
+> 
+>       call sp_cor_rms(w2d,w2d2,coslat,imx,jmx,
+>      &230,300,115,140,xcor,xrms)
+>       iw3=iw3+1
+>       write(33,rec=iw3) xcor
+>       iw3=iw3+1
+>       write(33,rec=iw3) xrms
+272,273c336,358
+<         call prob_3c_prd(w2d2(i,j),prbprd(i,j),tspa(it),tspb(it),
+<      &tspn(it),kpdf,xbin,xdel,ypdf,ftest)
+---
+>       do i=1,imx
+>       do j=1,jmx
+>       w2d2(i,j)=pb(i,j,it)
+>       w2d3(i,j)=pa(i,j,it)
+>       enddo
+>       enddo
+> 
+>       call hss3c_prob_s(w2d,w2d3,w2d2,imx,jmx,1,360,115,160,coslat,h1)
+>       call hss3c_prob_s(w2d,w2d3,w2d2,imx,jmx,230,300,115,140,
+>      &coslat,h2)
+> 
+>       iw3=iw3+1
+>       write(33,rec=iw3) h1
+>       iw3=iw3+1
+>       write(33,rec=iw3) h2
+> 
+>       call rpss_s(w2d,w2d2,w2d3,rpss1,imx,jmx,1,360,115,160,coslat)
+>       call rpss_s(w2d,w2d2,w2d3,rpss2,imx,jmx,230,300,115,140,coslat)
+> 
+>       iw3=iw3+1
+>       write(33,rec=iw3) rpss1
+>       iw3=iw3+1
+>       write(33,rec=iw3) rpss2
+277c362
+<       call rpss_t_1d(tsobs,tspb,tspa,rps,ny_hcst,undef)
+---
+> c temporal 2D skill calculation
+279c364,365
+<         trpss(kt)=rps
+---
+>       do i=1,imx
+>       do j=1,jmx
+281c367
+<       ftest=ftest+tdel
+---
+>       if (w2d(i,j).gt.-900.) then
+283c369,374
+<       enddo ! kt loop
+---
+>         do it=1,ny_hcst
+>           ts1(it)=obs(i,j,it)
+>           ts2(it)=ehcst(i,j,it)
+>           ts3(it)=pa(i,j,it)
+>           ts4(it)=pb(i,j,it)
+>         enddo
+285,288c376
+< C Find the location of the maximum value
+<       mloc = maxloc(trpss,1)
+<       rpss(i,j)=trpss(mloc)
+<       frac(i,j)=mloc*tdel
+---
+>         call cor_rms(ts1,ts2,ny_hcst,ny_hcst,ecor(i,j),erms(i,j))
+290,292c378
+<       if(i.eq.130.and.j.eq.65) then
+<         write(6,*) 'mloc,frac,trpss=',mloc,frac(i,j),trpss
+<       endif
+---
+>         call hss3c_prob_t(ts1,ts3,ts4,ny_hcst,ny_hcst,ehss(i,j))
+294c380
+<       ELSE
+---
+>       else
+296,297c382,384
+<       rpss(i,j)=undef
+<       frac(i,j)=undef
+---
+>         ecor(i,j)=undef
+>         erms(i,j)=undef
+>         ehss(i,j)=undef
+299c386,389
+<       ENDIF
+---
+>       endif
+> 
+>       ostd(i,j)=stdo(i,j,ld)
+>       oclm(i,j)=clmo(i,j,ld)
+305c395,433
+<       write(31,rec=iw) frac
+---
+>       write(31,rec=iw) eprd
+>       iw=iw+1
+>       write(31,rec=iw) ostd
+>       iw=iw+1
+>       write(31,rec=iw) ecor
+>       iw=iw+1
+>       write(31,rec=iw) erms
+>       iw=iw+1
+>       write(31,rec=iw) ehss
+>       iw=iw+1
+>       write(31,rec=iw) oclm
+> 
+> c have prob forecast
+> c
+>       do i=1,imx
+>       do j=1,jmx
+> 
+>       if (eprd(i,j).gt.-900.and.ostd(i,j).gt.-900.) then
+>         call prob_3c_prd(eprd(i,j),prbprd(i,j),xpa(i,j),xpb(i,j),
+>      &xpn(i,j),kpdf,xbin,xdel,ypdf,frac(i,j))
+>       else
+>         prbprd(i,j)=undef
+>         xpa(i,j)=undef
+>         xpb(i,j)=undef
+>         xpn(i,j)=undef
+>       endif
+> 
+>       if (abs(prbprd(i,j)).gt.1.) then
+>         prbprd(i,j)=undef
+>         xpa(i,j)=undef
+>         xpb(i,j)=undef
+>         xpn(i,j)=undef
+>       endif
+> 
+>       enddo
+>       enddo
+> c
+>       iw=iw+1
+>       write(31,rec=iw) prbprd
+307c435,444
+<       write(31,rec=iw) rpss
+---
+>       write(31,rec=iw) xpa
+>       iw=iw+1
+>       write(31,rec=iw) xpb
+>       iw=iw+1
+>       write(31,rec=iw) xpn
+> 
+>       call rpss_t(obs,pb,pa,w2d,imx,jmx,ny_hcst,undef)
+> 
+>       iw=iw+1
+>       write(31,rec=iw) w2d
+365c502
+<       SUBROUTINE rpss_t_1d(vfc,pb,pa,rpss,nt,undef)
+---
+>       SUBROUTINE rpss_t(vfc,pb,pa,rpss,imx,jmx,nt,undef)
+367,369c504,506
+<       real pa(nt),pb(nt)
+<       real vfc(nt)
+<       real rps(nt),rpsc(nt)
+---
+>       real pa(imx,jmx,nt),pb(imx,jmx,nt)
+>       real vfc(imx,jmx,nt),rpss(imx,jmx)
+>       real rps(imx,jmx,nt),rpsc(imx,jmx,nt)
+372a510,512
+>         do i=1,imx
+>         do j=1,jmx
+>         IF(vfc(i,j,it).gt.-900) then
+377,379c517,519
+<           if(vfc(it).gt.0.43) va=1
+<           if(vfc(it).lt.-0.43) vb=1
+<           if(vfc(it).ge.-0.43.and.vfc(it).le.0.43) vn=1
+---
+>           if(vfc(i,j,it).gt.0.43) va=1
+>           if(vfc(i,j,it).lt.-0.43) vb=1
+>           if(vfc(i,j,it).ge.-0.43.and.vfc(i,j,it).le.0.43) vn=1
+381,383c521,523
+<           pn=1.-pa(it)-pb(it)
+<           y1=pb(it)
+<           y2=pb(it)+pn
+---
+>           pn=1.-pa(i,j,it)-pb(i,j,it)
+>           y1=pb(i,j,it)
+>           y2=pb(i,j,it)+pn
+388c528
+<           rps(it)=(y1-o1)**2 !rps
+---
+>           rps(i,j,it)=(y1-o1)**2 !rps
+390c530
+<           rpsc(it)=(1./3.-o1)**2 !rpsc
+---
+>           rpsc(i,j,it)=(1./3.-o1)**2 !rpsc
+392c532,534
+< 
+---
+>         END IF
+>         enddo
+>         enddo
+394a537,542
+>       do i=1,imx
+>       do j=1,jmx
+> 
+>         rpss(i,j)=undef
+> 
+>         IF(vfc(i,j,1).gt.-900) then
+400,401c548,549
+<           exp=exp+rps(it)
+<           expc=expc+rpsc(it)
+---
+>           exp=exp+rps(i,j,it)
+>           expc=expc+rpsc(i,j,it)
+406c554,557
+<         rpss=1.-exp_rps/exp_rpsc
+---
+>         rpss(i,j)=1.-exp_rps/exp_rpsc
+>       END IF
+>       enddo
+>       enddo
+526a678,720
+>       SUBROUTINE hss3c_prob_s(obs,pa,pb,imx,jmx,is,ie,js,je,coslat,h)
+>       dimension obs(imx,jmx),pa(imx,jmx),pb(imx,jmx)
+>       dimension nobs(imx,jmx),nprd(imx,jmx)
+>       dimension coslat(jmx)
+>       dimension w1d(3)
+> 
+>       do i=is,ie
+>       do j=js,je
+>         if(obs(i,j).gt.-900.and.pa(i,j).gt.-900) then
+> 
+>           if(obs(i,j).gt.0.43) nobs(i,j)=1
+>           if(obs(i,j).lt.-0.43) nobs(i,j)=-1
+>           if(obs(i,j).ge.-0.43.and.obs(i,j).le.0.43) nobs(i,j)=0
+> 
+> 
+>           w1d(3)=pa(i,j)
+>           w1d(1)=pb(i,j)
+>           w1d(2)=1.- pa(i,j)-pb(i,j)
+>           maxp = maxloc(w1d,1)
+> 
+>           if(maxp.eq.3) nprd(i,j)=1
+>           if(maxp.eq.1) nprd(i,j)=-1
+>           if(maxp.eq.2) nprd(i,j)=0
+> 
+>         endif
+>       enddo
+>       enddo
+> 
+>       h=0.
+>       tot=0.
+>       do i=is,ie
+>       do j=js,je
+>         if(obs(i,j).gt.-900..and.pa(i,j).gt.-900.) then
+>         tot=tot+coslat(j)
+>         if (nobs(i,j).eq.nprd(i,j)) h=h+coslat(j)
+>         endif
+>       enddo
+>       enddo
+>       h=(h-tot/3.)/(tot-tot/3.)*100.
+> 
+>       return
+>       end
+> 
+787a982,1010
+>       h=0.
+>       tot=0.
+>       do i=1,nt
+>       tot=tot+1
+>       if (nobs(i).eq.nprd(i)) h=h+1
+>       enddo
+>       hs=(h-tot/3.)/(tot-tot/3.)*100.
+>       return
+>       end
+> 
+>       SUBROUTINE hss3c_prob_t(obs,pa,pb,ny,nt,h)
+>       dimension obs(ny),pa(ny),pb(ny)
+>       dimension nobs(ny),nprd(ny)
+>       dimension w1d(3)
+>       do it=1,nt
+>         if(obs(it).gt.0.43) nobs(it)=1
+>         if(obs(it).lt.-0.43) nobs(it)=-1
+>         if(obs(it).ge.-0.43.and.obs(it).le.0.43) nobs(it)=0
+> 
+>         w1d(3)=pa(it)
+>         w1d(1)=pb(it)
+>         w1d(2)=1.- pa(it)-pb(it)
+>         maxp = maxloc(w1d,1)
+> 
+>           if(maxp.eq.3) nprd(it)=1
+>           if(maxp.eq.1) nprd(it)=-1
+>           if(maxp.eq.2) nprd(it)=0
+>       enddo
+> 

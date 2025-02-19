@@ -17,6 +17,7 @@ C===========================================================
       real oclm(imx,jmx),ostd(imx,jmx)
 
       real wts(imx,jmx,mlead,nprd),ws1d(nprd)
+      real wts2(imx,jmx,nprd)
       real obs(imx,jmx,ny_hcst),ehcst(imx,jmx,ny_hcst)
       real prbhcst(imx,jmx,ny_hcst)
       real xn34(ny_hcst+1,mlead)
@@ -48,7 +49,7 @@ C hcst from sst, olr, slp & ocn
 
       open(19,form='unformatted',access='direct',recl=4) !nino34
 C synth output
-      open(31,form='unformatted',access='direct',recl=4*imx*jmx) !rpss
+      open(31,form='unformatted',access='direct',recl=4*imx*jmx) !frac & rpss
 C
 C== have coslat
 C
@@ -67,8 +68,8 @@ C read in nino3.4 index
       ir=0
       do ld=1,mlead
       do it=1,ny_hcst+1
-      ir=ir+1
-      read(19,rec=ir) xn34(it,ld)
+        ir=ir+1
+        read(19,rec=ir) xn34(it,ld)
       enddo
       enddo
 
@@ -106,10 +107,8 @@ C=== read in fcst and stdo
 
         enddo ! ld loop
         enddo ! ip loop
-c
-C=== have wts from max cor
-      ir=0
-      iw=0
+c         
+C=== have wts from cor for prd
       do ld=1,mlead
 
       do i=1,imx
@@ -131,13 +130,19 @@ C=== have wts from max cor
       enddo
       enddo
 
-C=== synthesize hcst with max cor
+      enddo !ld loop
 
+C=== synthesize hcst with cvcor
+
+      ir=0
+      iw=0
+      do ld=1,mlead
       do it=1,ny_hcst
 
       ich=14
       do ip=1,nprd 
-      ich=ich+1
+
+        ich=ich+1
 
         ir1=ir+1
         read(ich,rec=ir1) w2d
@@ -146,7 +151,7 @@ C=== synthesize hcst with max cor
         ir3=ir+3
         read(ich,rec=ir3) w2d3
         ir4=ir+4
-        read(ich,rec=ir3) w2d4
+        read(ich,rec=ir4) w2d4
 
         do i=1,imx
         do j=1,jmx
@@ -155,9 +160,29 @@ C=== synthesize hcst with max cor
           cvcor(i,j,ip)=w2d4(i,j)
         enddo
         enddo
-
       enddo ! ip loop
 
+C=== have wts from cvcor for hcst
+      do i=1,imx
+      do j=1,jmx
+
+      if (w2d(i,j).gt.-900.) then
+
+          do ip=1,nprd
+            w1d(ip)=cvcor(i,j,ip)
+          enddo
+
+          call weights(w1d,nprd,ws1d) 
+
+          do ip=1,nprd
+            wts2(i,j,ip)=ws1d(ip)
+          enddo
+      endif
+
+      enddo
+      enddo
+
+C=== sythsize hcst with wts2
       do i=1,imx
       do j=1,jmx
 
@@ -168,7 +193,7 @@ C=== synthesize hcst with max cor
 
           if(nmodel.gt.1) then
             do ip=1,nprd
-              ws1d(ip)=wts(i,j,ld,ip)
+              ws1d(ip)=wts2(i,j,ip)
             enddo
           else
             ws1d(1)=1.
@@ -195,10 +220,11 @@ C=== synthesize hcst with max cor
       enddo
       enddo
 
-      ir=ir+3
+      ir=ir+4
       enddo ! it loopo
 
       write(6,*) 'start std of ehcst'
+
 C std of ehcst
       do i=1,imx
       do j=1,jmx
