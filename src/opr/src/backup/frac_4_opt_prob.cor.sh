@@ -19,6 +19,8 @@ nprd=4  # of input fcst
 kocn=10
 xnino_crt=3.
 
+version=cvcor
+
 for var in prec; do # prec, t2m, hgt
 
 if [ $var = t2m ];  then icut1=3; ivar2=1; fi
@@ -38,11 +40,11 @@ cd $tmp
 # SST IC
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
-#for curyr in 2021 2022 2023 2024; do
-for curyr in 2024; do
+for curyr in 2021 2022 2023 2024; do
+#for curyr in 2024; do
 #curmt=`date --date='today' '+%m'`  # mo of making fcst
-#for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for curmo in 11; do
+for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+#for curmo in 11; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -126,7 +128,7 @@ infile8=hcst.slp.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3
 
 infile9=nino34.prd.mics4.mlead$mlead.ncut3.icut1_15.id_ceof1.id_detrd0.cv1.3mon
 #
-outfile1=frac_rpss.ensmsynth.$var.mlead$mlead.3mon
+outfile1=$version.frac_rpss.ensmsynth.$var.mlead$mlead.3mon
 #
 ln -s $ind1/$infile1.gr          fort.11
 ln -s $ind1/$infile2.gr          fort.12

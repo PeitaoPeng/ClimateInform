@@ -127,10 +127,8 @@ C=== have wts prd
       if (w2d(i,j).gt.-900.) then
 
           do ip=1,nprd
-            w1d(ip)=cor(i,j,ld,ip)
+            ws1d(ip)=1./float(nprd)
           enddo
-
-          call weights(w1d,nprd,ws1d) 
 
           do ip=1,nprd
             wts(i,j,ld,ip)=ws1d(ip)
@@ -201,11 +199,8 @@ C=== have wts from cvcor for hcst
       if (w2d(i,j).gt.-900.) then
 
           do ip=1,nprd
-            w1d(ip)=cvcor(i,j,ip)
-c           w1d(ip)=cor(i,j,ld,ip)
+            ws1d(ip)=1./float(nprd)
           enddo
-
-          call weights(w1d,nprd,ws1d)
 
           do ip=1,nprd
             wts2(i,j,ip)=ws1d(ip)

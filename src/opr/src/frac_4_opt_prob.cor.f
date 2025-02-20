@@ -169,7 +169,8 @@ C=== have wts from cvcor for hcst
       if (w2d(i,j).gt.-900.) then
 
           do ip=1,nprd
-            w1d(ip)=cvcor(i,j,ip)
+c           w1d(ip)=cvcor(i,j,ip)
+            w1d(ip)=cor(i,j,ld,ip)
           enddo
 
           call weights(w1d,nprd,ws1d) 

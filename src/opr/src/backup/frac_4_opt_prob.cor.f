@@ -49,7 +49,7 @@ C hcst from sst, olr, slp & ocn
 
       open(19,form='unformatted',access='direct',recl=4) !nino34
 C synth output
-      open(31,form='unformatted',access='direct',recl=4*imx*jmx) !rpss
+      open(31,form='unformatted',access='direct',recl=4*imx*jmx) !frac & rpss
 C
 C== have coslat
 C
@@ -132,7 +132,7 @@ C=== have wts from cor for prd
 
       enddo !ld loop
 
-C=== synthesize hcst with cor
+C=== synthesize hcst with cvcor
 
       ir=0
       iw=0
@@ -169,7 +169,8 @@ C=== have wts from cvcor for hcst
       if (w2d(i,j).gt.-900.) then
 
           do ip=1,nprd
-            w1d(ip)=cvcor(i,j,ip)
+c           w1d(ip)=cvcor(i,j,ip)
+            w1d(ip)=cor(i,j,ld,ip)
           enddo
 
           call weights(w1d,nprd,ws1d) 

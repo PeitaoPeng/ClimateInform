@@ -738,7 +738,7 @@ c write out fcst and skill_t
           if(ny_prd.gt.82.and.it.lt.92) md=6
           if(ny_prd.gt.92.and.it.lt.102) md=7
 
-           w2d6(i,j)=tpzc_tot(i,j,md,ld) ! latest for fcst
+           w2d6(i,j)=tpzc_tot(i,j,md,ld) ! latest wmo clm 
          enddo
          enddo
          iw=iw+1

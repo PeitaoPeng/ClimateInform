@@ -19,7 +19,7 @@ nprd=4  # of input fcst
 kocn=10
 xnino_crt=3.
 
-version=cvcor
+version=sim
 #for var in prec t2m; do # prec, t2m, hgt
 for var in prec; do # prec, t2m, hgt
 
@@ -90,7 +90,7 @@ fi
 #======================================
 imx=360; jmx=180; xds=0.5; yds=-89.5; xydel=1.
 #
-cp $lcdir/synth_fcst_ensm.cor.f $tmp/syn.f
+cp $lcdir/synth_fcst_ensm.sim.f $tmp/syn.f
 
 cat > parm.h << eof
 c
