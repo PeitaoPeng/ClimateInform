@@ -6,7 +6,8 @@ C===========================================================
 
       real w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx),w2d4(imx,jmx)
       real w2d5(imx,jmx),w2d6(imx,jmx)
-      real tpz(imx,jmx,nt),stdo(imx,jmx,nlead,nt),fcst(imx,jmx,nlead,nt)
+      real tpz(imx,jmx,nss),stdo(imx,jmx,nlead,nss)
+      real fcst(imx,jmx,nlead,nss)
       real xlat(jmx),coslat(jmx),cosr(jmx)
 
       real xbin(kpdf),ypdf(kpdf),prbprd(imx,jmx)
@@ -147,29 +148,37 @@ c write out obs, fcst, and hit
             w2d(i,j)=tpz(i,j,it)
             w2d2(i,j)=fcst(i,j,1,it)
             w2d3(i,j)=stdo(i,j,1,it)
+            w2d4(i,j)=pa(i,j,1,it)
+            w2d5(i,j)=pb(i,j,1,it)
           enddo
           enddo
 
           iw=iw+1
           write(92,rec=iw) w2d
           iw=iw+1
-          write(92,rec=iw) w2d3
-          iw=iw+1
           write(92,rec=iw) w2d2
-
-          call hit_skill(w2d,w2d2,w2d3,imx,jmx)
-
           iw=iw+1
           write(92,rec=iw) w2d3
+          iw=iw+1
+          write(92,rec=iw) w2d4
+          iw=iw+1
+          write(92,rec=iw) w2d5
+
+          call hit_skill(w2d,w2d4,w2d5,w2d6,imx,jmx)
+
+          iw=iw+1
+          write(92,rec=iw) w2d6
 
        enddo
 
       stop
       end
 
-      SUBROUTINE hit_skill(obs,prd,hit,imx,jmx)
-      dimension obs(imx,jmx),prd(imx,jmx),hit(imx,jmx)
+      SUBROUTINE hit_skill(obs,pa,pb,hit,imx,jmx)
+      dimension obs(imx,jmx),hit(imx,jmx)
+      dimension pa(imx,jmx),pb(imx,jmx)
       dimension nobs(imx,jmx),nprd(imx,jmx)
+      dimension w1d(3)
 
       do i=1,imx
       do j=1,jmx
@@ -180,9 +189,14 @@ c write out obs, fcst, and hit
         if(obs(i,j).lt.-0.43) nobs(i,j)=-1
         if(obs(i,j).ge.-0.43.and.obs(i,j).le.0.43) nobs(i,j)=0
 
-        if(prd(i,j).gt.0.43) nprd(i,j)=1
-        if(prd(i,j).lt.-0.43) nprd(i,j)=-1
-        if(prd(i,j).ge.-0.43.and.prd(i,j).le.0.43) nprd(i,j)=0
+          w1d(3)=pa(i,j)
+          w1d(1)=pb(i,j)
+          w1d(2)=1.- pa(i,j)-pb(i,j)
+          maxp = maxloc(w1d,1)
+
+          if(maxp.eq.3) nprd(i,j)=1
+          if(maxp.eq.1) nprd(i,j)=-1
+          if(maxp.eq.2) nprd(i,j)=0
 
        if (nobs(i,j).eq.nprd(i,j)) then
        hit(i,j)=1

@@ -1,7 +1,7 @@
 #!/bin/sh
 #===============================================
 # Sythesize forecasts from different models
-# with ensemble avg tech using cor skill
+# with ensemble avg tech with simple avg
 #===============================================
 
 set -eaux

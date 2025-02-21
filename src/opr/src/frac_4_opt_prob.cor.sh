@@ -20,6 +20,8 @@ kocn=10
 xnino_crt=3.
 
 version=cvcor
+if [ $version = cor ];  then ivs=1; fi
+if [ $version = cvcor ];  then ivs=2; fi
 
 for var in prec; do # prec, t2m, hgt
 
@@ -104,6 +106,7 @@ c
       parameter(xncrt=$xnino_crt)
       parameter(icmon=$icmon)
       parameter(ivar2=$ivar2)
+      parameter(ivs=$ivs)
 
 eof
 #

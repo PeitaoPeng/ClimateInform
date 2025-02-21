@@ -15,15 +15,20 @@ datain1=/home/ppeng/data/sst
 datain2=/home/ppeng/data/tpz
 dataout=/home/ppeng/data/pcr_prd
 #
-for var2 in prec t2m; do
+version=cvcor
+#
+#for var2 in prec t2m; do
+for var2 in prec; do
 #
 if [ $var2 = t2m ];  then ivar2=1; fi
 if [ $var2 = prec ]; then ivar2=2; fi
 #
 mlead=7     # max lead of ensemble fcst
 #
-clm_bgn=396  #djf1980
-clm_end=`expr $clm_bgn + 480` #from jfm1981 to djf2020
+#clm_bgn=396  #djf1980
+clm_bgn=516  #djf1990
+#clm_end=`expr $clm_bgn + 480` #from jfm1981 to djf2020
+clm_end=`expr $clm_bgn + 360` #from jfm1991 to djf2020
 nts=397  # jfm1981
 nte=921  # son2024
 its_vf=482 #fma2021, count from jfm1981
@@ -39,10 +44,10 @@ imx=360; jmx=180; xds=0.5; yds=-89.5; xydel=1.
 #
 infile0=$var2.1948_cur.3mon.total.1x1
 infile1=$var2.jan1981_cur.3mon.anom
-infile2=fcst.ensmsynth.$var2.mlead$mlead.3mon
+infile2=$version.fcst.ensmsynth.$var2.mlead$mlead.3mon
 
-outfile1=new.skill_rct_ensmsynth_1d.$var2.mlead$mlead.3mon
-outfile2=skill_rct_ensmsynth_2d.$var2.mlead$mlead.3mon
+outfile1=$version.skill_rct_ensmsynth_1d.$var2.mlead$mlead.3mon
+outfile2=$version.skill_rct_ensmsynth_2d.$var2.mlead$mlead.3mon
 #
 # have TPZ anom
 #
@@ -55,9 +60,9 @@ cat >anom.gs<<EOF
 'set x 1 $imx'
 'set y 1 $jmx'
 'set t 1 12'
-*anom wrt clim 1981-2020
+*anom wrt clim 1991-2020
 'define clm=ave($var2,t+$clm_bgn, t=$clm_end,1yr)'
-*anom wrt clim from jfm1981 to curr
+*anom wrt clim from jfm1991 to curr
 'modify clm seasonal'
 'set gxout fwrite'
 'set fwrite $dataout/$infile1.gr'
@@ -86,7 +91,7 @@ cp $lcdir/skill_recent_synth_fcst.f $tmp/skill.f
 cat > parm.h << eof
 c
       parameter(its_vf=$its_vf,ite_vf=$ite_vf)  ! length of tpz anom
-      parameter(nt=$ite_vf,nss=$nss_vf) 
+      parameter(nss=$nss_vf) 
       parameter(imx=$imx,jmx=$jmx) ! t2m or prec
       parameter(nlead=$mlead) 
       parameter(ivar2=$ivar2) 
@@ -248,10 +253,12 @@ ydef $jmx linear $yds $xydel
 zdef  1 linear 1 1
 tdef $nss_vf linear feb2021 1mo
 edef  $mlead names 1 2 3 4 5 6 7 
-vars  4
+vars  6
 o  1 99 obs
-s  1 99 std of obs
 p  1 99 prd
+s  1 99 std of obs
+pa  1 99 prob_a
+pb  1 99 prob_b
 h  1 99 hit
 endvars
 EOF
