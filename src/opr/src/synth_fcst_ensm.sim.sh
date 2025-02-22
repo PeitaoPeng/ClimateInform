@@ -21,7 +21,7 @@ xnino_crt=3.
 
 version=sim
 #for var in prec t2m; do # prec, t2m, hgt
-for var in prec; do # prec, t2m, hgt
+for var in t2m; do # prec, t2m, hgt
 
 if [ $var = t2m ];  then icut1=3; ivar2=1; fi
 if [ $var = prec ]; then icut1=5; ivar2=2; fi

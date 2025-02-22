@@ -19,11 +19,11 @@ nprd=4  # of input fcst
 kocn=10
 xnino_crt=3.
 
-version=cvcor
+version=cor
 if [ $version = cor ];  then ivs=1; fi
 if [ $version = cvcor ];  then ivs=2; fi
 
-for var in prec; do # prec, t2m, hgt
+for var in t2m; do # prec, t2m, hgt
 
 if [ $var = t2m ];  then icut1=3; ivar2=1; fi
 if [ $var = prec ]; then icut1=5; ivar2=2; fi

@@ -108,29 +108,7 @@ C=== read in fcst and stdo
         enddo ! ld loop
         enddo ! ip loop
 c         
-C=== have wts from cor for prd
-      do ld=1,mlead
-
-      do i=1,imx
-      do j=1,jmx
-
-      if (w2d(i,j).gt.-900.) then
-
-          do ip=1,nprd
-            ws1d(ip)=1./float(nprd)
-          enddo
-
-          do ip=1,nprd
-            wts(i,j,ld,ip)=ws1d(ip)
-          enddo
-      endif
-
-      enddo
-      enddo
-
-      enddo !ld loop
-
-C=== synthesize hcst with cvcor
+C=== synthesize hcst with avg
 
       ir=0
       iw=0
@@ -160,7 +138,7 @@ C=== synthesize hcst with cvcor
         enddo
       enddo ! ip loop
 
-C=== have wts from cvcor for hcst
+C=== have wts from avg for hcst
       do i=1,imx
       do j=1,jmx
 

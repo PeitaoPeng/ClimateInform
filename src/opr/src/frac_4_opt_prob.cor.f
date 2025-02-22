@@ -108,34 +108,6 @@ C=== read in fcst and stdo
         enddo ! ld loop
         enddo ! ip loop
 c         
-C=== have wts from cor for prd
-      do ld=1,mlead
-
-      do i=1,imx
-      do j=1,jmx
-
-      if (w2d(i,j).gt.-900.) then
-
-          do ip=1,nprd
-            if(ivs.eq.1) then
-              w1d(ip)=cor(i,j,ld,ip)
-            else
-              w1d(ip)=cvcor(i,j,ip)
-            endif
-          enddo
-
-          call weights(w1d,nprd,ws1d) 
-
-          do ip=1,nprd
-            wts(i,j,ld,ip)=ws1d(ip)
-          enddo
-      endif
-
-      enddo
-      enddo
-
-      enddo !ld loop
-
 C=== synthesize hcst with cvcor
 
       ir=0

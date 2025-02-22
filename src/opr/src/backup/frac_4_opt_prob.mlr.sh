@@ -19,11 +19,10 @@ nprd=4  # of input fcst
 kocn=10
 xnino_crt=3.
 
-version=cvcor
+version=mlr
 if [ $version = cor ];  then ivs=1; fi
 if [ $version = cvcor ];  then ivs=2; fi
 
-#for var in prec t2m; do # prec, t2m, hgt
 for var in t2m; do # prec, t2m, hgt
 
 if [ $var = t2m ];  then icut1=3; ivar2=1; fi
@@ -93,7 +92,8 @@ fi
 #======================================
 imx=360; jmx=180; xds=0.5; yds=-89.5; xydel=1.
 #
-cp $lcdir/synth_fcst_ensm.cor.f $tmp/syn.f
+cp $lcdir/frac_4_opt_prob.mlr.f $tmp/opt.f
+cp $lcdir/backup/mlr.s.f $tmp/mlr.f
 
 cat > parm.h << eof
 c
@@ -112,8 +112,8 @@ c
 eof
 #
 #gfortran -o pcr.x pcr.f reof.s.f
-#gfortran -mcmodel=medium -o syn.x syn.f
-gfortran -mcmodel=large -g -o syn.x syn.f
+#gfortran -mcmodel=large -o opt.x opt.f
+gfortran -mcmodel=medium -g -o opt.x opt.f mlr.f
 echo "done compiling"
 
 if [ -f fort.11 ] ; then
@@ -131,11 +131,8 @@ infile7=hcst.$var.kocn_$kocn.mlead$mlead.3mon
 infile8=hcst.slp.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3mon
 
 infile9=nino34.prd.mics4.mlead$mlead.ncut3.icut1_15.id_ceof1.id_detrd0.cv1.3mon
-infile10=$version.frac_rpss.ensmsynth.$var.mlead7.3mon
 #
-outfile1=$version.fcst.ensmsynth.$var.mlead$mlead.3mon
-outfile2=$version.hcst.ensmsynth.$var.mlead$mlead.3mon
-outfile3=$version.skill_1d.ensmsynth.$var.mlead$mlead.3mon
+outfile1=$version.frac_rpss.ensmsynth.$var.mlead$mlead.3mon
 #
 ln -s $ind1/$infile1.gr          fort.11
 ln -s $ind1/$infile2.gr          fort.12
@@ -148,14 +145,11 @@ ln -s $ind1/$infile7.gr          fort.17
 ln -s $ind1/$infile8.gr          fort.18
 
 ln -s $ind1/$infile9.gr          fort.19
-ln -s $ind1/$infile10.gr          fort.20
 
 ln -s $outdata/$outfile1.gr          fort.31
-ln -s $outdata/$outfile2.gr          fort.32
-ln -s $outdata/$outfile3.gr          fort.33
 #
 #./syn.x > $outdata/syn_fcst.$var.mlead$mlead.out
-./syn.x 
+./opt.x 
 #
 cat>$outdata/$outfile1.ctl<<EOF
 dset ^$outfile1.gr
@@ -165,56 +159,9 @@ xdef $imx linear $xds $xydel
 ydef $jmx linear $yds $xydel
 zdef  1 linear 1 1
 tdef  $mlead linear ${tgtmoyr} 1mon
-vars  11
-$var  1 99 normalized fcst
-stdo  1 99 stdv of obs
-cor   1 99 corr of hcst
-rms   1 99 rmse of hcst
-hss   1 99 hss_3c of hcst
-clm   1 99 total clim
-prb   1 99 prob prd
-pa   1 99 prob of above
-pb   1 99 prob of below
-pn   1 99 prob of normal
-rpss  1 99 prob format of prd
-endvars
-EOF
-#
-cat>$outdata/$outfile2.ctl<<EOF
-dset ^$outfile2.gr
-undef $undef
-title EXP1
-xdef $imx linear $xds $xydel
-ydef $jmx linear $yds $xydel
-zdef  1 linear 1 1
-tdef $ny_hcst linear ${tgtmon}$outyr_s 1yr
-edef  $mlead names 1 2 3 4 5 6 7
-vars  4
-o  1 99 obs
-p  1 99 hcst
-pr 1 99 prob hcst
-s  1 99 std of obs
-endvars
-EOF
-#
-cat>$outdata/$outfile3.ctl<<EOF
-dset ^$outfile3.gr
-undef $undef
-title EXP1
-xdef 1 linear $xds $xydel
-ydef 1 linear $yds $xydel
-zdef 1 linear 1 1
-tdef $ny_hcst linear ${tgtmon}$outyr_s 1yr
-edef $mlead names 1 2 3 4 5 6 7
-vars  8
-cor1   1 99 20N-70N sp_cor
-rms1   1 99 20N-70N sp_rms
-cor2   1 99 CONUS sp_cor
-rms2   1 99 CONUS sp_rms
-hss1   1 99 20N-70N sp_hss
-hss2   1 99 CONUS sp_hss
-rpss1   1 99 20N-70N rpss_s
-rpss2   1 99 CONUS rpss_s
+vars  2
+frac  1 99 fraction of esm_prd
+rpss  1 99 rpss skill
 endvars
 EOF
 #

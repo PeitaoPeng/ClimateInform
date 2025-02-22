@@ -33,7 +33,7 @@ C
       xdel=10./float(kpdf)
       call pdf_tab(xbin,ypdf,xdel,kpdf)
 C
-C=== read in fcst and stdo
+C=== read in fcst,stdo,pa,pb
       ir=0
       do it=1,nss 
       do ld=1,nlead

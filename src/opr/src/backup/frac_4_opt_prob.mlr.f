@@ -108,13 +108,41 @@ C=== read in fcst and stdo
         enddo ! ld loop
         enddo ! ip loop
 c         
-C=== synthesize hcst with avg
+C=== have wts from cor for prd
+      do ld=1,mlead
+
+      do i=1,imx
+      do j=1,jmx
+
+      if (w2d(i,j).gt.-900.) then
+
+          do ip=1,nprd
+            if(ivs.eq.1) then
+              w1d(ip)=cor(i,j,ld,ip)
+            else
+              w1d(ip)=cvcor(i,j,ip)
+            endif
+          enddo
+
+          call weights(w1d,nprd,ws1d) 
+
+          do ip=1,nprd
+            wts(i,j,ld,ip)=ws1d(ip)
+          enddo
+      endif
+
+      enddo
+      enddo
+
+      enddo !ld loop
+
+C=== synthesize hcst with cvcor
 
       ir=0
       iw=0
       do ld=1,mlead
-      do it=1,ny_hcst
 
+      do it=1,ny_hcst
       ich=14
       do ip=1,nprd 
 
@@ -137,16 +165,25 @@ C=== synthesize hcst with avg
         enddo
         enddo
       enddo ! ip loop
+      ir=ir+4
+      enddo ! it loopo
 
-C=== have wts from avg for hcst
+C=== have wts from mlr for hcst
       do i=1,imx
       do j=1,jmx
 
       if (w2d(i,j).gt.-900.) then
+              get_mlr_wt(v,f,wt,m,n,ridge)
 
           do ip=1,nprd
-            ws1d(ip)=1./float(nprd)
+            if(ivs.eq.1) then
+              w1d(ip)=cor(i,j,ld,ip)
+            else
+              w1d(ip)=cvcor(i,j,ip)
+            endif
           enddo
+
+          call weights(w1d,nprd,ws1d) 
 
           do ip=1,nprd
             wts2(i,j,ip)=ws1d(ip)

@@ -15,10 +15,10 @@ datain1=/home/ppeng/data/sst
 datain2=/home/ppeng/data/tpz
 dataout=/home/ppeng/data/pcr_prd
 #
-version=cor
+version=sim
 #
 #for var2 in prec t2m; do
-for var2 in prec; do
+for var2 in t2m; do
 #
 if [ $var2 = t2m ];  then ivar2=1; fi
 if [ $var2 = prec ]; then ivar2=2; fi

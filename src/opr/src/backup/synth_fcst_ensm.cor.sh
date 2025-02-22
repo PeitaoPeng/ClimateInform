@@ -19,7 +19,7 @@ nprd=4  # of input fcst
 kocn=10
 xnino_crt=3.
 
-version=cor
+version=cvcor
 if [ $version = cor ];  then ivs=1; fi
 if [ $version = cvcor ];  then ivs=2; fi
 
