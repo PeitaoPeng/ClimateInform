@@ -15,11 +15,15 @@ fi
 datain=/home/ppeng/data/ss_fcst
 #
 mlead=7
-nprd=4  # of input fcst
 kocn=10
 xnino_crt=3.
 
-version=sim
+#version=sim
+version=singel
+
+nprd=4  # of input fcst
+if [ $version = singel ];  then nprd=1; fi
+
 #for var in prec t2m; do # prec, t2m, hgt
 for var in t2m; do # prec, t2m, hgt
 

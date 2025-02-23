@@ -112,15 +112,15 @@ C=== have wts from mlr
       do j=1,jmx
 
       IF (w2d(i,j).gt.-900.) then
-        ir=0
+        k=0
         do iy=1,ny_hcst
 
           if(iy /= itgt)  then
 
-          ir=ir+1
-          ts1(ir)=obs(i,j,iy)
+          k=k+1
+          ts1(k)=obs(i,j,iy)
           do ip=1,nprd
-            ts2d(ip,ir)=hcst(i,j,ip,iy)
+            ts2d(ip,k)=hcst(i,j,ip,iy)
           enddo
           endif
 
@@ -168,7 +168,7 @@ C=== have wts from mlr
       enddo
       enddo
 
-      enddo ! itgt loopo
+      enddo ! itgt loop
 
       write(6,*) 'start std of ehcst'
 
