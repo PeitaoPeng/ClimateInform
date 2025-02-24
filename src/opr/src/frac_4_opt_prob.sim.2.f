@@ -144,11 +144,11 @@ C=== have wts from avg for hcst
 
       if (w2d(i,j).gt.-900.) then
 
-          do ip=1,nmodel
-            ws1d(ip)=1./float(nmodel)
+          do ip=1,nprd
+            ws1d(ip)=1./float(nprd)
           enddo
 
-          do ip=1,nmodel
+          do ip=1,nprd
             wts2(i,j,ip)=ws1d(ip)
           enddo
       endif
@@ -162,24 +162,31 @@ C=== sythsize hcst with wts2
 
         if (w2d(i,j).gt.-900.) then
 
-          do ip=1,nmodel
-            ws1d(ip)=wts2(i,j,ip)
-          enddo
+          nmodel=nprd        
+          if(abs(xn34(it,ld)).gt.xncrt) nmodel=1
 
-          do ip=1,nmodel
+          if(nmodel.gt.1) then
+            do ip=1,nprd
+              ws1d(ip)=wts2(i,j,ip)
+            enddo
+          else
+            ws1d(1)=1.
+            do ip=2,nprd
+            ws1d(ip)=0.
+            enddo
+          endif
+
+          do ip=1,nprd
             w1d(ip)=hcst(i,j,ip)
           enddo
 
-          call wtavg(w1d,ws1d,nprd,nmodel,avg)      
+          call wtavg(w1d,ws1d,nprd,avg)      
 
           ehcst(i,j,it)=avg
           w2d(i,j)=avg
-
         else
-
           ehcst(i,j,it)=undef
           w2d(i,j)=undef
-
         endif
 
           w2d2(i,j)=obs(i,j,it)
@@ -444,10 +451,10 @@ C== have weights
       return
       end
 
-      SUBROUTINE wtavg(x,wts,n,m,avg)
+      SUBROUTINE wtavg(x,wts,n,avg)
       dimension x(n),wts(n) 
       avg=0
-      do i=1,m
+      do i=1,n
       avg=avg+x(i)*wts(i)
       enddo
 

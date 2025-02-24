@@ -1,42 +1,50 @@
-150,151d149
-<             w2d4(i,j)=pa(i,j,1,it)
-<             w2d5(i,j)=pb(i,j,1,it)
-158,159d155
-<           write(92,rec=iw) w2d2
-<           iw=iw+1
-162,164c158
-<           write(92,rec=iw) w2d4
-<           iw=iw+1
-<           write(92,rec=iw) w2d5
+147,148c147,148
+<           do ip=1,nprd
+<             ws1d(ip)=1./float(nprd)
 ---
->           write(92,rec=iw) w2d2
-166c160
-<           call hit_skill(w2d,w2d4,w2d5,w2d6,imx,jmx)
+>           do ip=1,nmodel
+>             ws1d(ip)=1./float(nmodel)
+151c151
+<           do ip=1,nprd
 ---
->           call hit_skill(w2d,w2d2,w2d3,imx,jmx)
-169c163
-<           write(92,rec=iw) w2d6
----
->           write(92,rec=iw) w2d3
-176,178c170,171
-<       SUBROUTINE hit_skill(obs,pa,pb,hit,imx,jmx)
-<       dimension obs(imx,jmx),hit(imx,jmx)
-<       dimension pa(imx,jmx),pb(imx,jmx)
----
->       SUBROUTINE hit_skill(obs,prd,hit,imx,jmx)
->       dimension obs(imx,jmx),prd(imx,jmx),hit(imx,jmx)
-180d172
-<       dimension w1d(3)
-191,198c183,185
-<           w1d(3)=pa(i,j)
-<           w1d(1)=pb(i,j)
-<           w1d(2)=1.- pa(i,j)-pb(i,j)
-<           maxp = maxloc(w1d,1)
+>           do ip=1,nmodel
+165,177c165,167
+<           nmodel=nprd        
+<           if(abs(xn34(it,ld)).gt.xncrt) nmodel=1
 < 
-<           if(maxp.eq.3) nprd(i,j)=1
-<           if(maxp.eq.1) nprd(i,j)=-1
-<           if(maxp.eq.2) nprd(i,j)=0
+<           if(nmodel.gt.1) then
+<             do ip=1,nprd
+<               ws1d(ip)=wts2(i,j,ip)
+<             enddo
+<           else
+<             ws1d(1)=1.
+<             do ip=2,nprd
+<             ws1d(ip)=0.
+<             enddo
+<           endif
 ---
->         if(prd(i,j).gt.0.43) nprd(i,j)=1
->         if(prd(i,j).lt.-0.43) nprd(i,j)=-1
->         if(prd(i,j).ge.-0.43.and.prd(i,j).le.0.43) nprd(i,j)=0
+>           do ip=1,nmodel
+>             ws1d(ip)=wts2(i,j,ip)
+>           enddo
+179c169
+<           do ip=1,nprd
+---
+>           do ip=1,nmodel
+183c173
+<           call wtavg(w1d,ws1d,nprd,avg)      
+---
+>           call wtavg(w1d,ws1d,nprd,nmodel,avg)      
+186a177
+> 
+187a179
+> 
+189a182
+> 
+454c447
+<       SUBROUTINE wtavg(x,wts,n,avg)
+---
+>       SUBROUTINE wtavg(x,wts,n,m,avg)
+457c450
+<       do i=1,n
+---
+>       do i=1,m
