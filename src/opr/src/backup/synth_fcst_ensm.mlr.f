@@ -6,11 +6,10 @@ C===========================================================
 
       real prd(imx,jmx,mlead,nprd),stdo(imx,jmx,mlead)
       real cor(imx,jmx,mlead,nprd)
-      real cvcor(imx,jmx,nprd)
       real clmo(imx,jmx,mlead)
       real rms(imx,jmx,mlead,nprd),hss(imx,jmx,mlead,nprd)
       
-      real hcst(imx,jmx,nprd)
+      real hcst(imx,jmx,nprd,ny_hcst)
 
       real eprd(imx,jmx),ecor(imx,jmx)
       real erms(imx,jmx),ehss(imx,jmx)
@@ -24,6 +23,9 @@ C===========================================================
 
       real w1d(nprd),w1d2(nprd),w1d3(nprd),w1d4(nprd)
       real ts1(ny_hcst),ts2(ny_hcst),ts3(ny_hcst),ts4(ny_hcst)
+
+      real ts2d(nprd,ny_hcst)
+      real wt2d(nprd,ny_hcst)
 
       real w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx)
       real w2d4(imx,jmx),w2d5(imx,jmx),w2d6(imx,jmx)
@@ -74,7 +76,7 @@ C read in nino3.4 index
       ir=ir+1
       read(19,rec=ir) xn34(it,ld)
       enddo
-      enddo
+      enddo ! loop ld
 
 C=== read in fcst and stdo
       ich=10
@@ -121,59 +123,12 @@ C=== have wts prd
       ir2=ld*2-1
       read(20,rec=ir2) frac
 
-      do i=1,imx
-      do j=1,jmx
-
-      if (w2d(i,j).gt.-900.) then
-
-          do ip=1,nprd
-            w1d(ip)=cor(i,j,ld,ip)
-          enddo
-
-          call weights(w1d,nprd,ws1d) 
-
-          do ip=1,nprd
-            wts(i,j,ld,ip)=ws1d(ip)
-          enddo
-
-          nmodel=nprd        
-          if(abs(xn34(ny_hcst+1,ld)).gt.xncrt) nmodel=1
-
-          if(nmodel.gt.1) then
-            do ip=1,nprd
-              ws1d(ip)=wts(i,j,ld,ip)
-            enddo
-          else
-            ws1d(1)=1.
-            do ip=2,nprd
-            ws1d(ip)=0.
-            enddo
-          endif
-
-          do ip=1,nprd
-            w1d(ip)=prd(i,j,ld,ip)
-          enddo
-
-          call wtavg(w1d,ws1d,nprd,eprd(i,j))
-
-      else
-          eprd(i,j)=undef
-      endif
-
-          ostd(i,j)=stdo(i,j,ld)
-
-      enddo
-      enddo
-
-c     enddo !ld loop
-
-C=== synthesize hcst with cvcor
-
-c     do ld=1,mlead
+C=== synthesize hcst with mlr
       do it=1,ny_hcst
 
       ich=14
       do ip=1,nprd 
+
       ich=ich+1
 
         ir1=ir+1
@@ -188,50 +143,53 @@ c     do ld=1,mlead
         do i=1,imx
         do j=1,jmx
           obs(i,j,it)=w2d(i,j)
-          hcst(i,j,ip)=w2d2(i,j)
-          cvcor(i,j,ip)=w2d4(i,j)
+          hcst(i,j,ip,it)=w2d2(i,j)
         enddo
         enddo
       enddo ! ip loop
+      ir=ir+4
+      enddo ! it loop
 
-C=== have wts from cvcor for hcst
+C=== have wts from mlr
+      do itgt=1,ny_hcst
+
       do i=1,imx
       do j=1,jmx
 
       if (w2d(i,j).gt.-900.) then
 
+        k=0
+        do iy=1,ny_hcst
+
+          if(iy /= itgt)  then
+
+          k=k+1
+          ts1(k)=obs(i,j,iy)
           do ip=1,nprd
-            if(ivs.eq.1) then
-              w1d(ip)=cor(i,j,ld,ip)
-            else
-              w1d(ip)=cvcor(i,j,ip)
-            endif
+            ts2d(ip,k)=hcst(i,j,ip,iy)
           enddo
+          endif
 
-          call weights(w1d,nprd,ws1d)
+        enddo ! loop iy
 
-          do ip=1,nprd
-            wts2(i,j,ip)=ws1d(ip)
-          enddo
-      endif
+        rdg=ridge
+        go to 212
+ 211    continue
+        rdg=rdg+del
+ 212    continue
 
-      enddo
-      enddo
+        call get_mlr_wt(ts1,ts2d,ws1d,nprd,ny_hcst,ny_hcst-1,rdg)
 
-C=== sythsize hcst with wts2
-      do i=1,imx
-      do j=1,jmx
+        ws=0
+        do k=1,nprd
+        ws=ws+ws1d(k)*ws1d(k)
+        enddo
+        if(ws.gt.0.5) go to 211
 
-        if (w2d(i,j).gt.-900.) then
-
-          nmodel=nprd        
+          nmodel=nprd
           if(abs(xn34(it,ld)).gt.xncrt) nmodel=1
 
-          if(nmodel.gt.1) then
-            do ip=1,nprd
-              ws1d(ip)=wts2(i,j,ip)
-            enddo
-          else
+          if(nmodel.eq.1) then
             ws1d(1)=1.
             do ip=2,nprd
             ws1d(ip)=0.
@@ -239,25 +197,75 @@ C=== sythsize hcst with wts2
           endif
 
           do ip=1,nprd
-            w1d(ip)=hcst(i,j,ip)
+            w1d(ip)=hcst(i,j,ip,itgt)
           enddo
 
-          call wtavg(w1d,ws1d,nprd,avg)      
+          call wtavg(w1d,ws1d,nprd,avg)
 
-          ehcst(i,j,it)=avg
+          ehcst(i,j,itgt)=avg
           w2d(i,j)=avg
-        else
-          ehcst(i,j,it)=undef
+      ELSE
+          ehcst(i,j,itgt)=undef
           w2d(i,j)=undef
-        endif
+      ENDIF
 
-          w2d2(i,j)=obs(i,j,it)
+          w2d2(i,j)=obs(i,j,itgt)
 
       enddo
       enddo
 
-      ir=ir+4
-      enddo ! it loopo
+      enddo ! itgt loop
+
+C=== synthesize prd with mlr
+
+      do i=1,imx
+      do j=1,jmx
+
+      IF (w2d(i,j).gt.-900.) then
+
+        do iy=1,ny_hcst
+          ts1(iy)=obs(i,j,iy)
+          do ip=1,nprd
+            ts2d(ip,iy)=hcst(i,j,ip,iy)
+          enddo
+        enddo ! loop iy
+
+        rdg=ridge
+        go to 312
+ 311    continue
+        rdg=rdg+del
+ 312    continue
+
+        call get_mlr_wt(ts1,ts2d,ws1d,nprd,ny_hcst,ny_hcst,rdg)
+
+        ws=0
+        do k=1,nprd
+        ws=ws+ws1d(k)*ws1d(k)
+        enddo
+        if(ws.gt.0.5) go to 311
+
+          nmodel=nprd
+          if(abs(xn34(it,ld)).gt.xncrt) nmodel=1
+
+          if(nmodel.eq.1) then
+            ws1d(1)=1.
+            do ip=2,nprd
+            ws1d(ip)=0.
+            enddo
+          endif
+
+          do ip=1,nprd
+            w1d(ip)=prd(i,j,ld,ip)
+          enddo
+
+          call wtavg(w1d,ws1d,nprd,eprd(i,j))
+
+      ELSE
+          eprd(i,j)=undef
+      ENDIF
+          ostd(i,j)=stdo(i,j,ld)
+      enddo
+      enddo
 
 C std of ehcst
       do i=1,imx
@@ -281,7 +289,7 @@ c normalize eprd with hcst std
       enddo
       enddo
 
-C write out ehcst, prob-hcst and 1-D skill
+C have & write out ehcst, prob-hcst and 1-D skill
       DO it=1,ny_hcst
 
       do i=1,imx

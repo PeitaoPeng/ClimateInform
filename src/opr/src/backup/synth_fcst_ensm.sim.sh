@@ -15,13 +15,18 @@ fi
 datain=/home/ppeng/data/ss_fcst
 #
 mlead=7
-nprd=4  # of input fcst
 kocn=10
+nprd=4
 xnino_crt=3.
 
-version=sim
+#version=sim
+version=sim_1
+
+nmodel=$nprd  # of fcsts used in ensm
+if [ $version = sim_1 ];  then nmodel=1; fi
+
 #for var in prec t2m; do # prec, t2m, hgt
-for var in t2m; do # prec, t2m, hgt
+for var in prec; do # prec, t2m, hgt
 
 if [ $var = t2m ];  then icut1=3; ivar2=1; fi
 if [ $var = prec ]; then icut1=5; ivar2=2; fi
@@ -104,6 +109,7 @@ c
       parameter(xncrt=$xnino_crt)
       parameter(icmon=$icmon)
       parameter(ivar2=$ivar2)
+      parameter(nmodel=$nmodel)
 
 eof
 #

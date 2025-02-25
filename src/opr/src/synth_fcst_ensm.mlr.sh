@@ -23,8 +23,8 @@ version=mlr
 ridge=0.05
 del=0.02
 
-#for var in prec t2m; do # prec, t2m, hgt
-for var in prec; do # prec, t2m, hgt
+for var in prec t2m; do # prec, t2m, hgt
+#for var in prec; do # prec, t2m, hgt
 
 if [ $var = t2m ];  then icut1=3; ivar2=1; fi
 if [ $var = prec ]; then icut1=5; ivar2=2; fi
@@ -190,10 +190,12 @@ ydef $jmx linear $yds $xydel
 zdef  1 linear 1 1
 tdef $ny_hcst linear ${tgtmon}$outyr_s 1yr
 edef  $mlead names 1 2 3 4 5 6 7
-vars  4
+vars  6
 o  1 99 obs
 p  1 99 hcst
 pr 1 99 prob hcst
+pa 1 99 prob_a
+pb 1 99 prob_b
 s  1 99 std of obs
 endvars
 EOF

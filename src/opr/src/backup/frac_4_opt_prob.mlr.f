@@ -6,24 +6,25 @@ C===========================================================
 
       real prd(imx,jmx,mlead,nprd),stdo(imx,jmx,mlead)
       real cor(imx,jmx,mlead,nprd)
-      real cvcor(imx,jmx,nprd)
       real clmo(imx,jmx,mlead)
       real rms(imx,jmx,mlead,nprd),hss(imx,jmx,mlead,nprd)
       
-      real hcst(imx,jmx,nprd)
+      real hcst(imx,jmx,nprd,ny_hcst)
 
       real eprd(imx,jmx),ecor(imx,jmx)
       real erms(imx,jmx),ehss(imx,jmx)
       real oclm(imx,jmx),ostd(imx,jmx)
 
-      real wts(imx,jmx,mlead,nprd),ws1d(nprd)
-      real wts2(imx,jmx,nprd)
+      real wts(imx,jmx,nprd),ws1d(nprd)
       real obs(imx,jmx,ny_hcst),ehcst(imx,jmx,ny_hcst)
       real prbhcst(imx,jmx,ny_hcst)
       real xn34(ny_hcst+1,mlead)
 
       real w1d(nprd),w1d2(nprd),w1d3(nprd),w1d4(nprd)
       real ts0(ny_hcst),ts1(ny_hcst),ts2(ny_hcst),ts3(ny_hcst)
+
+      real ts2d(nprd,ny_hcst)
+      real wt2d(nprd,ny_hcst)
 
       real w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx)
       real w2d4(imx,jmx),w2d5(imx,jmx),w2d6(imx,jmx)
@@ -34,7 +35,6 @@ C===========================================================
       real tsobs(ny_hcst),tspa(ny_hcst),tspb(ny_hcst),tspn(ny_hcst)
       real frac(imx,jmx),rpss(imx,jmx)
       real trpss(40)
-
 C
 C fcst from sst, olr, slp & ocn
       open(11,form='unformatted',access='direct',recl=4*imx*jmx) !ersst
@@ -73,70 +73,8 @@ C read in nino3.4 index
       enddo
       enddo
 
-C=== read in fcst and stdo
-      ich=10
-      do ip=1,nprd 
-      ich=ich+1
-
-      ir=0
-      do ld=1,mlead
-
-        ir=ir+1
-        read(ich,rec=ir) w2d
-        ir=ir+1
-        read(ich,rec=ir) w2d2
-        ir=ir+1
-        read(ich,rec=ir) w2d3
-        ir=ir+1
-        read(ich,rec=ir) w2d4
-        ir=ir+1
-        read(ich,rec=ir) w2d5
-        ir=ir+1
-        read(ich,rec=ir) w2d6
-
-        do i=1,imx
-        do j=1,jmx
-          prd(i,j,ld,ip)=w2d(i,j)
-          stdo(i,j,ld)=w2d2(i,j)
-          cor(i,j,ld,ip)=w2d3(i,j)
-          rms(i,j,ld,ip)=w2d4(i,j)
-          hss(i,j,ld,ip)=w2d5(i,j)
-          clmo(i,j,ld)=w2d6(i,j)
-        enddo
-        enddo
-
-        enddo ! ld loop
-        enddo ! ip loop
 c         
-C=== have wts from cor for prd
-      do ld=1,mlead
-
-      do i=1,imx
-      do j=1,jmx
-
-      if (w2d(i,j).gt.-900.) then
-
-          do ip=1,nprd
-            if(ivs.eq.1) then
-              w1d(ip)=cor(i,j,ld,ip)
-            else
-              w1d(ip)=cvcor(i,j,ip)
-            endif
-          enddo
-
-          call weights(w1d,nprd,ws1d) 
-
-          do ip=1,nprd
-            wts(i,j,ld,ip)=ws1d(ip)
-          enddo
-      endif
-
-      enddo
-      enddo
-
-      enddo !ld loop
-
-C=== synthesize hcst with cvcor
+C=== synthesize hcst with mlr
 
       ir=0
       iw=0
@@ -160,53 +98,52 @@ C=== synthesize hcst with cvcor
         do i=1,imx
         do j=1,jmx
           obs(i,j,it)=w2d(i,j)
-          hcst(i,j,ip)=w2d2(i,j)
-          cvcor(i,j,ip)=w2d4(i,j)
+          hcst(i,j,ip,it)=w2d2(i,j)
         enddo
         enddo
       enddo ! ip loop
       ir=ir+4
-      enddo ! it loopo
+      enddo ! it loop
 
-C=== have wts from mlr for hcst
+C=== have wts from mlr
+      do itgt=1,ny_hcst
+
       do i=1,imx
       do j=1,jmx
 
-      if (w2d(i,j).gt.-900.) then
-              get_mlr_wt(v,f,wt,m,n,ridge)
+      IF (w2d(i,j).gt.-900.) then
+        k=0
+        do iy=1,ny_hcst
 
+          if(iy /= itgt)  then
+
+          k=k+1
+          ts1(k)=obs(i,j,iy)
           do ip=1,nprd
-            if(ivs.eq.1) then
-              w1d(ip)=cor(i,j,ld,ip)
-            else
-              w1d(ip)=cvcor(i,j,ip)
-            endif
+            ts2d(ip,k)=hcst(i,j,ip,iy)
           enddo
+          endif
 
-          call weights(w1d,nprd,ws1d) 
+        enddo ! loop iy
 
-          do ip=1,nprd
-            wts2(i,j,ip)=ws1d(ip)
-          enddo
-      endif
+        rdg=ridge
+        go to 212
+ 211    continue
+        rdg=rdg+del
+ 212    continue
 
-      enddo
-      enddo
+        call get_mlr_wt(ts1,ts2d,ws1d,nprd,ny_hcst,ny_hcst-1,rdg)
 
-C=== sythsize hcst with wts2
-      do i=1,imx
-      do j=1,jmx
-
-        if (w2d(i,j).gt.-900.) then
+        ws=0
+        do k=1,nprd
+        ws=ws+ws1d(k)*ws1d(k)
+        enddo
+        if(ws.gt.0.5) go to 211
 
           nmodel=nprd        
           if(abs(xn34(it,ld)).gt.xncrt) nmodel=1
 
-          if(nmodel.gt.1) then
-            do ip=1,nprd
-              ws1d(ip)=wts2(i,j,ip)
-            enddo
-          else
+          if(nmodel.eq.1) then
             ws1d(1)=1.
             do ip=2,nprd
             ws1d(ip)=0.
@@ -214,25 +151,24 @@ C=== sythsize hcst with wts2
           endif
 
           do ip=1,nprd
-            w1d(ip)=hcst(i,j,ip)
+            w1d(ip)=hcst(i,j,ip,itgt)
           enddo
 
           call wtavg(w1d,ws1d,nprd,avg)      
 
-          ehcst(i,j,it)=avg
+          ehcst(i,j,itgt)=avg
           w2d(i,j)=avg
-        else
-          ehcst(i,j,it)=undef
+      ELSE
+          ehcst(i,j,itgt)=undef
           w2d(i,j)=undef
-        endif
+      ENDIF
 
-          w2d2(i,j)=obs(i,j,it)
+          w2d2(i,j)=obs(i,j,itgt)
 
       enddo
       enddo
 
-      ir=ir+4
-      enddo ! it loopo
+      enddo ! itgt loop
 
       write(6,*) 'start std of ehcst'
 

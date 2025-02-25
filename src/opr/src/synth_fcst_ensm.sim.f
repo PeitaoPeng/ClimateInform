@@ -277,6 +277,9 @@ c prob-hcst
 
       if(abs(prbprd(i,j)).gt.1.) prbprd(i,j)=undef
 
+      w2d3(i,j)=pa(i,j,it)
+      w2d4(i,j)=pb(i,j,it)
+
       enddo
       enddo
 
@@ -285,9 +288,13 @@ c prob-hcst
       iw2=iw2+1
       write(32,rec=iw2) w2d2  ! esm_hcst
       iw2=iw2+1
-      write(32,rec=iw2) prbprd  ! prob-prd
+      write(32,rec=iw2) prbprd  ! prob
       iw2=iw2+1
-      write(32,rec=iw2) ostd
+      write(32,rec=iw2) w2d3  ! prob_a
+      iw2=iw2+1
+      write(32,rec=iw2) w2d4  ! prob_b
+      iw2=iw2+1
+      write(32,rec=iw2) ostd ! stdo
 
 C 1-D skill
 
