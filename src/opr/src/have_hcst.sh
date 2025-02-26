@@ -50,241 +50,125 @@ if [ $cmon -le 2 ]; then nyear=`expr $curyr - 1948 - 1`; fi # for having 12 3-mo
 icyr=$curyr
 if [ $icmoe = 12 ]; then icyr=`expr $curyr - 1`; fi
 #
-datadir1=/home/ppeng/data/ss_fcst/pcr/2023/11
-datadir2=/home/ppeng/data/ss_fcst/pcr/2023/12
-datadir3=/home/ppeng/data/ss_fcst/pcr/2024/1
-datadir4=/home/ppeng/data/ss_fcst/pcr/2024/2
-datadir5=/home/ppeng/data/ss_fcst/pcr/2024/3
-datadir6=/home/ppeng/data/ss_fcst/pcr/2024/4
-datadir7=/home/ppeng/data/ss_fcst/pcr/2024/5
-datadir8=/home/ppeng/data/ss_fcst/pcr/2024/6
-datadir9=/home/ppeng/data/ss_fcst/pcr/2024/7
-datadir10=/home/ppeng/data/ss_fcst/pcr/2024/8
-datadir11=/home/ppeng/data/ss_fcst/pcr/2024/9
-datadir12=/home/ppeng/data/ss_fcst/pcr/2024/10
+dirs=(
+"/home/ppeng/data/ss_fcst/pcr/2023/1"
+"/home/ppeng/data/ss_fcst/pcr/2023/2"
+"/home/ppeng/data/ss_fcst/pcr/2023/3"
+"/home/ppeng/data/ss_fcst/pcr/2023/4"
+"/home/ppeng/data/ss_fcst/pcr/2023/5"
+"/home/ppeng/data/ss_fcst/pcr/2023/6"
+"/home/ppeng/data/ss_fcst/pcr/2023/7"
+"/home/ppeng/data/ss_fcst/pcr/2023/8"
+"/home/ppeng/data/ss_fcst/pcr/2023/9"
+"/home/ppeng/data/ss_fcst/pcr/2023/10"
+"/home/ppeng/data/ss_fcst/pcr/2023/11"
+"/home/ppeng/data/ss_fcst/pcr/2023/12"
+)
 #
 #======================================
 # define some parameters
 #======================================
 #
 version=sim
-for var in t2m prec; do
+for var in prec; do
 #for var in prec hgt t2m; do
 #
-nts=24  # 2005
-nte=`expr $nts + 19 - 1` # mid-mon of the latest season
+nts=1  # 2005
+nte=`expr $nts + 42 - 1` # mid-mon of the latest season
 #
-dir1=/home/ppeng/data/ss_fcst/
-outfile1=$var.hcst.jfm2005-djf2024
-outfile1=$var.hcst_skill.jfm2005-djf2024
+outfile1=$version.$var.hcst.jfm2005-djf2024
+outfile2=$version.$var.hcst_skill.jfm2005-djf2024
 #
 imx=360
 jmx=180
-undef_data=-9.99E+8
+undef=-999.0
 #=======================================
 # have hcst data
 #=======================================
+#for ii in 1 2 3 4 5 6 7 8 9 10 11 12; do 
+for ii in "${!dirs[@]}"; do 
+dir="${dirs[$ii]}"
+cat>"$ii.ctl"<<EOF
+dset ${dir}/$version.hcst.ensmsynth.$var.mlead7.3mon.gr
+undef -999.0
+XDEF 360 LINEAR    0.5  1.0
+YDEF 180 LINEAR  -89.5  1.0
+tdef 999 linear mar1981 1mo
+zdef  01 levels 1
+edef  7 names 1 2 3 4 5 6 7
+vars 6
+o  1 99 obs
+p  1 99 hcst
+pr 1 99 prob hcst
+pa 1 99 prob_a
+pb 1 99 prob_b
+s  1 99 std of obs
+ENDVARS
+EOF
+
+done
+
 cat >have_hcst<<EOF
 run hcst_data.gs
 EOF
 #
 cat >hcst_data.gs<<EOF
 'reinit'
-'open $datadir1/$version.hcst.ensmsynth.$var.mlead7.3mon.ctl'
-'open $datadir2/$version.hcst.ensmsynth.$var.mlead7.3mon.ctl'
-'open $datadir3/$version.hcst.ensmsynth.$var.mlead7.3mon.ctl'
-'open $datadir4/$version.hcst.ensmsynth.$var.mlead7.3mon.ctl'
-'open $datadir5/$version.hcst.ensmsynth.$var.mlead7.3mon.ctl'
-'open $datadir6/$version.hcst.ensmsynth.$var.mlead7.3mon.ctl'
-'open $datadir7/$version.hcst.ensmsynth.$var.mlead7.3mon.ctl'
-'open $datadir8/$version.hcst.ensmsynth.$var.mlead7.3mon.ctl'
-'open $datadir9/$version.hcst.ensmsynth.$var.mlead7.3mon.ctl'
-'open $datadir10/$version.hcst.ensmsynth.$var.mlead7.3mon.ctl'
-'open $datadir11/$version.hcst.ensmsynth.$var.mlead7.3mon.ctl'
-'open $datadir12/$version.hcst.ensmsynth.$var.mlead7.3mon.ctl'
+'open 0.ctl'
+'open 1.ctl'
+'open 2.ctl'
+'open 3.ctl'
+'open 4.ctl'
+'open 5.ctl'
+'open 6.ctl'
+'open 7.ctl'
+'open 8.ctl'
+'open 9.ctl'
+'open 10.ctl'
+'open 11.ctl'
 
 'set x 1 $imx'
 'set y 1 $jmx'
-nt=23
-while ( nt <= $nte)
-'set t 'nt
 
-nm=1
-while ( nm <= 12)
-'d o.'nm
-'d p.'nm
-'d s.'nm
-'d s.'nm
+'set gxout fwrite'
+'set fwrite $outfile1.gr'
 
+it=$nts
+while ( it <= $nte)
 
-nt=nt+1
+'set t 'it
+say 'it=' it
+im=1
+while ( im <= 12)
+say 'im=' im
+'d o.'im
+'d p.'im
+'d s.'im
+'d pa.'im
+'d pb.'im
+im=im+1
 endwhile
-*'set t 1 12'
-*anom wrt wmo clim 1991-2020
-*'define clm=ave(air,t+$clm_bgn, t=$clm_end,1yr)'
-*anom wrt clim from 1948 to curr
-*'define clm=ave(air,t+0, t=$tmax,1yr)'
-*'modify clm seasonal'
-'set gxout fwrite'
-'set fwrite $outfile.gr'
-'set t $nts $nte'
-*'d ave(air-clm,t-1,t+1)'
-'d ave(air,t-1,t+1)'
-'c'
+
+it=it+1
+endwhile
 EOF
-cat>$outfile.ctl<<EOF
-dset $outfile.gr
-undef $undef_data
-ydef 360 linear -89.750000 0.5
-xdef 720 linear 0.250000 0.500000
-tdef 9999 linear feb1948 1mo
-zdef  01 levels 1
-vars 1
-$var  0 99 obs
-ENDVARS
-EOF
-fi
-#
-#=======================================
-# rewrite prec data
-#=======================================
-undef_data=-9.99E+8
-#
-if [ $var = 'prec' ]; then
-cat >data_rewrite.gs<<EOF3
-    'reinit'
-*'sdfopen $datadir0/precip.mon.mean.2.5x2.5.nc'
-'sdfopen $datadir0/precip.mon.mean.1x1.nc'
-'set x 1 $imxp'
-'set y 1 $jmxp'
-'set t 1 12'
-*anom wrt wmo clim 1991-2020
-'define clm=ave(precip,t+$clm_bgn, t=$clm_end,1yr)'
-*anom wrt clim from 1948 to curr
-*'define clm=ave(precip,t+0, t=$tmax,1yr)'
-'modify clm seasonal'
-'set gxout fwrite'
-'set fwrite $outfile.gr'
-'set t $nts $nte'
-*'d ave(precip-clm,t-1,t+1)'
-'d ave(precip,t-1,t+1)'
-'c'
-EOF3
-cat>$outfile.ctl<<EOF
-dset $outfile.gr
-undef $undef_data
+
+cat>$outfile1.ctl<<EOF
+dset $outfile1.gr
+undef -9.99e+08
 XDEF 360 LINEAR    0.5  1.0
 YDEF 180 LINEAR  -89.5  1.0
-tdef 9999 linear feb1948 1mo
+tdef 999 linear mar1981 1mo
 zdef  01 levels 1
-vars 1
-$var  0 99 obs
+vars 5
+o  0 99 obs
+p  0 99 hcst
+s  0 99 stdo
+pa 0 99 prob_A
+pb 0 99 prob_B
 ENDVARS
 EOF
-fi
-#=======================================
-# rewrite hgt
-#=======================================
-if [ $var = 'hgt' ]; then
-nts=2  # feb1948
-nte=`expr $tmax - 1` # mid-mon of the latest season
-cat >data_rewrite.gs<<EOF3
-    'reinit'
-'sdfopen $datadir0/hgt.mon.mean.nc'
-'set x 1 144'
-'set y 1  73'
-*'set z 10'
-'set z 6'
-'set t 1 12'
-*anom wrt wmo clim 1991-2020
-'define clm=ave(hgt,t+$clm_bgn, t=$clm_end,1yr)'
-*anom wrt clim from 1949 to curr
-*'define clm=ave(hgt,t+0, t=$tmax,1yr)'
-'modify clm seasonal'
-'set gxout fwrite'
-'set fwrite $outfile.gr'
-'set t $nts $nte'
-*'d ave(hgt-clm,t-1,t+1)'
-'d ave(hgt,t-1,t+1)'
-'c'
-EOF3
-cat>$outfile.ctl<<EOF
-dset $outfile.gr
-undef $undef_data
-xdef 144 linear 0 2.5
-ydef  73 linear -90 2.5
-tdef 9999 linear feb1948 1mo
-zdef  01 levels 1
-vars 1
-$var  0 99 regression
-ENDVARS
-EOF
-fi
-#
-/usr/bin/grads -bl <havedata
-#
-#=======================================
-# regrid to 1x1
-#=======================================
-ntend=`expr $tmax - 2` # from feb1948 to the mid of latest season
-cat >int<<fEOF
-reinit
-run regrid.gs
-fEOF
 
-cat >regrid.gs<<gsEOF
-'reinit'
-'open $outfile.ctl'
-'open /home/ppeng/ClimateInform/src/utility/intpl/grid.360x180.ctl'
-'set gxout fwrite'
-'set fwrite $outfile.reg.gr'
-nt=1
-while ( nt <= $ntend)
+/usr/bin/grads -bl <have_hcst
 
-'set t 'nt
-say 'time='nt
-'set lon   0.5 359.5'
-'set lat -89.5  89.5'
-'d lterp($var,sst.2(time=jan1982))'
-
-nt=nt+1
-endwhile
-gsEOF
-
-/usr/bin/grads -pb <int
-
-# screen data
-cat > parm.h << eof
-      parameter(ntot=$ntend)
-      parameter(ny=${nyear} + 1)
-      parameter(imx=360,jmx=180)
-eof
-
-cp $lcdir/screendata.f scr.f
-
-gfortran -o scr.x scr.f
-
-ln -s $outfile.reg.gr             fort.10
-ln -s $datadir/$outfile.1x1.gr    fort.20
-
-./scr.x
-
-cat>$datadir/$outfile.1x1.ctl<<EOF
-dset ^$outfile.1x1.gr
-undef -9.99E+8
-*
-options little_endian
-*
-XDEF 360 LINEAR    0.5  1.0
-YDEF 180 LINEAR  -89.5  1.0
-zdef  01 levels 1 
-tdef   9999 linear feb1948 1mo
-*
-VARS 1
-$var 1  99   3mon ave
-ENDVARS
-EOF
-#=======================================
-#
-\rm fort.*
 done  # for var
