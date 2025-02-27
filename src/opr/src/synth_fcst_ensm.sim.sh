@@ -19,8 +19,8 @@ kocn=10
 nprd=4
 xnino_crt=3.
 
-#version=sim
-version=sim_1
+version=sim
+#version=sim_1
 
 nmodel=$nprd  # of fcsts used in ensm
 if [ $version = sim_1 ];  then nmodel=1; fi
@@ -45,11 +45,11 @@ cd $tmp
 # SST IC
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
-for curyr in 2021 2022 2023 2024; do
-#for curyr in 2024; do
+#for curyr in 2021 2022 2023 2024; do
+for curyr in 2025; do
 #curmt=`date --date='today' '+%m'`  # mo of making fcst
-for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-#for curmo in 11; do
+#for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+for curmo in 01; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 

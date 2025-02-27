@@ -5,6 +5,7 @@ set -eaux
 
 lcdir=/home/ppeng/ClimateInform/src/opr/src
 tmp=/home/ppeng/data/tmp
+outdir=/home/ppeng/data/pcr_prd
 if [ ! -d $tmp ] ; then
   mkdir -p $tmp
 fi
@@ -51,33 +52,33 @@ icyr=$curyr
 if [ $icmoe = 12 ]; then icyr=`expr $curyr - 1`; fi
 #
 dirs=(
-"/home/ppeng/data/ss_fcst/pcr/2023/1"
-"/home/ppeng/data/ss_fcst/pcr/2023/2"
-"/home/ppeng/data/ss_fcst/pcr/2023/3"
-"/home/ppeng/data/ss_fcst/pcr/2023/4"
-"/home/ppeng/data/ss_fcst/pcr/2023/5"
-"/home/ppeng/data/ss_fcst/pcr/2023/6"
-"/home/ppeng/data/ss_fcst/pcr/2023/7"
-"/home/ppeng/data/ss_fcst/pcr/2023/8"
-"/home/ppeng/data/ss_fcst/pcr/2023/9"
-"/home/ppeng/data/ss_fcst/pcr/2023/10"
-"/home/ppeng/data/ss_fcst/pcr/2023/11"
-"/home/ppeng/data/ss_fcst/pcr/2023/12"
+"/home/ppeng/data/ss_fcst/pcr/2024/1"
+"/home/ppeng/data/ss_fcst/pcr/2024/2"
+"/home/ppeng/data/ss_fcst/pcr/2024/3"
+"/home/ppeng/data/ss_fcst/pcr/2024/4"
+"/home/ppeng/data/ss_fcst/pcr/2024/5"
+"/home/ppeng/data/ss_fcst/pcr/2024/6"
+"/home/ppeng/data/ss_fcst/pcr/2024/7"
+"/home/ppeng/data/ss_fcst/pcr/2024/8"
+"/home/ppeng/data/ss_fcst/pcr/2024/9"
+"/home/ppeng/data/ss_fcst/pcr/2024/10"
+"/home/ppeng/data/ss_fcst/pcr/2024/11"
+"/home/ppeng/data/ss_fcst/pcr/2024/12"
 )
 #
 #======================================
 # define some parameters
 #======================================
 #
-version=sim
-for var in prec; do
+version=sim_1
+for var in t2m prec; do
 #for var in prec hgt t2m; do
 #
 nts=1  # 2005
-nte=`expr $nts + 42 - 1` # mid-mon of the latest season
+nte=`expr $nts + 43 - 1` # mid-mon of the latest season
 #
-outfile1=$version.$var.hcst.jfm2005-djf2024
-outfile2=$version.$var.hcst_skill.jfm2005-djf2024
+outfile1=$version.$var.hcst.mam1981-fma2024
+outfile2=$version.$var.hcst_skill.mam1981-fma2024
 #
 imx=360
 jmx=180
@@ -85,7 +86,6 @@ undef=-999.0
 #=======================================
 # have hcst data
 #=======================================
-#for ii in 1 2 3 4 5 6 7 8 9 10 11 12; do 
 for ii in "${!dirs[@]}"; do 
 dir="${dirs[$ii]}"
 cat>"$ii.ctl"<<EOF
@@ -137,10 +137,10 @@ it=$nts
 while ( it <= $nte)
 
 'set t 'it
-say 'it=' it
+*say 'it=' it
 im=1
 while ( im <= 12)
-say 'im=' im
+*say 'im=' im
 'd o.'im
 'd p.'im
 'd s.'im
@@ -170,5 +170,95 @@ ENDVARS
 EOF
 
 /usr/bin/grads -bl <have_hcst
+
+#=======================================
+# have hcst skill
+#=======================================
+for ii in "${!dirs[@]}"; do 
+dir="${dirs[$ii]}"
+cat>"$ii.ctl"<<EOF
+dset ${dir}/$version.skill_1d.ensmsynth.$var.mlead7.3mon.gr
+undef -999.0
+xdef 1 linear 0.5 1.
+ydef 1 linear -89.5 1.
+zdef 1 linear 1 1
+tdef 43 linear dec1981 1yr
+edef 7 names 1 2 3 4 5 6 7
+vars 8
+cor1   1 99 20N-70N sp_cor
+rms1   1 99 20N-70N sp_rms
+cor2   1 99 CONUS sp_cor
+rms2   1 99 CONUS sp_rms
+hss1   1 99 20N-70N sp_hss
+hss2   1 99 CONUS sp_hss
+rpss1   1 99 20N-70N rpss_s
+rpss2   1 99 CONUS rpss_s
+ENDVARS
+EOF
+
+done
+
+cat >have_skill<<EOF
+run hcst_skill.gs
+EOF
+#
+cat >hcst_skill.gs<<EOF
+'reinit'
+'open 0.ctl'
+'open 1.ctl'
+'open 2.ctl'
+'open 3.ctl'
+'open 4.ctl'
+'open 5.ctl'
+'open 6.ctl'
+'open 7.ctl'
+'open 8.ctl'
+'open 9.ctl'
+'open 10.ctl'
+'open 11.ctl'
+
+'set gxout fwrite'
+'set fwrite $outfile2.gr'
+
+it=$nts
+while ( it <= $nte)
+
+'set t 'it
+say 'it=' it
+im=1
+while ( im <= 12)
+*say 'im=' im
+'d cor1.'im
+'d cor2.'im
+'d hss1.'im
+'d hss2.'im
+'d rpss1.'im
+'d rpss2.'im
+im=im+1
+endwhile
+
+it=it+1
+endwhile
+EOF
+
+cat>$outfile2.ctl<<EOF
+dset $outfile2.gr
+undef -9.99e+08
+xdef 1 linear 0.5 1.
+ydef 1 linear -89.5 1.
+zdef 1 linear 1 1
+tdef 999 linear mar1981 1mo
+edef 7 names 1 2 3 4 5 6 7
+vars 6
+cor1  0 99 cor for NH_ML
+cor2  0 99 cor for CONUS
+hss1  0 99 hss for NH_ML
+hss2  0 99 hss for CONUS
+rpss1  0 99 rpss for NH_ML
+rpss2  0 99 rpss for CONUS
+ENDVARS
+EOF
+
+/usr/bin/grads -bl <have_skill
 
 done  # for var

@@ -37,8 +37,8 @@ id_detrd=0 # =1, detrend data first then add trend; =0: no detrend
 mlead=7   # max lead of ensemble fcst
 ncv=1
 
-#for var2 in t2m prec; do # prec, t2m, hg
-for var2 in prec; do # prec, t2m, hg
+for var2 in t2m prec; do # prec, t2m, hg
+#for var2 in prec; do # prec, t2m, hg
 
 mcut=4  # max cuts
 #if [ $var2 = t2m ];  then icut1=3;  icut2=15; icut3=25; icut4=40; fi
