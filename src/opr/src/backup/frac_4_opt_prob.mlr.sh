@@ -23,7 +23,7 @@ version=mlr
 ridge=0.05
 del=0.02
 
-for var in prec; do # prec, t2m, hgt
+for var in prec t2m; do # prec, t2m, hgt
 
 if [ $var = t2m ];  then icut1=3; ivar2=1; fi
 if [ $var = prec ]; then icut1=5; ivar2=2; fi
@@ -42,12 +42,11 @@ cd $tmp
 # SST IC
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
-for curyr in 2021 2022 2023 2024; do
-#for curyr in 2023 2024; do
+#for curyr in 2021 2022 2023 2024; do
+for curyr in 2024; do
 #curmt=`date --date='today' '+%m'`  # mo of making fcst
-for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-#for curmo in 03 04 05 06 07 08 09 10 11 12; do
-#for curmo in 11; do
+#for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+for curmo in 12; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 

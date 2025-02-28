@@ -70,49 +70,44 @@ dirs=(
 # define some parameters
 #======================================
 #
-version=cvcor
+version=sim
 for var in t2m prec; do
 #for var in prec hgt t2m; do
 #
 nts=1  # 2005
 nte=`expr $nts + 43 - 1` # mid-mon of the latest season
 #
-outfile1=$version.$var.hcst.mam1981-fma2024
-outfile2=$version.$var.hcst_skill.mam1981-fma2024
+outfile1=$version.$var.v3c.mam1981-fma2024
 #
 imx=360
 jmx=180
 undef=-999.0
 #=======================================
-# have hcst data
+# have obs data
 #=======================================
 for ii in "${!dirs[@]}"; do 
 dir="${dirs[$ii]}"
 cat>"$ii.ctl"<<EOF
-dset ${dir}/$version.hcst.ensmsynth.$var.mlead7.3mon.gr
+dset ${dir}/$version.obs_3c.ensmsynth.$var.mlead7.3mon.gr
 undef -999.0
 XDEF 360 LINEAR    0.5  1.0
 YDEF 180 LINEAR  -89.5  1.0
 tdef 999 linear mar1981 1mo
 zdef  01 levels 1
 edef  7 names 1 2 3 4 5 6 7
-vars 6
-o  1 99 obs
-p  1 99 hcst
-pr 1 99 prob hcst
-pa 1 99 prob_a
-pb 1 99 prob_b
-s  1 99 std of obs
+vars 2
+obs   1 99 obs
+o3c   1 99 3C obs
 ENDVARS
 EOF
 
 done
 
-cat >have_hcst<<EOF
-run hcst_data.gs
+cat >have_obs<<EOF
+run obs_data.gs
 EOF
 #
-cat >hcst_data.gs<<EOF
+cat >obs_data.gs<<EOF
 'reinit'
 'open 0.ctl'
 'open 1.ctl'
@@ -137,15 +132,12 @@ it=$nts
 while ( it <= $nte)
 
 'set t 'it
-*say 'it=' it
+say 'it=' it
 im=1
 while ( im <= 12)
 *say 'im=' im
-'d o.'im
-'d p.'im
-'d s.'im
-'d pa.'im
-'d pb.'im
+'d obs.'im
+'d o3c.'im
 im=im+1
 endwhile
 
@@ -160,105 +152,12 @@ XDEF 360 LINEAR    0.5  1.0
 YDEF 180 LINEAR  -89.5  1.0
 tdef 999 linear mar1981 1mo
 zdef  01 levels 1
-vars 5
-o  0 99 obs
-p  0 99 hcst
-s  0 99 stdo
-pa 0 99 prob_A
-pb 0 99 prob_B
+vars 2
+obs  0 99 obs
+o3c  0 99 obs
 ENDVARS
 EOF
 
-/usr/bin/grads -bl <have_hcst
-
-#=======================================
-# have hcst skill
-#=======================================
-for ii in "${!dirs[@]}"; do 
-dir="${dirs[$ii]}"
-cat>"$ii.ctl"<<EOF
-dset ${dir}/$version.skill_1d.ensmsynth.$var.mlead7.3mon.gr
-undef -999.0
-xdef 1 linear 0.5 1.
-ydef 1 linear -89.5 1.
-zdef 1 linear 1 1
-tdef 43 linear dec1981 1yr
-edef 7 names 1 2 3 4 5 6 7
-vars 8
-cor1   1 99 20N-70N sp_cor
-rms1   1 99 20N-70N sp_rms
-cor2   1 99 CONUS sp_cor
-rms2   1 99 CONUS sp_rms
-hss1   1 99 20N-70N sp_hss
-hss2   1 99 CONUS sp_hss
-rpss1   1 99 20N-70N rpss_s
-rpss2   1 99 CONUS rpss_s
-ENDVARS
-EOF
-
-done
-
-cat >have_skill<<EOF
-run hcst_skill.gs
-EOF
-#
-cat >hcst_skill.gs<<EOF
-'reinit'
-'open 0.ctl'
-'open 1.ctl'
-'open 2.ctl'
-'open 3.ctl'
-'open 4.ctl'
-'open 5.ctl'
-'open 6.ctl'
-'open 7.ctl'
-'open 8.ctl'
-'open 9.ctl'
-'open 10.ctl'
-'open 11.ctl'
-
-'set gxout fwrite'
-'set fwrite $outfile2.gr'
-
-it=$nts
-while ( it <= $nte)
-
-'set t 'it
-say 'it=' it
-im=1
-while ( im <= 12)
-*say 'im=' im
-'d cor1.'im
-'d cor2.'im
-'d hss1.'im
-'d hss2.'im
-'d rpss1.'im
-'d rpss2.'im
-im=im+1
-endwhile
-
-it=it+1
-endwhile
-EOF
-
-cat>$outfile2.ctl<<EOF
-dset $outfile2.gr
-undef -9.99e+08
-xdef 1 linear 0.5 1.
-ydef 1 linear -89.5 1.
-zdef 1 linear 1 1
-tdef 999 linear mar1981 1mo
-edef 7 names 1 2 3 4 5 6 7
-vars 6
-cor1  0 99 cor for NH_ML
-cor2  0 99 cor for CONUS
-hss1  0 99 hss for NH_ML
-hss2  0 99 hss for CONUS
-rpss1  0 99 rpss for NH_ML
-rpss2  0 99 rpss for CONUS
-ENDVARS
-EOF
-
-/usr/bin/grads -bl <have_skill
+/usr/bin/grads -bl <have_obs
 
 done  # for var

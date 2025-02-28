@@ -378,6 +378,9 @@ c     write(6,*) 'n1,n2=',n1,n2
 
       call prob_3c(kpdf,n1,n2,xbin,xdel,ypdf,pb,pa,pn)
 
+      if(abs(pa).gt.1) pa=pa/abs(pa)*0.7
+      if(abs(pb).gt.1) pb=pb/abs(pb)*0.7
+
       if(detp.gt.0) then
         prbp=pa
       else

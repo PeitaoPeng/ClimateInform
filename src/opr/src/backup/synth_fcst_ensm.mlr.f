@@ -314,6 +314,9 @@ c prob-hcst
 
       if(abs(prbprd(i,j)).gt.1.) prbprd(i,j)=undef
 
+      w2d3(i,j)=pa(i,j,it)
+      w2d4(i,j)=pb(i,j,it)
+
       enddo
       enddo
 
@@ -323,6 +326,10 @@ c prob-hcst
       write(32,rec=iw2) w2d2  ! esm_hcst
       iw2=iw2+1
       write(32,rec=iw2) prbprd  ! prob-prd
+      iw2=iw2+1
+      write(32,rec=iw2) w2d3  ! prob_a
+      iw2=iw2+1
+      write(32,rec=iw2) w2d4  ! prob_b
       iw2=iw2+1
       write(32,rec=iw2) ostd
 
@@ -591,6 +598,9 @@ c     write(6,*) 'b1,b2=',b1,b2
 c     write(6,*) 'n1,n2=',n1,n2
 
       call prob_3c(kpdf,n1,n2,xbin,xdel,ypdf,pb,pa,pn)
+
+      if(abs(pa).gt.1) pa=pa/abs(pa)*0.7
+      if(abs(pb).gt.1) pb=pb/abs(pb)*0.7
 
       if(detp.gt.0) then
         prbp=pa

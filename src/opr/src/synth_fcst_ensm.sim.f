@@ -19,6 +19,7 @@ C===========================================================
       real wts(imx,jmx,mlead,nprd),ws1d(nprd)
       real wts2(imx,jmx,nprd)
       real obs(imx,jmx,ny_hcst),ehcst(imx,jmx,ny_hcst)
+      real v3c(imx,jmx,ny_hcst) ! obs in 3C
       real prbhcst(imx,jmx,ny_hcst)
       real xn34(ny_hcst+1,mlead)
 
@@ -53,6 +54,7 @@ C synth output
       open(31,form='unformatted',access='direct',recl=4*imx*jmx) !fcst
       open(32,form='unformatted',access='direct',recl=4*imx*jmx) !hcst
       open(33,form='unformatted',access='direct',recl=4) !1d_skill
+      open(34,form='unformatted',access='direct',recl=4*imx*jmx) !obs&v3c
 C
 C== have coslat
 C
@@ -149,11 +151,8 @@ C=== have wts prd
       enddo
       enddo
 
-c     enddo !ld loop
-
 C=== synthesize hcst with cvcor
 
-c     do ld=1,mlead
       do it=1,ny_hcst
 
       ich=14
@@ -418,10 +417,25 @@ c
       iw=iw+1
       write(31,rec=iw) xpn
 
-      call rpss_t(obs,pb,pa,w2d,imx,jmx,ny_hcst,undef)
+      call rpss_t(obs,pb,pa,w2d,v3c,imx,jmx,ny_hcst,undef)
 
       iw=iw+1
       write(31,rec=iw) w2d
+
+c     write out obs & v3c
+      iw=0
+      do it=1,ny_hcst
+        do i=1,imx
+        do j=1,jmx
+          w2d(i,j)=obs(i,j,it)
+          w2d2(i,j)=v3c(i,j,it)
+        enddo
+        enddo
+        iw=iw+1
+        write(34,rec=iw) w2d
+        iw=iw+1
+        write(34,rec=iw) w2d2
+      enddo !it loop
 
       enddo ! ld loopo
 
@@ -479,11 +493,12 @@ c area avg
       return
       end
 
-      SUBROUTINE rpss_t(vfc,pb,pa,rpss,imx,jmx,nt,undef)
+      SUBROUTINE rpss_t(vfc,pb,pa,rpss,v3c,imx,jmx,nt,undef)
 
       real pa(imx,jmx,nt),pb(imx,jmx,nt)
       real vfc(imx,jmx,nt),rpss(imx,jmx)
       real rps(imx,jmx,nt),rpsc(imx,jmx,nt)
+      real v3c(imx,jmx,nt)
 
 c convert vfc to probilistic form
       do it=1,nt
@@ -494,9 +509,21 @@ c convert vfc to probilistic form
           va=0.
           vb=0.
           vn=0.
-          if(vfc(i,j,it).gt.0.43) va=1
-          if(vfc(i,j,it).lt.-0.43) vb=1
-          if(vfc(i,j,it).ge.-0.43.and.vfc(i,j,it).le.0.43) vn=1
+          if(vfc(i,j,it).gt.0.43) then
+            va=1
+            v3c(i,j,it)=1
+          endif
+
+          if(vfc(i,j,it).lt.-0.43) then
+            vb=1
+            v3c(i,j,it)=-1
+          endif
+
+          if(vfc(i,j,it).ge.-0.43.and.vfc(i,j,it).le.0.43) then
+            vn=1
+            v3c(i,j,it)=0
+          endif
+
 c have rps        
           pn=1.-pa(i,j,it)-pb(i,j,it)
           y1=pb(i,j,it)
@@ -509,7 +536,9 @@ c have rps
      &+(y2-o2)**2
           rpsc(i,j,it)=(1./3.-o1)**2 !rpsc
      &+(2./3.-o2)**2
-        END IF
+          ELSE
+            v3c(i,j,it)=undef
+          END IF
         enddo
         enddo
       enddo

@@ -44,11 +44,11 @@ cd $tmp
 # SST IC
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
-#for curyr in 2021 2022 2023 2024; do
-for curyr in 2025; do
+for curyr in 2021 2022 2023 2024; do
+#for curyr in 2025; do
 #curmt=`date --date='today' '+%m'`  # mo of making fcst
-#curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for curmo in 01; do
+for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+#for curmo in 01; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -137,6 +137,7 @@ infile10=$version.frac_rpss.ensmsynth.$var.mlead7.3mon
 outfile1=$version.fcst.ensmsynth.$var.mlead$mlead.3mon
 outfile2=$version.hcst.ensmsynth.$var.mlead$mlead.3mon
 outfile3=$version.skill_1d.ensmsynth.$var.mlead$mlead.3mon
+outfile4=$version.obs_3c.ensmsynth.$var.mlead$mlead.3mon
 #
 ln -s $ind1/$infile1.gr          fort.11
 ln -s $ind1/$infile2.gr          fort.12
@@ -154,6 +155,7 @@ ln -s $ind1/$infile10.gr          fort.20
 ln -s $outdata/$outfile1.gr          fort.31
 ln -s $outdata/$outfile2.gr          fort.32
 ln -s $outdata/$outfile3.gr          fort.33
+ln -s $outdata/$outfile4.gr          fort.34
 #
 #./syn.x > $outdata/syn_fcst.$var.mlead$mlead.out
 ./syn.x 
@@ -221,6 +223,21 @@ rpss2   1 99 CONUS rpss_s
 endvars
 EOF
 #
+cat>$outdata/$outfile4.ctl<<EOF
+dset ^$outfile4.gr
+undef $undef
+title EXP1
+xdef $imx linear $xds $xydel
+ydef $jmx linear $yds $xydel
+zdef  1 linear 1 1
+tdef $ny_hcst linear ${tgtmon}$outyr_s 1yr
+edef  $mlead names 1 2 3 4 5 6 7
+vars  2
+obs   1 99 obs
+o3c   1 99 3C obs
+endvars
+EOF
+
 done # curmo loop
 done # curyr loop
 done # var2 loop
