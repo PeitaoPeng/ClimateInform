@@ -70,7 +70,7 @@ dirs=(
 # define some parameters
 #======================================
 #
-version=sim
+version=cvcor
 for var in t2m prec; do
 #for var in prec hgt t2m; do
 #

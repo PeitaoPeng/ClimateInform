@@ -7,7 +7,8 @@
 set -eaux
 
 lcdir=/home/ppeng/ClimateInform/src/opr/src
-tmp=/home/ppeng/data/tmp_opr
+#tmp=/home/ppeng/data/tmp_opr
+tmp=/home/ppeng/data/tmp
 if [ ! -d $tmp ] ; then
   mkdir -p $tmp
 fi

@@ -118,6 +118,7 @@ C=== have wts prd
       iw=0
       iw2=0
       iw3=0
+      iw4=0
       do ld=1,mlead
 
       ir2=ld*2-1
@@ -455,7 +456,6 @@ c
       write(31,rec=iw) w2d
 
 c     write out obs & v3c
-      iw=0
       do it=1,ny_hcst
         do i=1,imx
         do j=1,jmx
@@ -463,10 +463,10 @@ c     write out obs & v3c
           w2d2(i,j)=v3c(i,j,it)
         enddo
         enddo
-        iw=iw+1
-        write(34,rec=iw) w2d
-        iw=iw+1
-        write(34,rec=iw) w2d2
+        iw4=iw4+1
+        write(34,rec=iw4) w2d
+        iw4=iw4+1
+        write(34,rec=iw4) w2d2
       enddo !it loop
 
       enddo ! ld loopo
