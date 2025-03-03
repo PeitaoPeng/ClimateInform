@@ -687,7 +687,7 @@ C== have weights
       return
       end
 
-      SUBROUTINE hss3c_prob_s(obs,pa,pb,imx,jmx,is,ie,js,je,coslat,h)
+      SUBROUTINE hss3c_prob_s(obs,pa,pb,imx,jmx,is,ie,js,je,coslat,hs)
       dimension obs(imx,jmx),pa(imx,jmx),pb(imx,jmx)
       dimension nobs(imx,jmx),nprd(imx,jmx)
       dimension coslat(jmx)
@@ -725,7 +725,7 @@ C== have weights
         endif
       enddo
       enddo
-      h=(h-tot/3.)/(tot-tot/3.)*100.
+      hs=(h-tot/3.)/(tot-tot/3.)*100.
 
       return
       end
@@ -979,7 +979,7 @@ c
       return
       end
 
-      SUBROUTINE hss3c_t(obs,prd,ny,nt,h)
+      SUBROUTINE hss3c_t(obs,prd,ny,nt,hs)
       dimension obs(ny),prd(ny)
       dimension nobs(ny),nprd(ny)
       do it=1,nt
@@ -1001,7 +1001,7 @@ c
       return
       end
 
-      SUBROUTINE hss3c_prob_t(obs,pa,pb,ny,nt,h)
+      SUBROUTINE hss3c_prob_t(obs,pa,pb,ny,nt,hs)
       dimension obs(ny),pa(ny),pb(ny)
       dimension nobs(ny),nprd(ny)
       dimension w1d(3)

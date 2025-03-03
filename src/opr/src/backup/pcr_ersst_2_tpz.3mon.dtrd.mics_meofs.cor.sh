@@ -37,8 +37,8 @@ id_detrd=0 # =1, detrend data first then add trend; =0: no detrend
 mlead=7   # max lead of ensemble fcst
 ncv=1
 
-#for var2 in t2m prec; do # prec, t2m, hg
-for var2 in prec; do # prec, t2m, hg
+for var2 in t2m prec; do # prec, t2m, hg
+#for var2 in prec; do # prec, t2m, hg
 
 mcut=4  # max cuts
 #if [ $var2 = t2m ];  then icut1=3;  icut2=15; icut3=25; icut4=40; fi
@@ -65,10 +65,10 @@ cd $tmp
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
 #for curyr in 2021 2022 2023 2024; do
-for curyr in 2024; do
+for curyr in 2025; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
 #for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for curmo in 11; do
+for curmo in 01; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 

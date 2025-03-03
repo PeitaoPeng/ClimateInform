@@ -987,7 +987,7 @@ c
       return
       end
 
-      SUBROUTINE hss3c_t(obs,prd,ny,nt,h)
+      SUBROUTINE hss3c_t(obs,prd,ny,nt,hs)
       dimension obs(ny),prd(ny)
       dimension nobs(ny),nprd(ny)
       do it=1,nt
@@ -1009,7 +1009,7 @@ c
       return
       end
 
-      SUBROUTINE hss3c_prob_t(obs,pa,pb,ny,nt,h)
+      SUBROUTINE hss3c_prob_t(obs,pa,pb,ny,nt,hs)
       dimension obs(ny),pa(ny),pb(ny)
       dimension nobs(ny),nprd(ny)
       dimension w1d(3)
