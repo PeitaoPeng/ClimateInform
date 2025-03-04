@@ -69,26 +69,28 @@ infile3=$version.comb.$var.prob_B.JFM2011-FMA2024
 #outfile1=$version.hss_1d.$var.JFM2011-FMA2024
 #outfile2=$version.$var.prd_3C.JFM2011-FMA2024
 #outfile3=$version.hss_2d.$var.JFM2011-FMA2024
-outfile1=$version.comb.hss_1d.$var.JFM2011-FMA2024
+outfile1=$version.comb.skill_1d.$var.JFM2011-FMA2024
 outfile2=$version.comb.$var.prd_3C.JFM2011-FMA2024
-outfile3=$version.comb.hss_2d.$var.JFM2011-FMA2024
+outfile3=$version.comb.skill_2d.$var.JFM2011-FMA2024
 #
+xprob=1.0
 imx=360
 jmx=180
-undef=-999.0
+#undef=-999.0
+undef=-9.99e+08
 #=======================================
 
 cat > parm.h << EOF
       parameter(nt=$nt)
+      parameter(xprob=$xprob)
       parameter(imx=$imx,jmx=$jmx)
 EOF
-cat > hss_skill.f << EOF
-      program hss_skill
+cat > skill.f << EOF
+      program skill
       include "parm.h"
       dimension pa(imx,jmx,nt),pb(imx,jmx,nt)
       dimension prd(imx,jmx,nt),o3(imx,jmx,nt)
-      dimension w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx)
-      dimension nw2d(imx,jmx)
+      dimension w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx),w2d4(imx,jmx)
       dimension ts0(nt),ts1(nt),ts2(nt)
       dimension xlat(jmx),coslat(jmx),cosr(jmx)
 c
@@ -102,6 +104,8 @@ c
 C
 C== have coslat
 C
+      undef=$undef
+
       do j=1,jmx
         xlat(j)=-89.5+(j-1)*1.
         coslat(j)=cos(xlat(j)*3.14159/180)  !for EOF use
@@ -116,13 +120,14 @@ C read in data
         do i=1,imx
         do j=1,jmx
            o3(i,j,it)=w2d(i,j)
-           pa(i,j,it)=w2d2(i,j)
-           pb(i,j,it)=w2d3(i,j)
+           pa(i,j,it)=xprob*w2d2(i,j)
+           pb(i,j,it)=xprob*w2d3(i,j)
         enddo
-        enddo
+	enddo
       enddo !it loop
 C
 C hss_s from pa & pb
+      iw=0
       do it=1,nt
 
         do i=1,imx
@@ -133,15 +138,22 @@ C hss_s from pa & pb
         enddo
         enddo
 
-      call hss3c_prob_s(w2d,w2d2,w2d3,nw2d,imx,jmx,1,360,115,160,
+      call hss3c_prob_s(w2d,w2d2,w2d3,w2d4,imx,jmx,1,360,115,160,
      &coslat,ts1(it))
 
-      write(21,rec=it) ts1(it)
+      iw=iw+1
+      write(21,rec=iw) ts1(it)
 
-      call hss3c_prob_s(w2d,w2d2,w2d3,nw2d,imx,jmx,1,360,1,180,
+      call rpss_s(w2d,w2d3,w2d2,ts2(it),imx,jmx,1,360,115,160,coslat)
+
+      iw=iw+1
+      write(21,rec=iw) ts2(it)
+
+c have 3c_prd
+      call hss3c_prob_s(w2d,w2d2,w2d3,w2d4,imx,jmx,1,360,1,180,
      &coslat,ts1(it))
 
-      write(22,rec=it) nw2d
+      write(22,rec=it) w2d4
 
       enddo !it loop
 C
@@ -158,10 +170,12 @@ C hss_t from pa & pb
         enddo
 
         call hss3c_prob_t(ts0,ts1,ts2,nt,nt,w2d(i,j))
+	call rpss_t(ts0,ts2,ts1,w2d2(i,j),nt)
 
        else
 
         w2d(i,j)=-9.99e+08
+        w2d2(i,j)=-9.99e+08
 
        endif
 
@@ -169,14 +183,15 @@ C hss_t from pa & pb
       enddo
 
       write(23,rec=1) w2d
+      write(23,rec=2) w2d2
 
       stop
       end
 
-      SUBROUTINE hss3c_prob_s(obs,pa,pb,nprd,imx,jmx,
+      SUBROUTINE hss3c_prob_s(obs,pa,pb,prd,imx,jmx,
      &is,ie,js,je,coslat,hs)
       dimension obs(imx,jmx),pa(imx,jmx),pb(imx,jmx)
-      dimension nobs(imx,jmx),nprd(imx,jmx)
+      dimension nobs(imx,jmx),prd(imx,jmx),nprd(imx,jmx)
       dimension coslat(jmx)
       dimension w1d(3)
 
@@ -194,8 +209,12 @@ C hss_t from pa & pb
           if(maxp.eq.1) nprd(i,j)=-1
           if(maxp.eq.2) nprd(i,j)=0
           if(maxp.eq.3) nprd(i,j)=1
+          if(maxp.eq.1) prd(i,j)=-1
+          if(maxp.eq.2) prd(i,j)=0
+          if(maxp.eq.3) prd(i,j)=1
         else
           nprd(i,j)=-9.99e+08
+          prd(i,j)=-9.99e+08
         endif
       enddo
       enddo
@@ -207,6 +226,7 @@ C hss_t from pa & pb
         if(obs(i,j).gt.-900..and.pa(i,j).gt.-900.) then
         tot=tot+coslat(j)
         if (nobs(i,j).eq.nprd(i,j)) h=h+coslat(j)
+c       if (obs(i,j).eq.prd(i,j)) h=h+coslat(j)
         endif
       enddo
       enddo
@@ -248,10 +268,106 @@ c       if(obs(it).ge.-0.43.and.obs(it).le.0.43) nobs(it)=0
       hs=(h-tot/3.)/(tot-tot/3.)*100.
       return
       end
+
+      SUBROUTINE rpss_s(vfc,pb,pa,rpss,imx,jmx,is,ie,js,je,coslat)
+
+      real pa(imx,jmx),pb(imx,jmx)
+      real vfc(imx,jmx),coslat(jmx)
+      real rps(imx,jmx),rpsc(imx,jmx)
+
+      do i=is,ie
+      do j=js,je
+c       IF(vfc(i,j).gt.-900.and.pb(i,j).gt.-900) then
+        IF(vfc(i,j).gt.-900.) then
+
+          va=0.
+          vb=0.
+          vn=0.
+          if(vfc(i,j).eq.1) va=1
+          if(vfc(i,j).eq.-1) vb=1
+          if(vfc(i,j).eq.0) vn=1
+c have rps
+          pn=1.- pa(i,j) - pb(i,j)
+          y1=pb(i,j)
+          y2=pb(i,j)+pn
+          y3=1.
+          o1=vb
+          o2=vb+vn
+          o3=1.
+          rps(i,j)=(y1-o1)**2 !rps
+     &+(y2-o2)**2
+          rpsc(i,j)=(1./3.-o1)**2 !rpsc
+     &+(2./3.-o2)**2
+        END IF
+
+      enddo
+      enddo
+c area avg
+        exp=0.
+        expc=0.
+        grd=0
+        do i=is,ie
+        do j=js,je
+c         IF(vfc(i,j).gt.-900.and.pb(i,j).gt.-900) then
+          IF(vfc(i,j).gt.-900) then
+            exp=exp+coslat(j)*rps(i,j)
+            expc=expc+coslat(j)*rpsc(i,j)
+            grd=grd+coslat(j)
+          END IF
+        enddo
+        enddo
+        exp_rps =exp/grd
+        exp_rpsc=expc/grd
+        rpss=1.- exp_rps/exp_rpsc
+      return
+      end
+
+      SUBROUTINE rpss_t(vfc,pb,pa,rpss,nt)
+
+      real pa(nt),pb(nt)
+      real vfc(nt)
+      real rps(nt),rpsc(nt)
+
+c convert vfc to probilistic form
+      do it=1,nt
+          va=0.
+          vb=0.
+          vn=0.
+          if(vfc(it).eq.1) va=1
+          if(vfc(it).eq.-1) vb=1
+          if(vfc(it).eq.0) vn=1
+c have rps
+          pn=1.-pa(it)-pb(it)
+          y1=pb(it)
+          y2=pb(it)+pn
+          y3=1.
+          o1=vb
+          o2=vb+vn
+          o3=1.
+          rps(it)=(y1-o1)**2 !rps
+     &+(y2-o2)**2
+          rpsc(it)=(1./3.-o1)**2 !rpsc
+     &+(2./3.-o2)**2
+      enddo
+c have pattern of rpc_t
+        exp=0.
+        expc=0.
+        grd=0
+        do it=1,nt
+          exp=exp+rps(it)
+          expc=expc+rpsc(it)
+          grd=grd+1
+        enddo
+        exp_rps=exp/grd
+        exp_rpsc=expc/grd
+        rpss=1.-exp_rps/exp_rpsc
+
+      return
+      end
 EOF
 
-\rm fort.*
- gfortran -o skill.x hss_skill.f
+#\rm fort.*
+ gfortran -o skill.x skill.f
 
  ln -s $infile1.bi fort.11
  ln -s $infile2.bi fort.12
@@ -270,8 +386,9 @@ xdef 1 linear  0.5 1
 ydef 1 linear 89.5 1
 zdef 1 linear 1 1
 tdef $nt linear jan2011 1mon
-vars  1
-hss   1 99 for 20N-70N
+vars  2
+hss   1 99 for 25N-70N
+rpss  1 99 for 25N-70N
 endvars
 EOF
 
@@ -296,6 +413,8 @@ tdef 999 linear jan2011 1mo
 zdef  01 levels 1
 vars 1
 hss  0 99 hss_t
+rpss  0 99 rpss_t
 ENDVARS
 EOF
+\rm fort.*
 done  # for var

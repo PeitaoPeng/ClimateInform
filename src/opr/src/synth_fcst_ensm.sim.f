@@ -651,7 +651,7 @@ C== have weights
       end
 
 
-      SUBROUTINE hss3c_s(obs,prd,imx,jmx,is,ie,js,je,coslat,h)
+      SUBROUTINE hss3c_s(obs,prd,imx,jmx,is,ie,js,je,coslat,hs)
       dimension obs(imx,jmx),prd(imx,jmx)
       dimension nobs(imx,jmx),nprd(imx,jmx)
       dimension coslat(jmx)
@@ -682,7 +682,7 @@ C== have weights
         endif
       enddo
       enddo
-      h=(h-tot/3.)/(tot-tot/3.)*100.
+      hs=(h-tot/3.)/(tot-tot/3.)*100.
 
       return
       end
