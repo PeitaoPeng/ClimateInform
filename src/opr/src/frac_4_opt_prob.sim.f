@@ -218,6 +218,7 @@ C prob-hcst and rpss_t skill
       write(6,*) 'ld=,start prob-hcst and rpss_t skill',ld
 
       tdel=0.025
+c     tdel=0.01
       ntest=1./tdel
 
       DO i=1,imx
