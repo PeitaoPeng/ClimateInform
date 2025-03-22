@@ -131,7 +131,7 @@ infile8=hcst.slp.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3
 
 infile9=nino34.prd.mics4.mlead$mlead.ncut3.icut1_15.id_ceof1.id_detrd0.cv1.3mon
 #
-outfile1=$version.frac_rpss.ensmsynth.$var.mlead$mlead.3mon
+outfile1=$version.frac_rpss.ensmsynth.$var.mlead$mlead.3mon.test
 #
 ln -s $ind1/$infile1.gr          fort.11
 ln -s $ind1/$infile2.gr          fort.12

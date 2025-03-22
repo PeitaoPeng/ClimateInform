@@ -1,0 +1,15 @@
+prec: precipitation
+t2m: surface air temperature at 2 meter height
+
+*.bi: binary data file, with 158 records(JFM2011 -> FMA2024), and dimention 360(longitude) x 180 (latitude)
+*.ctl: data description file in Grads, giving dimention and arangement of the data 
+
+cvcor.comb, sim.comb: prefixex indicating forecast methodology.
+
+prob_A: predicted probability above normal (0. -> 1.)
+prob_B: predicted probability below normal (0. -> 1.)
+
+*.prd_3C: deterministic prediction in 3 categories, with 1, 0 and -1 indicating above normal, normal and below normal, respectively.
+
+*.OBS_3C.*: observations in 3 categories, with 1, 0 and -1 indicating above normal, normal and below normal, respectively.
+

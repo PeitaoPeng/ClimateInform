@@ -25,7 +25,7 @@ version=sim
 nmodel=$nprd  # of fcsts used in ensm
 if [ $version = sim_1 ];  then nmodel=1; fi
 
-for var in t2m prec; do # prec, t2m, hgt
+for var in prec t2m; do # prec, t2m, hgt
 
 if [ $var = t2m ];  then icut1=3; ivar2=1; fi
 if [ $var = prec ]; then icut1=5; ivar2=2; fi
