@@ -7,6 +7,7 @@
 set -eaux
 
 lcdir=/home/ppeng/ClimateInform/src/opr/src
+#tmp=/home/ppeng/data/tmp_opr
 tmp=/home/ppeng/data/tmp
 if [ ! -d $tmp ] ; then
   mkdir -p $tmp
@@ -18,12 +19,15 @@ mlead=7
 nprd=4  # of input fcst
 kocn=10
 xnino_crt=3.
+tesm=0.1
 
 version=cvcor
+#version=cor
 if [ $version = cor ];  then ivs=1; fi
 if [ $version = cvcor ];  then ivs=2; fi
 
-for var in prec; do # prec, t2m, hgt
+for var in prec t2m; do # prec, t2m, hgt
+#for var in t2m; do # prec, t2m, hgt
 
 if [ $var = t2m ];  then icut1=3; ivar2=1; fi
 if [ $var = prec ]; then icut1=5; ivar2=2; fi
@@ -43,10 +47,10 @@ cd $tmp
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
 for curyr in 2021 2022 2023 2024; do
-#for curyr in 2024; do
+#for curyr in 2025; do
 #curmt=`date --date='today' '+%m'`  # mo of making fcst
 for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-#for curmo in 11; do
+#for curmo in 01; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -92,7 +96,7 @@ fi
 #======================================
 imx=360; jmx=180; xds=0.5; yds=-89.5; xydel=1.
 #
-cp $lcdir/frac_4_opt_prob.cor.test.f $tmp/opt.f
+cp $lcdir/synth_fcst_ensm.cor.test.f $tmp/syn.f
 
 cat > parm.h << eof
 c
@@ -107,12 +111,13 @@ c
       parameter(icmon=$icmon)
       parameter(ivar2=$ivar2)
       parameter(ivs=$ivs)
+      parameter(tesm=$tesm)
 
 eof
 #
 #gfortran -o pcr.x pcr.f reof.s.f
-#gfortran -mcmodel=large -o opt.x opt.f
-gfortran -mcmodel=medium -g -o opt.x opt.f
+#gfortran -mcmodel=medium -o syn.x syn.f
+gfortran -mcmodel=large -g -o syn.x syn.f
 echo "done compiling"
 
 if [ -f fort.11 ] ; then
@@ -130,8 +135,12 @@ infile7=hcst.$var.kocn_$kocn.mlead$mlead.3mon
 infile8=hcst.slp.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3mon
 
 infile9=nino34.prd.mics4.mlead$mlead.ncut3.icut1_15.id_ceof1.id_detrd0.cv1.3mon
+infile10=$version.frac_rpss.ensmsynth.$var.mlead7.3mon.test
 #
-outfile1=$version.frac_rpss.ensmsynth.$var.mlead$mlead.3mon.test
+outfile1=$version.fcst.ensmsynth.$var.mlead$mlead.3mon.test
+outfile2=$version.hcst.ensmsynth.$var.mlead$mlead.3mon.test
+outfile3=$version.skill_1d.ensmsynth.$var.mlead$mlead.3mon.test
+outfile4=$version.obs_3c.ensmsynth.$var.mlead$mlead.3mon.test
 #
 ln -s $ind1/$infile1.gr          fort.11
 ln -s $ind1/$infile2.gr          fort.12
@@ -144,11 +153,15 @@ ln -s $ind1/$infile7.gr          fort.17
 ln -s $ind1/$infile8.gr          fort.18
 
 ln -s $ind1/$infile9.gr          fort.19
+ln -s $ind1/$infile10.gr          fort.20
 
 ln -s $outdata/$outfile1.gr          fort.31
+ln -s $outdata/$outfile2.gr          fort.32
+ln -s $outdata/$outfile3.gr          fort.33
+ln -s $outdata/$outfile4.gr          fort.34
 #
 #./syn.x > $outdata/syn_fcst.$var.mlead$mlead.out
-./opt.x 
+./syn.x 
 #
 cat>$outdata/$outfile1.ctl<<EOF
 dset ^$outfile1.gr
@@ -158,12 +171,76 @@ xdef $imx linear $xds $xydel
 ydef $jmx linear $yds $xydel
 zdef  1 linear 1 1
 tdef  $mlead linear ${tgtmoyr} 1mon
-vars  2
-frac  1 99 fraction of esm_prd
-rpss  1 99 rpss skill
+vars  11
+$var  1 99 normalized fcst
+stdo  1 99 stdv of obs
+cor   1 99 corr of hcst
+rms   1 99 rmse of hcst
+hss   1 99 hss_3c of hcst
+clm   1 99 total clim
+prb   1 99 prob prd
+pa   1 99 prob of above
+pb   1 99 prob of below
+pn   1 99 prob of normal
+rpss  1 99 prob format of prd
 endvars
 EOF
 #
+cat>$outdata/$outfile2.ctl<<EOF
+dset ^$outfile2.gr
+undef $undef
+title EXP1
+xdef $imx linear $xds $xydel
+ydef $jmx linear $yds $xydel
+zdef  1 linear 1 1
+tdef $ny_hcst linear ${tgtmon}$outyr_s 1yr
+edef  $mlead names 1 2 3 4 5 6 7
+vars  6
+o  1 99 obs
+p  1 99 hcst
+pr 1 99 prob hcst
+pa 1 99 prob_a
+pb 1 99 prob_b
+s  1 99 std of obs
+endvars
+EOF
+#
+cat>$outdata/$outfile3.ctl<<EOF
+dset ^$outfile3.gr
+undef $undef
+title EXP1
+xdef 1 linear $xds $xydel
+ydef 1 linear $yds $xydel
+zdef 1 linear 1 1
+tdef $ny_hcst linear ${tgtmon}$outyr_s 1yr
+edef $mlead names 1 2 3 4 5 6 7
+vars  8
+cor1   1 99 20N-70N sp_cor
+rms1   1 99 20N-70N sp_rms
+cor2   1 99 CONUS sp_cor
+rms2   1 99 CONUS sp_rms
+hss1   1 99 20N-70N sp_hss
+hss2   1 99 CONUS sp_hss
+rpss1   1 99 20N-70N rpss_s
+rpss2   1 99 CONUS rpss_s
+endvars
+EOF
+#
+cat>$outdata/$outfile4.ctl<<EOF
+dset ^$outfile4.gr
+undef $undef
+title EXP1
+xdef $imx linear $xds $xydel
+ydef $jmx linear $yds $xydel
+zdef  1 linear 1 1
+tdef $ny_hcst linear ${tgtmon}$outyr_s 1yr
+edef  $mlead names 1 2 3 4 5 6 7
+vars  2
+obs   1 99 obs
+o3c   1 99 3C obs
+endvars
+EOF
+
 done # curmo loop
 done # curyr loop
 done # var2 loop

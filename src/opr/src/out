@@ -1,0 +1,27 @@
+36c36
+<       real trpss(40)
+---
+>       real trpss(50)
+233c233,234
+<       tdel=0.025
+---
+> c     tdel=0.025
+>       tdel=0.02
+243a245
+>       tesm=0.10
+253c255
+<      &tspn(it),kpdf,xbin,xdel,ypdf,ftest)
+---
+>      &tspn(it),kpdf,xbin,xdel,ypdf,ftest,tesm)
+393c395
+<      & frac)
+---
+>      & frac,tesm)
+400c402,406
+<       esm=frac*detp
+---
+>       if(abs(detp).gt.tesm) then
+>         esm=frac*detp
+>       else
+>         esm=detp
+>       endif
