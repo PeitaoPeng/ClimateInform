@@ -43,9 +43,11 @@ cd $tmp
 #
 imx=360; jmx=180; xds=0.5; yds=-89.5; xydel=1.
 #
-infile=$version.fcst.ensmsynth.$var2.mlead$mlead.3mon
+#infile=$version.fcst.ensmsynth.$var2.mlead$mlead.3mon
+infile=$version.fcst.ensmsynth.$var2.mlead$mlead.3mon.test
 
-outfile=$version.data_rct_ensmsynth_2d.$var2.mlead$mlead.3mon
+#outfile=$version.data_rct_ensmsynth_2d.$var2.mlead$mlead.3mon
+outfile=$version.data_rct_ensmsynth_2d.$var2.mlead$mlead.3mon.test
 #
 cp $lcdir/data_recent_synth_fcst.f $tmp/skill.f
 

@@ -71,14 +71,16 @@ dirs=(
 #======================================
 #
 version=cvcor
-for var in t2m prec; do
+for var in prec; do
 #for var in prec hgt t2m; do
 #
 nts=1  # 2005
 nte=`expr $nts + 43 - 1` # mid-mon of the latest season
 #
-outfile1=$version.$var.hcst.mam1981-fma2024
-outfile2=$version.$var.hcst_skill.mam1981-fma2024
+#outfile1=$version.$var.hcst.mam1981-fma2024
+#outfile2=$version.$var.hcst_skill.mam1981-fma2024
+outfile1=$version.$var.hcst.mam1981-fma2024.test
+outfile2=$version.$var.hcst_skill.mam1981-fma2024.test
 #
 imx=360
 jmx=180
@@ -89,7 +91,7 @@ undef=-999.0
 for ii in "${!dirs[@]}"; do 
 dir="${dirs[$ii]}"
 cat>"$ii.ctl"<<EOF
-dset ${dir}/$version.hcst.ensmsynth.$var.mlead7.3mon.gr
+dset ${dir}/$version.hcst.ensmsynth.$var.mlead7.3mon.test.gr
 undef -999.0
 XDEF 360 LINEAR    0.5  1.0
 YDEF 180 LINEAR  -89.5  1.0
@@ -177,7 +179,7 @@ EOF
 for ii in "${!dirs[@]}"; do 
 dir="${dirs[$ii]}"
 cat>"$ii.ctl"<<EOF
-dset ${dir}/$version.skill_1d.ensmsynth.$var.mlead7.3mon.gr
+dset ${dir}/$version.skill_1d.ensmsynth.$var.mlead7.3mon.test.gr
 undef -999.0
 xdef 1 linear 0.5 1.
 ydef 1 linear -89.5 1.

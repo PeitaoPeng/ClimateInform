@@ -71,7 +71,7 @@ dirs=(
 #======================================
 #
 version=cvcor
-for var in t2m prec; do
+for var in prec; do
 #for var in prec hgt t2m; do
 #
 nts=1  # 2005

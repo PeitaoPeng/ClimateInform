@@ -242,7 +242,7 @@ c     tdel=0.025
 C have frac -> max rpss        
 
       ftest=0.0
-      tesm=0.10
+      tesm=0.43
       do kt=1,ntest
 
 c prob for each it
