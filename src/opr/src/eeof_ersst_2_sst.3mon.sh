@@ -24,6 +24,7 @@ eof_area=tp_nml   #30S-60N
 id_eof=0
 #
 lagmax=15
+nmod=10
 
 nclm_start=1981 # to have yrs clm for more stable than 30 yrs 
 its_clm=`expr $nclm_start - 1947 - $lagmax / 12`
@@ -120,16 +121,16 @@ c
       parameter(icmon=$icmon)  ! sst ic month
       parameter(ny_clm=$ny_clm,its_clm=$its_clm,ite_clm=$ite_clm) 
       parameter(montot=$montot,nsstot=$nsstot)  ! total month number
-      parameter(nsslag=$nsslag)  ! ss of lag-arranged 
+      parameter(nfld=$nsslag)  ! ss of lag-arranged 
       parameter(imx=$imx,jmx=$jmx)  ! sst dimension
       parameter(nlead=$mlead) 
       parameter(mlag=$lagmax) 
       parameter(ngrd=$ngrd)
       parameter(lons=$lons,lone=$lone,lats=$lats,late=$late) !eof_area=tp_nml
       parameter(jmxeof=$jmxeof)  ! eof area in lats 
-      parameter(id=0,undef=$undef)
-      parameter(id_detrd=$id_eof)
-      parameter(modmax=$modmax)
+      parameter(undef=$undef)
+      parameter(ID=$id_eof)
+      parameter(nmod=$nmod)
 c
       parameter(nyr=$nyear)
 

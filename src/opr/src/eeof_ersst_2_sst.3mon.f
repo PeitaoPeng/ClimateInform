@@ -4,20 +4,26 @@ C PCR for forecst TPZ
 C===========================================================
       real fld0(imx,jmx),fld(imx,jmx)
       real sst(imx,jmx,nsstot)
-      real sstlag(imx,jmxeof,mlag,nsslag)
-      real aaa(ngrd*mlag,nsslag)
+      real sstc(imx,jmx,12),clm_1d(12)
+      real sstlag(imx,jmx,mlag,nfld)
+      real aaa(mlag*ngrd,nfld),wk(nfld,mlag*ngrd),tt(nmod,nmod)
+      real eval(nfld),evec(mlag*ngrd,nfld),coef(nfld,nfld)
+      real rin(nfld),rot(nfld)
+      real weval(nfld),wevec(mlag*ngrd,nfld),wcoef(nfld,nfld)
+      real reval(nmod),revec(mlag*ngrd,nfld),rcoef(nmod,nfld)
+      real rwk(mlag*ngrd),rwk2(mlag*ngrd,nmod)
       real av1(imx,jmx),bv1(imx,jmx)
-      real sstc(imx,jmx),tpzc(imx,jmx),tpzc_tot(imx,jmx,nlead)
       real fld2(imx,jmx)
-      real corr(imx,jmx,nyr),regr(imx,jmx,nyr)
-      real corr2(imx,jmx,nyr),regr2(imx,jmx,nyr,nyr)
-      real corr3(imx,jmx,nyr),regr3(imx,jmx,nyr)
+      real corr(imx,jmx),regr(imx,jmx)
+      real corr4d(imx,jmx,mlag,nmod),regr4d(imx,jmx,mlag,nmod)
+
       real cor3d(imx,jmx,nlead),rms3d(imx,jmx,nlead)
       real hss3d(imx,jmx,nlead)
-      real ts1(nsstot),ts2(nyr)
+      real ts1(nsstot)
+      real ts2(nfld),ts3(nfld)
       real w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx)
       real w2d4(imx,jmx),w2d5(imx,jmx),w2d6(imx,jmx)
-      real tcof(nsslag,nsslag)
+      real tcof(nfld,nfld)
       real tpz(imx,jmx,montot),wtpz(imx,jmx,nyr)
       real v2dtd(imx,jmx,nyr),v2trd(imx,jmx,nyr)
       real av2(imx,jmx),bv2(imx,jmx)
@@ -36,7 +42,7 @@ C
       open(10,form='unformatted',access='direct',recl=4*imx*jmx) !sst
 
       open(20,form='unformatted',access='direct',recl=4) !pc
-      open(21,form='unformatted',access='direct',recl=4*imxe*jmxe) !eof
+      open(21,form='unformatted',access='direct',recl=4*imx*jmxeof) !eof
       open(22,form='unformatted',access='direct',recl=4) !hcst/fcst nino34
       open(23,form='unformatted',access='direct',recl=4) !obs nino34
 
@@ -63,28 +69,37 @@ C=== read in all 3-mon avg sst
         read(10,rec=it) fld2
         do i=1,imx
         do j=1,jmx
-          sst(i,j,it)=fld2(i,j) ! use tpz array for sst
+          sst(i,j,it)=fld2(i,j) 
         enddo
         enddo
       enddo
 C
-C have sst anomalies over period 1 -> ny_sst
+C have sst anomalies over all data period
       do i=1,imx
       do j=1,jmx
-        if(fld(i,j).gt.-900.) then
+
+        if(fld2(i,j).gt.-900.) then
           do it=1,nsstot
             ts1(it)=sst(i,j,it)
           enddo
-          call clim_anom_12(ts1,nsstot,nyr)
+          call clim_anom_12(ts1,nsstot,nyr,clm_1d)
         else
           do it=1,nsstot
             ts1(it)=undef
+          enddo
+          do m=1,12
+            clm_1d(m)=undef
           enddo
         endif
 
         do it=1,nsstot
           sst(i,j,it)=ts1(it)
         enddo
+
+        do m=1,12
+          sstc(i,j,m)=clm_1d(m)
+        enddo
+
       enddo
       enddo
 c
@@ -92,19 +107,14 @@ c
 c have lagged SST matrix
 c
       do ilag=1,mlag
-      do is=1,nsslag
+      do is=1,nfld
 
       iss=is+ilag-1
 
-      ii=0
-      do i=lons,lone
-      ii=ii+1
-      jj=0
-      do j=lats,late
+      do i=1,imx
+      do j=1,jmx
 
-      jj=jj+1
-
-      sstlag(ii,jj,ilag,is)=sst(i,j,iss)
+      sstlag(i,j,ilag,is)=sst(i,j,iss)
 
       enddo
       enddo
@@ -112,59 +122,96 @@ c
       enddo ! is loop
       enddo ! ilag loop
 
-      do is=1,nsslag
-      ig=0
+C input to aaa
+      do is=1,nfld
       do ilag=1,mlag
+
       ig=0
-      do i=1,imx
-      do j=1,jmxeof
-        if(sstlag(i,j,ilag,is).gt.-900.) then
+      do i=lons,lone
+      do j=lats,late
+        if(fld2(i,j).gt.-900.) then
           ig=ig+1
-          aaa(ig,is)=sstlag(i,j,ilag,is)
+          aaa(ig+(ilag-1)*ngrd,is)=cosr(j)*sst(i,j,is+ilag-1)
         endif
       enddo
       enddo
+
       enddo
-      write(6,*) 'ng=',ng
       enddo
+      write(6,*) 'ngrd=',ig
 c
 c SST EOF analysis
 c
-      DO ic=1,mics
+      write(6,*) 'eof begins'
+      call EOFS(aaa,mlag*ngrd,nfld,nfld,eval,evec,coef,wk,ID)
+      write(6,*) 'reof begins'
+      call REOFS(aaa,mlag*ngrd,nfld,nfld,wk,ID,weval,wevec,wcoef,
+     &           nmod,reval,revec,rcoef,tt,rwk,rwk2)
+cc... arrange reval,revec and rcoef in decreasing order
+      call order(mlag*ngrd,nfld,nmod,reval,revec,rcoef)
+c
+cc... write out eval and reval
+      totv1=0
+      do i=1,20
+      write(6,*)'eval= ',i,eval(i)
+      totv1=totv1+eval(i)
+      end do
+      write(6,*)'total= ',totv1
 
-      do m=1,modmax
-      do it=1,nsslag
-        tcof(m,it)=undef
-      enddo
-      enddo
-
-      enddo ! ic loop
+      totv2=0
+      do i=1,nmod
+      write(6,*)'reval= ',i,reval(i)
+      totv2=totv2+reval(i)
+      end do
+      write(6,*)'total= ',totv2
 C
-      if(id_detrd.eq.1) then
-      call pc_eof_mics(v1dtd,imx,jmx,lons,lone,lats,late,nyr,
-     &ny_sst,cosr,ngrd,modmax,tcof,corr,regr,undef,id,mics,id_ceof)
-      else
-      call pc_eof_mics(sst,imx,jmx,lons,lone,lats,late,nyr,
-     &ny_sst,cosr,ngrd,modmax,tcof,corr,regr,undef,id,mics,id_ceof)
-      endif
+CCC...CORR between rcoef and data
+C
+      iw1=0
+      iw2=0
+      DO m=1,nmod      !loop over mode (1-6)
+c
+      do it=1,nfld
+        ts2(it)=rcoef(m,it)
+      enddo
+
+      call normal(ts2,nfld)
+
+      do it=1,nfld
+        rcoef(m,it)=ts2(it)
+      enddo
+
+      do ilag=1,mlag
+
+      do i=1,imx
+      do j=1,jmx
+        if(fld2(i,j).gt.-900.) then
+        do it=1,nfld
+          ts3(it)=sstlag(i,j,ilag,it)
+        enddo
+        call regr_t(ts2,ts3,nfld,nfld,corr(i,j),regr(i,j))
+        else
+          corr(i,j)=undef
+          regr(i,j)=undef
+        endif
+        corr4d(i,j,ilag,m)=corr(i,j)
+        regr4d(i,j,ilag,m)=regr(i,j)
+      enddo
+      enddo
 
 C write out EOF patters
-      do m=1,5
-        do i=1,imx
-        do j=1,jmx
-        fld(i,j)=regr(i,j,m)
-        enddo
-        enddo
-        write(21,rec=m) fld
-      enddo
+        iw1=iw1+1
+        write(21,rec=iw1) regr
+
+      enddo ! ilag loop
+
 C write out tcof
-      iw=0
-      do it=1,ny_sst
-      do m=1,5
-         iw=iw+1
-         write(20,rec=iw) tcof(m,it,1)
+      do it=1,nfld
+         iw2=iw2+1
+         write(20,rec=iw2) rcoef(m,it)
       enddo
-      enddo
+
+      enddo !m loop
 c
 c tpz hindcast for ld=1->nlead
       iw5=0
@@ -1030,9 +1077,9 @@ c
       return
       end
 
-      SUBROUTINE clim_anom_12(ts,ntot,nyr)
+      SUBROUTINE clim_anom_12(ts,ntot,nyr,clm)
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C. calculate seasonal anom & clim of 102 cd data
+C. calculate seasonal anom 
 C===========================================================
       DIMENSION ts(ntot),clm(12)
 
