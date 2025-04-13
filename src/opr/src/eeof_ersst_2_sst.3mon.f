@@ -205,7 +205,7 @@ C write out EOF patters
 
       enddo ! ilag loop
 
-C write out tcof
+C write out rcoef
       do it=1,nfld
          iw2=iw2+1
          write(20,rec=iw2) rcoef(m,it)
@@ -213,25 +213,25 @@ C write out tcof
 
       enddo !m loop
 c
-c tpz hindcast for ld=1->nlead
+c hindcast for ld=1->nlead
       iw5=0
       DO ld=1,nlead
 
-c select tpz for each lead
-      its_tpz=icmon+lagmax+ld+1 !11+1+1=13(jfm)
+c select predictant for each lead
+      its_tpz=mlag+ld+3 !for mlag=5,5(=mjj)+ld(=1)+3=9(son)
       ir=0
-      do it=its_tpz,nsstot,12
+      do it=its_tpz,nsstot
         ir=ir+1
         do i=1,imx
         do j=1,jmx
-          wtpz(i,j,ir)=tpz(i,j,it)
+          wtpz(i,j,ir)=sst(i,j,it)
         enddo
         enddo
       enddo
       ny_tpz=ir
       write(6,*) 'its_tpz=',its_tpz,'ny_tpz=',ny_tpz
 C 
-C have tpz anomalies over period 1 -> ny_tpz
+C have predictant anomalies over period 1 -> ny_tpz
       do i=1,imx
       do j=1,jmx
         if(fld2(i,j).gt.-900.) then
@@ -253,27 +253,10 @@ C have tpz anomalies over period 1 -> ny_tpz
       enddo
       enddo
 C 
-C have linear trend of tpz
-
-      if(id_detrd.eq.1) then
-      call ltrend_3d(wtpz,v2dtd,v2trd,imx,jmx,nyr,ny_tpz,
-     &av2,bv2,undef)
-      else
-      do it=1,nyr 
-      do i=1,imx
-      do j=1,jmx
-        v2dtd(i,j,it)=wtpz(i,j,it)
-      enddo
-      enddo
-      enddo
-      endif
-c
 C CV hcst for this lead
 c     nfld=ny_tpz - 1
 c     if(ncv.eq.3) nfld=ny_tpz - 3
 c
-      DO ic=1,mics
-
       DO itgt=1,ny_tpz
 
         iym=itgt-1
@@ -281,7 +264,7 @@ c
         if(itgt.eq.1) iym=3
         if(itgt.eq.ny_tpz) iyp=ny_tpz-2
 
-      DO m=1,modmax
+      DO m=1,nmod
 
         ir=0
         do iy=1,ny_tpz
@@ -294,7 +277,7 @@ c
           endif
 
             ir=ir+1
-            ts1(ir)=tcof(m,iy,ic)
+            ts2(ir)=rcoef(m,iy)
   555   continue
         enddo
           
@@ -420,9 +403,6 @@ c fcst
       enddo
 
       enddo ! mc loop
-
-      ENDDO ! ic loop
-
       ENDDO ! ld loop
 c
 c  hcst and fcst

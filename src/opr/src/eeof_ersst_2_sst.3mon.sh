@@ -23,7 +23,7 @@ var2=sst
 eof_area=tp_nml   #30S-60N
 id_eof=0
 #
-lagmax=15
+lagmax=16
 nmod=10
 
 nclm_start=1981 # to have yrs clm for more stable than 30 yrs 
