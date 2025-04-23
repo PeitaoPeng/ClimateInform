@@ -49,8 +49,6 @@ C
       open(30,form='unformatted',access='direct',recl=4*imx*jmx) !fcst
       open(31,form='unformatted',access='direct',recl=4) !1d_skill
       open(32,form='unformatted',access='direct',recl=4*imx*jmx) !hcst
-
-      open(40,form='unformatted',access='direct',recl=4*imx*jmx) !sst ICs
 C
 C== have coslat
 C
@@ -102,7 +100,6 @@ C have sst anomalies over all data period
 
       enddo
       enddo
-c
 c
 c have lagged SST matrix
 c
@@ -169,7 +166,7 @@ CCC...CORR between rcoef and data
 C
       iw1=0
       iw2=0
-      DO m=1,nmod      !loop over mode (1-6)
+      DO m=1,nmod      !loop over mode
 c
       do it=1,nfld
         ts2(it)=rcoef(m,it)
@@ -228,26 +225,26 @@ c select predictant for each lead
         enddo
         enddo
       enddo
-      ny_tpz=ir
-      write(6,*) 'its_tpz=',its_tpz,'ny_tpz=',ny_tpz
+      ns_tpz=ir
+      write(6,*) 'its_tpz=',its_tpz,'ns_tpz=',ns_tpz
 C 
-C have predictant anomalies over period 1 -> ny_tpz
+C have predictant anomalies over period 1 -> ns_tpz
+
+      nyr_tpz=int(ns_tpz/12)
+
       do i=1,imx
       do j=1,jmx
         if(fld2(i,j).gt.-900.) then
-          do it=1,ny_tpz
+          do it=1,ns_tpz
             ts2(it)=wtpz(i,j,it)
           enddo
-          call clim_tot(ts2,tpzc_tot(i,j,ld),nyr,1,ny_tpz)
-          call clim_anom(ts2,tpzc(i,j),nyr,ny_tpz)
+          call clim_anom_12(ts2,nfld,nyr_tpz,clm_1d)
         else
-          do it=1,ny_tpz
+          do it=1,ns_tpz
             ts2(it)=undef
           enddo
-            tpzc(i,j)=undef
-            tpzc_tot(i,j,ld)=undef
         endif
-          do it=1,ny_tpz
+          do it=1,ns_tpz
             wtpz(i,j,it)=ts2(it)
           enddo
       enddo
