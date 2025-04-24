@@ -15,6 +15,7 @@ C===========================================================
       real av1(imx,jmx),bv1(imx,jmx)
       real fld2(imx,jmx)
       real corr(imx,jmx),regr(imx,jmx)
+      real corr2(imx,jmx,nmod),regr2(imx,jmx,nmod,nfld)
       real corr4d(imx,jmx,mlag,nmod),regr4d(imx,jmx,mlag,nmod)
 
       real cor3d(imx,jmx,nlead),rms3d(imx,jmx,nlead)
@@ -196,7 +197,7 @@ c
       enddo
       enddo
 
-C write out EOF patters
+C write out EOF patterns
         iw1=iw1+1
         write(21,rec=iw1) regr
 
@@ -254,27 +255,27 @@ C CV hcst for this lead
 c     nfld=ny_tpz - 1
 c     if(ncv.eq.3) nfld=ny_tpz - 3
 c
-      DO itgt=1,ny_tpz
+      DO itgt=1,ns_tpz
 
-        iym=itgt-1
-        iyp=itgt+1
-        if(itgt.eq.1) iym=3
-        if(itgt.eq.ny_tpz) iyp=ny_tpz-2
+        ism=itgt-1
+        isp=itgt+1
+        if(itgt.eq.1) ism=3
+        if(itgt.eq.ns_tpz) isp=ns_tpz-2
 
       DO m=1,nmod
 
         ir=0
-        do iy=1,ny_tpz
+        do is=1,ns_tpz
 
-          if(iy.eq.itgt) go to 555
+          if(is.eq.itgt) go to 555
 
           if(ncv.eq.3) then
-            if(iy.eq.iym)  go to 555
-            if(iy.eq.iyp)  go to 555
+            if(is.eq.ism)  go to 555
+            if(is.eq.isp)  go to 555
           endif
 
             ir=ir+1
-            ts2(ir)=rcoef(m,iy)
+            ts2(ir)=rcoef(m,is)
   555   continue
         enddo
           
@@ -284,22 +285,22 @@ c
         IF(fld2(i,j).gt.-900.) then
 
           ir=0
-          do iy=1,ny_tpz
+          do is=1,ns_tpz
 
-          if(iy.eq.itgt) go to 666
+          if(is.eq.itgt) go to 666
 
           if(ncv.eq.3) then
-            if(iy.eq.iym)  go to 666
-            if(iy.eq.iyp)  go to 666
+            if(is.eq.ism)  go to 666
+            if(is.eq.isp)  go to 666
           endif
 
             ir=ir+1
-            ts2(ir)=v2dtd(i,j,iy)
+            ts3(ir)=wtpz(i,j,is)
   666     continue
           enddo
 
-          nfld=ir
-          call regr_t(ts1,ts2,nyr,nfld,corr2(i,j,m),
+          mfld=ir
+          call regr_t(ts2,ts3,nfld,mfld,corr2(i,j,m),
      &    regr2(i,j,m,itgt))
 
         ELSE
