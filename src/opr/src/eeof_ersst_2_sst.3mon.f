@@ -24,17 +24,15 @@ C===========================================================
       real ts2(nfld),ts3(nfld)
       real w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx)
       real w2d4(imx,jmx),w2d5(imx,jmx),w2d6(imx,jmx)
-      real tcof(nfld,nfld)
-      real tpz(imx,jmx,montot),wtpz(imx,jmx,nyr)
-      real v2dtd(imx,jmx,nyr),v2trd(imx,jmx,nyr)
+      real tpz(imx,jmx,montot),wtpz(imx,jmx,nfld)
       real av2(imx,jmx),bv2(imx,jmx)
-      real hcst(imx,jmx,nyr,nlead,mics,ncut)
+      real hcst(imx,jmx,nfld,nlead)
       real wthcst(imx,jmx,nyr,nlead)
-      real fcst(imx,jmx,nlead,mics,ncut)
+      real fcst(imx,jmx,nlead)
       real avgo(imx,jmx),avgf(imx,jmx)
       real stdo(imx,jmx,nlead),stdf(imx,jmx,nlead)
       real wtfcst(imx,jmx,nlead)
-      real vfld(imx,jmx,nyr,nlead)
+      real vfld(imx,jmx,nfld,nlead)
       real xlat(jmx),coslat(jmx),cosr(jmx)
       real on34(nyr),fn34(nyr)
       dimension neof(mcut)
@@ -212,7 +210,6 @@ C write out rcoef
       enddo !m loop
 c
 c hindcast for ld=1->nlead
-      iw5=0
       DO ld=1,nlead
 
 c select predictant for each lead
@@ -252,8 +249,8 @@ C have predictant anomalies over period 1 -> ns_tpz
       enddo
 C 
 C CV hcst for this lead
-c     nfld=ny_tpz - 1
-c     if(ncv.eq.3) nfld=ny_tpz - 3
+c     nfld=ns_tpz - 1
+c     if(ncv.eq.3) nfld=ns_tpz - 3
 c
       DO itgt=1,ns_tpz
 
@@ -314,14 +311,13 @@ c
         enddo
       enddo ! m loop
 c
-c have lead-ld hcst for itgt yr with sst tcof and tpz regr
-      do mc=1,ncut
+c have lead-ld hcst for itgt season with sst rcoef and tpz regr
       call setzero(w2d,imx,jmx)
       do i=1,imx
       do j=1,jmx
         if(fld2(i,j).gt.-900.) then
-          do m=1,neof(mc)
-            w2d(i,j)=w2d(i,j)+tcof(m,itgt,ic)*regr2(i,j,m,itgt)
+          do m=1,nmod
+            w2d(i,j)=w2d(i,j)+rcoef(m,itgt)*regr2(i,j,m,itgt)
           enddo
             w2d2(i,j)=wtpz(i,j,itgt)
         else
@@ -329,28 +325,22 @@ c have lead-ld hcst for itgt yr with sst tcof and tpz regr
             w2d2(i,j)=undef
         endif
 
-      if(id_detrd.eq.1) then
-        hcst(i,j,itgt,ld,ic,mc)=w2d(i,j)+v2trd(i,j,itgt)
-      else
-        hcst(i,j,itgt,ld,ic,mc)=w2d(i,j)
-      endif
+        hcst(i,j,itgt,ld)=w2d(i,j)
 
         vfld(i,j,itgt,ld)=w2d2(i,j)
 
       enddo
       enddo
 
-      enddo ! mc loop
-
       ENDDO ! itgt loop
 c
 C========== realtime fcst
 c
 c have regr patterns
-      DO m=1,modmax
+      DO m=1,nmod
 
-        do iy=1,ny_tpz
-            ts1(iy)=tcof(m,iy,ic)
+        do is=1,ns_tpz
+            ts2(is)=rcoef(m,is)
         enddo
           
         do i=1,imx
@@ -358,11 +348,11 @@ c have regr patterns
 
         IF(fld2(i,j).gt.-900.) then
 
-          do iy=1,ny_tpz
-            ts2(iy)=v2dtd(i,j,iy)
+          do is=1,ns_tpz
+            ts3(iy)=vfld(i,j,is)
           enddo
 
-          call regr_t(ts1,ts2,nyr,ny_tpz,corr3(i,j,m),regr3(i,j,m))
+          call regr_t(ts2,ts3,nfld,ns_tpz,corr3(i,j,m),regr3(i,j,m))
 
         ELSE
 
@@ -373,127 +363,32 @@ c have regr patterns
 
         enddo
         enddo
-      enddo ! m loop
+
+        ENDDO ! m loop
 c
 c fcst
-      do mc=1,ncut
 
       call setzero(w2d,imx,jmx)
       do i=1,imx
       do j=1,jmx
         if(fld2(i,j).gt.-900.) then
 
-          do m=1,neof(mc)
-            w2d(i,j)=w2d(i,j)+tcof(m,ic_fcst,ic)*regr3(i,j,m)
+          do m=1,nmod
+            w2d(i,j)=w2d(i,j)+rcoef(m,nfld)*regr3(i,j,m)
           enddo
 
         else
             w2d(i,j)=undef
         endif
 
-      if(id_detrd.eq.1) then
-        fcst(i,j,ld,ic,mc)=w2d(i,j)+v2trd(i,j,ny_tpz)
-      else
-        fcst(i,j,ld,ic,mc)=w2d(i,j)
-      endif
+        fcst(i,j,ld)=w2d(i,j)
 
       enddo
       enddo
 
-      enddo ! mc loop
       ENDDO ! ld loop
 c
-c  hcst and fcst
-      iw=0
-      iw2=0
-      DO ld=1,nlead ! lead of weighted hcst/fcst
-
-C== have hcst
-      do it=1,ny_tpz
-        do i=1,imx
-        do j=1,jmx
-          if(fld2(i,j).gt.-900.) then
-            w2d2(i,j)=vfld(i,j,it,ld)
-
-            w2d(i,j)=0.
-            do ic=1,mics
-            do mc=1,ncut
-            w2d(i,j)=w2d(i,j)+hcst(i,j,it,ld,ic,mc)/float(mics*ncut)
-            enddo
-            enddo
-
-          else
-            w2d(i,j)=undef
-          endif
-          wthcst(i,j,it,ld)=w2d(i,j)
-        enddo
-        enddo
-
-      enddo !it loop
-
-C nino3.4 of hcst
-      do it=its_clm,ny_tpz
-        do i=1,imx
-        do j=1,jmx
-          fld0(i,j)=vfld(i,j,it,ld)
-          fld(i,j)=wthcst(i,j,it,ld)
-        enddo
-        enddo
-        call nino34(fld0,on34(it),imx,jmx)
-        call nino34(fld, fn34(it),imx,jmx)
-      enddo
-        
-      on34_std=0  
-      fn34_std=0  
-      do it=its_clm,ite_clm
-        on34_std=on34_std+on34(it)*on34(it)
-        fn34_std=fn34_std+fn34(it)*fn34(it)
-      enddo
-        on34_std=sqrt(on34_std/float(ny_clm))
-        fn34_std=sqrt(fn34_std/float(ny_clm))
-
-      do it=its_clm,ny_tpz
-        fn34(it)=fn34(it)*on34_std/fn34_std
-        iw=iw+1
-        write(22,rec=iw) fn34(it)
-        iw2=iw2+1
-        write(23,rec=iw2) on34(it)
-      enddo
-c
-C== have fcst
-        do i=1,imx
-        do j=1,jmx
-
-          if(fld2(i,j).gt.-900.) then
-
-          w2d(i,j)=0.
-          do ic=1,mics
-          do mc=1,ncut
-          w2d(i,j)=w2d(i,j)+fcst(i,j,ld,ic,mc)/float(mics*ncut)
-          enddo
-          enddo
-
-          else
-            w2d(i,j)=undef
-          endif
-            wtfcst(i,j,ld)=w2d(i,j)
-        enddo
-        enddo
-
-C nino3.4 of fcst
-        do i=1,imx
-        do j=1,jmx
-          fld(i,j)=wtfcst(i,j,ld)
-        enddo
-        enddo
-        call nino34(fld,xn34,imx,jmx)
-        xn34=xn34*on34_std/fn34_std
-        iw=iw+1
-        write(22,rec=iw) xn34
-
-      enddo ! ld loop
-C
-c normalize both obs and wthcst
+c normalize both obs and hcst
 c
 c std of obs
       iw4=0
@@ -504,7 +399,7 @@ c std of obs
           if (fld2(i,j).gt.-900.) then
             avgo(i,j)=0.
 c           do it=1,ny_tpz
-            do it=its_clm,ite_clm
+            do it=its_clm,ite_clm ! should it be seasonal?
             avgo(i,j)=avgo(i,j)+vfld(i,j,it,ld)/float(ny_clm)
             enddo
           else

@@ -25,6 +25,7 @@ id_eof=0
 #
 lagmax=16
 nmod=10
+ncv=3
 
 nclm_start=1981 # to have yrs clm for more stable than 30 yrs 
 its_clm=`expr $nclm_start - 1947 - $lagmax / 12`
@@ -133,6 +134,7 @@ c
       parameter(nmod=$nmod)
 c
       parameter(nyr=$nyear)
+      parameter(ncv=$ncv)
 
 eof
 #
