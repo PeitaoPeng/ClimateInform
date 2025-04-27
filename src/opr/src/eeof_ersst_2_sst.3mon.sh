@@ -147,14 +147,11 @@ if [ -f fort.10 ] ; then
 /bin/rm $tmp/fort.*
 fi
 #
-outfile1=pc.${var1}.icmon_$icmon
-outfile2=eof.${var1}.icmon_$icmon
-outfile3=fcst.$var1.2.$var2.mics$mics.mlead$mlead.ncut$ncut.icut1_$icut1.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
-outfile4=skill_1d.$var1.2.$var2.mics$mics.mlead$mlead.ncut$ncut.icut1_$icut1.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
-outfile5=hcst.$var1.2.$var2.mics$mics.mlead$mlead.ncut$ncut.icut1_$icut1.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
-outfile8=${var1}_ic_mics.3mon
-outfile9=nino34.prd.mics$mics.mlead$mlead.ncut$ncut.icut1_$icut1.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
-outfile10=nino34.obs.icmon_$icmon.3mon
+outfile1=epc.${var1}
+outfile2=eeof.${var1}
+outfile3=efcst.$var1.2.$var2.cv$ncv.3mon
+outfile4=eskill_1d.$var1.2.$var2.v$ncv.3mon
+outfile5=ehcst.$var1.2.$var2.cv$ncv.3mon
 #
 ln -s $datain1/$sstfile.gr  fort.10
 #
@@ -167,10 +164,8 @@ ln -s $dataot2/$outfile3.gr fort.30
 ln -s $dataot2/$outfile4.gr fort.31
 ln -s $dataot2/$outfile5.gr fort.32
 
-ln -s $dataot2/$outfile8.gr fort.40
-
 #
-./pcr.x > $dataot2/$var1.2.$var2.mics$mics.mlead$mlead.out
+./pcr.x > $dataot2/$var1.2.$var2.mlead$mlead.out
 #./pcr.x 
 #
 #
@@ -183,14 +178,10 @@ title EXP1
 XDEF  1 linear   0.  2.
 ydef  1 linear -88.  2.
 zdef  1 linear 1 1
-tdef  $ny_sst linear jan1950 1yr
-vars  5
-pc1    1 99 pc
-pc2    1 99 pc
-pc3    1 99 pc
-pc4    1 99 pc
-pc5    1 99 pc
-endvars
+tdef  $nsslag linear jan1950 1yr
+edef  $nmod 1 2 3 4 5 6 7 8 9 10
+vars  16
+pc    1 99 epc
 EOF
 #
 cat>$dataot2/$outfile2.ctl<<EOF
@@ -242,13 +233,12 @@ XDEF  $imx linear   0.  2.
 ydef  $jmx linear -88.  2.
 zdef  1 linear 1 1
 tdef  $mlead linear ${tgtmoyr} 1mon
-vars  6
+vars  5
 $var2  1 99 normalized fcst
 stdo   1 99 stdv of obs
 cor    1 99 corr of hcst
 rms    1 99 rmse of hcst
 hss    1 99 hss_3c of hcst
-clm    1 99 total clim
 endvars
 EOF
 #

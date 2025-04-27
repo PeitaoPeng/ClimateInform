@@ -391,14 +391,16 @@ c
 c normalize both obs and hcst
 c
 c std of obs
-      iw4=0
+      its_clm=its_clm*12
+      ite_clm=ite_clm*12
+      ny_clm=ny_clm*12
+
       do ld=1,nlead
 
         do i=1,imx
         do j=1,jmx
           if (fld2(i,j).gt.-900.) then
             avgo(i,j)=0.
-c           do it=1,ny_tpz
             do it=its_clm,ite_clm ! should it be seasonal?
             avgo(i,j)=avgo(i,j)+vfld(i,j,it,ld)/float(ny_clm)
             enddo
@@ -423,13 +425,13 @@ c           do it=1,ny_tpz
         enddo
         enddo
 
-c std of wthcst
+c std of hcst
         do i=1,imx
         do j=1,jmx
           if (fld2(i,j).gt.-900.) then
             avgf(i,j)=0.
             do it=its_clm,ite_clm
-            avgf(i,j)=avgf(i,j)+wthcst(i,j,it,ld)/
+            avgf(i,j)=avgf(i,j)+hcst(i,j,it,ld)/
      &float(ny_clm)
             enddo
           else
@@ -444,7 +446,7 @@ c std of wthcst
             stdf(i,j,ld)=0.
             do it=its_clm,ite_clm
             stdf(i,j,ld)=stdf(i,j,ld)+
-     &      (wthcst(i,j,it,ld)-avgf(i,j))**2
+     &      (hcst(i,j,it,ld)-avgf(i,j))**2
             enddo
             stdf(i,j,ld)=sqrt(stdf(i,j,ld)/float(ny_clm))
           else
@@ -467,10 +469,10 @@ c deal with "too small" std
         enddo
         enddo
 
-c standardized wthcst 
+c standardized hcst 
       do i=1,imx
       do j=1,jmx
-      do it=1,ny_tpz
+      do it=1,ns_tpz
       if (fld2(i,j).gt.-900.) then
         vfld(i,j,it,ld)=(vfld(i,j,it,ld)-avgo(i,j))/stdo(i,j,ld)
       else
@@ -484,10 +486,10 @@ c
       do j=1,jmx
       do it=1,ny_tpz
       if (fld2(i,j).gt.-900.) then
-        wthcst(i,j,it,ld)=(wthcst(i,j,it,ld)-avgf(i,j))/
+        hcst(i,j,it,ld)=(hcst(i,j,it,ld)-avgf(i,j))/
      &stdf(i,j,ld)
       else
-        wthcst(i,j,it,ld)=undef
+        hcst(i,j,it,ld)=undef
       endif
       enddo
       enddo
@@ -497,9 +499,9 @@ c standardized fcsts
       do i=1,imx
       do j=1,jmx
       if (fld2(i,j).gt.-900.) then
-        wtfcst(i,j,ld)=(wtfcst(i,j,ld)-avgf(i,j))/stdf(i,j,ld)
+        fcst(i,j,ld)=(fcst(i,j,ld)-avgf(i,j))/stdf(i,j,ld)
       else
-        wtfcst(i,j,ld)=undef
+        fcst(i,j,ld)=undef
       endif
       enddo
       enddo
@@ -507,7 +509,7 @@ c standardized fcsts
       enddo ! ld loop
 c
 c== temporal skill
-      ny_skill=ny_tpz-its_clm+1
+      ns_skill=ns_tpz-its_clm+1
       DO ld=1,nlead
 
       DO i=1,imx
@@ -516,15 +518,15 @@ c
       if(fld2(i,j).gt.-900.) then
         ir=0
 c       do it=its_clm,ite_clm
-        do it=its_clm,ny_tpz
+        do it=its_clm,ns_tpz
 
         ir=ir+1
-          ts1(ir)=vfld(i,j,it,ld)
-          ts2(ir)=wthcst(i,j,it,ld)
+          ts2(ir)=vfld(i,j,it,ld)
+          ts3(ir)=hcst(i,j,it,ld)
         enddo
-        call cor_rms(ts1,ts2,nyr,ny_skill,cor3d(i,j,ld),rms3d(i,j,ld))
+        call cor_rms(ts2,ts3,nfld,ns_skill,cor3d(i,j,ld),rms3d(i,j,ld))
 
-        call hss3c_t(ts1,ts2,nyr,ny_skill,hss3d(i,j,ld))
+        call hss3c_t(ts2,ts3,nfld,ns_skill,hss3d(i,j,ld))
       else
         cor3d(i,j,ld)=undef
         rms3d(i,j,ld)=undef
@@ -538,13 +540,12 @@ c
 c== spatial skill
       iw=0
       do ld=1,nlead
-c     do iy=its_clm,ite_clm
-      do iy=its_clm,ny_tpz
+      do is=its_clm,ns_tpz
 
         do i=1,imx
         do j=1,jmx
-        w2d(i,j)=vfld(i,j,iy,ld)
-        w2d2(i,j)=wthcst(i,j,iy,ld)
+        w2d(i,j)=vfld(i,j,is,ld)
+        w2d2(i,j)=hcst(i,j,is,ld)
         enddo
         enddo
 
@@ -574,7 +575,7 @@ c     do iy=its_clm,ite_clm
       enddo ! iy loop
       enddo ! ld loop
 c
-c write out obs and wthcst
+c write out obs and hcst
         iw=0
         do ld=1,nlead
         do it=its_clm,ny_tpz
@@ -589,7 +590,7 @@ c write out obs and wthcst
 
           do i=1,imx
           do j=1,jmx
-            w2d(i,j)=wthcst(i,j,it,ld)
+            w2d(i,j)=hcst(i,j,it,ld)
           enddo
           enddo
           iw=iw+1
@@ -611,12 +612,11 @@ c write out fcst and skill_t
 
          do i=1,imx
          do j=1,jmx
-           w2d(i,j)=wtfcst(i,j,ld)
+           w2d(i,j)=fcst(i,j,ld)
            w2d2(i,j)=stdo(i,j,ld)
            w2d3(i,j)=cor3d(i,j,ld)
            w2d4(i,j)=rms3d(i,j,ld)
            w2d5(i,j)=hss3d(i,j,ld)
-           w2d6(i,j)=tpzc_tot(i,j,ld)
          enddo
          enddo
          iw=iw+1
@@ -629,8 +629,6 @@ c write out fcst and skill_t
          write(30,rec=iw) w2d4
          iw=iw+1
          write(30,rec=iw) w2d5
-         iw=iw+1
-         write(30,rec=iw) w2d6
 
       enddo ! ld loop
 c
