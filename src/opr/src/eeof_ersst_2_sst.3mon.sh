@@ -24,6 +24,7 @@ eof_area=tp_nml   #30S-60N
 id_eof=0
 #
 lagmax=16
+mlead=7
 nmod=10
 ncv=3
 
@@ -42,10 +43,10 @@ cd $tmp
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
 #for curyr in 2021 2022 2023 2024; do
-for curyr in 2025; do
+for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
 #for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for curmo in 01; do
+for curmo in 11; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -85,7 +86,7 @@ nsslag=`expr $nsstot - $lagmax + 1` #length of lag-arranged data
 icyr=$curyr
 if [ $icmon = 12 ]; then icyr=`expr $curyr - 1`; fi
 
-need to reset follwing 3 parameters
+#need to reset follwing 3 parameters
 nyear=`expr $icyr - 1947`  # total full year data used for PCR, 68 for 1948-2015
 ny_out=`expr $nyear - $its_clm - $lagmax / 12` # from its_clm to 
 ny_out2=`expr $nyear - $its_clm - $lagmax / 12 + 1` # from its_clm to 
@@ -128,7 +129,6 @@ c
       parameter(mlag=$lagmax) 
       parameter(ngrd=$ngrd)
       parameter(lons=$lons,lone=$lone,lats=$lats,late=$late) !eof_area=tp_nml
-      parameter(jmxeof=$jmxeof)  ! eof area in lats 
       parameter(undef=$undef)
       parameter(ID=$id_eof)
       parameter(nmod=$nmod)
@@ -157,8 +157,6 @@ ln -s $datain1/$sstfile.gr  fort.10
 #
 ln -s $dataot2/$outfile1.gr fort.20
 ln -s $dataot2/$outfile2.gr fort.21
-ln -s $dataot2/$outfile9.gr fort.22
-ln -s $dataot2/$outfile10.gr fort.23
 
 ln -s $dataot2/$outfile3.gr fort.30
 ln -s $dataot2/$outfile4.gr fort.31
@@ -178,10 +176,10 @@ title EXP1
 XDEF  1 linear   0.  2.
 ydef  1 linear -88.  2.
 zdef  1 linear 1 1
-tdef  $nsslag linear jan1950 1yr
-edef  $nmod 1 2 3 4 5 6 7 8 9 10
-vars  16
-pc    1 99 epc
+tdef  $nsslag linear jan1950 1mo
+edef  $nmod names 1 2 3 4 5 6 7 8 9 10
+vars  1
+rpc   1 99 epc
 EOF
 #
 cat>$dataot2/$outfile2.ctl<<EOF
@@ -191,37 +189,24 @@ title EXP1
 XDEF  $imx linear   0.  2.
 ydef  $jmx linear -88.  2.
 zdef  1 linear 1 1
-tdef  999 linear jan1950 1mon
-vars  1
-reg   1 99 constructed
-endvars
-EOF
-#
-cat>$dataot2/$outfile9.ctl<<EOF
-dset ^$outfile9.gr
-undef $undef
-title EXP1
-XDEF  1 linear   0.  2.
-ydef  1 linear -88.  2.
-zdef  1 linear 1 1
-tdef  $ny_out2 linear ${tgtmon}$outyr_s 1yr
-edef  $mlead names 1 2 3 4 5 6 7
-vars  1
-x     1 99 nino34 index
-endvars
-EOF
-#
-cat>$dataot2/$outfile10.ctl<<EOF
-dset ^$outfile10.gr
-undef $undef
-title EXP1
-XDEF  1 linear   0.  2.
-ydef  1 linear -88.  2.
-zdef  1 linear 1 1
-tdef  $ny_out linear ${tgtmon}$outyr_s 1yr
-edef  $mlead names 1 2 3 4 5 6 7
-vars  1
-x     1 99 nino34 index
+tdef  $nmod linear jan1950 1mon
+vars  16
+r1     1 99 regr
+r2     1 99 regr
+r3     1 99 regr
+r4     1 99 regr
+r5     1 99 regr
+r6     1 99 regr
+r7     1 99 regr
+r8     1 99 regr
+r9     1 99 regr
+r10     1 99 regr
+r11     1 99 regr
+r12     1 99 regr
+r13     1 99 regr
+r14     1 99 regr
+r15     1 99 regr
+r16     1 99 regr
 endvars
 EOF
 #
@@ -277,21 +262,7 @@ s  1 99 std of obs
 endvars
 EOF
 #
-cat>$dataot2/$outfile8.ctl<<EOF
-dset ^$outfile8.gr
-undef $undef
-title EXP1
-XDEF  $imx linear   0. 2.
-ydef  $jmx linear -89. 2.
-zdef  1 linear 1 1
-tdef  999 linear jan1948 1mon
-vars  1
-sst   1 99 sst ic
-endvars
-EOF
 
 done # curmo loop
 done # curyr loop
 
-done # ncut loop
-done # mics loop

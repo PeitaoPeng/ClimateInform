@@ -1,4 +1,4 @@
-      include "parm.h"
+      rnclude "parm.h"
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C PCR for forecst TPZ
 C===========================================================
@@ -16,6 +16,7 @@ C===========================================================
       real fld2(imx,jmx)
       real corr(imx,jmx),regr(imx,jmx)
       real corr2(imx,jmx,nmod),regr2(imx,jmx,nmod,nfld)
+      real corr3(imx,jmx,nmod),regr3(imx,jmx,nmod)
       real corr4d(imx,jmx,mlag,nmod),regr4d(imx,jmx,mlag,nmod)
 
       real cor3d(imx,jmx,nlead),rms3d(imx,jmx,nlead)
@@ -27,7 +28,6 @@ C===========================================================
       real tpz(imx,jmx,montot),wtpz(imx,jmx,nfld)
       real av2(imx,jmx),bv2(imx,jmx)
       real hcst(imx,jmx,nfld,nlead)
-      real wthcst(imx,jmx,nyr,nlead)
       real fcst(imx,jmx,nlead)
       real avgo(imx,jmx),avgf(imx,jmx)
       real stdo(imx,jmx,nlead),stdf(imx,jmx,nlead)
@@ -35,15 +35,12 @@ C===========================================================
       real vfld(imx,jmx,nfld,nlead)
       real xlat(jmx),coslat(jmx),cosr(jmx)
       real on34(nyr),fn34(nyr)
-      dimension neof(mcut)
-      data neof/icut1,icut2,icut3,icut4/
 C
       open(10,form='unformatted',access='direct',recl=4*imx*jmx) !sst
 
       open(20,form='unformatted',access='direct',recl=4) !pc
-      open(21,form='unformatted',access='direct',recl=4*imx*jmxeof) !eof
+      open(21,form='unformatted',access='direct',recl=4*imx*jmx) !eof
       open(22,form='unformatted',access='direct',recl=4) !hcst/fcst nino34
-      open(23,form='unformatted',access='direct',recl=4) !obs nino34
 
       open(30,form='unformatted',access='direct',recl=4*imx*jmx) !fcst
       open(31,form='unformatted',access='direct',recl=4) !1d_skill
@@ -349,7 +346,7 @@ c have regr patterns
         IF(fld2(i,j).gt.-900.) then
 
           do is=1,ns_tpz
-            ts3(iy)=vfld(i,j,is)
+            ts3(iy)=vfld(i,j,is,ld)
           enddo
 
           call regr_t(ts2,ts3,nfld,ns_tpz,corr3(i,j,m),regr3(i,j,m))
@@ -391,9 +388,9 @@ c
 c normalize both obs and hcst
 c
 c std of obs
-      its_clm=its_clm*12
-      ite_clm=ite_clm*12
-      ny_clm=ny_clm*12
+      iss_clm=its_clm*12
+      ise_clm=ite_clm*12
+      ns_clm=ns_clm*12
 
       do ld=1,nlead
 
@@ -401,8 +398,8 @@ c std of obs
         do j=1,jmx
           if (fld2(i,j).gt.-900.) then
             avgo(i,j)=0.
-            do it=its_clm,ite_clm ! should it be seasonal?
-            avgo(i,j)=avgo(i,j)+vfld(i,j,it,ld)/float(ny_clm)
+            do it=iss_clm,ise_clm ! should it be seasonal?
+            avgo(i,j)=avgo(i,j)+vfld(i,j,it,ld)/float(ns_clm)
             enddo
           else
             avgo(i,j)=undef
@@ -414,11 +411,11 @@ c std of obs
         do j=1,jmx
           if (fld2(i,j).gt.-900.) then
             stdo(i,j,ld)=0.
-            do it=its_clm,ite_clm
+            do it=iss_clm,ise_clm
             stdo(i,j,ld)=stdo(i,j,ld)+
      &      (vfld(i,j,it,ld)-avgo(i,j))**2
             enddo
-            stdo(i,j,ld)=sqrt(stdo(i,j,ld)/float(ny_clm))
+            stdo(i,j,ld)=sqrt(stdo(i,j,ld)/float(ns_clm))
           else
             stdo(i,j,ld)=undef
             endif
@@ -430,9 +427,9 @@ c std of hcst
         do j=1,jmx
           if (fld2(i,j).gt.-900.) then
             avgf(i,j)=0.
-            do it=its_clm,ite_clm
+            do it=iss_clm,ise_clm
             avgf(i,j)=avgf(i,j)+hcst(i,j,it,ld)/
-     &float(ny_clm)
+     &float(ns_clm)
             enddo
           else
             avgf(i,j)=undef
@@ -444,11 +441,11 @@ c std of hcst
         do j=1,jmx
           if (fld2(i,j).gt.-900.) then
             stdf(i,j,ld)=0.
-            do it=its_clm,ite_clm
+            do it=iss_clm,ise_clm
             stdf(i,j,ld)=stdf(i,j,ld)+
      &      (hcst(i,j,it,ld)-avgf(i,j))**2
             enddo
-            stdf(i,j,ld)=sqrt(stdf(i,j,ld)/float(ny_clm))
+            stdf(i,j,ld)=sqrt(stdf(i,j,ld)/float(ns_clm))
           else
             stdf(i,j,ld)=undef
           endif
@@ -509,7 +506,7 @@ c standardized fcsts
       enddo ! ld loop
 c
 c== temporal skill
-      ns_skill=ns_tpz-its_clm+1
+      ns_skill=ns_tpz-iss_clm+1
       DO ld=1,nlead
 
       DO i=1,imx
@@ -517,8 +514,8 @@ c== temporal skill
 c
       if(fld2(i,j).gt.-900.) then
         ir=0
-c       do it=its_clm,ite_clm
-        do it=its_clm,ns_tpz
+c       do it=iss_clm,ise_clm
+        do it=iss_clm,ns_tpz
 
         ir=ir+1
           ts2(ir)=vfld(i,j,it,ld)
@@ -540,7 +537,7 @@ c
 c== spatial skill
       iw=0
       do ld=1,nlead
-      do is=its_clm,ns_tpz
+      do is=iss_clm,ns_tpz
 
         do i=1,imx
         do j=1,jmx
@@ -578,7 +575,7 @@ c
 c write out obs and hcst
         iw=0
         do ld=1,nlead
-        do it=its_clm,ny_tpz
+        do it=iss_clm,ny_tpz
 
           do i=1,imx
           do j=1,jmx
