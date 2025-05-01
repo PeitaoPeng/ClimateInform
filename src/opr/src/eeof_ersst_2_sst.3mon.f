@@ -1,4 +1,4 @@
-      rnclude "parm.h"
+      include "parm.h"
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C PCR for forecst TPZ
 C===========================================================
@@ -22,7 +22,7 @@ C===========================================================
       real cor3d(imx,jmx,nlead),rms3d(imx,jmx,nlead)
       real hss3d(imx,jmx,nlead)
       real ts1(nsstot)
-      real ts2(nfld),ts3(nfld)
+      real ts2(nfld),ts3(nfld),ts4(nfld)
       real w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx)
       real w2d4(imx,jmx),w2d5(imx,jmx),w2d6(imx,jmx)
       real tpz(imx,jmx,montot),wtpz(imx,jmx,nfld)
@@ -168,10 +168,10 @@ c
         ts2(it)=rcoef(m,it)
       enddo
 
-      call normal(ts2,nfld)
+      call normal(ts2,ts3,nfld)
 
       do it=1,nfld
-        rcoef(m,it)=ts2(it)
+        rcoef(m,it)=ts3(it)
       enddo
 
       do ilag=1,mlag
@@ -778,120 +778,6 @@ c
       return
       end
 
-      SUBROUTINE pc_eof_mics(wf3d,imx,jmx,is,ie,ls,le,ltime,nfld,cosr,
-     &ngrd,modmax,tcof,corr,regr,undef,id,mics,id_ceof)
-
-      real wf3d(imx,jmx,ltime,mics),tcof(ltime,ltime,mics)
-      real f3d(imx,jmx,nfld,mics),cosr(jmx)
-      real aaa(ngrd*mics,nfld),wk(nfld,ngrd)
-      real eval(nfld*mics),evec(ngrd*mics,nfld),coef(nfld,nfld)
-      real ts1(nfld),ts2(nfld)
-      real corr(imx,jmx,modmax),regr(imx,jmx,modmax)
-c
-      do ic=1,mics
-
-      do it=1,nfld
-
-      if(id_ceof.eq.0) then
-        ng=0
-        do j=ls,le
-        do i=is,ie
-        if(wf3d(i,j,1,1).gt.undef) then
-          ng=ng+1
-          aaa(ng,it)=wf3d(i,j,it,ic)*cosr(j)
-        endif
-        enddo
-        enddo
-      else
-        ng=0
-      do ii=1,ic
-        do j=ls,le
-        do i=is,ie
-        if(wf3d(i,j,1,1).gt.undef) then
-          ng=ng+1
-          aaa(ng,it)=wf3d(i,j,it,ii)*cosr(j)
-        endif
-        enddo
-        enddo
-        enddo ! ii loop
-      endif
-
-      enddo ! it loop
-
-      write(6,*) 'ic=',ic,' ngrd= ',ng
-c
-      call eofs_mics(aaa,ngrd*mics,ng,nfld,coef,modmax,id)
-c
-c normalize coef
-      do m=1, modmax
-      do it=1,nfld
-        ts1(it)=coef(m,it)
-      enddo
-c
-      call normal(ts1,ts2,nfld)
-c
-      do it=1,nfld
-        tcof(m,it,ic)=ts2(it)
-      enddo
-      enddo ! m loop
-
-      enddo ! ic loop
-
-c regr patterns
-
-      do m=1,modmax
-c
-      do it=1,nfld
-        ts1(it)=tcof(m,it,1)
-      enddo
-c
-      do j=1,jmx
-      do i=1,imx
-
-      if(wf3d(i,j,1,1).gt.undef) then
-
-      do it=1,nfld
-        ts2(it)=wf3d(i,j,it,1)
-      enddo
-
-      call regr_t(ts1,ts2,nfld,nfld,corr(i,j,m),regr(i,j,m))
-      else
-      corr(i,j,m)=undef
-      regr(i,j,m)=undef
-      endif
-
-      enddo
-      enddo
-
-      enddo !m loop
-c
-      return
-      end
-
-      SUBROUTINE eofs_mics(aaa,ngbig,ng,nfld,coef,modmax,id)
-      real aaa(ngbig,nfld),wk(nfld,ng)
-      real bbb(ng,nfld)
-      real eval(nfld),evec(ng,nfld),coef(nfld,nfld)
-
-      do k=1,nfld
-      do i=1,ng
-        bbb(i,k)=aaa(i,k)
-      enddo
-      enddo
-
-      call eofs(bbb,ng,nfld,nfld,eval,evec,coef,wk,id)
-
-cc... write out eval
-      totv=0
-      do m=1,modmax
-      write(6,*)'eval= ',m,eval(m)
-      totv=totv+eval(m)
-      end do
-      write(6,*)'modmax=',modmax,'totv= ',totv
-
-      return
-      end
-c
 
       SUBROUTINE setzero(fld,n,m)
       DIMENSION fld(n,m)
