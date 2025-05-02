@@ -12,7 +12,6 @@ if [ ! -d $tmp ] ; then
 fi
 datain1=/home/ppeng/data/sst
 datain2=/home/ppeng/data/tpz
-dataot1=/home/ppeng/data/pcr_prd
 #
 # grid of ERSST
 imx=180
@@ -23,7 +22,7 @@ var2=sst
 eof_area=tp_nml   #30S-60N
 id_eof=0
 #
-lagmax=16
+lagmax=5
 mlead=7
 nmod=10
 ncv=3
@@ -70,24 +69,19 @@ outyr_s=1981
 #
 if [ $icmon -eq 11 ]; then tgtmoyr=$tgtmon$yyyp; outyr_s=1982; fi
 #
-yrn1=`expr $curyr - 1854`
-if [ $cmon = 1 ]; then yrn1=`expr $yyym - 1854`; fi
-mmn1=`expr $yrn1 \* 12`
-ttlong=`expr $mmn1 + $icmon` # total mon of slp data from jan1854 to latest_mon; dec2015=1944
-#
 yrn2=`expr $curyr - 1948` # total full years,=68 for 1948-2015
-if [ $cmon = 1 ]; then yrn2=`expr $yyym - 1948`; fi
 mmn2=`expr $yrn2 \* 12`
 #
 montot=`expr $mmn2 + $icmon` # 816=dec2015
 nsstot=`expr $montot - 2` #
-nsslag=`expr $nsstot - $lagmax + 1` #length of lag-arranged data
+nssind=`expr $nsstot / 3` # independent 3-mon avg
+nsslag=`expr $nssind - $lagmax + 1` #length of lag-arranged data
 #
 icyr=$curyr
 if [ $icmon = 12 ]; then icyr=`expr $curyr - 1`; fi
 
 #need to reset follwing 3 parameters
-nyear=`expr $icyr - 1947`  # total full year data used for PCR, 68 for 1948-2015
+nyear=`expr $icyr - 1948`  # total full year data used for PCR, 68 for 1948-2015
 ny_out=`expr $nyear - $its_clm - $lagmax / 12` # from its_clm to 
 ny_out2=`expr $nyear - $its_clm - $lagmax / 12 + 1` # from its_clm to 
 
@@ -163,7 +157,7 @@ ln -s $dataot2/$outfile4.gr fort.31
 ln -s $dataot2/$outfile5.gr fort.32
 
 #
-./pcr.x > $dataot2/$var1.2.$var2.mlead$mlead.out
+./pcr.x > $dataot2/eeof.$var1.2.$var2.mlead$mlead.out
 #./pcr.x 
 #
 #

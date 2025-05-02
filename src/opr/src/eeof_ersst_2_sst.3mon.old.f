@@ -134,12 +134,12 @@ c
 c SST EOF analysis
 c
       write(6,*) 'eof begins'
-c     call EOFS(aaa,mlag*ngrd,nfld,nfld,eval,evec,coef,wk,ID)
+      call EOFS(aaa,mlag*ngrd,nfld,nfld,eval,evec,coef,wk,ID)
       write(6,*) 'reof begins'
-c     call REOFS(aaa,mlag*ngrd,nfld,nfld,wk,ID,weval,wevec,wcoef,
-c    &           nmod,reval,revec,rcoef,tt,rwk,rwk2)
+      call REOFS(aaa,mlag*ngrd,nfld,nfld,wk,ID,weval,wevec,wcoef,
+     &           nmod,reval,revec,rcoef,tt,rwk,rwk2)
 cc... arrange reval,revec and rcoef in decreasing order
-c     call order(mlag*ngrd,nfld,nmod,reval,revec,rcoef)
+      call order(mlag*ngrd,nfld,nmod,reval,revec,rcoef)
 c
 cc... write out eval and reval
       totv1=0
