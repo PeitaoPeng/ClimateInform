@@ -74,7 +74,9 @@ mmn2=`expr $yrn2 \* 12`
 #
 montot=`expr $mmn2 + $icmon` # 816=dec2015
 nsstot=`expr $montot - 2` #
-nssind=`expr $nsstot / 3` # independent 3-mon avg
+
+nssind=$(expr $nsstot / 3) # independent 3-mon avg
+nskip=`expr $nsstot - $nssind \* 3 - 1` # skiped ss in read
 nsslag=`expr $nssind - $lagmax + 1` #length of lag-arranged data
 #
 icyr=$curyr
@@ -117,6 +119,7 @@ c
       parameter(icmon=$icmon)  ! sst ic month
       parameter(ny_clm=$ny_clm,its_clm=$its_clm,ite_clm=$ite_clm) 
       parameter(montot=$montot,nsstot=$nsstot)  ! total month number
+      parameter(nskip=$nskip,nssuse=$nssuse) ! acturly used nss 
       parameter(nfld=$nsslag)  ! ss of lag-arranged 
       parameter(imx=$imx,jmx=$jmx)  ! sst dimension
       parameter(nlead=$mlead) 

@@ -57,11 +57,14 @@ C
       enddo
 C
 C=== read in all 3-mon avg sst
-      do it=1,nsstot ! nsstot=montot-2
+      its=nskip + 1
+      ir=0
+      do it=its,nsstot,3
+      ir=ir+1
         read(10,rec=it) fld2
         do i=1,imx
         do j=1,jmx
-          sst(i,j,it)=fld2(i,j) 
+          sst(i,j,ir)=fld2(i,j) 
         enddo
         enddo
       enddo
