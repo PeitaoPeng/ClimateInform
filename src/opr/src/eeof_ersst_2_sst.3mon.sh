@@ -65,6 +65,7 @@ yyym=`expr $curyr - 1`
 yyyp=`expr $curyr + 1`
 #
 tgtmoyr=$tgtmon$yyyy  # 1st mon of lead-1 season
+#
 outyr_s=1981 
 #
 if [ $icmon -eq 11 ]; then tgtmoyr=$tgtmon$yyyp; outyr_s=1982; fi
@@ -76,8 +77,15 @@ montot=`expr $mmn2 + $icmon` # 816=dec2015
 nsstot=`expr $montot - 2` #
 
 nssind=$(expr $nsstot / 3) # independent 3-mon avg
-nskip=`expr $nsstot - $nssind \* 3 - 1` # skiped ss in read
-nsslag=`expr $nssind - $lagmax + 1` #length of lag-arranged data
+nssdif=`expr $nsstot - $nssind \* 3`  
+
+if [ $nssdif = 0 ]; then iread_s=3; else iread_s=$nsdif; fi
+
+nssuse=`expr $nssind - $nssdif + 1` # data length including end ss
+
+nyrfull=$(expr $nssuse / 4) # data length of full year ddata
+
+nsslag=`expr $nssuse - $lagmax + 1` #length of lag-arranged data
 #
 icyr=$curyr
 if [ $icmon = 12 ]; then icyr=`expr $curyr - 1`; fi
@@ -118,9 +126,12 @@ cat > parm.h << eof
 c
       parameter(icmon=$icmon)  ! sst ic month
       parameter(ny_clm=$ny_clm,its_clm=$its_clm,ite_clm=$ite_clm) 
+
       parameter(montot=$montot,nsstot=$nsstot)  ! total month number
-      parameter(nskip=$nskip,nssuse=$nssuse) ! acturly used nss 
+      parameter(nssuse=$nssuse) ! acturly used nss 
       parameter(nfld=$nsslag)  ! ss of lag-arranged 
+      parameter(iread_s=${iread_s}) ! start of reaning 
+
       parameter(imx=$imx,jmx=$jmx)  ! sst dimension
       parameter(nlead=$mlead) 
       parameter(mlag=$lagmax) 
@@ -130,7 +141,7 @@ c
       parameter(ID=$id_eof)
       parameter(nmod=$nmod)
 c
-      parameter(nyr=$nyear)
+      parameter(nyrful=$nyrfull)
       parameter(ncv=$ncv)
 
 eof

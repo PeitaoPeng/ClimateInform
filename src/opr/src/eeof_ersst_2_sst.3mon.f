@@ -3,8 +3,8 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C PCR for forecst TPZ
 C===========================================================
       real fld0(imx,jmx),fld(imx,jmx)
-      real sst(imx,jmx,nsstot)
-      real sstc(imx,jmx,12),clm_1d(12)
+      real sst(imx,jmx,nssuse)
+      real sstc(imx,jmx,4),clm_sst_1d(4),clm_sst_1d(4)
       real sstlag(imx,jmx,mlag,nfld)
       real aaa(mlag*ngrd,nfld),wk(nfld,mlag*ngrd),tt(nmod,nmod)
       real eval(nfld),evec(mlag*ngrd,nfld),coef(nfld,nfld)
@@ -21,7 +21,7 @@ C===========================================================
 
       real cor3d(imx,jmx,nlead),rms3d(imx,jmx,nlead)
       real hss3d(imx,jmx,nlead)
-      real ts1(nsstot)
+      real ts1(nssuse)
       real ts2(nfld),ts3(nfld),ts4(nfld)
       real w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx)
       real w2d4(imx,jmx),w2d5(imx,jmx),w2d6(imx,jmx)
@@ -56,10 +56,9 @@ C
         cosr(j)=sqrt(coslat(j))
       enddo
 C
-C=== read in all 3-mon avg sst
-      its=nskip + 1
+C=== read in independent and properly skiped avg sst
       ir=0
-      do it=its,nsstot,3
+      do it=iread_s,nsstot,3
       ir=ir+1
         read(10,rec=it) fld2
         do i=1,imx
@@ -68,21 +67,24 @@ C=== read in all 3-mon avg sst
         enddo
         enddo
       enddo
+
+      nread=ir
+      write(6,*) 'nread=',nread
 C
-C have sst anomalies over all data period
+C have sst anomalies 
       do i=1,imx
       do j=1,jmx
 
         if(fld2(i,j).gt.-900.) then
-          do it=1,nsstot
+          do it=1,nssuse
             ts1(it)=sst(i,j,it)
           enddo
-          call clim_anom_12(ts1,nsstot,nyr,clm_1d)
+          call clim_anom_4(ts1,nssuse,nyrful,clm_sst_1d)
         else
           do it=1,nsstot
             ts1(it)=undef
           enddo
-          do m=1,12
+          do m=1,4
             clm_1d(m)=undef
           enddo
         endif
@@ -91,7 +93,7 @@ C have sst anomalies over all data period
           sst(i,j,it)=ts1(it)
         enddo
 
-        do m=1,12
+        do m=1,4
           sstc(i,j,m)=clm_1d(m)
         enddo
 
@@ -125,7 +127,7 @@ C input to aaa
       do j=lats,late
         if(fld2(i,j).gt.-900.) then
           ig=ig+1
-          aaa(ig+(ilag-1)*ngrd,is)=cosr(j)*sst(i,j,is+ilag-1)
+          aaa(ig+(ilag-1)*ngrd,is)=cosr(j)*sstlag(i,j,ilag,is)
         endif
       enddo
       enddo
@@ -137,12 +139,12 @@ c
 c SST EOF analysis
 c
       write(6,*) 'eof begins'
-c     call EOFS(aaa,mlag*ngrd,nfld,nfld,eval,evec,coef,wk,ID)
+      call EOFS(aaa,mlag*ngrd,nfld,nfld,eval,evec,coef,wk,ID)
       write(6,*) 'reof begins'
-c     call REOFS(aaa,mlag*ngrd,nfld,nfld,wk,ID,weval,wevec,wcoef,
-c    &           nmod,reval,revec,rcoef,tt,rwk,rwk2)
+      call REOFS(aaa,mlag*ngrd,nfld,nfld,wk,ID,weval,wevec,wcoef,
+     &           nmod,reval,revec,rcoef,tt,rwk,rwk2)
 cc... arrange reval,revec and rcoef in decreasing order
-c     call order(mlag*ngrd,nfld,nmod,reval,revec,rcoef)
+      call order(mlag*ngrd,nfld,nmod,reval,revec,rcoef)
 c
 cc... write out eval and reval
       totv1=0
@@ -827,6 +829,39 @@ c
 c  
       do i=1,nt
         ts(i)=ts(i)-cc
+      enddo
+c
+      return
+      end
+
+      SUBROUTINE clim_anom_4(ts,ntot,nyr,clm)
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C. calculate seasonal anom 
+C===========================================================
+      DIMENSION ts(ntot),clm(4)
+
+      nss=nyr*4
+
+      do m=1,4
+        clm(m)=0.
+        ir=0
+        do i=m,ntot,4
+        ir=ir+1
+         clm(m)=clm(m)+ts(i)
+        enddo
+        clm(m)=clm(m)/float(ir)
+      enddo
+c  
+      do m=1,4
+        do i=m,nss,4
+          ts(i)=ts(i)-clm(m)
+        enddo
+      enddo
+
+      nleft=ntot-nss
+
+      do m=1,nleft
+        ts(nss+m)=ts(nss+m)-clm(m)
       enddo
 c
       return
