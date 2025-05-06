@@ -4,7 +4,7 @@ C PCR for forecst TPZ
 C===========================================================
       real fld0(imx,jmx),fld(imx,jmx)
       real sst(imx,jmx,nssuse)
-      real sstc(imx,jmx,4),clm_sst_1d(4),clm_sst_1d(4)
+      real sstc(imx,jmx,4),clm_sst_1d(4),clm_tpz_1d(12)
       real sstlag(imx,jmx,mlag,nfld)
       real aaa(mlag*ngrd,nfld),wk(nfld,mlag*ngrd),tt(nmod,nmod)
       real eval(nfld),evec(mlag*ngrd,nfld),coef(nfld,nfld)
@@ -58,7 +58,7 @@ C
 C
 C=== read in independent and properly skiped avg sst
       ir=0
-      do it=iread_s,nsstot,3
+      do it=its_sst,nsstot,3
       ir=ir+1
         read(10,rec=it) fld2
         do i=1,imx
@@ -69,7 +69,7 @@ C=== read in independent and properly skiped avg sst
       enddo
 
       nread=ir
-      write(6,*) 'nread=',nread
+      write(6,*) 'nread=',nread ! should = nssuse
 C
 C have sst anomalies 
       do i=1,imx
@@ -79,22 +79,22 @@ C have sst anomalies
           do it=1,nssuse
             ts1(it)=sst(i,j,it)
           enddo
-          call clim_anom_4(ts1,nssuse,nyrful,clm_sst_1d)
+          call clim_anom_4(ts1,nssuse,nssuse,clm_sst_1d)
         else
-          do it=1,nsstot
+          do it=1,nssuse
             ts1(it)=undef
           enddo
           do m=1,4
-            clm_1d(m)=undef
+            clm_sst_1d(m)=undef
           enddo
         endif
 
-        do it=1,nsstot
+        do it=1,nssuse
           sst(i,j,it)=ts1(it)
         enddo
 
         do m=1,4
-          sstc(i,j,m)=clm_1d(m)
+          sstc(i,j,m)=clm_sst_1d(m)
         enddo
 
       enddo
@@ -161,7 +161,7 @@ cc... write out eval and reval
       end do
       write(6,*)'total= ',totv2
 C
-CCC...CORR between rcoef and data
+CCC...CORR between rcoef and tpz data
 C
       iw1=0
       iw2=0
@@ -171,7 +171,7 @@ c
         ts2(it)=rcoef(m,it)
       enddo
 
-      call normal(ts2,ts3,nfld)
+      call normal(ts2,ts3,nfld,nfld)
 
       do it=1,nfld
         rcoef(m,it)=ts3(it)
@@ -212,14 +212,16 @@ c
 c hindcast for ld=1->nlead
       DO ld=1,nlead
 
-c select predictant for each lead
-      its_tpz=mlag+ld+3 !for mlag=5,5(=mjj)+ld(=1)+3=9(son)
+c read in predictant (tpz) for each lead
+      its_tpz=its_sst+mlag+ld+3 !for mlag=5,5(=mjj)+ld(=1)+3=9(son)
       ir=0
-      do it=its_tpz,nsstot
+      do it=its_tpz,nsstot,3
         ir=ir+1
+        read(10,rec=it) w2d
+
         do i=1,imx
         do j=1,jmx
-          wtpz(i,j,ir)=sst(i,j,it)
+          wtpz(i,j,ir)=w2d(i,j)
         enddo
         enddo
       enddo
@@ -236,7 +238,7 @@ C have predictant anomalies over period 1 -> ns_tpz
           do it=1,ns_tpz
             ts2(it)=wtpz(i,j,it)
           enddo
-          call clim_anom_12(ts2,nfld,nyr_tpz,clm_1d)
+          call clim_anom_4(ts2,nfld,ns_tpz,clm_tpz_1d)
         else
           do it=1,ns_tpz
             ts2(it)=undef
@@ -271,8 +273,8 @@ c
             if(is.eq.isp)  go to 555
           endif
 
-            ir=ir+1
-            ts2(ir)=rcoef(m,is)
+          ir=ir+1
+          ts2(ir)=rcoef(m,is)
   555   continue
         enddo
           
@@ -333,6 +335,7 @@ c have lead-ld hcst for itgt season with sst rcoef and tpz regr
       enddo
 
       ENDDO ! itgt loop
+      write(6,*) 'mfld=',mfld
 c
 C========== realtime fcst
 c
@@ -391,9 +394,9 @@ c
 c normalize both obs and hcst
 c
 c std of obs
-      iss_clm=its_clm*12
-      ise_clm=ite_clm*12
-      ns_clm=ns_clm*12
+      iss_clm=its_clm*4
+      ise_clm=ite_clm*4
+      ns_clm=ns_clm*4
 
       do ld=1,nlead
 
@@ -834,18 +837,16 @@ c
       return
       end
 
-      SUBROUTINE clim_anom_4(ts,ntot,nyr,clm)
+      SUBROUTINE clim_anom_4(ts,ntot,nss,clm)
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C. calculate seasonal anom 
 C===========================================================
       DIMENSION ts(ntot),clm(4)
 
-      nss=nyr*4
-
       do m=1,4
         clm(m)=0.
         ir=0
-        do i=m,ntot,4
+        do i=m,nss,4
         ir=ir+1
          clm(m)=clm(m)+ts(i)
         enddo
@@ -856,12 +857,6 @@ c
         do i=m,nss,4
           ts(i)=ts(i)-clm(m)
         enddo
-      enddo
-
-      nleft=ntot-nss
-
-      do m=1,nleft
-        ts(nss+m)=ts(nss+m)-clm(m)
       enddo
 c
       return
@@ -911,24 +906,29 @@ c
       end
 
 
-      SUBROUTINE normal(rot,rot2,ltime)
+      SUBROUTINE normal(rot,rot2,ltime,nss)
       DIMENSION rot(ltime),rot2(ltime)
       avg=0.
-      do i=1,ltime
-         avg=avg+rot(i)/float(ltime)
+      do i=1,nss
+         avg=avg+rot(i)
       enddo
-      do i=1,ltime
+      avg=avg/float(nss)
+
+      do i=1,nss
         rot2(i)=rot(i)-avg
       enddo
 c
       sd=0.
-      do i=1,ltime
-        sd=sd+rot2(i)*rot2(i)/float(ltime)
+      do i=1,nss
+        sd=sd+rot2(i)*rot2(i)
       enddo
-        sd=sqrt(sd)
-      do i=1,ltime
+      sd=sd/float(nss)
+      sd=sqrt(sd)
+
+      do i=1,nss
         rot2(i)=rot2(i)/sd
       enddo
+
       return
       end
 

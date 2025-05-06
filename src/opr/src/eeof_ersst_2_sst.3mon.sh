@@ -24,11 +24,11 @@ id_eof=0
 #
 lagmax=5
 mlead=7
-nmod=10
+nmod=11
 ncv=3
 
 nclm_start=1981 # to have yrs clm for more stable than 30 yrs 
-its_clm=`expr $nclm_start - 1947 - $lagmax / 12`
+its_clm=`expr $nclm_start - 1947 - $lagmax / 4`
 ite_clm=`expr $its_clm + 39` # have 40 yrs clm for more stable than 30 yrs
 ny_clm=`expr $ite_clm - $its_clm + 1`
 
@@ -79,11 +79,13 @@ nsstot=`expr $montot - 2` #
 nssind=$(expr $nsstot / 3) # independent 3-mon avg
 nssdif=`expr $nsstot - $nssind \* 3`  
 
-if [ $nssdif = 0 ]; then iread_s=3; else iread_s=$nsdif; fi
+if [ $nssdif = 0 ]; then its_sst=3; else its_sst=$nssdif; fi
 
-nssuse=`expr $nssind - $nssdif + 1` # data length including end ss
+nss4rd=`expr $nsstot - $nssdif + 1` # data length including end ss
 
-nyrfull=$(expr $nssuse / 4) # data length of full year ddata
+nssuse=`expr $nss4rd / 3 + 1` # data length used in analysis
+
+nyrfull=$(expr $nssuse / 4) # data length of full year data
 
 nsslag=`expr $nssuse - $lagmax + 1` #length of lag-arranged data
 #
@@ -130,7 +132,7 @@ c
       parameter(montot=$montot,nsstot=$nsstot)  ! total month number
       parameter(nssuse=$nssuse) ! acturly used nss 
       parameter(nfld=$nsslag)  ! ss of lag-arranged 
-      parameter(iread_s=${iread_s}) ! start of reaning 
+      parameter(its_sst=${its_sst}) ! start of reaning 
 
       parameter(imx=$imx,jmx=$jmx)  ! sst dimension
       parameter(nlead=$mlead) 
@@ -171,8 +173,8 @@ ln -s $dataot2/$outfile4.gr fort.31
 ln -s $dataot2/$outfile5.gr fort.32
 
 #
-./pcr.x > $dataot2/eeof.$var1.2.$var2.mlead$mlead.out
-#./pcr.x 
+#./pcr.x > $dataot2/eeof.$var1.2.$var2.mlead$mlead.out
+./pcr.x 
 #
 #
 ny_sst=`expr $icyr - 1950 + 1`  # total full year data used for PCR, 68 for 1948-2015
@@ -185,9 +187,10 @@ XDEF  1 linear   0.  2.
 ydef  1 linear -88.  2.
 zdef  1 linear 1 1
 tdef  $nsslag linear jan1950 1mo
-edef  $nmod names 1 2 3 4 5 6 7 8 9 10
+edef  $nmod names 1 2 3 4 5 6 7 8 9 10 11
 vars  1
 rpc   1 99 epc
+endvars
 EOF
 #
 cat>$dataot2/$outfile2.ctl<<EOF
@@ -198,23 +201,12 @@ XDEF  $imx linear   0.  2.
 ydef  $jmx linear -88.  2.
 zdef  1 linear 1 1
 tdef  $nmod linear jan1950 1mon
-vars  16
+vars  5
 r1     1 99 regr
 r2     1 99 regr
 r3     1 99 regr
 r4     1 99 regr
 r5     1 99 regr
-r6     1 99 regr
-r7     1 99 regr
-r8     1 99 regr
-r9     1 99 regr
-r10     1 99 regr
-r11     1 99 regr
-r12     1 99 regr
-r13     1 99 regr
-r14     1 99 regr
-r15     1 99 regr
-r16     1 99 regr
 endvars
 EOF
 #
