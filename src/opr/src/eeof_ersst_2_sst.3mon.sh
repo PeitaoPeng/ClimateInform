@@ -173,8 +173,8 @@ ln -s $dataot2/$outfile4.gr fort.31
 ln -s $dataot2/$outfile5.gr fort.32
 
 #
-#./pcr.x > $dataot2/eeof.$var1.2.$var2.mlead$mlead.out
-./pcr.x 
+./pcr.x > $dataot2/eeof.$var1.2.$var2.mlead$mlead.out
+#./pcr.x 
 #
 #
 ny_sst=`expr $icyr - 1950 + 1`  # total full year data used for PCR, 68 for 1948-2015

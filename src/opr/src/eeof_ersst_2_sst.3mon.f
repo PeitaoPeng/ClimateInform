@@ -66,10 +66,11 @@ C=== read in independent and properly skiped avg sst
           sst(i,j,ir)=fld2(i,j) 
         enddo
         enddo
+        write(6,*) 'its_sst=',its_sst,'it=',it
       enddo
 
       nread=ir
-      write(6,*) 'nread=',nread ! should = nssuse
+      write(6,*) 'nread(=nssuse?)=',nread ! should = nssuse
 C
 C have sst anomalies 
       do i=1,imx
@@ -213,7 +214,8 @@ c hindcast for ld=1->nlead
       DO ld=1,nlead
 
 c read in predictant (tpz) for each lead
-      its_tpz=its_sst+mlag+ld+3 !for mlag=5,5(=mjj)+ld(=1)+3=9(son)
+      its_tpz=its_sst+ld+mlag*3 
+      write(6,*) 'its_sst=',its_sst,'its_tpz=',its_tpz
       ir=0
       do it=its_tpz,nsstot,3
         ir=ir+1
@@ -224,9 +226,10 @@ c read in predictant (tpz) for each lead
           wtpz(i,j,ir)=w2d(i,j)
         enddo
         enddo
+        write(6,*) 'ld=',ld,'it=',it
       enddo
       ns_tpz=ir
-      write(6,*) 'its_tpz=',its_tpz,'ns_tpz=',ns_tpz
+      write(6,*) 'ns_tpz=',ns_tpz
 C 
 C have predictant anomalies over period 1 -> ns_tpz
 
