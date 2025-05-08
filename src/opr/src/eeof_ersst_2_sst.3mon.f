@@ -226,7 +226,7 @@ c read in predictant (tpz) for each lead
           wtpz(i,j,ir)=w2d(i,j)
         enddo
         enddo
-        write(6,*) 'ld=',ld,'it=',it
+        write(6,*) 'ld=',ld,'it=',it,'ir=',ir
       enddo
       ns_tpz=ir
       write(6,*) 'ns_tpz=',ns_tpz
@@ -254,8 +254,8 @@ C have predictant anomalies over period 1 -> ns_tpz
       enddo
 C 
 C CV hcst for this lead
-c     nfld=ns_tpz - 1
-c     if(ncv.eq.3) nfld=ns_tpz - 3
+c     mfld=ns_tpz - 1
+c     if(ncv.eq.3) mfld=ns_tpz - 3
 c
       DO itgt=1,ns_tpz
 
@@ -338,7 +338,7 @@ c have lead-ld hcst for itgt season with sst rcoef and tpz regr
       enddo
 
       ENDDO ! itgt loop
-      write(6,*) 'mfld=',mfld
+      write(6,*) 'mfld(=ns_tpz-ncv?)=',mfld
 c
 C========== realtime fcst
 c
