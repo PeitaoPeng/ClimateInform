@@ -25,7 +25,7 @@ id_eof=0
 lagmax=5
 mlead=7
 nmod=11
-ncv=3
+ncv=1
 
 nclm_start=1981 # to have yrs clm for more stable than 30 yrs 
 its_clm=`expr $nclm_start - 1947 - $lagmax / 4`
@@ -160,7 +160,7 @@ fi
 outfile1=epc.${var1}
 outfile2=eeof.${var1}
 outfile3=efcst.$var1.2.$var2.cv$ncv.3mon
-outfile4=eskill_1d.$var1.2.$var2.v$ncv.3mon
+outfile4=eskill_1d.$var1.2.$var2.cv$ncv.3mon
 outfile5=ehcst.$var1.2.$var2.cv$ncv.3mon
 #
 ln -s $datain1/$sstfile.gr  fort.10

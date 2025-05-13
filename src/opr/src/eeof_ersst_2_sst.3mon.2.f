@@ -1,6 +1,6 @@
       include "parm.h"
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C eeof with regression only for IC season
+C eeof for forecst TPZ, with regression for all seasons
 C===========================================================
       real fld0(imx,jmx),fld(imx,jmx)
       real sst(imx,jmx,nssuse)
@@ -11,7 +11,6 @@ C===========================================================
       real rin(nfld),rot(nfld)
       real weval(nfld),wevec(mlag*ngrd,nfld),wcoef(nfld,nfld)
       real reval(nmod),revec(mlag*ngrd,nfld),rcoef(nmod,nfld)
-      real rcoef2(nmod,nfld)
       real rwk(mlag*ngrd),rwk2(mlag*ngrd,nmod)
       real av1(imx,jmx),bv1(imx,jmx)
       real fld2(imx,jmx)
@@ -27,7 +26,6 @@ C===========================================================
       real w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx)
       real w2d4(imx,jmx),w2d5(imx,jmx),w2d6(imx,jmx)
       real tpz(imx,jmx,montot),wtpz(imx,jmx,nfld)
-      real wtpz2(imx,jmx,nfld)
       real av2(imx,jmx),bv2(imx,jmx)
       real hcst(imx,jmx,nfld,nlead)
       real fcst(imx,jmx,nlead)
@@ -168,7 +166,6 @@ CCC...CORR between rcoef and tpz data
 C
       iw1=0
       iw2=0
-
       DO m=1,nmod      !loop over mode
 c
       do it=1,nfld
@@ -212,37 +209,8 @@ C write out rcoef
       enddo
 
       enddo !m loop
-C      
-C take rcoef data for the season same as that of IC
-C 
-      nyrpc=int(nfld/4)
-      nsrpc=ny_rpc*4
-      its_rpc=nfld-nsrpc
-      write(6,*)'nfld=',nfld
-      write(6,*)'its_rpc=',its_rpc
-
-c rcoef2
-
-      DO m=1,nmod      !loop over mode
-c
-      ir=0
-      do it=its_rpc,nfld,4
-      ir=ir+1
-        ts2(ir)=rcoef(m,it)
-      enddo
-
-      ns_rpc=ir
-
-      call normal(ts2,ts3,nfld,ns_rpc)
-
-      do it=1,ns_rpc
-        rcoef2(m,it)=ts3(it)
-      enddo
-
-      ENDDO ! m loop
 c
 c hindcast for ld=1->nlead
-c
       DO ld=1,nlead
 
 c read in predictant (tpz) for each lead
@@ -263,47 +231,45 @@ c read in predictant (tpz) for each lead
       ns_tpz=ir
       write(6,*) 'ns_tpz=',ns_tpz
       write(6,*) 'tpz at (180,45)=',wtpz(180,45,ns_tpz),w2d(180,45)
-C      
-C take wtpz data for the season same as that of IC
 C 
+C have predictant anomalies over period 1 -> ns_tpz
+
+      nyr_tpz=int(ns_tpz/12)
+
       do i=1,imx
       do j=1,jmx
         if(w2d3(i,j).gt.-900.) then
-
-          ir=0
-          do it=its_rpc,ns_tpz,4
-          ir=ir+1
-            ts2(ir)=wtpz(i,j,it)
+          do it=1,ns_tpz
+            ts2(it)=wtpz(i,j,it)
           enddo
-          ns_tpz2=ir
-          call clim_anom(ts2,xclm,nfld,ns_tpz2)
+          call clim_anom_4(ts2,nfld,ns_tpz,clm_tpz_1d)
         else
-          do it=1,ns_tpz2
+          do it=1,ns_tpz
             ts2(it)=undef
           enddo
         endif
-          do it=1,ns_tpz2
-            wtpz2(i,j,it)=ts2(it)
+          do it=1,ns_tpz
+            wtpz(i,j,it)=ts2(it)
           enddo
       enddo
       enddo
-      write(6,*) 'tpz anom at (180,45)=',wtpz2(180,45,ns_tpz2)
-C
+      write(6,*) 'tpz anom at (180,45)=',wtpz(180,45,ns_tpz)
+C 
 C CV hcst for this lead
 c     mfld=ns_tpz - 1
 c     if(ncv.eq.3) mfld=ns_tpz - 3
 c
-      DO itgt=1,ns_tpz2
+      DO itgt=1,ns_tpz
 
         ism=itgt-1
         isp=itgt+1
         if(itgt.eq.1) ism=3
-        if(itgt.eq.ns_tpz) isp=ns_tpz2-2
+        if(itgt.eq.ns_tpz) isp=ns_tpz-2
 
       DO m=1,nmod
 
         ir=0
-        do is=1,ns_tpz2
+        do is=1,ns_tpz
 
           if(is.eq.itgt) go to 555
 
@@ -313,7 +279,7 @@ c
           endif
 
           ir=ir+1
-          ts2(ir)=rcoef2(m,is)
+          ts2(ir)=rcoef(m,is)
   555   continue
         enddo
           
@@ -323,7 +289,7 @@ c
         IF(w2d3(i,j).gt.-900.) then
 
           ir=0
-          do is=1,ns_tpz2
+          do is=1,ns_tpz
 
           if(is.eq.itgt) go to 666
 
@@ -333,7 +299,7 @@ c
           endif
 
             ir=ir+1
-            ts3(ir)=wtpz2(i,j,is)
+            ts3(ir)=wtpz(i,j,is)
   666     continue
           enddo
 
@@ -358,9 +324,9 @@ c have lead-ld hcst for itgt season with sst rcoef and tpz regr
       do j=1,jmx
         if(w2d3(i,j).gt.-900.) then
           do m=1,nmod
-            w2d(i,j)=w2d(i,j)+rcoef2(m,itgt)*regr2(i,j,m,itgt)
+            w2d(i,j)=w2d(i,j)+rcoef(m,itgt)*regr2(i,j,m,itgt)
           enddo
-            w2d2(i,j)=wtpz2(i,j,itgt)
+            w2d2(i,j)=wtpz(i,j,itgt)
         else
             w2d(i,j)=undef
             w2d2(i,j)=undef
@@ -374,20 +340,19 @@ c have lead-ld hcst for itgt season with sst rcoef and tpz regr
       enddo
 
       ENDDO ! itgt loop
-
       write(6,*) 'mfld(=ns_tpz-ncv?)=',mfld
-      write(6,*) 'rcoef2 at ns_tpzi2',rcoef2(1,ns_tpz2)
-      write(6,*) 'regr2(180,45,1,ns_tpz2)=',regr2(180,45,1,ns_tpz2)
-      write(6,*) 'hcst(180,45,ns_tpz2,7)=',hcst(180,45,ns_tpz2,7)
-      write(6,*) 'vfld(i,j,ns_tpz2,7)=',vfld(180,45,ns_tpz2,7)
+      write(6,*) 'rcoef at ns_tpz=',rcoef(1,ns_tpz),rcoef(11,ns_tpz)
+      write(6,*) 'regr2(180,45,1,ns_tpz)=',regr2(180,45,1,ns_tpz)
+      write(6,*) 'hcst(180,45,ns_tpz,7)=',hcst(180,45,ns_tpz,7)
+      write(6,*) 'vfld(i,j,ns_tpz,7)=',vfld(180,45,ns_tpz,7)
 c
-C======== realtime fcst
+C========== realtime fcst
 c
 c have regr patterns
       DO m=1,nmod
 
-        do is=1,ns_tpz2
-            ts2(is)=rcoef2(m,is)
+        do is=1,ns_tpz
+            ts2(is)=rcoef(m,is)
         enddo
           
         do i=1,imx
@@ -395,11 +360,11 @@ c have regr patterns
 
         IF(w2d3(i,j).gt.-900.) then
 
-          do is=1,ns_tpz2
+          do is=1,ns_tpz
             ts3(iy)=vfld(i,j,is,ld)
           enddo
 
-          call regr_t(ts2,ts3,nfld,ns_tpz2,corr3(i,j,m),regr3(i,j,m))
+          call regr_t(ts2,ts3,nfld,ns_tpz,corr3(i,j,m),regr3(i,j,m))
 
         ELSE
 
@@ -422,7 +387,7 @@ c fcst
         if(w2d3(i,j).gt.-900.) then
 
           do m=1,nmod
-            w2d(i,j)=w2d(i,j)+rcoef2(m,ns_rpc)*regr3(i,j,m)
+            w2d(i,j)=w2d(i,j)+rcoef(m,nfld)*regr3(i,j,m)
           enddo
 
         else
@@ -433,7 +398,7 @@ c fcst
 
       enddo
       enddo
-      write(6,*) 'rcoef(11,ns_rpc)=',rcoef2(11,ns_rpc)
+      write(6,*) 'rcoef(11,nfld)=',rcoef(11,nfld)
       write(6,*) 'fcst(180,45,ld)=',fcst(180,45,ld)
 
       ENDDO ! ld loop
@@ -441,9 +406,9 @@ c
 c normalize both obs and hcst
 c
 c std of obs
-      iss_clm=its_clm-1
-      ise_clm=ite_clm-1
-      ns_clm=ny_clm
+      iss_clm=(its_clm-1.5)*4
+      ise_clm=(ite_clm-1.5)*4
+      ns_clm=ny_clm*4
       write(6,*) 'iss_clm=',iss_clm
       write(6,*) 'ise_clm=',ise_clm
       write(6,*) 'ns_clm=',ns_clm
@@ -527,7 +492,7 @@ c deal with "too small" std
 c standardized hcst 
       do i=1,imx
       do j=1,jmx
-      do it=1,ns_tpz2
+      do it=1,ns_tpz
       if (w2d3(i,j).gt.-900.) then
         vfld(i,j,it,ld)=(vfld(i,j,it,ld)-avgo(i,j))/stdo(i,j,ld)
       else
@@ -539,7 +504,7 @@ c standardized hcst
 c
       do i=1,imx
       do j=1,jmx
-      do it=1,ns_tpz2
+      do it=1,ns_tpz
       if (w2d3(i,j).gt.-900.) then
         hcst(i,j,it,ld)=(hcst(i,j,it,ld)-avgf(i,j))/
      &stdf(i,j,ld)
@@ -549,8 +514,8 @@ c
       enddo
       enddo
       enddo
-      write(6,*) 'stdzed vfld(180,45,ns_tpz,7)=',vfld(180,45,ns_tpz2,7)
-      write(6,*) 'stdzed hcst(180,45,ns_tpz,7)=',hcst(180,45,ns_tpz2,7)
+      write(6,*) 'stdzed vfld(180,45,ns_tpz,7)=',vfld(180,45,ns_tpz,7)
+      write(6,*) 'stdzed hcst(180,45,ns_tpz,7)=',hcst(180,45,ns_tpz,7)
 c
 c standardized fcsts
       do i=1,imx
@@ -637,7 +602,7 @@ c
 c write out obs and hcst
         iw=0
         do ld=1,nlead
-        do it=iss_clm,ns_tpz
+        do it=iss_clm,ny_tpz
 
           do i=1,imx
           do j=1,jmx
