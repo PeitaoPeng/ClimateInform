@@ -1,50 +1,27 @@
-147,148c147,148
-<           do ip=1,nprd
-<             ws1d(ip)=1./float(nprd)
+36c36
+<       real trpss(40)
 ---
->           do ip=1,nmodel
->             ws1d(ip)=1./float(nmodel)
-151c151
-<           do ip=1,nprd
+>       real trpss(50)
+233c233,234
+<       tdel=0.025
 ---
->           do ip=1,nmodel
-165,177c165,167
-<           nmodel=nprd        
-<           if(abs(xn34(it,ld)).gt.xncrt) nmodel=1
-< 
-<           if(nmodel.gt.1) then
-<             do ip=1,nprd
-<               ws1d(ip)=wts2(i,j,ip)
-<             enddo
-<           else
-<             ws1d(1)=1.
-<             do ip=2,nprd
-<             ws1d(ip)=0.
-<             enddo
-<           endif
+> c     tdel=0.025
+>       tdel=0.02
+243a245
+>       tesm=0.10
+253c255
+<      &tspn(it),kpdf,xbin,xdel,ypdf,ftest)
 ---
->           do ip=1,nmodel
->             ws1d(ip)=wts2(i,j,ip)
->           enddo
-179c169
-<           do ip=1,nprd
+>      &tspn(it),kpdf,xbin,xdel,ypdf,ftest,tesm)
+393c395
+<      & frac)
 ---
->           do ip=1,nmodel
-183c173
-<           call wtavg(w1d,ws1d,nprd,avg)      
+>      & frac,tesm)
+400c402,406
+<       esm=frac*detp
 ---
->           call wtavg(w1d,ws1d,nprd,nmodel,avg)      
-186a177
-> 
-187a179
-> 
-189a182
-> 
-454c447
-<       SUBROUTINE wtavg(x,wts,n,avg)
----
->       SUBROUTINE wtavg(x,wts,n,m,avg)
-457c450
-<       do i=1,n
----
->       do i=1,m
+>       if(abs(detp).gt.tesm) then
+>         esm=frac*detp
+>       else
+>         esm=detp
+>       endif

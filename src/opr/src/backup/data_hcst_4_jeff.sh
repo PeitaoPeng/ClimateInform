@@ -70,19 +70,19 @@ dirs=(
 # define some parameters
 #======================================
 #
-#version=cvcor
-version=sim
-for var in t2m prec; do
+version=cvcor
+#version=sim
+for var in prec; do
 #for var in prec hgt t2m; do
 #
 nts=359 # jfm2011
 nte=516 # fma2024
 #
-infile1=$version.$var.hcst.mam1981-fma2024
-infile2=$version.$var.v3c.mam1981-fma2024
+infile1=$version.$var.hcst.mam1981-fma2024.test
+infile2=$version.$var.v3c.mam1981-fma2024.test
 
-outfile1=$version.$var.prob_A.JFM2011-FMA2024
-outfile2=$version.$var.prob_B.JFM2011-FMA2024
+outfile1=$version.$var.prob_A.JFM2011-FMA2024.test
+outfile2=$version.$var.prob_B.JFM2011-FMA2024.test
 outfile3=$var.OBS_3C.JFM2011-FMA2024
 #
 imx=360

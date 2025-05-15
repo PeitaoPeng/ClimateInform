@@ -54,8 +54,8 @@ if [ $icmoe = 12 ]; then icyr=`expr $curyr - 1`; fi
 # define some parameters
 #======================================
 #
-version=sim #sim or cvcor
-for var in t2m prec; do
+version=cvcor #sim or cvcor
+for var in prec; do
 #for var in prec hgt t2m; do
 #
 nt=158  #jfm2011 -> fma2024
@@ -63,15 +63,15 @@ nt=158  #jfm2011 -> fma2024
 infile1=$var.OBS_3C.JFM2011-FMA2024
 #infile2=$version.$var.prob_A.JFM2011-FMA2024
 #infile3=$version.$var.prob_B.JFM2011-FMA2024
-infile2=$version.comb.$var.prob_A.JFM2011-FMA2024
-infile3=$version.comb.$var.prob_B.JFM2011-FMA2024
+infile2=$version.comb.$var.prob_A.JFM2011-FMA2024.test
+infile3=$version.comb.$var.prob_B.JFM2011-FMA2024.test
 
 #outfile1=$version.hss_1d.$var.JFM2011-FMA2024
 #outfile2=$version.$var.prd_3C.JFM2011-FMA2024
 #outfile3=$version.hss_2d.$var.JFM2011-FMA2024
-outfile1=$version.comb.skill_1d.$var.JFM2011-FMA2024
-outfile2=$version.comb.$var.prd_3C.JFM2011-FMA2024
-outfile3=$version.comb.skill_2d.$var.JFM2011-FMA2024
+outfile1=$version.comb.skill_1d.$var.JFM2011-FMA2024.test
+outfile2=$version.comb.$var.prd_3C.JFM2011-FMA2024.test
+outfile3=$version.comb.skill_2d.$var.JFM2011-FMA2024.test
 #
 xprob=1.0
 imx=360

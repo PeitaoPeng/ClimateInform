@@ -18,28 +18,32 @@ dataot1=/home/ppeng/data/pcr_prd
 # grid of ERSST
 imx=180
 jmx=89
+# grid of t2m & prec
+imx2=360
+jmx2=180
 #
 var1=ersst
-var2=sst
 eof_area=tp_nml   #30S-60N
 #
-lagmax=24   # month number kept for ICs
+tdel=2   # chose non-overlapped 3-mon avg dat
+lagmax=6   # number of lags in the data for eeof
 #
-id_ceof=1 # =1: eofs of combind ics; =0 not combined
-id_detrd=0 # =1, detrend data first then add trend; =0: no detrend
 
-#for mics in 1 2 3 4; do # season or month numbers used as ICs
-#for mics in 4; do # season or month numbers used as ICs
-for mics in 1 2 3 5; do # season or month numbers used as ICs
-for ncut in 3; do # EOF numbers used
+id_eof=1 # =1: eofs of combind ics; =0 not combined
+id_detrd=0 # =1, detrend data first then add trend; =0: no detrend
 
 mlead=7   # max lead of ensemble fcst
 ncv=1
 
+for var2 in t2m prec; do # prec, t2m, hg
+#for var2 in prec; do # prec, t2m, hg
+
 mcut=4  # max cuts
-
-icut1=15; icut2=20; icut3=25; icut4=40
-
+#if [ $var2 = t2m ];  then icut1=3;  icut2=15; icut3=25; icut4=40; fi
+if [ $var2 = t2m ];  then icut1=3;  icut2=5; icut3=7; icut4=10; fi
+#if [ $var2 = prec ]; then icut1=10; icut2=15; icut3=25; icut4=40; fi
+if [ $var2 = prec ]; then icut1=5; icut2=7; icut3=10; icut4=15; fi
+#if [ $var2 = prec ]; then icut1=5; icut2=10; icut3=25; icut4=40; fi
 modmax=$icut4
 #
 
@@ -52,16 +56,17 @@ undef_data=-9.99E+8
 undef=-999.0
  #
 cd $tmp
+\rm fort.*
 #
 #======================================
 # have SST IC
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
 #for curyr in 2021 2022 2023 2024; do
-for curyr in 2024; do
+for curyr in 2025; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
 #for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for curmo in 11; do
+for curmo in 01; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -101,8 +106,11 @@ icyr=$curyr
 if [ $icmon = 12 ]; then icyr=`expr $curyr - 1`; fi
 
 nyear=`expr $icyr - 1947`  # total full year data used for PCR, 68 for 1948-2015
+
+ny_net=`expr $nyear - $lagmax / 12 - 1 - 20` # from 1951 
+nwmo=$(( $ny_net / 10 )) # # of WMO clim
+
 ny_out=`expr $nyear - $its_clm - $lagmax / 12` # from its_clm to 
-ny_out2=`expr $nyear - $its_clm - $lagmax / 12 + 1` # from its_clm to 
 
 outd=/home/ppeng/data/ss_fcst/pcr/$icyr
 outdata=${outd}/$icmon
@@ -117,23 +125,28 @@ dataot2=$outdata
 # define some parameters
 #======================================
 # need to use the *.f to have exact ngrd
-if [ $eof_area = tp_nml ]; then lons=1;lone=180;lats=22;late=68; fi # 30S-60N
-if [ $var1 = ersst ] && [ $eof_area = tp_nml ]; then ngrd=6438; fi
+if [ $eof_area = tp_nml ]; then lons=1;lone=180;lats=30;late=75; fi # 30S-60N
+if [ $var1 = ersst ] && [ $eof_area = tp_nml ]; then ngrd=5670; fi
 #echo $ngrd
 #
 sstfile=${var1}.3mon.1948-curr.total
 #
 #=======================================
 #
-cp $lcdir/pcr_ersst_2_sst.3mon.mics_meofs.f $tmp/pcr.f
+cp $lcdir/pcr_ersst_2_tpz.3mon.dtrd.mics_meofs.cor.f $tmp/pcr.f
 cp $lcdir/backup/reof.s.f $tmp/reof.s.f
+
+imx2=360; jmx2=180; xds=0.5; yds=-89.5; xydel=1.
+
+tpzfile=$var2.1948_cur.3mon.total.1x1
 
 cat > parm.h << eof
 c
       parameter(icmon=$icmon)  ! sst ic month
       parameter(ny_clm=$ny_clm,its_clm=$its_clm,ite_clm=$ite_clm) 
       parameter(montot=$montot,nsstot=$nsstot)  ! total month number
-      parameter(imx=$imx,jmx=$jmx)  ! sst dimension
+      parameter(imx=$imx,jmx=$jmx)  ! slp dimension
+      parameter(imx2=$imx2,jmx2=$jmx2) ! t2m or prec
       parameter(lagmax=$lagmax,nlead=$mlead,mics=$mics) 
       parameter(ngrd=$ngrd)
       parameter(lons=$lons,lone=$lone,lats=$lats,late=$late) !eof_area=tp_nml
@@ -141,6 +154,7 @@ c
       parameter(id_ceof=$id_ceof)
       parameter(id_detrd=$id_detrd)
       parameter(modmax=$modmax,mcut=$mcut,ncut=$ncut)
+      parameter(nwmo=$nwmo)
 c
       parameter(ncv=$ncv)
 c
@@ -154,35 +168,34 @@ eof
 gfortran -mcmodel=medium -o pcr.x pcr.f reof.s.f
 echo "done compiling"
 
-if [ -f fort.10 ] ; then
+if [ -f fort.11 ] ; then
 /bin/rm $tmp/fort.*
 fi
 #
 outfile1=pc.${var1}.icmon_$icmon
 outfile2=eof.${var1}.icmon_$icmon
-outfile3=fcst.$var1.2.$var2.mics$mics.mlead$mlead.ncut$ncut.icut1_$icut1.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
-outfile4=skill_1d.$var1.2.$var2.mics$mics.mlead$mlead.ncut$ncut.icut1_$icut1.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
-outfile5=hcst.$var1.2.$var2.mics$mics.mlead$mlead.ncut$ncut.icut1_$icut1.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
+outfile3=fcst.$var1.2.$var2.mics$mics.mlead$mlead.ncut$ncut.nmod1_$icut1.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
+outfile4=skill_1d.$var1.2.$var2.mics$mics.mlead$mlead.ncut$ncut.nmod1_$icut1.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
+outfile5=hcst.$var1.2.$var2.mics$mics.mlead$mlead.ncut$ncut.nmod1_$icut1.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
 outfile8=${var1}_ic_mics.3mon
-outfile9=nino34.prd.mics$mics.mlead$mlead.ncut$ncut.icut1_$icut1.id_ceof${id_ceof}.id_detrd$id_detrd.cv$ncv.3mon
-outfile10=nino34.obs.icmon_$icmon.3mon
+outfile9=regr.${var1}.2.${var2}_ic_mics.3mon
 #
-ln -s $datain1/$sstfile.gr  fort.10
+ln -s $datain1/$sstfile.gr          fort.10
+ln -s $datain2/$tpzfile.gr          fort.11
 #
 ln -s $dataot2/$outfile1.gr fort.20
 ln -s $dataot2/$outfile2.gr fort.21
-ln -s $dataot2/$outfile9.gr fort.22
-ln -s $dataot2/$outfile10.gr fort.23
 
 ln -s $dataot2/$outfile3.gr fort.30
 ln -s $dataot2/$outfile4.gr fort.31
 ln -s $dataot2/$outfile5.gr fort.32
 
 ln -s $dataot2/$outfile8.gr fort.40
+ln -s $dataot2/$outfile9.gr fort.41
 
 #
 ./pcr.x > $dataot2/$var1.2.$var2.mics$mics.mlead$mlead.out
-#./pcr.x 
+#/pcr.x 
 #
 #
 ny_sst=`expr $icyr - 1950 + 1`  # total full year data used for PCR, 68 for 1948-2015
@@ -221,27 +234,14 @@ cat>$dataot2/$outfile9.ctl<<EOF
 dset ^$outfile9.gr
 undef $undef
 title EXP1
-XDEF  1 linear   0.  2.
-ydef  1 linear -88.  2.
+xdef $imx2 linear $xds $xydel
+ydef $jmx2 linear $yds $xydel
 zdef  1 linear 1 1
-tdef  $ny_out2 linear ${tgtmon}$outyr_s 1yr
-edef  $mlead names 1 2 3 4 5 6 7
-vars  1
-x     1 99 nino34 index
-endvars
-EOF
-#
-cat>$dataot2/$outfile10.ctl<<EOF
-dset ^$outfile10.gr
-undef $undef
-title EXP1
-XDEF  1 linear   0.  2.
-ydef  1 linear -88.  2.
-zdef  1 linear 1 1
-tdef  $ny_out linear ${tgtmon}$outyr_s 1yr
-edef  $mlead names 1 2 3 4 5 6 7
-vars  1
-x     1 99 nino34 index
+tdef  $icut1 linear jan1950 1mon
+edef $mlead names 1 2 3 4 5 6 7
+vars  2
+reg   1 99 sst to $var2
+cor   1 99 sst to $var2
 endvars
 EOF
 #
@@ -249,8 +249,8 @@ cat>$dataot2/$outfile3.ctl<<EOF
 dset ^$outfile3.gr
 undef $undef
 title EXP1
-XDEF  $imx linear   0.  2.
-ydef  $jmx linear -88.  2.
+xdef $imx2 linear $xds $xydel
+ydef $jmx2 linear $yds $xydel
 zdef  1 linear 1 1
 tdef  $mlead linear ${tgtmoyr} 1mon
 vars  6
@@ -267,8 +267,8 @@ cat>$dataot2/$outfile4.ctl<<EOF
 dset ^$outfile4.gr
 undef $undef
 title EXP1
-xdef 1 linear 0.  2.
-ydef 1 linear -88.  2.
+xdef 1 linear $xds $xydel
+ydef 1 linear $yds $xydel
 zdef 1 linear 1 1
 tdef $ny_out linear ${tgtmon}$outyr_s 1yr
 edef $mlead names 1 2 3 4 5 6 7
@@ -286,15 +286,16 @@ cat>$dataot2/$outfile5.ctl<<EOF
 dset ^$outfile5.gr
 undef $undef
 title EXP1
-XDEF  $imx linear   0. 2.
-ydef  $jmx linear -89. 2.
+xdef $imx2 linear $xds $xydel
+ydef $jmx2 linear $yds $xydel
 zdef  1 linear 1 1
 tdef $ny_out linear ${tgtmon}$outyr_s 1yr
 edef  $mlead names 1 2 3 4 5 6 7
-vars  3
+vars  4
 o  1 99 obs
 p  1 99 hcst
 s  1 99 std of obs
+c  1 99 cv cor skill
 endvars
 EOF
 #
@@ -313,6 +314,6 @@ EOF
 
 done # curmo loop
 done # curyr loop
-
-done # ncut loop
-done # mics loop
+done # var2 loop
+done # ncut
+done # mics

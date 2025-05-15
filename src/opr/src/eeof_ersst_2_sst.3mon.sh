@@ -24,7 +24,8 @@ id_eof=0
 #
 lagmax=5
 mlead=7
-nmod=11
+#nmod=11
+nmod=13
 ncv=1
 
 nclm_start=1981 # to have yrs clm for more stable than 30 yrs 
@@ -81,11 +82,9 @@ nssdif=`expr $nsstot - $nssind \* 3`
 
 if [ $nssdif = 0 ]; then its_sst=3; else its_sst=$nssdif; fi
 
-nss4rd=`expr $nsstot - $nssdif + 1` # data length including end ss
+nss4rd=`expr $nsstot - $its_sst + 1` # data length including end ss
 
 nssuse=`expr $nss4rd / 3 + 1` # data length used in analysis
-
-nyrfull=$(expr $nssuse / 4) # data length of full year data
 
 nsslag=`expr $nssuse - $lagmax + 1` #length of lag-arranged data
 #
@@ -94,8 +93,8 @@ if [ $icmon = 12 ]; then icyr=`expr $curyr - 1`; fi
 
 #need to reset follwing 3 parameters
 nyear=`expr $icyr - 1948`  # total full year data used for PCR, 68 for 1948-2015
-ny_out=`expr $nyear - $its_clm - $lagmax / 12` # from its_clm to 
-ny_out2=`expr $nyear - $its_clm - $lagmax / 12 + 1` # from its_clm to 
+ny_out=`expr $nyear - $its_clm - $lagmax / 4 + 1` # from its_clm to 
+ny_out2=`expr $nyear - $its_clm - $lagmax / 4 + 1` # from its_clm to 
 
 outd=/home/ppeng/data/ss_fcst/pcr/$icyr
 outdata=${outd}/$icmon
@@ -143,7 +142,6 @@ c
       parameter(ID=$id_eof)
       parameter(nmod=$nmod)
 c
-      parameter(nyrful=$nyrfull)
       parameter(ncv=$ncv)
 
 eof
@@ -184,7 +182,7 @@ dset ^$outfile1.gr
 undef $undef
 title EXP1
 XDEF  1 linear   0.  2.
-ydef  1 linear -88.  2.
+ydef  1 linear -89.  2.
 zdef  1 linear 1 1
 tdef  $nsslag linear jan1950 1mo
 edef  $nmod names 1 2 3 4 5 6 7 8 9 10 11
@@ -198,7 +196,7 @@ dset ^$outfile2.gr
 undef $undef
 title EXP1
 XDEF  $imx linear   0.  2.
-ydef  $jmx linear -88.  2.
+ydef  $jmx linear -89.  2.
 zdef  1 linear 1 1
 tdef  $nmod linear jan1950 1mon
 vars  5
@@ -215,7 +213,7 @@ dset ^$outfile3.gr
 undef $undef
 title EXP1
 XDEF  $imx linear   0.  2.
-ydef  $jmx linear -88.  2.
+ydef  $jmx linear -89.  2.
 zdef  1 linear 1 1
 tdef  $mlead linear ${tgtmoyr} 1mon
 vars  5
@@ -231,8 +229,8 @@ cat>$dataot2/$outfile4.ctl<<EOF
 dset ^$outfile4.gr
 undef $undef
 title EXP1
-xdef 1 linear 0.  2.
-ydef 1 linear -88.  2.
+xdef 1 linear    0. 2.
+ydef 1 linear  -89. 2.
 zdef 1 linear 1 1
 tdef $ny_out linear ${tgtmon}$outyr_s 1yr
 edef $mlead names 1 2 3 4 5 6 7

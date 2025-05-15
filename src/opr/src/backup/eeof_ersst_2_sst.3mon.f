@@ -424,7 +424,7 @@ c have regr patterns
       write(6,*) 'regr3(90,45,11)=',regr3(90,45,11)
 c
 c fcst
-c
+
       call setzero(w2d,imx,jmx)
       do i=1,imx
       do j=1,jmx
@@ -450,8 +450,8 @@ c
 c normalize both obs and hcst
 c
 c std of obs
-      iss_clm=its_clm
-      ise_clm=ite_clm
+      iss_clm=its_clm-2
+      ise_clm=ite_clm-2
       ns_clm=ny_clm
       write(6,*) 'iss_clm=',iss_clm
       write(6,*) 'ise_clm=',ise_clm
@@ -558,8 +558,8 @@ c
       enddo
       enddo
       enddo
-      write(6,*) 'stdzed vfld(90,45,ns_tpz,ld)=',vfld(90,45,ns_tpz2,ld)
-      write(6,*) 'stdzed hcst(90,45,ns_tpz,ld)=',hcst(90,45,ns_tpz2,ld)
+      write(6,*) 'stdzed vfld(90,45,ns_tpz,7)=',vfld(90,45,ns_tpz2,7)
+      write(6,*) 'stdzed hcst(90,45,ns_tpz,7)=',hcst(90,45,ns_tpz2,7)
 c
 c standardized fcsts
       do i=1,imx
@@ -608,7 +608,7 @@ c
 c== spatial skill
       iw=0
       do ld=1,nlead
-      do is=iss_clm,ns_tpz2
+      do is=iss_clm,ns_tpz
 
         do i=1,imx
         do j=1,jmx
@@ -646,7 +646,7 @@ c
 c write out obs and hcst
         iw=0
         do ld=1,nlead
-        do it=iss_clm,ns_tpz2
+        do it=iss_clm,ns_tpz
 
           do i=1,imx
           do j=1,jmx

@@ -14,8 +14,8 @@ fi
 #
 cd $tmp
 #
-#version=cvcor
-version=sim
+version=cvcor
+#version=sim
 
 #======================================
 # have SST IC
@@ -62,14 +62,14 @@ if [ $icmoe = 12 ]; then icyr=`expr $curyr - 1`; fi
 imx=360
 jmx=180
 
-for var in prec t2m; do
+for var in prec; do
 
-infile1=$version.$var.prob_A.JFM2011-FMA2024
-infile2=$version.$var.prob_B.JFM2011-FMA2024
-infile3=$version.data_rct_ensmsynth_2d.$var.mlead7.3mon
+infile1=$version.$var.prob_A.JFM2011-FMA2024.test
+infile2=$version.$var.prob_B.JFM2011-FMA2024.test
+infile3=$version.data_rct_ensmsynth_2d.$var.mlead7.3mon.test
 
-outfile1=$version.comb.$var.prob_A.JFM2011-FMA2024
-outfile2=$version.comb.$var.prob_B.JFM2011-FMA2024
+outfile1=$version.comb.$var.prob_A.JFM2011-FMA2024.test
+outfile2=$version.comb.$var.prob_B.JFM2011-FMA2024.test
 
 ts1=jan2011
 te1=jan2021
