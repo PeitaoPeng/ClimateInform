@@ -28,7 +28,7 @@ eof_area=tp_nml   #30S-60N
 lagmax=24   # month number kept for ICs
 #
 #mics=4    # season or month numbers used as ICs
-for mics in 1; do
+for mics in 4; do
 for ncut in 1; do
 
 id_ceof=1 # =1: eofs of combind ics; =0 not combined
@@ -207,7 +207,7 @@ dset ^$outfile1.gr
 undef $undef
 title EXP1
 XDEF  1 linear   0.  2.
-ydef  1 linear -88.  2.
+ydef  1 linear -89.  2.
 zdef  1 linear 1 1
 tdef  $ny_sst linear jan1950 1yr
 vars  5
@@ -224,7 +224,7 @@ dset ^$outfile2.gr
 undef $undef
 title EXP1
 XDEF  $imx linear   0.  2.
-ydef  $jmx linear -88.  2.
+ydef  $jmx linear -89.  2.
 zdef  1 linear 1 1
 tdef  999 linear jan1950 1mon
 vars  1

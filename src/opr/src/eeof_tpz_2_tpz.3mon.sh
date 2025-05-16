@@ -17,8 +17,8 @@ datain2=/home/ppeng/data/tpz
 imx=360
 jmx=180
 #
-var1=t2m
-var2=t2m
+var1=prec
+var2=prec
 eof_area=glb   #50S-60N
 id_eof=0
 #
@@ -45,7 +45,7 @@ cd $tmp
 for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
 #for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for curmo in 11; do
+for curmo in 05; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -86,6 +86,7 @@ nss4rd=`expr $nsstot - $its_sst + 1` # data length including end ss
 nssuse=`expr $nss4rd / 3 + 1` # data length used in analysis
 
 nsslag=`expr $nssuse - $lagmax + 1` #length of lag-arranged data
+nfld2=`expr $nsstot / 12 + 1` # number of the ss used in hcst
 #
 icyr=$curyr
 if [ $icmon = 12 ]; then icyr=`expr $curyr - 1`; fi
@@ -113,7 +114,7 @@ if [ $eof_area = glb ]; then lons=1;lone=360;lats=40;late=160; fi # 40S-70N
 jmxeof=`expr $late - $lats + 1`
 
 if [ $var1 = t2m ] && [ $eof_area = glb ]; then ngrd=14344; fi
-if [ $var1 = prec ] && [ $eof_area = glb ]; then ngrd=6438; fi
+if [ $var1 = prec ] && [ $eof_area = glb ]; then ngrd=14839; fi
 #echo $ngrd
 #
 tpzfile=${var1}.1948_cur.3mon.total.1x1
@@ -131,6 +132,7 @@ c
       parameter(montot=$montot,nsstot=$nsstot)  ! total month number
       parameter(nssuse=$nssuse) ! acturly used nss 
       parameter(nfld=$nsslag)  ! ss of lag-arranged 
+      parameter(nfld2=$nfld2)  ! # of ss used in hcst 
       parameter(its_sst=${its_sst}) ! start of reaning 
 
       parameter(imx=$imx,jmx=$jmx)  ! sst dimension
@@ -147,8 +149,8 @@ c
 eof
 #
 #gfortran -o pcr.x pcr.f reof.s.f
-#gfortran -mcmodel=large -o pcr.x pcr.f reof.s.f
-gfortran -mcmodel=medium -o pcr.x pcr.f reof.s.f
+gfortran -mcmodel=large -o pcr.x pcr.f reof.s.f
+#gfortran -mcmodel=medium -o pcr.x pcr.f reof.s.f
 echo "done compiling"
 
 if [ -f fort.10 ] ; then

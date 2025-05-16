@@ -13,7 +13,6 @@ C===========================================================
       real reval(nmod),revec(mlag*ngrd,nfld),rcoef(nmod,nfld)
       real rcoef2(nmod,nfld)
       real rwk(mlag*ngrd),rwk2(mlag*ngrd,nmod)
-      real av1(imx,jmx),bv1(imx,jmx)
       real fld2(imx,jmx)
       real corr(imx,jmx),regr(imx,jmx)
       real corr2(imx,jmx,nmod),regr2(imx,jmx,nmod,nfld)
@@ -25,7 +24,7 @@ C===========================================================
       real ts1(nssuse)
       real ts2(nfld),ts3(nfld),ts4(nfld)
       real w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx)
-      real w2d4(imx,jmx),w2d5(imx,jmx),w2d6(imx,jmx)
+      real w2d4(imx,jmx),w2d5(imx,jmx)
       real wtpz(imx,jmx,nfld)
       real wtpz2(imx,jmx,nfld2)
       real av2(imx,jmx),bv2(imx,jmx)
@@ -36,7 +35,8 @@ C===========================================================
       real vfld(imx,jmx,nfld2,nlead)
       real xlat(jmx),coslat(jmx),cosr(jmx)
 C
-      open(10,form='unformatted',access='direct',recl=4*imx*jmx) !sst
+      open(10,form='unformatted',access='direct',recl=4*imx*jmx) !prec
+      open(11,form='unformatted',access='direct',recl=4*imx*jmx) !t2m
 
       open(20,form='unformatted',access='direct',recl=4) !pc
       open(21,form='unformatted',access='direct',recl=4*imx*jmx) !eof
@@ -258,7 +258,7 @@ c read in predictant (tpz) for each lead
       ir=0
       do it=its_tpz,nsstot,3
         ir=ir+1
-        read(10,rec=it) w2d3
+        read(11,rec=it) w2d3
 
         do i=1,imx
         do j=1,jmx
@@ -420,7 +420,7 @@ c have regr patterns
         enddo
 
         ENDDO ! m loop
-      write(6,*) 'regr3(90,45,11)=',regr3(90,45,11)
+      write(6,*) 'regr3(90,45,5)=',regr3(90,45,5)
 c
 c fcst
 c
@@ -441,7 +441,7 @@ c
 
       enddo
       enddo
-      write(6,*) 'rcoef(11,ns_rpc)=',rcoef2(11,ns_rpc)
+      write(6,*) 'rcoef(5,ns_rpc)=',rcoef2(5,ns_rpc)
       write(6,*) 'fcst(90,45,ld)=',fcst(90,45,ld)
 
       ENDDO ! ld loop

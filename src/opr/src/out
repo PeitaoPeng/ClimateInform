@@ -1,27 +1,18 @@
-36c36
-<       real trpss(40)
+20c20
+< var1=prec
 ---
->       real trpss(50)
-233c233,234
-<       tdel=0.025
+> var1=t2m
+119c119,120
+< tpzfile=${var1}.1948_cur.3mon.total.1x1
 ---
-> c     tdel=0.025
->       tdel=0.02
-243a245
->       tesm=0.10
-253c255
-<      &tspn(it),kpdf,xbin,xdel,ypdf,ftest)
+> tpzfile1=${var1}.1948_cur.3mon.total.1x1
+> tpzfile2=${var2}.1948_cur.3mon.total.1x1
+123c124
+< cp $lcdir/eeof_tpz_2_tpz.3mon.f $tmp/pcr.f
 ---
->      &tspn(it),kpdf,xbin,xdel,ypdf,ftest,tesm)
-393c395
-<      & frac)
+> cp $lcdir/eeof_p_2_t.3mon.f $tmp/pcr.f
+164c165,166
+< ln -s $datain1/$tpzfile.gr  fort.10
 ---
->      & frac,tesm)
-400c402,406
-<       esm=frac*detp
----
->       if(abs(detp).gt.tesm) then
->         esm=frac*detp
->       else
->         esm=detp
->       endif
+> ln -s $datain1/$tpzfile1.gr  fort.10
+> ln -s $datain2/$tpzfile2.gr  fort.11

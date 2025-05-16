@@ -10,24 +10,21 @@ tmp=/home/ppeng/data/tmp_opr
 if [ ! -d $tmp ] ; then
   mkdir -p $tmp
 fi
-datain1=/home/ppeng/data/sst
+datain1=/home/ppeng/data/tpz
 datain2=/home/ppeng/data/tpz
 #
 # grid of ERSST
-imx=180
-jmx=89
-imx2=360
-jmx2=180
+imx=360
+jmx=180
 #
-var1=ersst
+var1=prec
 var2=t2m
-eof_area=tp_nml   #30S-60N
+eof_area=glb   #50S-60N
 id_eof=0
 #
 lagmax=5
 mlead=7
-#nmod=11
-nmod=13
+nmod=5
 ncv=1
 
 nclm_start=1981 # to have yrs clm for more stable than 30 yrs 
@@ -78,7 +75,7 @@ mmn2=`expr $yrn2 \* 12`
 #
 montot=`expr $mmn2 + $icmon` # 816=dec2015
 nsstot=`expr $montot - 2` #
-nfld2=`expr $nsstot / 12 + 1` # number of the ss used in hcst
+nfld2=`expr $nsstot / 12 + 1` #
 
 nssind=$(expr $nsstot / 3) # independent 3-mon avg
 nssdif=`expr $nsstot - $nssind \* 3`  
@@ -112,19 +109,20 @@ dataot2=$outdata
 # define some parameters
 #======================================
 # need to use the *.f to have exact ngrd
-if [ $eof_area = tp_nml ]; then lons=1;lone=180;lats=22;late=68; fi # 30S-60N
+if [ $eof_area = glb ]; then lons=1;lone=360;lats=40;late=160; fi # 40S-70N
 
 jmxeof=`expr $late - $lats + 1`
 
-if [ $var1 = ersst ] && [ $eof_area = tp_nml ]; then ngrd=6438; fi
+if [ $var1 = t2m ] && [ $eof_area = glb ]; then ngrd=14344; fi
+if [ $var1 = prec ] && [ $eof_area = glb ]; then ngrd=14839; fi
 #echo $ngrd
 #
-sstfile=${var1}.3mon.1948-curr.total
-tpzfile=${var2}.1948_cur.3mon.total.1x1
+tpzfile1=${var1}.1948_cur.3mon.total.1x1
+tpzfile2=${var2}.1948_cur.3mon.total.1x1
 #
 #=======================================
 #
-cp $lcdir/eeof_ersst_2_tpz.3mon.f $tmp/pcr.f
+cp $lcdir/eeof_p_2_t.3mon.f $tmp/pcr.f
 cp $lcdir/backup/reof.s.f $tmp/reof.s.f
 
 cat > parm.h << eof
@@ -135,15 +133,14 @@ c
       parameter(montot=$montot,nsstot=$nsstot)  ! total month number
       parameter(nssuse=$nssuse) ! acturly used nss 
       parameter(nfld=$nsslag)  ! ss of lag-arranged 
-      parameter(nfld2=$nfld2)  ! # of ss used in hcst 
+      parameter(nfld2=$nfld2)  ! # of sst used for hcst 
       parameter(its_sst=${its_sst}) ! start of reaning 
 
       parameter(imx=$imx,jmx=$jmx)  ! sst dimension
-      parameter(imx2=$imx2,jmx2=$jmx2)  ! sst dimension
       parameter(nlead=$mlead) 
       parameter(mlag=$lagmax) 
       parameter(ngrd=$ngrd)
-      parameter(lons=$lons,lone=$lone,lats=$lats,late=$late) !eof_area=tp_nml
+      parameter(lons=$lons,lone=$lone,lats=$lats,late=$late) !eof_area
       parameter(undef=$undef)
       parameter(ID=$id_eof)
       parameter(nmod=$nmod)
@@ -153,8 +150,8 @@ c
 eof
 #
 #gfortran -o pcr.x pcr.f reof.s.f
-#gfortran -mcmodel=large -o pcr.x pcr.f reof.s.f
-gfortran -mcmodel=medium -o pcr.x pcr.f reof.s.f
+gfortran -mcmodel=large -o pcr.x pcr.f reof.s.f
+#gfortran -mcmodel=medium -o pcr.x pcr.f reof.s.f
 echo "done compiling"
 
 if [ -f fort.10 ] ; then
@@ -167,8 +164,8 @@ outfile3=efcst.$var1.2.$var2.cv$ncv.3mon
 outfile4=eskill_1d.$var1.2.$var2.cv$ncv.3mon
 outfile5=ehcst.$var1.2.$var2.cv$ncv.3mon
 #
-ln -s $datain1/$sstfile.gr  fort.10
-ln -s $datain2/$tpzfile.gr  fort.11
+ln -s $datain1/$tpzfile1.gr  fort.10
+ln -s $datain2/$tpzfile2.gr  fort.11
 #
 ln -s $dataot2/$outfile1.gr fort.20
 ln -s $dataot2/$outfile2.gr fort.21
@@ -188,8 +185,8 @@ cat>$dataot2/$outfile1.ctl<<EOF
 dset ^$outfile1.gr
 undef $undef
 title EXP1
-XDEF  1 linear   0.  2.
-ydef  1 linear -89.  2.
+XDEF  1 linear   0.5  1.
+ydef  1 linear -89.5  1.
 zdef  1 linear 1 1
 tdef  $nsslag linear jan1950 1mo
 edef  $nmod names 1 2 3 4 5 6 7 8 9 10 11
@@ -202,8 +199,8 @@ cat>$dataot2/$outfile2.ctl<<EOF
 dset ^$outfile2.gr
 undef $undef
 title EXP1
-XDEF  $imx linear   0.  2.
-ydef  $jmx linear -89.  2.
+XDEF  $imx linear   0.5  1.
+ydef  $jmx linear -89.5  1.
 zdef  1 linear 1 1
 tdef  $nmod linear jan1950 1mon
 vars  5
@@ -219,8 +216,8 @@ cat>$dataot2/$outfile3.ctl<<EOF
 dset ^$outfile3.gr
 undef $undef
 title EXP1
-XDEF  $imx2 linear   0.5  1.
-ydef  $jmx2 linear -89.5  1.
+XDEF  $imx linear   0.5  1.
+ydef  $jmx linear -89.5  1.
 zdef  1 linear 1 1
 tdef  $mlead linear ${tgtmoyr} 1mon
 vars  5
@@ -236,8 +233,8 @@ cat>$dataot2/$outfile4.ctl<<EOF
 dset ^$outfile4.gr
 undef $undef
 title EXP1
-xdef 1 linear    0.5  1.
-ydef 1 linear  -89.5  1.
+xdef 1 linear   0.5  1.
+ydef 1 linear -89.5  1.
 zdef 1 linear 1 1
 tdef $ny_out linear ${tgtmon}$outyr_s 1yr
 edef $mlead names 1 2 3 4 5 6 7
@@ -255,8 +252,8 @@ cat>$dataot2/$outfile5.ctl<<EOF
 dset ^$outfile5.gr
 undef $undef
 title EXP1
-XDEF  $imx2 linear   0.5  1.
-ydef  $jmx2 linear -89.5  1.
+XDEF  $imx linear    0.5  1.
+ydef  $jmx linear  -89.5  1.
 zdef  1 linear 1 1
 tdef $ny_out linear ${tgtmon}$outyr_s 1yr
 edef  $mlead names 1 2 3 4 5 6 7

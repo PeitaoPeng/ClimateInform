@@ -1,52 +1,52 @@
       include "parm.h"
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C PCR for forecst TPZ
+C eeof with regression only for IC season
 C===========================================================
       real fld0(imx,jmx),fld(imx,jmx)
-      real sst(imx,jmx,nyr,mics)
-      real v1dtd(imx,jmx,nyr,mics),v1trd(imx,jmx,nyr)
+      real sst(imx,jmx,nssuse)
+      real sstc(imx,jmx,4),clm_sst_1d(4),clm_tpz_1d(12)
+      real sstlag(imx,jmx,mlag,nfld)
+      real aaa(mlag*ngrd,nfld),wk(nfld,mlag*ngrd),tt(nmod,nmod)
+      real eval(nfld),evec(mlag*ngrd,nfld),coef(nfld,nfld)
+      real rin(nfld),rot(nfld)
+      real weval(nfld),wevec(mlag*ngrd,nfld),wcoef(nfld,nfld)
+      real reval(nmod),revec(mlag*ngrd,nfld),rcoef(nmod,nfld)
+      real rcoef2(nmod,nfld)
+      real rwk(mlag*ngrd),rwk2(mlag*ngrd,nmod)
       real av1(imx,jmx),bv1(imx,jmx)
-      real sstc(imx,jmx),tpzc(imx2,jmx2)
-      real tpzc_tot(imx2,jmx2,nwmo,nlead)
-      real fld2(imx2,jmx2),fld3(imx2,jmx2)
-      real corr(imx,jmx,nyr),regr(imx,jmx,nyr)
-      real corr2(imx2,jmx2,nyr),regr2(imx2,jmx2,nyr,nyr)
-      real corr3(imx2,jmx2,nyr),regr3(imx2,jmx2,nyr)
+      real fld2(imx,jmx)
+      real corr(imx,jmx),regr(imx,jmx)
+      real xlat(jmx),coslat(jmx),cosr(jmx)
+
+      real corr2(imx2,jmx2,nmod),regr2(imx2,jmx2,nmod,nfld)
+      real corr3(imx2,jmx2,nmod),regr3(imx2,jmx2,nmod)
+      real corr4d(imx2,jmx2,mlag,nmod),regr4d(imx2,jmx2,mlag,nmod)
+
       real cor3d(imx2,jmx2,nlead),rms3d(imx2,jmx2,nlead)
-      real cvcor(imx2,jmx2,nyr,nlead)
       real hss3d(imx2,jmx2,nlead)
-      real ts1(nyr),ts2(nyr),ts3(nyr),ts4(nyr)
-      real w1d(nwmo),w1d2(nwmo)
+      real ts1(nssuse)
+      real ts2(nfld),ts3(nfld),ts4(nfld)
       real w2d(imx2,jmx2),w2d2(imx2,jmx2),w2d3(imx2,jmx2)
       real w2d4(imx2,jmx2),w2d5(imx2,jmx2),w2d6(imx2,jmx2)
-      real tcof(nyr,nyr,mics)
-      real tpz(imx2,jmx2,montot),wtpz(imx2,jmx2,nyr)
-      real v2dtd(imx2,jmx2,nyr),v2trd(imx2,jmx2,nyr)
+      real wtpz(imx2,jmx2,nfld)
+      real wtpz2(imx2,jmx2,nfld)
       real av2(imx2,jmx2),bv2(imx2,jmx2)
-      real hcst(imx2,jmx2,nyr,nlead,mics,ncut)
-      real wthcst(imx2,jmx2,nyr,nlead)
-      real fcst(imx2,jmx2,nlead,mics,ncut)
-      real stdo(imx2,jmx2,nwmo,nlead),stdf(imx2,jmx2)
-      real clmo(imx2,jmx2,nwmo,nlead),clmf(imx2,jmx2)
-      real wtfcst(imx2,jmx2,nlead)
-      real vfld(imx2,jmx2,nyr,nlead)
-      real xlat(jmx),coslat(jmx),cosr(jmx)
-      real xlat2(jmx2),coslat2(jmx2),cosr2(jmx2)
-      dimension neof(mcut)
-      data neof/icut1,icut2,icut3,icut4/
+      real hcst(imx2,jmx2,nfld,nlead)
+      real fcst(imx2,jmx2,nlead)
+      real avgo(imx2,jmx2),avgf(imx2,imx2)
+      real stdo(imx2,jmx2,nlead),stdf(imx2,jmx2,nlead)
+      real vfld(imx2,jmx2,nfld,nlead)
 C
       open(10,form='unformatted',access='direct',recl=4*imx*jmx) !sst
+
       open(11,form='unformatted',access='direct',recl=4*imx2*jmx2) !tpz
 
       open(20,form='unformatted',access='direct',recl=4) !pc
-      open(21,form='unformatted',access='direct',recl=4*imx*jmx) !eof
+      open(21,form='unformatted',access='direct',recl=4*imx2*jmx2) !eof
 
       open(30,form='unformatted',access='direct',recl=4*imx2*jmx2) !fcst
       open(31,form='unformatted',access='direct',recl=4) !1d_skill
       open(32,form='unformatted',access='direct',recl=4*imx2*jmx2) !hcst
-
-      open(40,form='unformatted',access='direct',recl=4*imx*jmx) !sst ICs
-      open(41,form='unformatted',access='direct',recl=4*imx2*jmx2) !regr
 C
 C== have coslat
 C
@@ -59,248 +59,296 @@ C
         coslat(j)=cos(xlat(j)*3.14159/180)  !for EOF use
         cosr(j)=sqrt(coslat(j))
       enddo
-
-      do j=1,jmx2
-        if(jmx2.eq.180) then
-          xlat2(j)=-89.5+(j-1)*1.
-        else if(jmx2.eq.360) then
-          xlat2(j)=-89.75+(j-1)*0.5
-        endif
-        coslat2(j)=cos(xlat2(j)*3.14159/180)  
-        cosr2(j)=sqrt(coslat2(j)) 
-      enddo
-
-C     undef=-999.0
 C
-C=== read in all 3-mon avg tpz
-      do it=1,nsstot ! nsstot=montot-2
-        read(11,rec=it) fld2
-        do i=1,imx2
-        do j=1,jmx2
-          tpz(i,j,it)=fld2(i,j)
-        enddo
-        enddo
-      enddo
-C
-C============ have sst of mics
-c
-      DO ic=1,mics ! # of non-overlapping 3-mon or months 
-
-      its_sst=icmon+lagmax-2-(ic-1)*3 !for 3-mon data,+lagmax to avoid < 0
-
+C=== read in independent and properly skiped avg sst
       ir=0
-c     do it=its_sst,montot,12
-      do it=its_sst,nsstot,12
-      write(6,*) 'it=',it
-        read(10,rec=it) fld
-        ir=ir+1
+      do it=its_sst,nsstot,3
+      ir=ir+1
+        read(10,rec=it) fld2
         do i=1,imx
         do j=1,jmx
-          sst(i,j,ir,ic)=fld(i,j)
+          sst(i,j,ir)=fld2(i,j) 
         enddo
         enddo
+        write(6,*) 'its_sst=',its_sst,'it=',it
       enddo
-      ny_sst=ir
-      write(6,*) 'its_sst==',its_sst,'ny_sst==',ny_sst
 
-      ic_fcst=ny_sst
+      nread=ir
+      write(6,*) 'nread(=nssuse?)=',nread ! should = nssuse
 C
-C have sst anomalies over period 1 -> ny_sst
+C have sst anomalies 
       do i=1,imx
       do j=1,jmx
-        if(fld(i,j).gt.-900.) then
-          do it=1,ny_sst
-            ts1(it)=sst(i,j,it,ic)
+
+        if(fld2(i,j).gt.-900.) then
+          do it=1,nssuse
+            ts1(it)=sst(i,j,it)
           enddo
-          call clim_anom(ts1,sstc(i,j),nyr,ny_sst)
+          call clim_anom_4(ts1,nssuse,nssuse,clm_sst_1d)
         else
-          do it=1,ny_sst
+          do it=1,nssuse
             ts1(it)=undef
           enddo
-            sstc(i,j)=undef
-        endif
-          do it=1,ny_sst
-            sst(i,j,it,ic)=ts1(it)
+          do m=1,4
+            clm_sst_1d(m)=undef
           enddo
+        endif
+
+        do it=1,nssuse
+          sst(i,j,it)=ts1(it)
+        enddo
+
+        do m=1,4
+          sstc(i,j,m)=clm_sst_1d(m)
+        enddo
+
       enddo
       enddo
-c write out sst_IC
+c
+c have lagged SST matrix
+c
+      do ilag=1,mlag
+      do is=1,nfld
+
+      iss=is+ilag-1
+
       do i=1,imx
       do j=1,jmx
-        fld(i,j)=sst(i,j,ny_sst,ic)
+
+      sstlag(i,j,ilag,is)=sst(i,j,iss)
+
       enddo
       enddo
-      write(40,rec=ic) fld
 
-      ENDDO ! ic loop
+      enddo ! is loop
+      enddo ! ilag loop
 
+C input to aaa
+      do is=1,nfld
+      do ilag=1,mlag
 
-      call ltrend_4d_mics(sst,v1dtd,v1trd,imx,jmx,nyr,ny_sst,av1,bv1,
-     &undef,mics)
+      ig=0
+      do i=lons,lone
+      do j=lats,late
+        if(fld2(i,j).gt.-900.) then
+          ig=ig+1
+          aaa(ig+(ilag-1)*ngrd,is)=cosr(j)*sstlag(i,j,ilag,is)
+        endif
+      enddo
+      enddo
+
+      enddo
+      enddo
+      write(6,*) 'ngrd=',ig
 c
 c SST EOF analysis
 c
-      DO ic=1,mics
+      write(6,*) 'eof begins'
+      call EOFS(aaa,mlag*ngrd,nfld,nfld,eval,evec,coef,wk,ID)
+      write(6,*) 'reof begins'
+      call REOFS(aaa,mlag*ngrd,nfld,nfld,wk,ID,weval,wevec,wcoef,
+     &           nmod,reval,revec,rcoef,tt,rwk,rwk2)
+cc... arrange reval,revec and rcoef in decreasing order
+      call order(mlag*ngrd,nfld,nmod,reval,revec,rcoef)
+c
+cc... write out eval and reval
+      totv1=0
+      do i=1,20
+      write(6,*)'eval= ',i,eval(i)
+      totv1=totv1+eval(i)
+      end do
+      write(6,*)'total= ',totv1
 
-      do m=1,modmax
-      do it=1,nyr
-        tcof(m,it,ic)=undef
-      enddo
-      enddo
-
-      enddo ! ic loop
+      totv2=0
+      do i=1,nmod
+      write(6,*)'reval= ',i,reval(i)
+      totv2=totv2+reval(i)
+      end do
+      write(6,*)'total= ',totv2
 C
-      if(id_detrd.eq.1) then
-      call pc_eof_mics(v1dtd,imx,jmx,lons,lone,lats,late,nyr,
-     &ny_sst,cosr,ngrd,modmax,tcof,corr,regr,undef,id,mics,id_ceof)
-      else
-      call pc_eof_mics(sst,imx,jmx,lons,lone,lats,late,nyr,
-     &ny_sst,cosr,ngrd,modmax,tcof,corr,regr,undef,id,mics,id_ceof)
-      endif
+CCC...CORR between rcoef and tpz data
+C
+      iw1=0
+      iw2=0
 
-C write out EOF patters
-      do m=1,5
-        do i=1,imx
-        do j=1,jmx
-        fld(i,j)=regr(i,j,m)
-        enddo
-        enddo
-        write(21,rec=m) fld
-      enddo
-C write out tcof
-      iw=0
-      do it=1,ny_sst
-      do m=1,5
-         iw=iw+1
-         write(20,rec=iw) tcof(m,it,1)
-      enddo
-      enddo
+      DO m=1,nmod      !loop over mode
 c
-c tpz hindcast for ld=1->nlead
+      do it=1,nfld
+        ts2(it)=rcoef(m,it)
+      enddo
+
+      call normal(ts2,ts3,nfld,nfld)
+
+      do it=1,nfld
+        rcoef(m,it)=ts3(it)
+      enddo
+
+      do ilag=1,mlag
+
+      do i=1,imx
+      do j=1,jmx
+        if(fld2(i,j).gt.-900.) then
+        do it=1,nfld
+          ts3(it)=sstlag(i,j,ilag,it)
+        enddo
+        call regr_t(ts2,ts3,nfld,nfld,corr(i,j),regr(i,j))
+        else
+          corr(i,j)=undef
+          regr(i,j)=undef
+        endif
+        corr4d(i,j,ilag,m)=corr(i,j)
+        regr4d(i,j,ilag,m)=regr(i,j)
+      enddo
+      enddo
+
+C write out EOF patterns
+        iw1=iw1+1
+        write(21,rec=iw1) regr
+
+      enddo ! ilag loop
+
+C write out rcoef
+      do it=1,nfld
+         iw2=iw2+1
+         write(20,rec=iw2) rcoef(m,it)
+      enddo
+
+      enddo !m loop
+C      
+C take rcoef data for the season same as that of IC
+C 
+      nyrpc=int(nfld/4)
+      nsrpc=nyrpc*4
+      nsdel=nfld-nsrpc
+      if(nsdel.eq.0) then
+        its_rpc=4
+      else
+        its_rpc=nsdel
+      endif
+      write(6,*)'nyrpc=',nyrpc
+      write(6,*)'nsrpc=',nsrpc
+      write(6,*)'nfld=',nfld
+      write(6,*)'its_rpc=',its_rpc
+
+c rcoef2
+
+      DO m=1,nmod      !loop over mode
 c
-      iw5=0
+      ir=0
+      do it=its_rpc,nfld,4
+      ir=ir+1
+        ts2(ir)=rcoef(m,it)
+      enddo
+
+      ns_rpc=ir
+
+      call normal(ts2,ts3,nfld,ns_rpc)
+
+      do it=1,ns_rpc
+        rcoef2(m,it)=ts3(it)
+      enddo
+
+      ENDDO ! m loop
+      write(6,*) 'ns_rpc=',ns_rpc
+c
+c hindcast for ld=1->nlead
+c
       DO ld=1,nlead
 
-c select tpz for each lead
-      its_tpz=icmon+lagmax+ld+1 !11+1+1=13(jfm)
+c read in predictant (tpz) for each lead
+      its_tpz=its_sst+ld+mlag*3 
+      write(6,*) 'its_sst=',its_sst,'its_tpz=',its_tpz
       ir=0
-      do it=its_tpz,nsstot,12
+      do it=its_tpz,nsstot,3
         ir=ir+1
+        read(11,rec=it) w2d3
+
         do i=1,imx2
         do j=1,jmx2
-          wtpz(i,j,ir)=tpz(i,j,it)
+          wtpz(i,j,ir)=w2d3(i,j)
         enddo
         enddo
+        write(6,*) 'ld=',ld,'it=',it,'ir=',ir
       enddo
-      ny_tpz=ir
-      write(6,*) 'its_tpz=',its_tpz,'ny_tpz=',ny_tpz
+      ns_tpz=ir
+      write(6,*) 'ns_tpz=',ns_tpz
+      write(6,*) 'tpz at (90,45)=',wtpz(90,45,ns_tpz),w2d3(90,45)
+C      
+C take wtpz data for the season same as that of IC
 C 
-C have tpz anomalies over period 1 -> ny_tpz
       do i=1,imx2
       do j=1,jmx2
+        if(w2d3(i,j).gt.-900.) then
 
-        if(fld2(i,j).gt.-900.) then
-
-          do it=1,ny_tpz
-            ts2(it)=wtpz(i,j,it)
+          ir=0
+          do it=its_rpc,ns_tpz,4
+          ir=ir+1
+            ts2(ir)=wtpz(i,j,it)
           enddo
-
-          call wmo_clim_tot(ts2,w1d,nyr,nwmo)
-
-            do ii=1,nwmo
-              tpzc_tot(i,j,ii,ld)=w1d(ii)
-            enddo
-
-          call clim_anom(ts2,tpzc(i,j),nyr,ny_tpz)
-
+          ns_tpz2=ir
+          call clim_anom(ts2,xclm,nfld,ns_tpz2)
         else
-
-          do it=1,ny_tpz
+          do it=1,ns_tpz2
             ts2(it)=undef
           enddo
-
-            tpzc(i,j)=undef
-
-          do ii=1,nwmo
-            tpzc_tot(i,j,ii,ld)=undef
-          enddo
-
         endif
-
-          do it=1,ny_tpz
-            wtpz(i,j,it)=ts2(it)
+          do it=1,ns_tpz2
+            wtpz2(i,j,it)=ts2(it)
           enddo
       enddo
       enddo
-C 
-C have linear trend of tpz
-
-      if(id_detrd.eq.1) then
-      call ltrend_3d(wtpz,v2dtd,v2trd,imx2,jmx2,nyr,ny_tpz,
-     &av2,bv2,undef)
-      else
-      do it=1,nyr 
-      do i=1,imx2
-      do j=1,jmx2
-        v2dtd(i,j,it)=wtpz(i,j,it)
-      enddo
-      enddo
-      enddo
-      endif
-c
+      write(6,*) 'tpz anom at (90,45)=',wtpz2(90,45,ns_tpz2)
+C
 C CV hcst for this lead
-c     nfld=ny_tpz - 1
-c     if(ncv.eq.3) nfld=ny_tpz - 3
+c     mfld=ns_tpz - 1
+c     if(ncv.eq.3) mfld=ns_tpz - 3
 c
-      DO ic=1,mics
+      DO itgt=1,ns_tpz2
 
-      DO itgt=1,ny_tpz
+        ism=itgt-1
+        isp=itgt+1
+        if(itgt.eq.1) ism=3
+        if(itgt.eq.ns_tpz) isp=ns_tpz2-2
 
-        iym=itgt-1
-        iyp=itgt+1
-        if(itgt.eq.1) iym=3
-        if(itgt.eq.ny_tpz) iyp=ny_tpz-2
-
-      DO m=1,modmax
+      DO m=1,nmod
 
         ir=0
-        do iy=1,ny_tpz
+        do is=1,ns_tpz2
 
-          if(iy.eq.itgt) go to 555
+          if(is.eq.itgt) go to 555
 
           if(ncv.eq.3) then
-            if(iy.eq.iym)  go to 555
-            if(iy.eq.iyp)  go to 555
+            if(is.eq.ism)  go to 555
+            if(is.eq.isp)  go to 555
           endif
 
-            ir=ir+1
-            ts1(ir)=tcof(m,iy,ic)
+          ir=ir+1
+          ts2(ir)=rcoef2(m,is)
   555   continue
         enddo
           
         do i=1,imx2
         do j=1,jmx2
 
-        IF(fld2(i,j).gt.-900.) then
+        IF(w2d3(i,j).gt.-900.) then
 
           ir=0
-          do iy=1,ny_tpz
+          do is=1,ns_tpz2
 
-          if(iy.eq.itgt) go to 666
+          if(is.eq.itgt) go to 666
 
           if(ncv.eq.3) then
-            if(iy.eq.iym)  go to 666
-            if(iy.eq.iyp)  go to 666
+            if(is.eq.ism)  go to 666
+            if(is.eq.isp)  go to 666
           endif
 
             ir=ir+1
-c           ts2(ir)=wtpz(i,j,iy)
-            ts2(ir)=v2dtd(i,j,iy)
+            ts3(ir)=wtpz2(i,j,is)
   666     continue
           enddo
 
-          nfld=ir
-          call regr_t(ts1,ts2,nyr,nfld,corr2(i,j,m),
+          mfld=ir
+          call regr_t(ts2,ts3,nfld,mfld,corr2(i,j,m),
      &    regr2(i,j,m,itgt))
 
         ELSE
@@ -314,57 +362,55 @@ c           ts2(ir)=wtpz(i,j,iy)
         enddo
       enddo ! m loop
 c
-c have lead-ld hcst for itgt yr with sst tcof and tpz regr
-      do mc=1,ncut
+c have lead-ld hcst for itgt season with sst rcoef and tpz regr
       call setzero(w2d,imx2,jmx2)
       do i=1,imx2
       do j=1,jmx2
-        if(fld2(i,j).gt.-900.) then
-          do m=1,neof(mc)
-            w2d(i,j)=w2d(i,j)+tcof(m,itgt,ic)*regr2(i,j,m,itgt)
+        if(w2d3(i,j).gt.-900.) then
+          do m=1,nmod
+            w2d(i,j)=w2d(i,j)+rcoef2(m,itgt)*regr2(i,j,m,itgt)
           enddo
-            w2d2(i,j)=wtpz(i,j,itgt)
+            w2d2(i,j)=wtpz2(i,j,itgt)
         else
             w2d(i,j)=undef
             w2d2(i,j)=undef
         endif
 
-      if(id_detrd.eq.1) then
-        hcst(i,j,itgt,ld,ic,mc)=w2d(i,j)+v2trd(i,j,itgt)
-c       hcst(i,j,itgt,ld,ic,mc)=w2d(i,j) ! not add trend
-      else
-        hcst(i,j,itgt,ld,ic,mc)=w2d(i,j)
-      endif
+        hcst(i,j,itgt,ld)=w2d(i,j)
 
         vfld(i,j,itgt,ld)=w2d2(i,j)
 
       enddo
       enddo
 
-      enddo ! mc loop
-
       ENDDO ! itgt loop
+
+      write(6,*) 'ns_tpz2=',ns_tpz2
+      write(6,*) 'mfld(=ns_tpz2-ncv?)=',mfld
+      write(6,*) 'rcoef2 at ns_tpz2',rcoef2(1,ns_tpz2)
+      write(6,*) 'regr2(90,45,1,ns_tpz2)=',regr2(90,45,1,ns_tpz2)
+      write(6,*) 'hcst(90,45,ns_tpz2,ld)=',hcst(90,45,ns_tpz2,ld)
+      write(6,*) 'vfld(i,j,ns_tpz2,ld)=',vfld(90,45,ns_tpz2,ld)
 c
-C========== realtime fcst
+C======== realtime fcst
 c
 c have regr patterns
-      DO m=1,modmax
+      DO m=1,nmod
 
-        do iy=1,ny_tpz
-            ts1(iy)=tcof(m,iy,ic)
+        do is=1,ns_tpz2
+            ts2(is)=rcoef2(m,is)
         enddo
           
         do i=1,imx2
         do j=1,jmx2
 
-        IF(fld2(i,j).gt.-900.) then
+        IF(w2d3(i,j).gt.-900.) then
 
-          do iy=1,ny_tpz
-c           ts2(iy)=wtpz(i,j,iy)
-            ts2(iy)=v2dtd(i,j,iy)
+          do is=1,ns_tpz2
+            ts3(iy)=vfld(i,j,is,ld)
           enddo
 
-          call regr_t(ts1,ts2,nyr,ny_tpz,corr3(i,j,m),regr3(i,j,m))
+          call regr_t(ts2,ts3,nfld,ns_tpz2,corr3(i,j,m),regr3(i,j,m))
 
         ELSE
 
@@ -375,206 +421,182 @@ c           ts2(iy)=wtpz(i,j,iy)
 
         enddo
         enddo
-      enddo ! m loop
 
-C write out regr3 & corr3
-      do m=1,icut1
-        do i=1,imx2
-        do j=1,jmx2
-        w2d(i,j)=regr3(i,j,m)
-        w2d2(i,j)=corr3(i,j,m)
-        enddo
-        enddo
-        iw5=iw5+1
-        write(41,rec=iw5) w2d
-        iw5=iw5+1
-        write(41,rec=iw5) w2d2
-      enddo
+        ENDDO ! m loop
+      write(6,*) 'regr3(90,45,11)=',regr3(90,45,11)
 c
 c fcst
-      do mc=1,ncut
-
+c
       call setzero(w2d,imx2,jmx2)
       do i=1,imx2
       do j=1,jmx2
-        if(fld2(i,j).gt.-900.) then
+        if(w2d3(i,j).gt.-900.) then
 
-          do m=1,neof(mc)
-            w2d(i,j)=w2d(i,j)+tcof(m,ic_fcst,ic)*regr3(i,j,m)
+          do m=1,nmod
+            w2d(i,j)=w2d(i,j)+rcoef2(m,ns_rpc)*regr3(i,j,m)
           enddo
 
         else
             w2d(i,j)=undef
         endif
 
-      if(id_detrd.eq.1) then
-        fcst(i,j,ld,ic,mc)=w2d(i,j)+v2trd(i,j,ny_tpz)
-c       fcst(i,j,ld,ic,mc)=w2d(i,j) ! not aad trend
-      else
-        fcst(i,j,ld,ic,mc)=w2d(i,j)
-      endif
+        fcst(i,j,ld)=w2d(i,j)
 
       enddo
       enddo
-
-      enddo ! mc loop
-
-      ENDDO ! ic loop
+      write(6,*) 'rcoef(11,ns_rpc)=',rcoef2(11,ns_rpc)
+      write(6,*) 'fcst(90,45,ld)=',fcst(90,45,ld)
 
       ENDDO ! ld loop
 c
-c  hcst and fcst
-      iw=0
-      DO ld=1,nlead ! lead of weighted hcst/fcst
-
-C== have hcst
-      do it=1,ny_tpz
-        do i=1,imx2
-        do j=1,jmx2
-          if(fld2(i,j).gt.-900.) then
-            w2d2(i,j)=vfld(i,j,it,ld)
-
-            w2d(i,j)=0.
-            do ic=1,mics
-            do mc=1,ncut
-            w2d(i,j)=w2d(i,j)+hcst(i,j,it,ld,ic,mc)/float(mics*ncut)
-            enddo
-            enddo
-
-          else
-            w2d(i,j)=undef
-          endif
-          wthcst(i,j,it,ld)=w2d(i,j)
-        enddo
-        enddo
-      enddo !it loop
+c normalize both obs and hcst
 c
-C== have fcst
-        do i=1,imx2
-        do j=1,jmx2
+c std of obs
+      iss_clm=its_clm
+      ise_clm=ite_clm
+      ns_clm=ny_clm
+      write(6,*) 'iss_clm=',iss_clm
+      write(6,*) 'ise_clm=',ise_clm
+      write(6,*) 'ns_clm=',ns_clm
 
-          if(fld2(i,j).gt.-900.) then
-
-          w2d(i,j)=0.
-          do ic=1,mics
-          do mc=1,ncut
-          w2d(i,j)=w2d(i,j)+fcst(i,j,ld,ic,mc)/float(mics*ncut)
-          enddo
-          enddo
-
-          else
-            w2d(i,j)=undef
-          endif
-            wtfcst(i,j,ld)=w2d(i,j)
-        enddo
-        enddo
-
-      enddo ! ld loop
-C
-c normalize both obs and wthcst
-c
-c std clm of obs
       do ld=1,nlead
 
         do i=1,imx2
         do j=1,jmx2
-          if (fld2(i,j).gt.-900.) then
-
-            do it=1,ny_tpz
-              ts1(it)=vfld(i,j,it,ld)
+          if (w2d3(i,j).gt.-900.) then
+            avgo(i,j)=0.
+            do it=iss_clm,ise_clm 
+            avgo(i,j)=avgo(i,j)+vfld(i,j,it,ld)/float(ns_clm)
             enddo
-
-            call wmo_clm_std_anom(ts1,w1d,w1d2,ts4,nyr,ny_tpz,nwmo)
-
-            do ii=1,nwmo
-              stdo(i,j,ii,ld)=w1d(ii)
-              clmo(i,j,ii,ld)=w1d2(ii)
-            enddo
-
-            do it=1,ny_tpz
-              vfld(i,j,it,ld)=ts4(it)
-            enddo
-
           else
-
-            do ii=1,nwmo
-              stdo(i,j,ii,ld)=undef
-              clmo(i,j,ii,ld)=undef
-            enddo
-
-            do it=1,ny_tpz
-              vfld(i,j,it,ld)=undef
-            enddo
-
+            avgo(i,j)=undef
           endif
         enddo
         enddo
 
-c std clm of wthcst
         do i=1,imx2
         do j=1,jmx2
-          if (fld2(i,j).gt.-900.) then
-
-            do it=1,ny_tpz
-              ts1(it)=wthcst(i,j,it,ld)
+          if (w2d3(i,j).gt.-900.) then
+            stdo(i,j,ld)=0.
+            do it=iss_clm,ise_clm
+            stdo(i,j,ld)=stdo(i,j,ld)+
+     &      (vfld(i,j,it,ld)-avgo(i,j))**2
             enddo
-
-            call wmo_clm_std_anom(ts1,w1d,w1d2,ts4,nyr,ny_tpz,nwmo)
-
-              stdf(i,j)=w1d(nwmo)
-              clmf(i,j)=w1d2(nwmo)
-
-            do it=1,ny_tpz
-              wthcst(i,j,it,ld)=ts4(it)
-            enddo
-
+            stdo(i,j,ld)=sqrt(stdo(i,j,ld)/float(ns_clm))
           else
+            stdo(i,j,ld)=undef
+            endif
+        enddo
+        enddo
+      write(6,*) 'stdo(90,45,ld)=',stdo(90,45,ld)
 
-            do it=1,ny_tpz
-              wthcst(i,j,it,ld)=undef
+c std of hcst
+        do i=1,imx2
+        do j=1,jmx2
+          if (w2d3(i,j).gt.-900.) then
+            avgf(i,j)=0.
+            do it=iss_clm,ise_clm
+            avgf(i,j)=avgf(i,j)+hcst(i,j,it,ld)/
+     &float(ns_clm)
             enddo
-
-              stdf(i,j)=undef
-              clmf(i,j)=undef
-
+          else
+            avgf(i,j)=undef
           endif
         enddo
         enddo
+
+        do i=1,imx2
+        do j=1,jmx2
+          if (w2d3(i,j).gt.-900.) then
+            stdf(i,j,ld)=0.
+            do it=iss_clm,ise_clm
+            stdf(i,j,ld)=stdf(i,j,ld)+
+     &      (hcst(i,j,it,ld)-avgf(i,j))**2
+            enddo
+            stdf(i,j,ld)=sqrt(stdf(i,j,ld)/float(ns_clm))
+          else
+            stdf(i,j,ld)=undef
+          endif
+        enddo
+        enddo
+      write(6,*) 'stdf(90,45,ld)=',stdf(90,45,ld)
+c
+c deal with "too small" std
+        do i=1,imx2
+        do j=1,jmx2
+          if(w2d3(i,j).gt.-900) then
+            if(stdo(i,j,ld).lt.0.001) then
+              stdo(i,j,ld)=0.001
+            endif
+            if(stdf(i,j,ld).lt.0.001) then
+              stdf(i,j,ld)=0.001
+            endif
+          endif
+        enddo
+        enddo
+
+c standardized obs & hcst 
+      do i=1,imx2
+      do j=1,jmx2
+      do it=1,ns_tpz2
+      if (w2d3(i,j).gt.-900.) then
+        vfld(i,j,it,ld)=(vfld(i,j,it,ld)-avgo(i,j))/stdo(i,j,ld)
+      else
+        vfld(i,j,it,ld)=undef
+      endif
+      enddo
+      enddo
+      enddo
+c
+      do i=1,imx2
+      do j=1,jmx2
+      do it=1,ns_tpz2
+      if (w2d3(i,j).gt.-900.) then
+        hcst(i,j,it,ld)=(hcst(i,j,it,ld)-avgf(i,j))/
+     &stdf(i,j,ld)
+      else
+        hcst(i,j,it,ld)=undef
+      endif
+      enddo
+      enddo
+      enddo
+      write(6,*) 'stdzed vfld(90,45,ns_tpz,ld)=',vfld(90,45,ns_tpz2,ld)
+      write(6,*) 'stdzed hcst(90,45,ns_tpz,ld)=',hcst(90,45,ns_tpz2,ld)
 c
 c standardized fcsts
       do i=1,imx2
       do j=1,jmx2
-
-      if (fld2(i,j).gt.-900.) then
-        wtfcst(i,j,ld)=(wtfcst(i,j,ld)-clmf(i,j))/stdf(i,j)
+      if (w2d3(i,j).gt.-900.) then
+        fcst(i,j,ld)=(fcst(i,j,ld)-avgf(i,j))/stdf(i,j,ld)
       else
-        wtfcst(i,j,ld)=undef
+        fcst(i,j,ld)=undef
       endif
+      enddo
+      enddo
 
-      enddo
-      enddo
+      write(6,*) 'standardized fcst(90,45,ld)=',fcst(90,45,ld)
 
       enddo ! ld loop
 c
 c== temporal skill
-      ny_skill=ny_tpz-its_clm+1
+      ns_skill=ns_tpz-iss_clm+1
       DO ld=1,nlead
 
       DO i=1,imx2
       DO j=1,jmx2
 c
-      if(fld2(i,j).gt.-900.) then
+      if(w2d3(i,j).gt.-900.) then
         ir=0
-c       do it=its_clm,ite_clm
-        do it=its_clm,ny_tpz
+c       do it=iss_clm,ise_clm
+        do it=iss_clm,ns_tpz
 
         ir=ir+1
-          ts1(ir)=vfld(i,j,it,ld)
-          ts2(ir)=wthcst(i,j,it,ld)
+          ts2(ir)=vfld(i,j,it,ld)
+          ts3(ir)=hcst(i,j,it,ld)
         enddo
-        call cor_rms(ts1,ts2,nyr,ny_skill,cor3d(i,j,ld),rms3d(i,j,ld))
+        call cor_rms(ts2,ts3,nfld,ns_skill,cor3d(i,j,ld),rms3d(i,j,ld))
 
-        call hss3c_t(ts1,ts2,nyr,ny_skill,hss3d(i,j,ld))
+        call hss3c_t(ts2,ts3,nfld,ns_skill,hss3d(i,j,ld))
       else
         cor3d(i,j,ld)=undef
         rms3d(i,j,ld)=undef
@@ -588,33 +610,32 @@ c
 c== spatial skill
       iw=0
       do ld=1,nlead
-c     do iy=its_clm,ite_clm
-      do iy=its_clm,ny_tpz
+      do is=iss_clm,ns_tpz2
 
         do i=1,imx2
         do j=1,jmx2
-        w2d(i,j)=vfld(i,j,iy,ld)
-        w2d2(i,j)=wthcst(i,j,iy,ld)
+        w2d(i,j)=vfld(i,j,is,ld)
+        w2d2(i,j)=hcst(i,j,is,ld)
         enddo
         enddo
 
-      call sp_cor_rms(w2d,w2d2,coslat2,imx2,jmx2,
-     &1,360,115,160,xcor,xrms)
+      call sp_cor_rms(w2d,w2d2,coslat,imx2,jmx2,
+     &1,360,35,55,xcor,xrms)
 
       iw=iw+1
       write(31,rec=iw) xcor
       iw=iw+1
       write(31,rec=iw) xrms
 
-      call sp_cor_rms(w2d,w2d2,coslat2,imx2,jmx2,
-     &230,300,115,140,xcor,xrms)
+      call sp_cor_rms(w2d,w2d2,coslat,imx2,jmx2,
+     &1,360,56,75,xcor,xrms)
       iw=iw+1
       write(31,rec=iw) xcor
       iw=iw+1
       write(31,rec=iw) xrms
 
-      call hss3c_s(w2d,w2d2,imx2,jmx2,1,360,115,160,coslat2,h1)
-      call hss3c_s(w2d,w2d2,imx2,jmx2,230,300,115,140,coslat2,h2)
+      call hss3c_s(w2d,w2d2,imx2,jmx2,1,360,35,55,coslat,h1)
+      call hss3c_s(w2d,w2d2,imx2,jmx2,1,360,56,75,coslat,h2)
 
       iw=iw+1
       write(31,rec=iw) h1
@@ -624,56 +645,10 @@ c     do iy=its_clm,ite_clm
       enddo ! iy loop
       enddo ! ld loop
 c
-c CV corr skill of hcst
-c
-        do ld=1,nlead
-        do itgt=1,ny_tpz
-
-        iym=itgt-1
-        iyp=itgt+1
-        if(itgt.eq.1) iym=3
-        if(itgt.eq.ny_tpz) iyp=ny_tpz-2
-
-        do i=1,imx2
-        do j=1,jmx2
-
-        IF(fld2(i,j).gt.-900.) then
-
-          ir=0
-          do iy=1,ny_tpz
-
-          if(iy.eq.itgt) go to 777
-
-          if(ncv.eq.3) then
-            if(iy.eq.iym)  go to 777
-            if(iy.eq.iyp)  go to 777
-          endif
-
-            ir=ir+1
-            ts1(ir)=wthcst(i,j,iy,ld)
-            ts2(ir)=vfld(i,j,iy,ld)
-  777     continue
-          enddo
-
-          nfld=ir
-          call regr_t(ts1,ts2,nyr,nfld,cvcor(i,j,itgt,ld),w2d(i,j))
-
-        ELSE
-
-          cvcor(i,j,itgt,ld)=undef
-
-        ENDIF
-
-        enddo !i loop
-        enddo !j loop
-
-        enddo !itgt loop
-        enddo !ld loop
-
-c write out obs and wthcst
+c write out obs and hcst
         iw=0
         do ld=1,nlead
-        do it=its_clm,ny_tpz
+        do it=iss_clm,ns_tpz2
 
           do i=1,imx2
           do j=1,jmx2
@@ -685,23 +660,7 @@ c write out obs and wthcst
 
           do i=1,imx2
           do j=1,jmx2
-            w2d(i,j)=wthcst(i,j,it,ld)
-          enddo
-          enddo
-          iw=iw+1
-          write(32,rec=iw) w2d
-
-          if(it.gt.31.and.it.le.41) md=1
-          if(it.gt.41.and.it.le.51) md=2
-          if(it.gt.51.and.it.le.61) md=3
-          if(it.gt.61.and.it.le.71) md=4
-          if(it.gt.71.and.it.le.81) md=5
-          if(it.gt.81.and.it.le.91) md=6
-          if(it.gt.91.and.it.le.101) md=7
-
-          do i=1,imx2
-          do j=1,jmx2
-            w2d(i,j)=stdo(i,j,md,ld)
+            w2d(i,j)=hcst(i,j,it,ld)
           enddo
           enddo
           iw=iw+1
@@ -709,36 +668,25 @@ c write out obs and wthcst
 
           do i=1,imx2
           do j=1,jmx2
-            w2d(i,j)=cvcor(i,j,it,ld)
+            w2d(i,j)=stdo(i,j,ld)
           enddo
           enddo
           iw=iw+1
           write(32,rec=iw) w2d
 
        enddo
-       enddo ! ld loop
+       enddo
 c write out fcst and skill_t
         iw=0
-        ny_prd=ny_tpz+1
        do ld=1,nlead
 
          do i=1,imx2
          do j=1,jmx2
-           w2d(i,j)=wtfcst(i,j,ld)
-           w2d2(i,j)=stdo(i,j,nwmo,ld)
+           w2d(i,j)=fcst(i,j,ld)
+           w2d2(i,j)=stdo(i,j,ld)
            w2d3(i,j)=cor3d(i,j,ld)
            w2d4(i,j)=rms3d(i,j,ld)
            w2d5(i,j)=hss3d(i,j,ld)
-
-          if(ny_prd.ge.32.and.it.lt.42) md=1 ! 32-42 for skiping 1950 
-          if(ny_prd.gt.42.and.it.lt.52) md=2
-          if(ny_prd.gt.52.and.it.lt.62) md=3
-          if(ny_prd.gt.62.and.it.lt.72) md=4
-          if(ny_prd.gt.72.and.it.lt.82) md=5
-          if(ny_prd.gt.82.and.it.lt.92) md=6
-          if(ny_prd.gt.92.and.it.lt.102) md=7
-
-           w2d6(i,j)=tpzc_tot(i,j,md,ld) ! latest wmo clm 
          enddo
          enddo
          iw=iw+1
@@ -751,8 +699,6 @@ c write out fcst and skill_t
          write(30,rec=iw) w2d4
          iw=iw+1
          write(30,rec=iw) w2d5
-         iw=iw+1
-         write(30,rec=iw) w2d6
 
       enddo ! ld loop
 c
@@ -905,120 +851,6 @@ c
       return
       end
 
-      SUBROUTINE pc_eof_mics(wf3d,imx,jmx,is,ie,ls,le,ltime,nfld,cosr,
-     &ngrd,modmax,tcof,corr,regr,undef,id,mics,id_ceof)
-
-      real wf3d(imx,jmx,ltime,mics),tcof(ltime,ltime,mics)
-      real f3d(imx,jmx,nfld,mics),cosr(jmx)
-      real aaa(ngrd*mics,nfld),wk(nfld,ngrd)
-      real eval(nfld*mics),evec(ngrd*mics,nfld),coef(nfld,nfld)
-      real ts1(nfld),ts2(nfld)
-      real corr(imx,jmx,modmax),regr(imx,jmx,modmax)
-c
-      do ic=1,mics
-
-      do it=1,nfld
-
-      if(id_ceof.eq.0) then
-        ng=0
-        do j=ls,le
-        do i=is,ie
-        if(wf3d(i,j,1,1).gt.undef) then
-          ng=ng+1
-          aaa(ng,it)=wf3d(i,j,it,ic)*cosr(j)
-        endif
-        enddo
-        enddo
-      else
-        ng=0
-      do ii=1,ic
-        do j=ls,le
-        do i=is,ie
-        if(wf3d(i,j,1,1).gt.undef) then
-          ng=ng+1
-          aaa(ng,it)=wf3d(i,j,it,ii)*cosr(j)
-        endif
-        enddo
-        enddo
-        enddo ! ii loop
-      endif
-
-      enddo ! it loop
-
-      write(6,*) 'ic=',ic,' ngrd= ',ng
-c
-      call eofs_mics(aaa,ngrd*mics,ng,nfld,coef,modmax,id)
-c
-c normalize coef
-      do m=1, modmax
-      do it=1,nfld
-        ts1(it)=coef(m,it)
-      enddo
-c
-      call normal(ts1,ts2,nfld)
-c
-      do it=1,nfld
-        tcof(m,it,ic)=ts2(it)
-      enddo
-      enddo ! m loop
-
-      enddo ! ic loop
-
-c regr patterns
-
-      do m=1,modmax
-c
-      do it=1,nfld
-        ts1(it)=tcof(m,it,1)
-      enddo
-c
-      do j=1,jmx
-      do i=1,imx
-
-      if(wf3d(i,j,1,1).gt.undef) then
-
-      do it=1,nfld
-        ts2(it)=wf3d(i,j,it,1)
-      enddo
-
-      call regr_t(ts1,ts2,nfld,nfld,corr(i,j,m),regr(i,j,m))
-      else
-      corr(i,j,m)=undef
-      regr(i,j,m)=undef
-      endif
-
-      enddo
-      enddo
-
-      enddo !m loop
-c
-      return
-      end
-
-      SUBROUTINE eofs_mics(aaa,ngbig,ng,nfld,coef,modmax,id)
-      real aaa(ngbig,nfld),wk(nfld,ng)
-      real bbb(ng,nfld)
-      real eval(nfld),evec(ng,nfld),coef(nfld,nfld)
-
-      do k=1,nfld
-      do i=1,ng
-        bbb(i,k)=aaa(i,k)
-      enddo
-      enddo
-
-      call eofs(bbb,ng,nfld,nfld,eval,evec,coef,wk,id)
-
-cc... write out eval
-      totv=0
-      do m=1,modmax
-      write(6,*)'eval= ',m,eval(m)
-      totv=totv+eval(m)
-      end do
-      write(6,*)'modmax=',modmax,'totv= ',totv
-
-      return
-      end
-c
 
       SUBROUTINE setzero(fld,n,m)
       DIMENSION fld(n,m)
@@ -1072,61 +904,61 @@ c
       return
       end
 
-      SUBROUTINE wmo_clm_std_anom(ts,std,clm,anom,maxt,nt,nwmo)
-C WMO std, clm, and anom
+      SUBROUTINE clim_anom_4(ts,ntot,nss,clm)
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C. calculate seasonal anom 
+C===========================================================
+      DIMENSION ts(ntot),clm(4)
 
-      DIMENSION ts(maxt),anom(maxt),std(nwmo),clm(nwmo)
-
-C have WMO std and clm
-      do id=1,nwmo ! 51-80,61-90,71-00,81-10,91-20
-
-      its=(id-1)*10+1+1 ! +1 for skiping 1950
-      ite=(id-1)*10+30+1 ! +1 for skip 1950
-
-      cc=0.
-      do i=its,ite 
-        cc=cc+ts(i)
+      do m=1,4
+        clm(m)=0.
+        ir=0
+        do i=m,nss,4
+        ir=ir+1
+         clm(m)=clm(m)+ts(i)
+        enddo
+        clm(m)=clm(m)/float(ir)
       enddo
-      clm(id)=cc/30.
 c  
-      do i=its,ite
-        anom(i)=ts(i)-clm(id)
-      enddo
-
-      sd=0
-      do i=its,ite
-        sd=sd+anom(i)*anom(i)
-      enddo
-      sd=sqrt(sd/30.)
-      if(sd.lt.0.01) sd=0.01
-      std(id)=sd
-
-      enddo !loop id
-
-C have WMO anom
-c
-      do i=1,31 ! i=1 is 1950
-        anom(i)=(ts(i)-clm(1))/std(1)
-      enddo 
-
-      do id=1,nwmo-1 ! 81-90,91-00,01-10,11-20,21-cur
-        its=30+(id-1)*10+1+1 ! +1 is for 1950
-        ite=30+id*10+1
-        do i=its,ite 
-          anom(i)=(ts(i)-clm(id))/std(id)
+      do m=1,4
+        do i=m,nss,4
+          ts(i)=ts(i)-clm(m)
         enddo
       enddo
-
-      its=30+(nwmo-1)*10+1+1 ! +1 is for 1950
-      ite=nt
-
-      do i=its,ite 
-        anom(i)=(ts(i)-clm(nwmo))/std(nwmo)
-      enddo
-
+c
       return
       end
 
+      SUBROUTINE clim_anom_12(ts,ntot,nyr,clm)
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C. calculate seasonal anom 
+C===========================================================
+      DIMENSION ts(ntot),clm(12)
+
+      nss=nyr*12
+
+      do m=1,12
+        clm(m)=0.
+        do i=m,nss,12
+         clm(m)=clm(m)+ts(i)
+        enddo
+        clm(m)=clm(m)/float(nyr)
+      enddo
+c  
+      do m=1,12
+        do i=m,nss,12
+          ts(i)=ts(i)-clm(m)
+        enddo
+      enddo
+
+      nleft=ntot-nss
+
+      do m=1,nleft
+        ts(nss+m)=ts(nss+m)-clm(m)
+      enddo
+c
+      return
+      end
 
       SUBROUTINE clim_tot(ts,cc,maxt,its,ite)
       DIMENSION ts(maxt)
@@ -1140,45 +972,30 @@ c
       return
       end
 
-      SUBROUTINE wmo_clim_tot(ts,clm,maxt,nwmo)
-      DIMENSION ts(maxt),clm(nwmo)
 
-      do id=1,nwmo ! 51-80,61-90,71-00,81-10,91-20
-
-      its=(id-1)*10+1+1 ! +1 for skiping 1950
-      ite=(id-1)*10+30+1 ! +1 for skip 1950
-
-      cc=0.
-      do i=its,ite 
-        cc=cc+ts(i)
-      enddo
-
-      clm(id)=cc/30.
-
-      enddo
-
-      return
-      end
-
-
-      SUBROUTINE normal(rot,rot2,ltime)
+      SUBROUTINE normal(rot,rot2,ltime,nss)
       DIMENSION rot(ltime),rot2(ltime)
       avg=0.
-      do i=1,ltime
-         avg=avg+rot(i)/float(ltime)
+      do i=1,nss
+         avg=avg+rot(i)
       enddo
-      do i=1,ltime
+      avg=avg/float(nss)
+
+      do i=1,nss
         rot2(i)=rot(i)-avg
       enddo
 c
       sd=0.
-      do i=1,ltime
-        sd=sd+rot2(i)*rot2(i)/float(ltime)
+      do i=1,nss
+        sd=sd+rot2(i)*rot2(i)
       enddo
-        sd=sqrt(sd)
-      do i=1,ltime
+      sd=sd/float(nss)
+      sd=sqrt(sd)
+
+      do i=1,nss
         rot2(i)=rot2(i)/sd
       enddo
+
       return
       end
 
