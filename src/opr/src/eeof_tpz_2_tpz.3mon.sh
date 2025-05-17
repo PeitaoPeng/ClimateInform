@@ -17,8 +17,8 @@ datain2=/home/ppeng/data/tpz
 imx=360
 jmx=180
 #
-var1=prec
-var2=prec
+var1=t2m
+var2=t2m
 eof_area=glb   #50S-60N
 id_eof=0
 #
@@ -75,6 +75,7 @@ mmn2=`expr $yrn2 \* 12`
 #
 montot=`expr $mmn2 + $icmon` # 816=dec2015
 nsstot=`expr $montot - 2` #
+nfld2=`expr $nsstot / 12 + 1` # number of the ss used in hcst
 
 nssind=$(expr $nsstot / 3) # independent 3-mon avg
 nssdif=`expr $nsstot - $nssind \* 3`  
@@ -86,7 +87,6 @@ nss4rd=`expr $nsstot - $its_sst + 1` # data length including end ss
 nssuse=`expr $nss4rd / 3 + 1` # data length used in analysis
 
 nsslag=`expr $nssuse - $lagmax + 1` #length of lag-arranged data
-nfld2=`expr $nsstot / 12 + 1` # number of the ss used in hcst
 #
 icyr=$curyr
 if [ $icmon = 12 ]; then icyr=`expr $curyr - 1`; fi

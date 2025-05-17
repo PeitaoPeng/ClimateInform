@@ -19,7 +19,8 @@ jmx=180
 #
 var1=prec
 var2=t2m
-eof_area=glb   #50S-60N
+eof_area=glb
+#eof_area=na 
 id_eof=0
 #
 lagmax=5
@@ -41,11 +42,11 @@ cd $tmp
 # have SST IC
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
-#for curyr in 2021 2022 2023 2024; do
-for curyr in 2024; do
+for curyr in 2021 2022 2023 2024; do
+#for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
-#for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for curmo in 11; do
+for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+#for curmo in 05; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -110,11 +111,15 @@ dataot2=$outdata
 #======================================
 # need to use the *.f to have exact ngrd
 if [ $eof_area = glb ]; then lons=1;lone=360;lats=40;late=160; fi # 40S-70N
+if [ $eof_area = na ]; then lons=190;lone=310;lats=105;late=160; fi # 15N-70N
 
 jmxeof=`expr $late - $lats + 1`
 
 if [ $var1 = t2m ] && [ $eof_area = glb ]; then ngrd=14344; fi
 if [ $var1 = prec ] && [ $eof_area = glb ]; then ngrd=14839; fi
+
+if [ $var1 = prec ] && [ $eof_area = na ]; then ngrd=2962; fi
+
 #echo $ngrd
 #
 tpzfile1=${var1}.1948_cur.3mon.total.1x1
@@ -158,11 +163,11 @@ if [ -f fort.10 ] ; then
 /bin/rm $tmp/fort.*
 fi
 #
-outfile1=epc.${var1}
-outfile2=eeof.${var1}
-outfile3=efcst.$var1.2.$var2.cv$ncv.3mon
-outfile4=eskill_1d.$var1.2.$var2.cv$ncv.3mon
-outfile5=ehcst.$var1.2.$var2.cv$ncv.3mon
+outfile1=epc.${eof_area}.${var1}
+outfile2=eeof.${eof_area}.${var1}
+outfile3=efcst.${eof_area}.$var1.2.$var2.cv$ncv.3mon
+outfile4=eskill_1d.${eof_area}.$var1.2.$var2.cv$ncv.3mon
+outfile5=ehcst.${eof_area}.$var1.2.$var2.cv$ncv.3mon
 #
 ln -s $datain1/$tpzfile1.gr  fort.10
 ln -s $datain2/$tpzfile2.gr  fort.11
@@ -175,7 +180,7 @@ ln -s $dataot2/$outfile4.gr fort.31
 ln -s $dataot2/$outfile5.gr fort.32
 
 #
-./pcr.x > $dataot2/eeof.$var1.2.$var2.mlead$mlead.out
+./pcr.x > $dataot2/eeof.${eof_area}.$var1.2.$var2.mlead$mlead.out
 #./pcr.x 
 #
 #

@@ -27,7 +27,7 @@ C===========================================================
       real ts1(nssuse)
       real ts2(nfld),ts3(nfld),ts4(nfld)
       real w2d(imx2,jmx2),w2d2(imx2,jmx2),w2d3(imx2,jmx2)
-      real w2d4(imx2,jmx2),w2d5(imx2,jmx2),w2d6(imx2,jmx2)
+      real w2d4(imx2,jmx2),w2d5(imx2,jmx2)
       real wtpz(imx2,jmx2,nfld)
       real wtpz2(imx2,jmx2,nfld)
       real av2(imx2,jmx2),bv2(imx2,jmx2)

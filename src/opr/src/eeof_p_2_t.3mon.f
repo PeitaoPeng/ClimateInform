@@ -26,13 +26,13 @@ C===========================================================
       real w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx)
       real w2d4(imx,jmx),w2d5(imx,jmx)
       real wtpz(imx,jmx,nfld)
-      real wtpz2(imx,jmx,nfld2)
+      real wtpz2(imx,jmx,nfld)
       real av2(imx,jmx),bv2(imx,jmx)
-      real hcst(imx,jmx,nfld2,nlead)
+      real hcst(imx,jmx,nfld,nlead)
       real fcst(imx,jmx,nlead)
       real avgo(imx,jmx),avgf(imx,jmx)
       real stdo(imx,jmx,nlead),stdf(imx,jmx,nlead)
-      real vfld(imx,jmx,nfld2,nlead)
+      real vfld(imx,jmx,nfld,nlead)
       real xlat(jmx),coslat(jmx),cosr(jmx)
 C
       open(10,form='unformatted',access='direct',recl=4*imx*jmx) !prec
@@ -269,7 +269,7 @@ c read in predictant (tpz) for each lead
       enddo
       ns_tpz=ir
       write(6,*) 'ns_tpz=',ns_tpz
-      write(6,*) 'tpz at (90,45)=',wtpz(90,45,ns_tpz),w2d3(90,45)
+      write(6,*) 'tpz at (260,130)=',wtpz(260,130,ns_tpz),w2d3(260,130)
 C      
 C take wtpz data for the season same as that of IC
 C 
@@ -294,7 +294,7 @@ C
           enddo
       enddo
       enddo
-      write(6,*) 'tpz anom at (90,45)=',wtpz2(90,45,ns_tpz2)
+      write(6,*) 'tpz anom at (260,130)=',wtpz2(260,130,ns_tpz2)
 C
 C CV hcst for this lead
 c     mfld=ns_tpz - 1
@@ -385,9 +385,9 @@ c have lead-ld hcst for itgt season with sst rcoef and tpz regr
       write(6,*) 'ns_tpz2=',ns_tpz2
       write(6,*) 'mfld(=ns_tpz2-ncv?)=',mfld
       write(6,*) 'rcoef2 at ns_tpz2',rcoef2(1,ns_tpz2)
-      write(6,*) 'regr2(90,45,1,ns_tpz2)=',regr2(90,45,1,ns_tpz2)
-      write(6,*) 'hcst(90,45,ns_tpz2,ld)=',hcst(90,45,ns_tpz2,ld)
-      write(6,*) 'vfld(i,j,ns_tpz2,ld)=',vfld(90,45,ns_tpz2,ld)
+      write(6,*) 'regr2(260,130,1,ns_tpz2)=',regr2(260,130,1,ns_tpz2)
+      write(6,*) 'hcst(260,130,ns_tpz2,ld)=',hcst(260,130,ns_tpz2,ld)
+      write(6,*) 'vfld(i,j,ns_tpz2,ld)=',vfld(260,130,ns_tpz2,ld)
 c
 C======== realtime fcst
 c
@@ -420,7 +420,7 @@ c have regr patterns
         enddo
 
         ENDDO ! m loop
-      write(6,*) 'regr3(90,45,5)=',regr3(90,45,5)
+      write(6,*) 'regr3(260,130,5)=',regr3(260,130,5)
 c
 c fcst
 c
@@ -442,7 +442,7 @@ c
       enddo
       enddo
       write(6,*) 'rcoef(5,ns_rpc)=',rcoef2(5,ns_rpc)
-      write(6,*) 'fcst(90,45,ld)=',fcst(90,45,ld)
+      write(6,*) 'fcst(260,130,ld)=',fcst(260,130,ld)
 
       ENDDO ! ld loop
 c
@@ -485,7 +485,7 @@ c std of obs
             endif
         enddo
         enddo
-      write(6,*) 'stdo(90,45,ld)=',stdo(90,45,ld)
+      write(6,*) 'stdo(260,130,ld)=',stdo(260,130,ld)
 
 c std of hcst
         do i=1,imx
@@ -516,7 +516,7 @@ c std of hcst
           endif
         enddo
         enddo
-      write(6,*) 'stdf(90,45,ld)=',stdf(90,45,ld)
+      write(6,*) 'stdf(260,130,ld)=',stdf(260,130,ld)
 c
 c deal with "too small" std
         do i=1,imx
@@ -557,8 +557,10 @@ c
       enddo
       enddo
       enddo
-      write(6,*) 'stdzed vfld(90,45,ns_tpz,ld)=',vfld(90,45,ns_tpz2,ld)
-      write(6,*) 'stdzed hcst(90,45,ns_tpz,ld)=',hcst(90,45,ns_tpz2,ld)
+      write(6,*) 'stdzed vfld(260,130,ns_tpz,ld)=',
+     &vfld(260,130,ns_tpz2,ld)
+      write(6,*) 'stdzed hcst(260,130,ns_tpz,ld)=',
+     &hcst(260,130,ns_tpz2,ld)
 c
 c standardized fcsts
       do i=1,imx
@@ -571,7 +573,7 @@ c standardized fcsts
       enddo
       enddo
 
-      write(6,*) 'standardized fcst(90,45,ld)=',fcst(90,45,ld)
+      write(6,*) 'standardized fcst(260,130,ld)=',fcst(260,130,ld)
 
       enddo ! ld loop
 c

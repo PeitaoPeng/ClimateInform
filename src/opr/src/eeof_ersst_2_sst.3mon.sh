@@ -76,6 +76,7 @@ mmn2=`expr $yrn2 \* 12`
 #
 montot=`expr $mmn2 + $icmon` # 816=dec2015
 nsstot=`expr $montot - 2` #
+nfld2=`expr $nsstot / 12 + 10` # number of the ss used in hcst
 
 nssind=$(expr $nsstot / 3) # independent 3-mon avg
 nssdif=`expr $nsstot - $nssind \* 3`  
@@ -131,6 +132,7 @@ c
       parameter(montot=$montot,nsstot=$nsstot)  ! total month number
       parameter(nssuse=$nssuse) ! acturly used nss 
       parameter(nfld=$nsslag)  ! ss of lag-arranged 
+      parameter(nfld2=$nfld2)  ! ss of lag-arranged 
       parameter(its_sst=${its_sst}) ! start of reaning 
 
       parameter(imx=$imx,jmx=$jmx)  ! sst dimension

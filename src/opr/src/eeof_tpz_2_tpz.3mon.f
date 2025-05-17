@@ -26,13 +26,13 @@ C===========================================================
       real w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx)
       real w2d4(imx,jmx),w2d5(imx,jmx)
       real wtpz(imx,jmx,nfld)
-      real wtpz2(imx,jmx,nfld2)
+      real wtpz2(imx,jmx,nfld)
       real av2(imx,jmx),bv2(imx,jmx)
-      real hcst(imx,jmx,nfld2,nlead)
+      real hcst(imx,jmx,nfld,nlead)
       real fcst(imx,jmx,nlead)
       real avgo(imx,jmx),avgf(imx,jmx)
       real stdo(imx,jmx,nlead),stdf(imx,jmx,nlead)
-      real vfld(imx,jmx,nfld2,nlead)
+      real vfld(imx,jmx,nfld,nlead)
       real xlat(jmx),coslat(jmx),cosr(jmx)
 C
       open(10,form='unformatted',access='direct',recl=4*imx*jmx) !sst
@@ -557,6 +557,10 @@ c
       enddo
       enddo
       enddo
+      write(6,*) 'stdzed vfld(260,130,ns_tpz,ld)=',
+     &vfld(260,130,ns_tpz2,ld)
+      write(6,*) 'stdzed hcst(260,130,ns_tpz,ld)=',
+     &hcst(260,130,ns_tpz2,ld)
 c
 c standardized fcsts
       do i=1,imx
