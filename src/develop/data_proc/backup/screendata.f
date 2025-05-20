@@ -29,6 +29,7 @@ C=== screan undef
 
         do it=1,ntot
           if(w3d(i,j,it).lt.-900.) then
+            write(6,*) 'it,i,j=',it,i,j
             do kt=1,ntot
             w3d(i,j,kt)=undef
             enddo
@@ -115,6 +116,10 @@ C=== screan too-big data
         if(abs(anom).gt.2.5*std(i,j,im)) then 
           if(anom.gt.0.) w4d(i,j,im,iy)=clm(i,j,im)+std(i,j,im)
           if(anom.lt.0.) w4d(i,j,im,iy)=clm(i,j,im)-std(i,j,im)
+c         if(anom.gt.0.) w4d(i,j,im,iy)=std(i,j,im)
+c         if(anom.lt.0.) w4d(i,j,im,iy)=-1*std(i,j,im)
+c       else
+c         w4d(i,j,im,iy)=anom
         endif
       ENDIF
 

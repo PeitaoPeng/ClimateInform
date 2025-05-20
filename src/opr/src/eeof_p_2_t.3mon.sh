@@ -19,13 +19,14 @@ jmx=180
 #
 var1=prec
 var2=t2m
+#
 eof_area=glb
 #eof_area=na 
 id_eof=0
 #
 lagmax=5
 mlead=7
-nmod=5
+nmod=7
 ncv=1
 
 nclm_start=1981 # to have yrs clm for more stable than 30 yrs 
@@ -46,7 +47,7 @@ cd $tmp
 for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
 #for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for curmo in 11; do
+for curmo in 04; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 

@@ -282,5 +282,46 @@ sst 1  99   sst
 ENDVARS
 EOF
 #=======================================
+# interpolate to 180x89 resolution
+#=======================================
+outfile2=${sst_analysis}.3mon.1948-curr.total
+nts=1  
+nte=`expr $tmax - 2` # 3mon avgs 
+
+cat >intpl<<EOF
+run intp.gs
+EOF
+#
+cat >intp.gs<<EOF
+'reinit'
+'open $outfile.ctl'
+'open /home/ppeng/data/sst/ersst.3mon.1948-curr.total.ctl'
+'set gxout fwrite'
+'set fwrite $outfile2.gr'
+'set lon   0. 358.'
+'set lat -89.  89.'
+'set t '$nts' '$nte''
+'d lterp(sst,sst.2(time=feb1948))'
+'c'
+EOF
+#===========================================
+/usr/bin/grads -bl <intpl
+#
+cat>$outfile2.ctl<<EOF
+dset ^$outfile2.gr
+undef -9.99E+8
+*
+options little_endian
+*
+xdef  180 linear   0. 2.
+ydef   89 linear -89. 2.
+zdef   01 levels 1
+tdef   9999 linear feb1948 1mo
+vars 1
+sst  1 99 3-mon mean (C)
+ENDVARS
+EOF
+#===============================================
 mv $outfile.* $datadir
+mv $outfile2.* $datadir
 \rm $tmp/*.gr

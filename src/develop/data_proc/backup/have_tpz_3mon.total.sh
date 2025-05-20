@@ -61,9 +61,8 @@ dridge=0.01
 # define some parameters
 #======================================
 #
-#for var in prec; do
-for var in prec hgt t2m; do
-#for var in hgt; do
+for var in t2m prec; do
+#for var in prec hgt t2m; do
 #
 clm_bgn=516  #dec1990
 clm_end=`expr $clm_bgn + 360`
@@ -238,7 +237,7 @@ cp $lcdir/screendata.f scr.f
 gfortran -o scr.x scr.f
 
 ln -s $outfile.reg.gr             fort.10
-ln -s $datadir/$outfile.1x1.gr   fort.20
+ln -s $datadir/$outfile.1x1.gr    fort.20
 
 ./scr.x
 

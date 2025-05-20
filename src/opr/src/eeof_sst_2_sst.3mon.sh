@@ -17,15 +17,16 @@ datain2=/home/ppeng/data/tpz
 imx=180
 jmx=89
 #
-var1=ersst
+ var1=ersst
+#var1=hadoisst
 var2=sst
 eof_area=tp_nml   #30S-60N
 id_eof=0
 #
 lagmax=5
 mlead=7
-#nmod=11
-nmod=13
+if [ $var1 = ersst ]; then nmod=13; fi
+if [ $var1 = hadoisst ]; then nmod=11; fi
 ncv=1
 
 nclm_start=1981 # to have yrs clm for more stable than 30 yrs 
@@ -115,13 +116,14 @@ if [ $eof_area = tp_nml ]; then lons=1;lone=180;lats=22;late=68; fi # 30S-60N
 jmxeof=`expr $late - $lats + 1`
 
 if [ $var1 = ersst ] && [ $eof_area = tp_nml ]; then ngrd=6438; fi
+if [ $var1 = hadoisst ] && [ $eof_area = tp_nml ]; then ngrd=5915; fi
 #echo $ngrd
 #
 sstfile=${var1}.3mon.1948-curr.total
 #
 #=======================================
 #
-cp $lcdir/eeof_ersst_2_sst.3mon.f $tmp/pcr.f
+cp $lcdir/eeof_sst_2_sst.3mon.f $tmp/pcr.f
 cp $lcdir/backup/reof.s.f $tmp/reof.s.f
 
 cat > parm.h << eof
@@ -184,7 +186,7 @@ dset ^$outfile1.gr
 undef $undef
 title EXP1
 XDEF  1 linear   0.  2.
-ydef  1 linear -89.  2.
+ydef  1 linear -88.  2.
 zdef  1 linear 1 1
 tdef  $nsslag linear jan1950 1mo
 edef  $nmod names 1 2 3 4 5 6 7 8 9 10 11
@@ -198,7 +200,7 @@ dset ^$outfile2.gr
 undef $undef
 title EXP1
 XDEF  $imx linear   0.  2.
-ydef  $jmx linear -89.  2.
+ydef  $jmx linear -88.  2.
 zdef  1 linear 1 1
 tdef  $nmod linear jan1950 1mon
 vars  5
@@ -215,7 +217,7 @@ dset ^$outfile3.gr
 undef $undef
 title EXP1
 XDEF  $imx linear   0.  2.
-ydef  $jmx linear -89.  2.
+ydef  $jmx linear -88.  2.
 zdef  1 linear 1 1
 tdef  $mlead linear ${tgtmoyr} 1mon
 vars  5
@@ -232,7 +234,7 @@ dset ^$outfile4.gr
 undef $undef
 title EXP1
 xdef 1 linear    0. 2.
-ydef 1 linear  -89. 2.
+ydef 1 linear  -88. 2.
 zdef 1 linear 1 1
 tdef $ny_out linear ${tgtmon}$outyr_s 1yr
 edef $mlead names 1 2 3 4 5 6 7
@@ -251,7 +253,7 @@ dset ^$outfile5.gr
 undef $undef
 title EXP1
 XDEF  $imx linear   0. 2.
-ydef  $jmx linear -89. 2.
+ydef  $jmx linear -88. 2.
 zdef  1 linear 1 1
 tdef $ny_out linear ${tgtmon}$outyr_s 1yr
 edef  $mlead names 1 2 3 4 5 6 7

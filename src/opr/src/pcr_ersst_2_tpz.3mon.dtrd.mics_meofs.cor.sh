@@ -207,7 +207,7 @@ dset ^$outfile1.gr
 undef $undef
 title EXP1
 XDEF  1 linear   0.  2.
-ydef  1 linear -89.  2.
+ydef  1 linear -88.  2.
 zdef  1 linear 1 1
 tdef  $ny_sst linear jan1950 1yr
 vars  5
@@ -224,7 +224,7 @@ dset ^$outfile2.gr
 undef $undef
 title EXP1
 XDEF  $imx linear   0.  2.
-ydef  $jmx linear -89.  2.
+ydef  $jmx linear -88.  2.
 zdef  1 linear 1 1
 tdef  999 linear jan1950 1mon
 vars  1
@@ -306,7 +306,7 @@ dset ^$outfile8.gr
 undef $undef
 title EXP1
 XDEF  $imx linear   0. 2.
-ydef  $jmx linear -89. 2.
+ydef  $jmx linear -88. 2.
 zdef  1 linear 1 1
 tdef  999 linear jan1948 1mon
 vars  1

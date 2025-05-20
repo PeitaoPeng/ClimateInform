@@ -282,5 +282,46 @@ sst 1  99   sst
 ENDVARS
 EOF
 #=======================================
+# interpolate to 180x89 resolution
+#=======================================
+outfile2=${sst_analysis}.mon.1948-curr.total
+nts=1
+nte=$tmax
+
+cat >intpl2<<EOF
+run intp2.gs
+EOF
+#
+cat >intp2.gs<<EOF
+'reinit'
+'open $outfile.ctl'
+'open /home/ppeng/ClimateInform/src/utility/intpl/grid.180x89.ctl'
+'set gxout fwrite'
+'set fwrite $outfile2.gr'
+'set lon   0. 358.'
+'set lat -88.  88.'
+'set t '$nts' '$nte''
+'d lterp(sst,sst.2(time=jan1950))'
+'c'
+EOF
+#===========================================
+/usr/bin/grads -bl <intpl2
+#
+cat>$outfile2.ctl<<EOF
+dset ^$outfile2.gr
+undef -9.99E+8
+*
+options little_endian
+*
+xdef  180 linear   0. 2.
+ydef   89 linear -88. 2.
+zdef   01 levels 1
+tdef   9999 linear Jan1948 1mo
+vars 1
+sst  1 99 mon mean (C)
+ENDVARS
+EOF
+#===============================================
 mv $outfile.* $datadir
+mv $outfile2.* $datadir
 \rm $tmp/*.gr
