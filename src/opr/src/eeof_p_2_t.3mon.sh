@@ -47,7 +47,7 @@ cd $tmp
 for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
 #for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for curmo in 04; do
+for curmo in 03; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -80,9 +80,10 @@ nsstot=`expr $montot - 2` #
 nfld2=`expr $nsstot / 12 + 1` #
 
 nssind=$(expr $nsstot / 3) # independent 3-mon avg
+
 nssdif=`expr $nsstot - $nssind \* 3`  
 
-if [ $nssdif = 0 ]; then its_sst=3; else its_sst=$nssdif; fi
+if [ "$nssdif" -eq 0 ]; then its_sst=3; else its_sst=$nssdif; fi
 
 nss4rd=`expr $nsstot - $its_sst + 1` # data length including end ss
 
