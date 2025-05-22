@@ -19,8 +19,9 @@ jmx=89
 imx2=360
 jmx2=180
 #
-var1=hadoisst
-var2=t2m
+var1=ersst
+#for var2 in prec t2m; do
+for var2 in t2m; do
 eof_area=tp_nml   #30S-60N
 id_eof=0
 #
@@ -28,7 +29,8 @@ lagmax=5
 mlead=7
 ncv=1
 
-if [ $var1 = ersst ]; then nmod=13; fi
+#if [ $var1 = ersst ]; then nmod=13; fi
+if [ $var1 = ersst ]; then nmod=7; fi
 if [ $var1 = hadoisst ]; then nmod=11; fi
 
 nclm_start=1981 # to have yrs clm for more stable than 30 yrs 
@@ -45,11 +47,11 @@ cd $tmp
 # have SST IC
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
-#for curyr in 2021 2022 2023 2024; do
-for curyr in 2024; do
+for curyr in 2021 2022 2023 2024 2025; do
+#for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
-#for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for curmo in 11; do
+for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+#for curmo in 11; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -75,6 +77,8 @@ outyr_s=1981
 if [ $icmon -eq 11 ]; then tgtmoyr=$tgtmon$yyyp; outyr_s=1982; fi
 #
 yrn2=`expr $curyr - 1948` # total full years,=68 for 1948-2015
+if [ $cmon = 1 ]; then yrn2=`expr $yyym - 1948`; fi
+#
 mmn2=`expr $yrn2 \* 12`
 #
 montot=`expr $mmn2 + $icmon` # 816=dec2015
@@ -82,7 +86,7 @@ nsstot=`expr $montot - 2` #
 nfld2=`expr $nsstot / 12 + 1` # number of the ss used in hcst
 
 nssind=$(expr $nsstot / 3) # independent 3-mon avg
-nssdif=`expr $nsstot - $nssind \* 3`  
+nssdif=$(($nsstot - $nssind * 3))  
 
 if [ $nssdif = 0 ]; then its_sst=3; else its_sst=$nssdif; fi
 
@@ -272,4 +276,6 @@ EOF
 
 done # curmo loop
 done # curyr loop
+done # var2 loop
+
 

@@ -407,7 +407,7 @@ c have regr patterns
         IF(w2d3(i,j).gt.-900.) then
 
           do is=1,ns_tpz2
-            ts3(iy)=vfld(i,j,is,ld)
+            ts3(is)=wtpz2(i,j,is)
           enddo
 
           call regr_t(ts2,ts3,nfld,ns_tpz2,corr3(i,j,m),regr3(i,j,m))

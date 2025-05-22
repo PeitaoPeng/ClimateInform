@@ -43,7 +43,7 @@ cd $tmp
 # have SST IC
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
-#for curyr in 2021 2022 2023 2024; do
+#for curyr in 2021 2022 2023 2024 2025; do
 for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
 #for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
@@ -73,6 +73,8 @@ outyr_s=1981
 if [ $icmon -eq 11 ]; then tgtmoyr=$tgtmon$yyyp; outyr_s=1982; fi
 #
 yrn2=`expr $curyr - 1948` # total full years,=68 for 1948-2015
+if [ $cmon = 1 ]; then yrn2=`expr $yyym - 1948`; fi
+#
 mmn2=`expr $yrn2 \* 12`
 #
 montot=`expr $mmn2 + $icmon` # 816=dec2015
@@ -80,7 +82,7 @@ nsstot=`expr $montot - 2` #
 nfld2=`expr $nsstot / 12 + 10` # number of the ss used in hcst
 
 nssind=$(expr $nsstot / 3) # independent 3-mon avg
-nssdif=`expr $nsstot - $nssind \* 3`  
+nssdif=$(($nsstot - $nssind * 3))  
 
 if [ $nssdif = 0 ]; then its_sst=3; else its_sst=$nssdif; fi
 
