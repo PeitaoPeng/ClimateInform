@@ -55,7 +55,7 @@ C
         if(jmx.eq.180) then
           xlat(j)=-89.5+(j-1)*1.
         else if(jmx.eq.89) then
-          xlat(j)=-89+(j-1)*2.
+          xlat(j)=-88+(j-1)*2.
         else if(jmx.eq.73) then
           xlat(j)=-90+(j-1)*2.5
         endif

@@ -117,7 +117,8 @@ c
         power = power + A(ks,km)*A(ks,km)
  6001 continue
 c
-      do 6002 km = 1, nmod
+c     do 6002 km = 1, nmod
+      do 6002 km = 1, 20
         reval(km) = reval(km) / power
         eval(km) = eval(km) / power
         write  (6,*)  'km=',km,' eval=',eval(km),' reval=',reval(km)

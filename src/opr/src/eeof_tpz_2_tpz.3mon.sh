@@ -14,11 +14,14 @@ datain1=/home/ppeng/data/tpz
 datain2=/home/ppeng/data/tpz
 #
 # grid of ERSST
-imx=360
-jmx=180
+imx=180
+jmx=89
+imx2=360
+jmx2=180
 #
-var1=t2m
-var2=t2m
+for var1 in t2m prec; do
+#var1=prec
+var2=$var1
 eof_area=glb   #50S-60N
 id_eof=0
 #
@@ -41,7 +44,7 @@ cd $tmp
 # have SST IC
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
-for curyr in 2021 2022 2023 2024; do
+for curyr in 2021 2022 2023 2024 2025; do
 #for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
 for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
@@ -77,7 +80,7 @@ mmn2=`expr $yrn2 \* 12`
 #
 montot=`expr $mmn2 + $icmon` # 816=dec2015
 nsstot=`expr $montot - 2` #
-nfld2=`expr $nsstot / 12 + 1` # number of the ss used in hcst
+nfld2=`expr $nsstot / 12 + 5` # number of the ss used in hcst
 
 nssind=$(expr $nsstot / 3) # independent 3-mon avg
 nssdif=$(($nsstot - $nssind * 3))  
@@ -111,15 +114,16 @@ dataot2=$outdata
 # define some parameters
 #======================================
 # need to use the *.f to have exact ngrd
-if [ $eof_area = glb ]; then lons=1;lone=360;lats=40;late=160; fi # 40S-70N
+if [ $eof_area = glb ]; then lons=1;lone=180;lats=20;late=80; fi # 50S-70N
 
 jmxeof=`expr $late - $lats + 1`
 
-if [ $var1 = t2m ] && [ $eof_area = glb ]; then ngrd=14344; fi
-if [ $var1 = prec ] && [ $eof_area = glb ]; then ngrd=14839; fi
+if [ $var1 = t2m ] && [ $eof_area = glb ]; then ngrd=3215; fi
+if [ $var1 = prec ] && [ $eof_area = glb ]; then ngrd=3404; fi
 #echo $ngrd
 #
-tpzfile=${var1}.1948_cur.3mon.total.1x1
+tpzfile1=${var1}.1948_cur.3mon.total.2x2
+tpzfile2=${var2}.1948_cur.3mon.total.1x1
 #
 #=======================================
 #
@@ -138,6 +142,7 @@ c
       parameter(its_sst=${its_sst}) ! start of reaning 
 
       parameter(imx=$imx,jmx=$jmx)  ! sst dimension
+      parameter(imx2=$imx2,jmx2=$jmx2)  ! sst dimension
       parameter(nlead=$mlead) 
       parameter(mlag=$lagmax) 
       parameter(ngrd=$ngrd)
@@ -165,7 +170,8 @@ outfile3=efcst.$var1.2.$var2.cv$ncv.3mon
 outfile4=eskill_1d.$var1.2.$var2.cv$ncv.3mon
 outfile5=ehcst.$var1.2.$var2.cv$ncv.3mon
 #
-ln -s $datain1/$tpzfile.gr  fort.10
+ln -s $datain1/$tpzfile1.gr  fort.10
+ln -s $datain1/$tpzfile2.gr  fort.11
 #
 ln -s $dataot2/$outfile1.gr fort.20
 ln -s $dataot2/$outfile2.gr fort.21
@@ -199,8 +205,8 @@ cat>$dataot2/$outfile2.ctl<<EOF
 dset ^$outfile2.gr
 undef $undef
 title EXP1
-XDEF  $imx linear   0.5  1.
-ydef  $jmx linear -89.5  1.
+XDEF  $imx linear   0.  2.
+ydef  $jmx linear -88.  2.
 zdef  1 linear 1 1
 tdef  $nmod linear jan1950 1mon
 vars  5
@@ -216,8 +222,8 @@ cat>$dataot2/$outfile3.ctl<<EOF
 dset ^$outfile3.gr
 undef $undef
 title EXP1
-XDEF  $imx linear   0.5  1.
-ydef  $jmx linear -89.5  1.
+XDEF  $imx2  linear    0.5  1..
+ydef  $jmx2  linear  -89.5  1.
 zdef  1 linear 1 1
 tdef  $mlead linear ${tgtmoyr} 1mon
 vars  5
@@ -252,8 +258,8 @@ cat>$dataot2/$outfile5.ctl<<EOF
 dset ^$outfile5.gr
 undef $undef
 title EXP1
-XDEF  $imx linear    0.5  1.
-ydef  $jmx linear  -89.5  1.
+XDEF  $imx2  linear    0.5  1..
+ydef  $jmx2  linear  -89.5  1.
 zdef  1 linear 1 1
 tdef $ny_out linear ${tgtmon}$outyr_s 1yr
 edef  $mlead names 1 2 3 4 5 6 7
@@ -267,4 +273,6 @@ EOF
 
 done # curmo loop
 done # curyr loop
+done # var1 loop
+
 

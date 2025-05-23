@@ -225,7 +225,9 @@ gsEOF
 
 /usr/bin/grads -pb <int
 
+#=======================================
 # screen data
+#=======================================
 cat > parm.h << eof
       parameter(ntot=$ntend)
       parameter(ny=${nyear} + 1)
@@ -259,4 +261,52 @@ EOF
 #=======================================
 #
 \rm fort.*
+#
+#=======================================
+# regrid to 2x2
+#=======================================
+ntend=`expr $tmax - 2` # from feb1948 to the mid of latest season
+cat >int<<fEOF
+reinit
+run regrid.gs
+fEOF
+
+cat >regrid.gs<<gsEOF
+'reinit'
+'open $datadir/$outfile.1x1.ctl'
+'open /home/ppeng/ClimateInform/src/utility/intpl/grid.180x89.ctl'
+'set gxout fwrite'
+'set fwrite $datadir/$outfile.2x2.gr'
+nt=1
+while ( nt <= $ntend)
+
+'set t 'nt
+say 'time='nt
+'set lon   0. 358'
+'set lat -88  88'
+'d lterp($var,sst.2(time=jan1982))'
+
+nt=nt+1
+endwhile
+gsEOF
+
+/usr/bin/grads -pb <int
+
+cat>$datadir/$outfile.2x2.ctl<<EOF
+dset ^$outfile.2x2.gr
+undef -9.99E+8
+*
+options little_endian
+*
+XDEF 180 LINEAR    0.  2.0
+YDEF  89 LINEAR  -88.  2.0
+zdef  01 levels 1 
+tdef   9999 linear feb1948 1mo
+*
+VARS 1
+$var 1  99   3mon ave
+ENDVARS
+EOF
+#=======================================
+
 done  # for var

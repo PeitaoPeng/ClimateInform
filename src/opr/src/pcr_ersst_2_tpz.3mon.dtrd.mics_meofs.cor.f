@@ -54,7 +54,7 @@ C
         if(jmx.eq.180) then
           xlat(j)=-89.5+(j-1)*1.
         else
-          xlat(j)=-89+(j-1)*2.
+          xlat(j)=-88+(j-1)*2.
         endif
         coslat(j)=cos(xlat(j)*3.14159/180)  !for EOF use
         cosr(j)=sqrt(coslat(j))

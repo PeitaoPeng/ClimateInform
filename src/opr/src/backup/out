@@ -1,27 +1,50 @@
-36c36
-<       real trpss(40)
+38,39c38
+<       open(10,form='unformatted',access='direct',recl=4*imx*jmx) !prec
+<       open(11,form='unformatted',access='direct',recl=4*imx*jmx) !t2m
 ---
->       real trpss(50)
-233c233,234
-<       tdel=0.025
+>       open(10,form='unformatted',access='direct',recl=4*imx*jmx) !sst
+224a224
+> 
+261c261
+<         read(11,rec=it) w2d3
 ---
-> c     tdel=0.025
->       tdel=0.02
-243a245
->       tesm=0.10
-253c255
-<      &tspn(it),kpdf,xbin,xdel,ypdf,ftest)
+>         read(10,rec=it) w2d3
+272c272
+<       write(6,*) 'tpz at (90,45)=',wtpz(90,45,ns_tpz),w2d3(90,45)
 ---
->      &tspn(it),kpdf,xbin,xdel,ypdf,ftest,tesm)
-393c395
-<      & frac)
+>       write(6,*) 'tpz at (260,130)=',wtpz(260,130,ns_tpz),w2d3(260,130)
+297c297
+<       write(6,*) 'tpz anom at (90,45)=',wtpz2(90,45,ns_tpz2)
 ---
->      & frac,tesm)
-400c402,406
-<       esm=frac*detp
+>       write(6,*) 'tpz anom at (260,130)=',wtpz2(260,130,ns_tpz2)
+388,390c388,390
+<       write(6,*) 'regr2(90,45,1,ns_tpz2)=',regr2(90,45,1,ns_tpz2)
+<       write(6,*) 'hcst(90,45,ns_tpz2,ld)=',hcst(90,45,ns_tpz2,ld)
+<       write(6,*) 'vfld(i,j,ns_tpz2,ld)=',vfld(90,45,ns_tpz2,ld)
 ---
->       if(abs(detp).gt.tesm) then
->         esm=frac*detp
->       else
->         esm=detp
->       endif
+>       write(6,*) 'regr2(260,130,1,ns_tpz2)=',regr2(260,130,1,ns_tpz2)
+>       write(6,*) 'hcst(260,130,ns_tpz2,ld)=',hcst(260,130,ns_tpz2,ld)
+>       write(6,*) 'vfld(i,j,ns_tpz2,ld)=',vfld(260,130,ns_tpz2,ld)
+423c423
+<       write(6,*) 'regr3(90,45,5)=',regr3(90,45,5)
+---
+>       write(6,*) 'regr3(260,130,5)=',regr3(260,130,5)
+445c445
+<       write(6,*) 'fcst(90,45,ld)=',fcst(90,45,ld)
+---
+>       write(6,*) 'fcst(260,130,ld)=',fcst(260,130,ld)
+488c488
+<       write(6,*) 'stdo(90,45,ld)=',stdo(90,45,ld)
+---
+>       write(6,*) 'stdo(260,130,ld)=',stdo(260,130,ld)
+519c519
+<       write(6,*) 'stdf(90,45,ld)=',stdf(90,45,ld)
+---
+>       write(6,*) 'stdf(260,130,ld)=',stdf(260,130,ld)
+560,561d559
+<       write(6,*) 'stdzed vfld(90,45,ns_tpz,ld)=',vfld(90,45,ns_tpz2,ld)
+<       write(6,*) 'stdzed hcst(90,45,ns_tpz,ld)=',hcst(90,45,ns_tpz2,ld)
+574c572
+<       write(6,*) 'standardized fcst(90,45,ld)=',fcst(90,45,ld)
+---
+>       write(6,*) 'standardized fcst(260,130,ld)=',fcst(260,130,ld)

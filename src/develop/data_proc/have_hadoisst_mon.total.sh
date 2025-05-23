@@ -295,13 +295,13 @@ EOF
 cat >intp2.gs<<EOF
 'reinit'
 'open $outfile.ctl'
-'open /home/ppeng/ClimateInform/src/utility/intpl/grid.180x89.ctl'
+'open /home/ppeng/ClimateInform/src/utility/intpl/grid.180x89.sst.ctl'
 'set gxout fwrite'
 'set fwrite $outfile2.gr'
 'set lon   0. 358.'
 'set lat -88.  88.'
 'set t '$nts' '$nte''
-'d lterp(sst,sst.2(time=jan1950))'
+'d lterp(sst,sst.2(time=jan1982))'
 'c'
 EOF
 #===========================================

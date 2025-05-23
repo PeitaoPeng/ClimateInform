@@ -301,7 +301,7 @@ cat >intp2.gs<<EOF
 'set lon   0. 358.'
 'set lat -88.  88.'
 'set t '$nts' '$nte''
-'d lterp(sst,sst.2(time=jan1950))'
+'d lterp(sst,sst.2(time=jan1982))'
 'c'
 EOF
 #===========================================

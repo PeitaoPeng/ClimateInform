@@ -1,7 +1,6 @@
 #!/bin/sh
 #===============================================
-# PCR for seasonal forecast from sst to tpz
-# with single IC
+# PCR for seasonal forecast from tpz to tpz
 #===============================================
 
 set -eaux
@@ -16,14 +15,15 @@ datain2=/home/ppeng/data/tpz
 dataot1=/home/ppeng/data/pcr_prd
 #
 # grid of ERSST
-imx=180
-jmx=89
+imx=360
+jmx=180
 # grid of t2m & prec
 imx2=360
 jmx2=180
 #
-var1=ersst
-eof_area=tp_nml   #30S-60N
+var1=prec
+var2=prec
+eof_area=glb   #30S-60N
 #
 lagmax=24   # month number kept for ICs
 #
@@ -37,15 +37,9 @@ id_detrd=0 # =1, detrend data first then add trend; =0: no detrend
 mlead=7   # max lead of ensemble fcst
 ncv=1
 
-#for var2 in tmp prec; do # prec, t2m, hg
-for var2 in prec; do # prec, t2m, hg
-
 mcut=4  # max cuts
-#if [ $var2 = t2m ];  then icut1=3;  icut2=15; icut3=25; icut4=40; fi
-if [ $var2 = t2m ];  then icut1=3;  icut2=5; icut3=7; icut4=10; fi
-#if [ $var2 = prec ]; then icut1=10; icut2=15; icut3=25; icut4=40; fi
+if [ $var2 = t2m ];  then icut1=5;  icut2=5; icut3=7; icut4=10; fi
 if [ $var2 = prec ]; then icut1=5; icut2=7; icut3=10; icut4=15; fi
-#if [ $var2 = prec ]; then icut1=5; icut2=10; icut3=25; icut4=40; fi
 modmax=$icut4
 #
 
@@ -127,15 +121,16 @@ dataot2=$outdata
 # define some parameters
 #======================================
 # need to use the *.f to have exact ngrd
-if [ $eof_area = tp_nml ]; then lons=1;lone=180;lats=30;late=75; fi # 30S-60N
-if [ $var1 = ersst ] && [ $eof_area = tp_nml ]; then ngrd=5670; fi
+if [ $eof_area = glb ]; then lons=1;lone=360;lats=40;late=160; fi # 30S-60N
+if [ $var1 = t2m ] && [ $eof_area = glb ]; then ngrd=14344; fi
+if [ $var1 = prec ] && [ $eof_area = glb ]; then ngrd=14839; fi
 #echo $ngrd
 #
-sstfile=${var1}.3mon.1948-curr.total
+tpzfile=${var1}.1948_cur.3mon.total.1x1
 #
 #=======================================
 #
-cp $lcdir/pcr_ersst_2_tpz.3mon.dtrd.mics_meofs.cor.f $tmp/pcr.f
+cp $lcdir/pcr_tpz_2_tpz.3mon.mics_meofs.cor.f $tmp/pcr.f
 cp $lcdir/backup/reof.s.f $tmp/reof.s.f
 
 imx2=360; jmx2=180; xds=0.5; yds=-89.5; xydel=1.
@@ -170,9 +165,9 @@ eof
 gfortran -mcmodel=medium -o pcr.x pcr.f reof.s.f
 echo "done compiling"
 
-if [ -f fort.11 ] ; then
-/bin/rm $tmp/fort.*
-fi
+#if [ -f fort.11 ] ; then
+#/bin/rm $tmp/fort.*
+#fi
 #
 outfile1=pc.${var1}.icmon_$icmon
 outfile2=eof.${var1}.icmon_$icmon
@@ -182,8 +177,7 @@ outfile5=hcst.$var1.2.$var2.mics$mics.mlead$mlead.ncut$ncut.nmod1_$icut1.id_ceof
 outfile8=${var1}_ic_mics.3mon
 outfile9=regr.${var1}.2.${var2}_ic_mics.3mon
 #
-ln -s $datain1/$sstfile.gr          fort.10
-ln -s $datain2/$tpzfile.gr          fort.11
+ln -s $datain2/$tpzfile.gr          fort.10
 #
 ln -s $dataot2/$outfile1.gr fort.20
 ln -s $dataot2/$outfile2.gr fort.21
@@ -206,8 +200,8 @@ cat>$dataot2/$outfile1.ctl<<EOF
 dset ^$outfile1.gr
 undef $undef
 title EXP1
-XDEF  1 linear   0.  2.
-ydef  1 linear -88.  2.
+XDEF  1 linear   0.5     1.
+ydef  1 linear  -89.5.   1.
 zdef  1 linear 1 1
 tdef  $ny_sst linear jan1950 1yr
 vars  5
@@ -223,8 +217,8 @@ cat>$dataot2/$outfile2.ctl<<EOF
 dset ^$outfile2.gr
 undef $undef
 title EXP1
-XDEF  $imx linear   0.  2.
-ydef  $jmx linear -88.  2.
+XDEF  $imx linear   0.5  1.
+ydef  $jmx linear -89.5  1.
 zdef  1 linear 1 1
 tdef  999 linear jan1950 1mon
 vars  1
@@ -306,7 +300,7 @@ dset ^$outfile8.gr
 undef $undef
 title EXP1
 XDEF  $imx linear   0. 2.
-ydef  $jmx linear -88. 2.
+ydef  $jmx linear -89. 2.
 zdef  1 linear 1 1
 tdef  999 linear jan1948 1mon
 vars  1
@@ -316,6 +310,5 @@ EOF
 
 done # curmo loop
 done # curyr loop
-done # var2 loop
 done # ncut
 done # mics
