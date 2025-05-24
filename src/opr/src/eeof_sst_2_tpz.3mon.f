@@ -42,7 +42,7 @@ C
       open(11,form='unformatted',access='direct',recl=4*imx2*jmx2) !tpz
 
       open(20,form='unformatted',access='direct',recl=4) !pc
-      open(21,form='unformatted',access='direct',recl=4*imx2*jmx2) !eof
+      open(21,form='unformatted',access='direct',recl=4*imx*jmx) !eof
 
       open(30,form='unformatted',access='direct',recl=4*imx2*jmx2) !fcst
       open(31,form='unformatted',access='direct',recl=4) !1d_skill

@@ -19,7 +19,7 @@ jmx=89
 imx2=360
 jmx2=180
 #
-for var1 in t2m prec; do
+for var1 in prec t2m; do
 #var1=prec
 var2=$var1
 eof_area=glb   #50S-60N
@@ -27,7 +27,10 @@ id_eof=0
 #
 lagmax=5
 mlead=7
-nmod=5
+
+if [ $var1 = t2m ]; then nmod=1; fi
+if [ $var1 = prec ]; then nmod=5; fi
+
 ncv=1
 
 nclm_start=1981 # to have yrs clm for more stable than 30 yrs 
@@ -48,7 +51,7 @@ for curyr in 2021 2022 2023 2024 2025; do
 #for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
 for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-#for curmo in 05; do
+#for curmo in 11; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 

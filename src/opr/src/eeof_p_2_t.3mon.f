@@ -13,7 +13,6 @@ C===========================================================
       real reval(nmod),revec(mlag*ngrd,nfld),rcoef(nmod,nfld)
       real rcoef2(nmod,nfld)
       real rwk(mlag*ngrd),rwk2(mlag*ngrd,nmod)
-      real av1(imx,jmx),bv1(imx,jmx)
       real fld2(imx,jmx)
       real corr(imx,jmx),regr(imx,jmx)
       real xlat(jmx),coslat(jmx),cosr(jmx)
@@ -30,7 +29,6 @@ C===========================================================
       real w2d4(imx2,jmx2),w2d5(imx2,jmx2)
       real wtpz(imx2,jmx2,nfld)
       real wtpz2(imx2,jmx2,nfld)
-      real av2(imx2,jmx2),bv2(imx2,jmx2)
       real hcst(imx2,jmx2,nfld,nlead)
       real fcst(imx2,jmx2,nlead)
       real avgo(imx2,jmx2),avgf(imx2,imx2)
@@ -42,7 +40,7 @@ C
       open(11,form='unformatted',access='direct',recl=4*imx2*jmx2) !tpz
 
       open(20,form='unformatted',access='direct',recl=4) !pc
-      open(21,form='unformatted',access='direct',recl=4*imx2*jmx2) !eof
+      open(21,form='unformatted',access='direct',recl=4*imx*jmx) !eof
 
       open(30,form='unformatted',access='direct',recl=4*imx2*jmx2) !fcst
       open(31,form='unformatted',access='direct',recl=4) !1d_skill
