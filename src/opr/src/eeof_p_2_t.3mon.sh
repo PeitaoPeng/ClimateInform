@@ -28,7 +28,9 @@ id_eof=0
 #
 lagmax=5
 mlead=7
-nmod=5
+if [ $var1 = t2m ]; then nmod=1; fi
+if [ $var1 = prec ]; then nmod=5; fi
+#nmod=5
 ncv=1
 
 nclm_start=1981 # to have yrs clm for more stable than 30 yrs 
