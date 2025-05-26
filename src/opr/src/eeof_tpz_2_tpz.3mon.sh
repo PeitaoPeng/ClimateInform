@@ -29,7 +29,7 @@ lagmax=5
 mlead=7
 
 if [ $var1 = t2m ]; then nmod=1; fi
-if [ $var1 = prec ]; then nmod=5; fi
+if [ $var1 = prec ]; then nmod=6; fi
 
 ncv=1
 
