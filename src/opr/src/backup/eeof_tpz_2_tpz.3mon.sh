@@ -14,10 +14,12 @@ datain1=/home/ppeng/data/tpz
 datain2=/home/ppeng/data/tpz
 #
 # grid of ERSST
-imx=360
-jmx=180
+imx=180
+jmx=89
+imx2=360
+jmx2=180
 #
-for var1 in prec; do
+for var1 in prec t2m; do
 #var1=prec
 var2=$var1
 eof_area=glb   #50S-60N
@@ -25,7 +27,10 @@ id_eof=0
 #
 lagmax=5
 mlead=7
-nmod=5
+
+if [ $var1 = t2m ]; then nmod=1; fi
+if [ $var1 = prec ]; then nmod=6; fi
+
 ncv=1
 
 nclm_start=1981 # to have yrs clm for more stable than 30 yrs 
@@ -42,11 +47,11 @@ cd $tmp
 # have SST IC
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
-for curyr in 2021 2022 2023 2024 2025; do
-#for curyr in 2024; do
+#for curyr in 2021 2022 2023 2024 2025; do
+for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
-for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-#for curmo in 05; do
+#for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+for curmo in 11; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -112,15 +117,16 @@ dataot2=$outdata
 # define some parameters
 #======================================
 # need to use the *.f to have exact ngrd
-if [ $eof_area = glb ]; then lons=1;lone=360;lats=40;late=160; fi # 40S-70N
+if [ $eof_area = glb ]; then lons=1;lone=180;lats=20;late=80; fi # 50S-70N
 
 jmxeof=`expr $late - $lats + 1`
 
-if [ $var1 = t2m ] && [ $eof_area = glb ]; then ngrd=14344; fi
-if [ $var1 = prec ] && [ $eof_area = glb ]; then ngrd=14839; fi
+if [ $var1 = t2m ] && [ $eof_area = glb ]; then ngrd=3215; fi
+if [ $var1 = prec ] && [ $eof_area = glb ]; then ngrd=3404; fi
 #echo $ngrd
 #
-tpzfile=${var1}.1948_cur.3mon.total.1x1
+tpzfile1=${var1}.1948_cur.3mon.total.2x2
+tpzfile2=${var2}.1948_cur.3mon.total.1x1
 #
 #=======================================
 #
@@ -139,6 +145,7 @@ c
       parameter(its_sst=${its_sst}) ! start of reaning 
 
       parameter(imx=$imx,jmx=$jmx)  ! sst dimension
+      parameter(imx2=$imx2,jmx2=$jmx2)  ! sst dimension
       parameter(nlead=$mlead) 
       parameter(mlag=$lagmax) 
       parameter(ngrd=$ngrd)
@@ -166,7 +173,8 @@ outfile3=efcst.$var1.2.$var2.cv$ncv.3mon
 outfile4=eskill_1d.$var1.2.$var2.cv$ncv.3mon
 outfile5=ehcst.$var1.2.$var2.cv$ncv.3mon
 #
-ln -s $datain1/$tpzfile.gr  fort.10
+ln -s $datain1/$tpzfile1.gr  fort.10
+ln -s $datain1/$tpzfile2.gr  fort.11
 #
 ln -s $dataot2/$outfile1.gr fort.20
 ln -s $dataot2/$outfile2.gr fort.21
@@ -200,8 +208,8 @@ cat>$dataot2/$outfile2.ctl<<EOF
 dset ^$outfile2.gr
 undef $undef
 title EXP1
-XDEF  $imx linear   0.5  1.
-ydef  $jmx linear -89.5  1.
+XDEF  $imx linear   0.  2.
+ydef  $jmx linear -88.  2.
 zdef  1 linear 1 1
 tdef  $nmod linear jan1950 1mon
 vars  5
@@ -217,16 +225,17 @@ cat>$dataot2/$outfile3.ctl<<EOF
 dset ^$outfile3.gr
 undef $undef
 title EXP1
-XDEF  $imx linear   0.5  1.
-ydef  $jmx linear -89.5  1.
+XDEF  $imx2  linear    0.5  1..
+ydef  $jmx2  linear  -89.5  1.
 zdef  1 linear 1 1
 tdef  $mlead linear ${tgtmoyr} 1mon
-vars  5
+vars  6
 $var2  1 99 normalized fcst
 stdo   1 99 stdv of obs
 cor    1 99 corr of hcst
 rms    1 99 rmse of hcst
 hss    1 99 hss_3c of hcst
+clm    1 99 missing
 endvars
 EOF
 #
@@ -253,15 +262,16 @@ cat>$dataot2/$outfile5.ctl<<EOF
 dset ^$outfile5.gr
 undef $undef
 title EXP1
-XDEF  $imx linear    0.5  1.
-ydef  $jmx linear  -89.5  1.
+XDEF  $imx2  linear    0.5  1..
+ydef  $jmx2  linear  -89.5  1.
 zdef  1 linear 1 1
 tdef $ny_out linear ${tgtmon}$outyr_s 1yr
 edef  $mlead names 1 2 3 4 5 6 7
-vars  3
+vars  4
 o  1 99 obs
 p  1 99 hcst
 s  1 99 std of obs
+c  1 99 cvcor
 endvars
 EOF
 #

@@ -36,18 +36,20 @@ C===========================================================
       real trpss(40)
 
 C
-C fcst from sst, olr, slp & ocn
-      open(11,form='unformatted',access='direct',recl=4*imx*jmx) !ersst
-      open(12,form='unformatted',access='direct',recl=4*imx*jmx) !olr
-      open(13,form='unformatted',access='direct',recl=4*imx*jmx) !slp
-      open(14,form='unformatted',access='direct',recl=4*imx*jmx) !ocn
-C hcst from sst, olr, slp & ocn
-      open(15,form='unformatted',access='direct',recl=4*imx*jmx) !ersst
-      open(16,form='unformatted',access='direct',recl=4*imx*jmx) !olr
-      open(17,form='unformatted',access='direct',recl=4*imx*jmx) !slp
-      open(18,form='unformatted',access='direct',recl=4*imx*jmx) !ocn
+C fcst from sst, olr, slp et al. 
+      open(11,form='unformatted',access='direct',recl=4*imx*jmx) 
+      open(12,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(13,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(14,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(15,form='unformatted',access='direct',recl=4*imx*jmx)
+C hcst from sst, olr, slp et al. 
+      open(16,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(17,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(18,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(19,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(20,form='unformatted',access='direct',recl=4*imx*jmx)
 
-      open(19,form='unformatted',access='direct',recl=4) !nino34
+      open(22,form='unformatted',access='direct',recl=4) !nino34
 C synth output
       open(31,form='unformatted',access='direct',recl=4*imx*jmx) !frac & rpss
 C
@@ -115,7 +117,7 @@ C=== synthesize hcst with cvcor
       do ld=1,mlead
       do it=1,ny_hcst
 
-      ich=14
+      ich=15
       do ip=1,nprd 
 
         ich=ich+1

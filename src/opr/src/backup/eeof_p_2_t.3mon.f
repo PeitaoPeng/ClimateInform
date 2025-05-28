@@ -15,35 +15,38 @@ C===========================================================
       real rwk(mlag*ngrd),rwk2(mlag*ngrd,nmod)
       real fld2(imx,jmx)
       real corr(imx,jmx),regr(imx,jmx)
-      real corr2(imx,jmx,nmod),regr2(imx,jmx,nmod,nfld)
-      real corr3(imx,jmx,nmod),regr3(imx,jmx,nmod)
-      real corr4d(imx,jmx,mlag,nmod),regr4d(imx,jmx,mlag,nmod)
+      real xlat(jmx),coslat(jmx),cosr(jmx)
 
-      real cor3d(imx,jmx,nlead),rms3d(imx,jmx,nlead)
-      real hss3d(imx,jmx,nlead)
+      real corr2(imx2,jmx2,nmod),regr2(imx2,jmx2,nmod,nfld)
+      real corr3(imx2,jmx2,nmod),regr3(imx2,jmx2,nmod)
+      real corr4d(imx2,jmx2,mlag,nmod),regr4d(imx2,jmx2,mlag,nmod)
+
+      real cvcor(imx2,jmx2,nfld,nlead)
+
+      real cor3d(imx2,jmx2,nlead),rms3d(imx2,jmx2,nlead)
+      real hss3d(imx2,jmx2,nlead)
       real ts1(nssuse)
       real ts2(nfld),ts3(nfld),ts4(nfld)
-      real w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx)
-      real w2d4(imx,jmx),w2d5(imx,jmx)
-      real wtpz(imx,jmx,nfld)
-      real wtpz2(imx,jmx,nfld)
-      real av2(imx,jmx),bv2(imx,jmx)
-      real hcst(imx,jmx,nfld,nlead)
-      real fcst(imx,jmx,nlead)
-      real avgo(imx,jmx),avgf(imx,jmx)
-      real stdo(imx,jmx,nlead),stdf(imx,jmx,nlead)
-      real vfld(imx,jmx,nfld,nlead)
-      real xlat(jmx),coslat(jmx),cosr(jmx)
+      real w2d(imx2,jmx2),w2d2(imx2,jmx2),w2d3(imx2,jmx2)
+      real w2d4(imx2,jmx2),w2d5(imx2,jmx2),w2d6(imx2,jmx2)
+      real wtpz(imx2,jmx2,nfld)
+      real wtpz2(imx2,jmx2,nfld)
+      real hcst(imx2,jmx2,nfld,nlead)
+      real fcst(imx2,jmx2,nlead)
+      real avgo(imx2,jmx2),avgf(imx2,imx2)
+      real stdo(imx2,jmx2,nlead),stdf(imx2,jmx2,nlead)
+      real vfld(imx2,jmx2,nfld,nlead)
 C
-      open(10,form='unformatted',access='direct',recl=4*imx*jmx) !prec
-      open(11,form='unformatted',access='direct',recl=4*imx*jmx) !t2m
+      open(10,form='unformatted',access='direct',recl=4*imx*jmx) !sst
+
+      open(11,form='unformatted',access='direct',recl=4*imx2*jmx2) !tpz
 
       open(20,form='unformatted',access='direct',recl=4) !pc
       open(21,form='unformatted',access='direct',recl=4*imx*jmx) !eof
 
-      open(30,form='unformatted',access='direct',recl=4*imx*jmx) !fcst
+      open(30,form='unformatted',access='direct',recl=4*imx2*jmx2) !fcst
       open(31,form='unformatted',access='direct',recl=4) !1d_skill
-      open(32,form='unformatted',access='direct',recl=4*imx*jmx) !hcst
+      open(32,form='unformatted',access='direct',recl=4*imx2*jmx2) !hcst
 C
 C== have coslat
 C
@@ -141,28 +144,13 @@ c
 c SST EOF analysis
 c
       write(6,*) 'eof begins'
-      call EOFS(aaa,mlag*ngrd,nfld,nfld,eval,evec,coef,wk,ID)
+c     call EOFS(aaa,mlag*ngrd,nfld,nfld,eval,evec,coef,wk,ID)
       write(6,*) 'reof begins'
       call REOFS(aaa,mlag*ngrd,nfld,nfld,wk,ID,weval,wevec,wcoef,
      &           nmod,reval,revec,rcoef,tt,rwk,rwk2)
 cc... arrange reval,revec and rcoef in decreasing order
       call order(mlag*ngrd,nfld,nmod,reval,revec,rcoef)
 c
-cc... write out eval and reval
-      totv1=0
-      do i=1,20
-      write(6,*)'eval= ',i,eval(i)
-      totv1=totv1+eval(i)
-      end do
-      write(6,*)'total= ',totv1
-
-      totv2=0
-      do i=1,nmod
-      write(6,*)'reval= ',i,reval(i)
-      totv2=totv2+reval(i)
-      end do
-      write(6,*)'total= ',totv2
-C
 CCC...CORR between rcoef and tpz data
 C
       iw1=0
@@ -260,8 +248,8 @@ c read in predictant (tpz) for each lead
         ir=ir+1
         read(11,rec=it) w2d3
 
-        do i=1,imx
-        do j=1,jmx
+        do i=1,imx2
+        do j=1,jmx2
           wtpz(i,j,ir)=w2d3(i,j)
         enddo
         enddo
@@ -269,12 +257,11 @@ c read in predictant (tpz) for each lead
       enddo
       ns_tpz=ir
       write(6,*) 'ns_tpz=',ns_tpz
-      write(6,*) 'tpz at (260,130)=',wtpz(260,130,ns_tpz),w2d3(260,130)
 C      
 C take wtpz data for the season same as that of IC
 C 
-      do i=1,imx
-      do j=1,jmx
+      do i=1,imx2
+      do j=1,jmx2
         if(w2d3(i,j).gt.-900.) then
 
           ir=0
@@ -294,7 +281,6 @@ C
           enddo
       enddo
       enddo
-      write(6,*) 'tpz anom at (260,130)=',wtpz2(260,130,ns_tpz2)
 C
 C CV hcst for this lead
 c     mfld=ns_tpz - 1
@@ -324,8 +310,8 @@ c
   555   continue
         enddo
           
-        do i=1,imx
-        do j=1,jmx
+        do i=1,imx2
+        do j=1,jmx2
 
         IF(w2d3(i,j).gt.-900.) then
 
@@ -360,9 +346,9 @@ c
       enddo ! m loop
 c
 c have lead-ld hcst for itgt season with sst rcoef and tpz regr
-      call setzero(w2d,imx,jmx)
-      do i=1,imx
-      do j=1,jmx
+      call setzero(w2d,imx2,jmx2)
+      do i=1,imx2
+      do j=1,jmx2
         if(w2d3(i,j).gt.-900.) then
           do m=1,nmod
             w2d(i,j)=w2d(i,j)+rcoef2(m,itgt)*regr2(i,j,m,itgt)
@@ -382,12 +368,6 @@ c have lead-ld hcst for itgt season with sst rcoef and tpz regr
 
       ENDDO ! itgt loop
 
-      write(6,*) 'ns_tpz2=',ns_tpz2
-      write(6,*) 'mfld(=ns_tpz2-ncv?)=',mfld
-      write(6,*) 'rcoef2 at ns_tpz2',rcoef2(1,ns_tpz2)
-      write(6,*) 'regr2(260,130,1,ns_tpz2)=',regr2(260,130,1,ns_tpz2)
-      write(6,*) 'hcst(260,130,ns_tpz2,ld)=',hcst(260,130,ns_tpz2,ld)
-      write(6,*) 'vfld(i,j,ns_tpz2,ld)=',vfld(260,130,ns_tpz2,ld)
 c
 C======== realtime fcst
 c
@@ -398,8 +378,8 @@ c have regr patterns
             ts2(is)=rcoef2(m,is)
         enddo
           
-        do i=1,imx
-        do j=1,jmx
+        do i=1,imx2
+        do j=1,jmx2
 
         IF(w2d3(i,j).gt.-900.) then
 
@@ -420,13 +400,12 @@ c have regr patterns
         enddo
 
         ENDDO ! m loop
-      write(6,*) 'regr3(260,130,5)=',regr3(260,130,5)
 c
 c fcst
 c
-      call setzero(w2d,imx,jmx)
-      do i=1,imx
-      do j=1,jmx
+      call setzero(w2d,imx2,jmx2)
+      do i=1,imx2
+      do j=1,jmx2
         if(w2d3(i,j).gt.-900.) then
 
           do m=1,nmod
@@ -441,8 +420,6 @@ c
 
       enddo
       enddo
-      write(6,*) 'rcoef(5,ns_rpc)=',rcoef2(5,ns_rpc)
-      write(6,*) 'fcst(260,130,ld)=',fcst(260,130,ld)
 
       ENDDO ! ld loop
 c
@@ -458,8 +435,8 @@ c std of obs
 
       do ld=1,nlead
 
-        do i=1,imx
-        do j=1,jmx
+        do i=1,imx2
+        do j=1,jmx2
           if (w2d3(i,j).gt.-900.) then
             avgo(i,j)=0.
             do it=iss_clm,ise_clm 
@@ -471,8 +448,8 @@ c std of obs
         enddo
         enddo
 
-        do i=1,imx
-        do j=1,jmx
+        do i=1,imx2
+        do j=1,jmx2
           if (w2d3(i,j).gt.-900.) then
             stdo(i,j,ld)=0.
             do it=iss_clm,ise_clm
@@ -485,11 +462,10 @@ c std of obs
             endif
         enddo
         enddo
-      write(6,*) 'stdo(260,130,ld)=',stdo(260,130,ld)
 
 c std of hcst
-        do i=1,imx
-        do j=1,jmx
+        do i=1,imx2
+        do j=1,jmx2
           if (w2d3(i,j).gt.-900.) then
             avgf(i,j)=0.
             do it=iss_clm,ise_clm
@@ -502,8 +478,8 @@ c std of hcst
         enddo
         enddo
 
-        do i=1,imx
-        do j=1,jmx
+        do i=1,imx2
+        do j=1,jmx2
           if (w2d3(i,j).gt.-900.) then
             stdf(i,j,ld)=0.
             do it=iss_clm,ise_clm
@@ -516,11 +492,10 @@ c std of hcst
           endif
         enddo
         enddo
-      write(6,*) 'stdf(260,130,ld)=',stdf(260,130,ld)
 c
 c deal with "too small" std
-        do i=1,imx
-        do j=1,jmx
+        do i=1,imx2
+        do j=1,jmx2
           if(w2d3(i,j).gt.-900) then
             if(stdo(i,j,ld).lt.0.001) then
               stdo(i,j,ld)=0.001
@@ -533,8 +508,8 @@ c deal with "too small" std
         enddo
 
 c standardized obs & hcst 
-      do i=1,imx
-      do j=1,jmx
+      do i=1,imx2
+      do j=1,jmx2
       do it=1,ns_tpz2
       if (w2d3(i,j).gt.-900.) then
         vfld(i,j,it,ld)=(vfld(i,j,it,ld)-avgo(i,j))/stdo(i,j,ld)
@@ -545,8 +520,8 @@ c standardized obs & hcst
       enddo
       enddo
 c
-      do i=1,imx
-      do j=1,jmx
+      do i=1,imx2
+      do j=1,jmx2
       do it=1,ns_tpz2
       if (w2d3(i,j).gt.-900.) then
         hcst(i,j,it,ld)=(hcst(i,j,it,ld)-avgf(i,j))/
@@ -557,14 +532,10 @@ c
       enddo
       enddo
       enddo
-      write(6,*) 'stdzed vfld(260,130,ns_tpz,ld)=',
-     &vfld(260,130,ns_tpz2,ld)
-      write(6,*) 'stdzed hcst(260,130,ns_tpz,ld)=',
-     &hcst(260,130,ns_tpz2,ld)
 c
 c standardized fcsts
-      do i=1,imx
-      do j=1,jmx
+      do i=1,imx2
+      do j=1,jmx2
       if (w2d3(i,j).gt.-900.) then
         fcst(i,j,ld)=(fcst(i,j,ld)-avgf(i,j))/stdf(i,j,ld)
       else
@@ -573,16 +544,14 @@ c standardized fcsts
       enddo
       enddo
 
-      write(6,*) 'standardized fcst(260,130,ld)=',fcst(260,130,ld)
-
       enddo ! ld loop
 c
 c== temporal skill
       ns_skill=ns_tpz-iss_clm+1
       DO ld=1,nlead
 
-      DO i=1,imx
-      DO j=1,jmx
+      DO i=1,imx2
+      DO j=1,jmx2
 c
       if(w2d3(i,j).gt.-900.) then
         ir=0
@@ -611,30 +580,30 @@ c== spatial skill
       do ld=1,nlead
       do is=iss_clm,ns_tpz2
 
-        do i=1,imx
-        do j=1,jmx
+        do i=1,imx2
+        do j=1,jmx2
         w2d(i,j)=vfld(i,j,is,ld)
         w2d2(i,j)=hcst(i,j,is,ld)
         enddo
         enddo
 
-      call sp_cor_rms(w2d,w2d2,coslat,imx,jmx,
-     &1,360,35,55,xcor,xrms)
+      call sp_cor_rms(w2d,w2d2,coslat,imx2,jmx2,
+     &1,360,70,110,xcor,xrms)
 
       iw=iw+1
       write(31,rec=iw) xcor
       iw=iw+1
       write(31,rec=iw) xrms
 
-      call sp_cor_rms(w2d,w2d2,coslat,imx,jmx,
-     &1,360,56,75,xcor,xrms)
+      call sp_cor_rms(w2d,w2d2,coslat,imx2,jmx2,
+     &1,360,30,165,xcor,xrms)
       iw=iw+1
       write(31,rec=iw) xcor
       iw=iw+1
       write(31,rec=iw) xrms
 
-      call hss3c_s(w2d,w2d2,imx,jmx,1,360,35,55,coslat,h1)
-      call hss3c_s(w2d,w2d2,imx,jmx,1,360,56,75,coslat,h2)
+      call hss3c_s(w2d,w2d2,imx2,jmx2,1,360,70,110,coslat,h1)
+      call hss3c_s(w2d,w2d2,imx2,jmx2,1,360,30,165,coslat,h2)
 
       iw=iw+1
       write(31,rec=iw) h1
@@ -644,30 +613,84 @@ c== spatial skill
       enddo ! iy loop
       enddo ! ld loop
 c
+c CV corr skill of hcst
+c
+        do ld=1,nlead
+        do itgt=1,ns_tpz2
+
+        ism=itgt-1
+        isp=itgt+1
+        if(itgt.eq.1) ism=3
+        if(itgt.eq.ns_tpz) isp=ns_tpz2-2
+
+        do i=1,imx2
+        do j=1,jmx2
+
+        IF(w2d3(i,j).gt.-900.) then
+
+          ir=0
+          do is=1,ns_tpz2
+
+          if(is.eq.itgt) go to 777
+
+          if(ncv.eq.3) then
+            if(is.eq.ism)  go to 777
+            if(is.eq.isp)  go to 777
+          endif
+
+            ir=ir+1
+            ts2(ir)=hcst(i,j,is,ld)
+            ts3(ir)=vfld(i,j,is,ld)
+  777     continue
+          enddo
+
+          mfld=ir
+          call regr_t(ts2,ts3,nfld,mfld,cvcor(i,j,itgt,ld),w2d(i,j))
+
+        ELSE
+
+          cvcor(i,j,itgt,ld)=undef
+
+        ENDIF
+
+        enddo !i loop
+        enddo !j loop
+
+        enddo !itgt loop
+        enddo !ld loop
+c
 c write out obs and hcst
         iw=0
         do ld=1,nlead
         do it=iss_clm,ns_tpz2
 
-          do i=1,imx
-          do j=1,jmx
+          do i=1,imx2
+          do j=1,jmx2
             w2d(i,j)=vfld(i,j,it,ld)
           enddo
           enddo
           iw=iw+1
           write(32,rec=iw) w2d
 
-          do i=1,imx
-          do j=1,jmx
+          do i=1,imx2
+          do j=1,jmx2
             w2d(i,j)=hcst(i,j,it,ld)
           enddo
           enddo
           iw=iw+1
           write(32,rec=iw) w2d
 
-          do i=1,imx
-          do j=1,jmx
+          do i=1,imx2
+          do j=1,jmx2
             w2d(i,j)=stdo(i,j,ld)
+          enddo
+          enddo
+          iw=iw+1
+          write(32,rec=iw) w2d
+
+          do i=1,imx2
+          do j=1,jmx2
+            w2d(i,j)=cvcor(i,j,it,ld)
           enddo
           enddo
           iw=iw+1
@@ -679,8 +702,8 @@ c write out fcst and skill_t
         iw=0
        do ld=1,nlead
 
-         do i=1,imx
-         do j=1,jmx
+         do i=1,imx2
+         do j=1,jmx2
            w2d(i,j)=fcst(i,j,ld)
            w2d2(i,j)=stdo(i,j,ld)
            w2d3(i,j)=cor3d(i,j,ld)
@@ -698,6 +721,8 @@ c write out fcst and skill_t
          write(30,rec=iw) w2d4
          iw=iw+1
          write(30,rec=iw) w2d5
+         iw=iw+1
+         write(30,rec=iw) w2d6
 
       enddo ! ld loop
 c

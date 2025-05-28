@@ -19,7 +19,7 @@ jmx=89
 imx2=360
 jmx2=180
 #
-for var1 in prec t2m; do
+for var1 in t2m prec; do
 #var1=prec
 var2=$var1
 eof_area=glb   #50S-60N
@@ -229,12 +229,13 @@ XDEF  $imx2  linear    0.5  1..
 ydef  $jmx2  linear  -89.5  1.
 zdef  1 linear 1 1
 tdef  $mlead linear ${tgtmoyr} 1mon
-vars  5
+vars  6
 $var2  1 99 normalized fcst
 stdo   1 99 stdv of obs
 cor    1 99 corr of hcst
 rms    1 99 rmse of hcst
 hss    1 99 hss_3c of hcst
+clm    1 99 missing
 endvars
 EOF
 #
@@ -266,10 +267,11 @@ ydef  $jmx2  linear  -89.5  1.
 zdef  1 linear 1 1
 tdef $ny_out linear ${tgtmon}$outyr_s 1yr
 edef  $mlead names 1 2 3 4 5 6 7
-vars  3
+vars  4
 o  1 99 obs
 p  1 99 hcst
 s  1 99 std of obs
+c  1 99 cvcor
 endvars
 EOF
 #

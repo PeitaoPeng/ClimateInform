@@ -51,7 +51,7 @@ for curyr in 2021 2022 2023 2024 2025; do
 #for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
 for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-#for curmo in 05 11; do
+#for curmo in 11; do
 ##
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -232,12 +232,13 @@ XDEF  $imx2 linear   0.5  1.
 ydef  $jmx2 linear -89.5  1.
 zdef  1 linear 1 1
 tdef  $mlead linear ${tgtmoyr} 1mon
-vars  5
+vars  6
 $var2  1 99 normalized fcst
 stdo   1 99 stdv of obs
 cor    1 99 corr of hcst
 rms    1 99 rmse of hcst
 hss    1 99 hss_3c of hcst
+clm    1 99 missing
 endvars
 EOF
 #
@@ -269,10 +270,11 @@ ydef  $jmx2 linear  -89.5  1.
 zdef  1 linear 1 1
 tdef $ny_out linear ${tgtmon}$outyr_s 1yr
 edef  $mlead names 1 2 3 4 5 6 7
-vars  3
+vars  4
 o  1 99 obs
 p  1 99 hcst
 s  1 99 std of obs
+c  1 99 cv_cor
 endvars
 EOF
 #
