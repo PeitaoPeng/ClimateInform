@@ -281,6 +281,8 @@ C
           enddo
       enddo
       enddo
+
+      write(6,*) 'ns_tpz2=',ns_tpz2
 C
 C CV hcst for this lead
 c     mfld=ns_tpz - 1
