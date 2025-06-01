@@ -42,8 +42,8 @@ cd $tmp
 # have SST IC
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
-for curyr in 2021 2022 2023 2024 2025; do
-#for curyr in 2024; do
+#for curyr in 2021 2022 2023 2024 2025; do
+for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
 #for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
 for curmo in 02 03; do
