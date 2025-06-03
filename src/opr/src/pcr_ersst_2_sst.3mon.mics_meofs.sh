@@ -61,7 +61,7 @@ cd $tmp
 for curyr in 2025; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
 #for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for curmo in 02 03 04 05; do
+for curmo in 01 02 03 04 05; do
 #for curmo in 11; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season

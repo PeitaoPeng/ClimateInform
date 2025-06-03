@@ -77,7 +77,8 @@ clm_end=`expr $clm_bgn + 360`
 nts=2  # feb1979
 nte=`expr $ttlong - 1` # mid-mon of the latest season
 #
-inputfile=olr-monthly_v02r07_197901_$datayr$datamo
+#inputfile=olr-monthly_v02r07_197901_$datayr$datamo
+inputfile=olr-monthly_v02r07_197901_202504
 outfile=olr.3mon.1979-curr.total
 cat >sst3monavg<<EOF
 run avg.gs
@@ -145,7 +146,7 @@ nt=nt+1
 endwhile
 gsEOF
 
-/usr/bin/grads -pb <int
+#/usr/bin/grads -pb <int
 
 cat>$datadir/$outfile.1x1.ctl<<EOF
 dset ^$outfile.1x1.gr

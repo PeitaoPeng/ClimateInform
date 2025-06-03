@@ -8,4 +8,7 @@ bash $codedir/pcr_ersst_2_sst.3mon.mics_meofs.sh
 bash $codedir/pcr_ersst_2_tpz.3mon.dtrd.mics_meofs.cor.sh
 bash $codedir/pcr_olr_2_tpz.3mon.dtrd.mics_meofs.cor.sh
 bash $codedir/pcr_slp_2_tpz.3mon.dtrd.mics_meofs.cor.sh
-bash $codedir/ocn_tpz.3mon.cor.sh
+bash $codedir/eeof_p_2_t.3mon.sh
+bash $codedir/eeof_sst_2_tpz.3mon.sh
+bash $codedir/eeof_tpz_2_tpz.3mon.sh
+#bash $codedir/ocn_tpz.3mon.cor.sh
