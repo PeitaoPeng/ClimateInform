@@ -23,7 +23,7 @@ if [ $version = cor ];  then ivs=1; fi
 if [ $version = cvcor ];  then ivs=2; fi
 
 #for var in t2m prec; do # prec, t2m, hgt
-for var in t2m; do # prec, t2m, hgt
+for var in prec; do # prec, t2m, hgt
 
 if [ $var = t2m ];  then icut1=3; ivar2=1; fi
 if [ $var = prec ]; then icut1=5; ivar2=2; fi
@@ -50,7 +50,7 @@ cd $tmp
 for curyr in 2024; do
 #curmt=`date --date='today' '+%m'`  # mo of making fcst
 #for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for curmo in 04 08; do
+for curmo in 08 04; do
 #for curmo in 02 03 04 05; do
 #for curmo in 04; do
 #
