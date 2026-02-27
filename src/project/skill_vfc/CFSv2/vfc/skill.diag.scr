@@ -1,0 +1,65 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/CFSv2_skill/vfc
+tmp=/export/hobbes/wd52pp/tmp
+datadir1=/export-12/cacsrv1/wd52pp/cpc_vfc/0data
+datadir2=/export-12/cacsrv1/wd52pp/CFS_vfc/0data
+datadir3=/export-12/cacsrv1/wd52pp/CFSv2_vfc/0data
+datadir4=/export-12/cacsrv1/wd52pp/CFSv2_vfc/skill
+#
+ var=temp
+#var=prec
+nseason=180
+#
+#/bin/rm $tmp/fort.*         
+cp $lcdir/skill.diag.f $tmp/.
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nss=$nseason)
+       parameter(imx=36,jmx=19)
+eof
+#
+#
+f77 -o diag.x skill.diag.f
+echo "done compiling"
+
+#
+ ln -s $datadir1/mask_2x2.data    fort.11
+ ln -s $datadir1/${var}_seas_verif.bi  fort.12
+ ln -s $datadir1/${var}01_forecast.bi  fort.13
+ ln -s $datadir2/${var}.jfm1995-jfm2011.cfs.us.gr fort.14
+ ln -s $datadir3/${var}.jfm1995-djf2009.cfsv2.us.gr  fort.15
+#
+ ln -s $datadir4/${var}.terc_count.gr  fort.51
+#
+diag.x > $lcdir/out
+#
+
+cat>$datadir4/${var}.terc_count.ctl<<EOF
+dset ^$datadir4/${var}.terc_count.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    1 linear    0.000  1
+ydef    1 linear    0.000  1
+zdef    1 levels 500
+tdef 999 linear jan1995  1mon
+vars 12
+ob   0 99 below  in obs
+on   0 99 normal in obs
+oa   0 99 above  in obs
+cpb   0 99 below  in cpc
+cpn   0 99 normal in cpc
+cpa   0 99 above  in cpc
+c1b   0 99 below  in cfs1
+c1n   0 99 normal in cfs1
+c1a   0 99 above  in cfs1
+c2b   0 99 below  in cfs2
+c2n   0 99 normal in cfs2
+c2a   0 99 above  in cfs2
+endvars
+EOF
+
+

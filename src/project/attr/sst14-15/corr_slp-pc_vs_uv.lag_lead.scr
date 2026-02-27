@@ -1,0 +1,65 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ lcdir=/cpc/home/wd52pp/project/attr/sst14-15
+ datadir=/cpc/home/wd52pp/data/attr/sst14-15
+ datadir2=/cpc/home/wd52pp/data/attr/djf14-15
+ tmp=/cpc/home/wd52pp/tmp
+#
+ cp corr_pc_vs_uv.lag_lead.f $tmp/.
+#
+ cd $tmp
+ \rm fort.*
+#
+nmod=10
+nyr=67 #in total 67 year dat 1949-2015
+#
+cat > parm.h << eof
+       parameter(imx=144,jmx=73)
+       parameter(nyr=$nyr,nlast=3)
+       parameter(nmod=$nmod)
+eof
+#
+   ln -s $datadir/pc.slp.R1.djf.gr     fort.10
+   ln -s $datadir2/uv.1000mb.R1.jfm1949-cur.3mon.gr fort.11
+#
+   ln -s $datadir/corr.slppc.vs.uv1000mb.lag-lead.gr       fort.50
+#
+#
+ gfortran -o corr.x corr_pc_vs_uv.lag_lead.f
+ corr.x > $lcdir/out
+#
+cat>$datadir/corr.slppc.vs.uv1000mb.lag-lead.ctl<<EOF
+dset $datadir/corr.slppc.vs.uv1000mb.lag-lead.gr
+*
+undef -9999.0
+*
+TITLE  4mon lag and 4mon lead and current mon
+*
+XDEF   144 LINEAR     0.  2.5
+*
+YDEF    73 LINEAR   -90.  2.5
+*
+ZDEF  1 linear 1 1
+*
+*mam jja son djf(self) mam jja son djf
+TDEF 8 LINEAR dec2014 1mon
+*
+vars 12
+ucor1  0 99 corr of mode1
+ureg1  0 99 regr of mode1
+vcor1  0 99 corr of mode1
+vreg1  0 99 regr of mode1
+ucor2  0 99 corr of mode1
+ureg2  0 99 regr of mode1
+vcor2  0 99 corr of mode1
+vreg2  0 99 regr of mode1
+ucor3  0 99 corr of mode1
+ureg3  0 99 regr of mode1
+vcor3  0 99 corr of mode1
+vreg3  0 99 regr of mode1
+ENDVARS
+EOF
+

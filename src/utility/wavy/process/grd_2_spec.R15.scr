@@ -1,0 +1,33 @@
+#!/bin/sh
+set -eaux
+
+#input=cdas.hdvt.djfm2014
+input=cdas.hdvt.clim_djfm
+
+datadir=/cpc/home/wd52pp/data/wavy
+locdir=/cpc/home/wd52pp/utility/wavy/process
+tmpdir=/cpc/home/wd52pp/tmp
+#
+cd $tmpdir
+/bin/rm $tmpdir/*.*
+cp $locdir/grd_2_spec.R15.f sp.f
+cp $locdir/glats.f          gl.f
+cp $locdir/genpnme15.f      ge.f
+cp $locdir/fftgcm.f         fft.f
+cp $locdir/gdtosp15.s.f     tosp.f
+cp $locdir/setxy.f          setxy.f
+cp $locdir/intp2d.f         int.f
+cp $locdir/norsou.f         nor.f
+#
+cat > parm.h << eof
+       parameter(NFLD=33)
+eof
+#
+gfortran sp.f gl.f ge.f fft.f nor.f setxy.f tosp.f int.f
+#
+ ln -s $datadir/$input.gr            fort.10
+ ln -s $datadir/$input.R15GRD.gr     fort.20
+ ln -s $datadir/$input.R15SPC.gr     fort.60
+#
+a.out 
+#

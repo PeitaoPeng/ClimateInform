@@ -1,0 +1,118 @@
+69,70c69,70
+< #while  [ $ld -le $nlead ]
+< while  [ $ld -le 1 ]
+---
+> while  [ $ld -le $nlead ]
+> #while  [ $ld -le 1 ]
+193c193
+< ## use field data to correct nino34 hcst
+---
+> ## use field data to correct curr n34 fcst
+196,198c196,198
+< nt_tot=$nyr  #1982->last year 
+< ntrain=`expr $nyr - 1`  #CV-1
+< ntest=1      # data length for prd
+---
+> nt_tot=$nyrp1 #nyr plus one: hiostory + curr yr
+> ntrain=$nyr
+> ntest=`expr $nt_tot - $ntrain`  # data length for prd
+205c205
+< cp $lcdir/mlp_bp.CV.f90 mlp.f90
+---
+> cp $lcdir/mlp_bp.long.f90 mlp.f90
+225c225
+< ln -s mlp.ld$ld.bi   fort.30
+---
+> ln -s ann.$ld        fort.30
+229c229,232
+< mlp.x > $tmp/out
+---
+> mlp.x > $datadir2/out
+> #
+> ld=$(( ld+1 ))
+> done  # for ld
+231,232c234,252
+< cat>mlp.ld$ld.ctl<<EOF
+< dset ^mlp.ld$ld.bi
+---
+> #cat ann_crct together
+> 
+> mv ann.1 crct.1
+> ld=2
+> while  [ $ld -le $nlead ]
+> do
+> ldm=$((ld-1))
+> 
+> cat crct.$ldm  ann.$ld > crct.$ld  
+> 
+> \rm crct.$ldm 
+> 
+> ld=$(( ld+1 ))
+> done
+> 
+> mv crct.$nlead $datadir2/CFSv2.ann.nino34.$tp.${icmonw}_ic.$curyr.ld1-$nlead.gr
+> 
+> cat>$datadir2/CFSv2.ann.nino34.$tp.${icmonw}_ic.$curyr.ld1-$nlead.ctl<<EOF
+> dset ^CFSv2.ann.nino34.$tp.${icmonw}_ic.$curyr.ld1-$nlead.gr
+235c255
+< XDEF  $ntest LINEAR    0  1.0
+---
+> XDEF  1 LINEAR    0  1.0
+238c258
+< tdef  ${nt_tot} linear jan1982 1yr
+---
+> tdef  $nlead linear ${tmons}$tgtyr 1mo
+240c260
+< p  0 99 prd
+---
+> f     0 99 ann crct
+252c272
+< 'open $datadir2/CFSv2.tmpsfc.$tp.${icmonw}_ic.1982-$lastyr.ld1-$nlead.esm.anom.ctl'
+---
+> 'open $datadir2/CFSv2.tmpsfc.$tp.${icmonw}_ic.$curyr.ld1-$nlead.esm.anom.ctl'
+254c274
+< 'set fwrite n34.$ld'
+---
+> 'set fwrite $datadir2/CFSv2.fcst.nino34.$tp.${icmonw}_ic.$curyr.ld1-$nlead.gr'
+257,260c277,279
+< ir=$ld
+< ire=${nyr}*${nlead}
+< while ( ir <= ire)
+< 'set t 'ir''
+---
+> ld=1
+> while ( ld <= $nlead)
+> 'set t 'ld''
+262c281
+< ir=ir+$nlead
+---
+> ld=ld+1
+268,288c287,288
+< ld=$(( ld+1 ))
+< done  # for ld
+< #
+< #cat n34 together
+< 
+< mv n34.1 nino34.1
+< ld=2
+< while  [ $ld -le $nlead ]
+< do
+< ldm=$((ld-1))
+< 
+< cat nino34.$ldm  n34.$ld > nino34.$ld  
+< 
+< \rm nino34.$ldm 
+< 
+< ld=$(( ld+1 ))
+< done
+< mv nino34.$nlead model.nino34.$tp.gr
+< 
+< cat>model.nino34.$tp.ctl<<EOF
+< dset ^model.nino34.$tp.gr
+---
+> cat>$datadir2/CFSv2.fcst.nino34.$tp.${icmonw}_ic.$curyr.ld1-$nlead.ctl<<EOF
+> dset ^$datadir2/CFSv2.fcst.nino34.$tp.${icmonw}_ic.$curyr.ld1-$nlead.gr
+296c296
+< tdef $nlead linear jan1982 1yr
+---
+> tdef $nlead linear ${tmons}$tgtyr 1mo

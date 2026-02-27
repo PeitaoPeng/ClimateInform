@@ -1,0 +1,5 @@
+       parameter(nt=36)
+       parameter(imx=360,jmx=180)
+       parameter(is=121,ie=300,js=66,je=105)
+       parameter(ngrd=120,nfld=121)
+       parameter(nld=17,tld=11)

@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/project/LF_prd/src
+tmp=/export-6/sgi9/wd52pp/tmp
+datadir=/export-6/cacsrv1/wd52pp/LF_prd
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/anom_clim.djf.f $tmp/.
+cd $tmp
+unlimit
+#
+f77 -o anom_clim.x anom_clim.djf.f
+echo "done compiling"
+
+#
+ ln -s $datadir/temp_102.txt           fort.10
+ ln -s $datadir/temp_102_anom.txt      fort.40
+# ln -s $datadir/ocn_prd_temp_cams.jfm.81-02.i3e    fort.20
+# ln -s $datadir/temp_cams_land.jfm.81-02.verify.i3e    fort.30
+#
+anom_clim.x

@@ -1,0 +1,33 @@
+15,16d14
+<       program indices
+<       include "parm.h"
+86d83
+<       parameter(is=115,ie=144,iln2=35,ngpt2=iln2*ilt)
+245,246c242
+< c     if(irotat .eq. 1) call amplit(z,neweofs,ieofcnt,ipos2,ampl)
+<       if(irotat .eq. 1) call ampl2(z,neweofs,ieofcnt,ipos2,ampl)
+---
+>       if(irotat .eq. 1) call amplit(z,neweofs,ieofcnt,ipos2,ampl)
+254,257c250
+< c     write(6,546) iyr,imo,(ampl(i),i=1,neof),expvar2(itim)
+<       if (imo.eq.7) then
+< c     write(6,*) iyr,imo,(ampl(i),i=1,neof)
+<       endif
+---
+> c      write(6,546) iyr,imo,(ampl(i),i=1,neof),expvar2(itim)
+371c364
+<  300  format('DSET ^monthly_raw_tele_indices.2000.local_proj.NAO.bi')
+---
+>  300  format('DSET ^monthly_raw_tele_indices.2000.select.bi')
+374c367
+<  301  format('DSET ^monthly_tele_indices.2000.local_proj.NAO.bi')
+---
+>  301  format('DSET ^monthly_tele_indices.2000.select.bi')
+536c529
+<       subroutine ampl2_local(zz,aeofs,numeofs,iipos2,ampltud)
+---
+>       subroutine ampl2(zz,aeofs,numeofs,iipos2,ampltud)
+545d537
+<       dimension zz2(ngpt2),aeofs2(ieof,ngpt2)
+576d567
+< c     write(6,*) 'nzero=',izero, 'ampltud=',ampltud

@@ -1,0 +1,4 @@
+
+1. take uv from reanalysis: have.psi_uv.jan1981-cur.mon.gs
+2. interpolation and have psi and div: uv2stfdiv.scr
+3. have target season data: have.psi_div.target_season.gs

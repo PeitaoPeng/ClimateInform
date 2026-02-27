@@ -1,0 +1,35 @@
+#!/bin/sh           
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/project/LF_prd/src
+tmpdir=/tmp/wd52pp
+datadir=/export-6/cacsrv1/wd52pp/LF_prd
+numrun=1
+longtime=53
+
+cp $lcdir/obs_detrend.f $tmpdir/.
+cd $tmpdir
+
+#
+cat > parm.h << eof
+       parameter(imax=72,jmax=37)
+       parameter(irun=$numrun)
+       parameter(nt=$longtime)
+eof
+#
+f77  -o obs_detrend.x obs_detrend.f
+echo "done compiling"
+
+/bin/rm fort.*
+#
+ ln -s $datadir/z200_5002jfm.reg.i3e fort.10
+
+ ln -s $datadir/z200_5002jfm.ntd.reg.i3e fort.20
+
+ ln -s $datadir/a1_b1_of_z200_5002jfm.reg.i3e fort.30
+
+ obs_detrend.x > $lcdir/out
+
+
+#

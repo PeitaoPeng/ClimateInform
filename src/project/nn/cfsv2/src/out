@@ -1,0 +1,43 @@
+19,21c19,20
+< #for icmon in jan feb mar apr may jun jul aug sep oct nov dec; do
+< #for icmon in may jun jul aug sep oct nov; do
+<  for icmon in may; do
+---
+> #for icmon in nov dec jan feb mar apr may; do
+> for icmon in nov; do
+24,30c23,29
+< if [ $icmon = 'may' ]; then ld=7; fi
+< if [ $icmon = 'jun' ]; then ld=6; fi
+< if [ $icmon = 'jul' ]; then ld=5; fi
+< if [ $icmon = 'aug' ]; then ld=4; fi
+< if [ $icmon = 'sep' ]; then ld=3; fi
+< if [ $icmon = 'oct' ]; then ld=2; fi
+< if [ $icmon = 'nov' ]; then ld=1; fi
+---
+> if [ $icmon = 'nov' ]; then ld=7; fi
+> if [ $icmon = 'dec' ]; then ld=6; fi
+> if [ $icmon = 'jan' ]; then ld=5; fi
+> if [ $icmon = 'feb' ]; then ld=4; fi
+> if [ $icmon = 'mar' ]; then ld=3; fi
+> if [ $icmon = 'apr' ]; then ld=2; fi
+> if [ $icmon = 'may' ]; then ld=1; fi
+49c48
+< 'set fwrite $dataout/CFSv2.sst.${icmon}_ic.1982-2020.djf.$clim.gr'
+---
+> 'set fwrite $dataout/CFSv2.sst.${icmon}_ic.1982-2020.jja.$clim.gr'
+62,63c61,62
+< cat>$dataout/CFSv2.sst.${icmon}_ic.1982-2020.djf.$clim.ctl<<EOF2
+< dset ^CFSv2.sst.${icmon}_ic.1982-2020.djf.$clim.gr
+---
+> cat>$dataout/CFSv2.sst.${icmon}_ic.1982-2020.jja.$clim.ctl<<EOF2
+> dset ^CFSv2.sst.${icmon}_ic.1982-2020.jja.$clim.gr
+92c91
+< 'set fwrite $dataout/CFSv2.nino34.${icmon}_ic.1982-2020.djf.$clim.gr'
+---
+> 'set fwrite $dataout/CFSv2.nino34.${icmon}_ic.1982-2020.jja.$clim.gr'
+107,108c106,107
+< cat>$dataout/CFSv2.nino34.${icmon}_ic.1982-2020.djf.$clim.ctl<<EOF
+< dset ^CFSv2.nino34.${icmon}_ic.1982-2020.djf.$clim.gr
+---
+> cat>$dataout/CFSv2.nino34.${icmon}_ic.1982-2020.jja.$clim.ctl<<EOF
+> dset ^CFSv2.nino34.${icmon}_ic.1982-2020.jja.$clim.gr

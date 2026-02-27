@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ datadir=/cpc/home/wd52pp/project/attr/win13-14
+#
+ nmonth=6
+#
+# /bin/rm fort.*
+   ln -s $datadir/prate.oct13-mar14.gr fort.11
+   ln -s $datadir/prate.oct13-mar14.tp.gr fort.12
+   ln -s $datadir/prate.oct13-mar14.R15.gr fort.21
+   ln -s $datadir/prate.oct13-mar14.R15.tp.gr fort.22
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth)
+eof
+#
+ gfortran  trop_only.prate.f
+ a.out
+#

@@ -1,0 +1,92 @@
+
+ Singular Value Decomposition 
+
+ Compute the SVD of a covariance matrix formed by convolving 2 vectors
+   which have been assembled from the LEFT and RIGHT fields (which 
+   may be on different grids.) 
+
+ Write and substitute your own code subroutine "load.F" to compute
+   the input LEFT and RIGHT fields. Just be sure that the full grid
+   timeseries are in units 41 and 42 so that they are readable
+   as follows:
+        real b(idl,jdl)    <=== for the left field
+        do 10 iy=1,nyr
+        do 10 im=1,nmon
+        read(41) b
+     10 continue
+
+ unit numbers used:
+
+  31 == raw data from which will come LEFT field
+  32 == raw data from which will come RIGHT field
+
+  41 == time series of full grids for left field
+  42 == time series of full grids for right field
+
+ OUTPUT:
+  61 == SVD coeffs and results
+    to read:
+       real a(nmon,nyr,nf), b(nmon,nyr,nf)
+       real sv(10),ss(10),ss1(10),covab(nf)
+       real valx(nf),vbrx(nf),vblx(nf),varx(nf)
+       read() a     <== temporal expansion coefficients for the left field
+       read() b     <== temporal expansion coefficients for the right field
+       read() sv    <== singular values
+       read() ss    <== squared covariance fraction
+       read() ss1   <== cumulative squared covariance fraction
+       read() covab <== temporal correlation coefficients, timeseries a vs b
+       read() valx  <== fraction of variance of left field explained by a
+       read() vbrx  <== fraction of variance of right field explained by b
+       read() vblx  <== fraction of variance of left field explained by b
+       read() varx  <== fraction of variance of right field explained by a
+       do n=1,nf
+         read() aleft  <== idl x jdl, projection of coeff A on LEFT field
+         read() bright <== idr x jdr, projection of coeff B on RIGHT field
+         read() bleft  <== idl x jdl, projection of coeff B on LEFT field
+         read() aright <== idr x jdr, projection of coeff A on RIGHT field
+       continue
+
+         
+  71 == Projections of coeff a on Left field
+  72 == Projections of coeff b on Right field
+  73 == Projections of coeff b on Left field
+  74 == Projections of coeff a on Right field
+     to read 71, 73 (LEFT field data)
+       real x(idl,jdl) 
+       do 10 n=1,nf
+   10  read() x
+
+     to read 72, 74 (RIGHT field data)
+       real x(idr,jdr) 
+       do 10 n=1,nf
+   10  read() x
+
+  81 == titles for Projections of coeff a on Left field (ASCII)
+  82 == titles for Projections of coeff b on Right field (ASCII)
+  83 == titles for Projections of coeff b on Left field (ASCII)
+  84 == titles for Projections of coeff a on Right field (ASCII)
+     ASCII files which can be viewed using 'more','cat' or the editor of 
+     your choice. These files are used by a grads script to plot the fields
+     in units 71,72,73,74.
+
+To Plot using GrADS
+===================
+1) create a working directory in which descriptor files, the grads script,
+   and the files 81,82,83,84 should be kept renamed aleft_titles,bright_titles,
+   bleft_titles,aright_titles (unless you edit 'svdplot' script to use different
+   names.)
+2) create GrADS descriptor files which describe the data in units 71,72,73,74
+   named aleft.ctl, bright.ctl, bleft.ctl, aright.ctl respectively
+   (or modify script 'svdplot' to to use whatever names you want)
+3) copy /home/mjn/svd/plottest/svdplot 
+4) copy /home/mjn/svd/plottest/plotset
+5) modify 'plotset' to reflect the proper settings you want for the plots
+6) start up grads by typing 'grads'
+7) type 'n' when prompted regarding "Landscape" 
+8) if you want to plot a frame with the projections of coeff a on Left field
+   on the top and the projections of coeff b on Right field on the bottom,
+   type:
+   run svdplot aleft bright
+9) respond to the questions that prompt you for a response 
+   (to print and/or continue with next mode). 
+

@@ -1,0 +1,95 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/sst14-15
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/attr/sst14-15
+#
+var=slp
+model=R1
+tmax=66
+nmod=10
+#
+cp $lcdir/pure_eof.slp.f $tmp/pure_eof.f
+cp $lcdir/reof.s.f  $tmp/.
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$tmax)
+       parameter(imx=144,jmx=73)
+       parameter(nmod=$nmod)
+       parameter(lons=45,lone=109,lats=45,late=73) !NP area (110E-270E,20N-90N)
+c      parameter(lons=61,lone=120,lats=45,late=73) !PNA area (150E-300E,20N-90N)
+c      parameter(lons2=,lone2=,lats2=,late2=) !Extended area (120E-300E, Eq 70N)
+c      parameter(lons=1,lone=144,lats=37,late=73)
+c      parameter(lons=1,lone=144,lats=45,late=73) !NH
+       parameter(id=0)
+eof
+#
+#for season in djf mam jja son; do
+for season in djf; do
+\rm fort.*
+#
+gfortran -o pure_eof.x reof.s.f pure_eof.f
+echo "done compiling"
+
+#
+ ln -s $datadir/slp.R1.1949-cur.djf.gr         fort.10
+#
+ ln -s $datadir/eof.$var.$model.$season.gr    fort.51
+ ln -s $datadir/pc.$var.$model.$season.gr     fort.52
+#
+pure_eof.x > $datadir/reof.$var.$model.$season.out
+#
+
+cat>$datadir/eof.$var.$model.$season.ctl<<EOF
+dset $datadir/eof.$var.$model.$season.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  144 linear 0 2.5
+ydef   73 linear -90 2.5
+zdef    1 levels 200
+tdef 999 linear jan1950  1yr
+vars   4
+eof   0 99 corr of mode 1
+reg   0 99 regr of mode 1
+reof   0 99 corr of mode 1
+rreg   0 99 regr of mode 1
+endvars
+EOF
+
+cat>$datadir/pc.$var.$model.$season.ctl<<EOF2
+dset $datadir/pc.$var.$model.$season.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    1 linear 0 2.8125
+ydef    1 linear -90 2.8125
+zdef    1 levels 200
+tdef 999 linear jan1950  1yr
+vars  20
+pc1   0 99 coef of mode 1
+rpc1   0 99 coef of mode 1
+pc2   0 99 coef of mode 1
+rpc2   0 99 coef of mode 1
+pc3   0 99 coef of mode 1
+rpc3   0 99 coef of mode 1
+pc4   0 99 coef of mode 1
+rpc4   0 99 coef of mode 1
+pc5   0 99 coef of mode 1
+rpc5   0 99 coef of mode 1
+pc6   0 99 coef of mode 1
+rpc6   0 99 coef of mode 1
+pc7   0 99 coef of mode 1
+rpc7   0 99 coef of mode 1
+pc8   0 99 coef of mode 1
+rpc8   0 99 coef of mode 1
+pc9   0 99 coef of mode 1
+rpc9   0 99 coef of mode 1
+pc10   0 99 coef of mode 1
+rpc10   0 99 coef of mode 1
+endvars
+EOF2
+#
+done
+

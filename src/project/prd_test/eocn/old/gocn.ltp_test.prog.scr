@@ -1,0 +1,104 @@
+#!/bin/sh
+##########################################
+# Using independent data, K is dependent on LTP
+#########################################
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/prd_skill
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/prd_skill
+#
+last_yr=2012
+longtime=82
+ntprd=52  # ntprd=longtime-30
+mode=6  #cut off modes
+var=temp
+#KP=15  #for prec
+ KP=10  #for temp
+ ltp=30 #  maxmum length of testing period
+ irms=1  # =1: rms metric; =0: acc metrics
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/gocn.ltp_test.prog.f $tmp/gocn_prd_hss.f
+cp $lcdir/reof.s.f $tmp/reof.s.f
+cd $tmp
+#
+#for season in jfm fma mam amj mjj jja jas aso son ond ndj djf; do
+for season in djf mam jja son; do
+#
+if [ "$season" = jfm ]; then mons=1; fi
+if [ "$season" = fma ]; then mons=2; fi
+if [ "$season" = mam ]; then mons=3; fi
+if [ "$season" = amj ]; then mons=4; fi
+if [ "$season" = mjj ]; then mons=5; fi
+if [ "$season" = jja ]; then mons=6; fi
+if [ "$season" = jas ]; then mons=7; fi
+if [ "$season" = aso ]; then mons=8; fi
+if [ "$season" = son ]; then mons=9; fi
+if [ "$season" = ond ]; then mons=10; fi
+if [ "$season" = ndj ]; then mons=11; fi
+if [ "$season" = djf ]; then mons=12; fi
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(imax=102)
+       parameter(iseason=$mons)
+       parameter(mmax=$mode)
+       parameter(ntprd=$ntprd,kp=$KP)
+       parameter(ndec=6)
+       parameter(ltp=$ltp)
+       parameter(irms=$irms)
+eof
+#
+gfortran -o gocn_prd_hss.x reof.s.f gocn_prd_hss.f
+echo "done compiling"
+
+#
+ ln -s /cpc/home/wd52pp/data/LF_prd/${var}_102.txt      fort.10
+#
+if [ "$irms" = 1 ]; then
+ln -s $datadir/gocn_skill.vs.ltp.$season.prog.rms.gr  fort.60
+gocn_prd_hss.x > $datadir/gocn.ltp_test.$season.rms.out
+cat>$datadir/gocn_skill.vs.ltp.$season.prog.rms.ctl<<EOF
+#
+dset $datadir/gocn_skill.vs.ltp.$season.prog.rms.gr
+undef 999.0
+title Realtime Surface Obs
+xdef    $ltp linear  0.000  1
+ydef    1 linear  0.000  1
+zdef    1 levels  500
+tdef $ntprd linear jan1991  1yr
+vars   5
+rms   0 99 rmse of fcst
+acc   0 99 acc of fcst
+hss   0 99 hss of fcst
+mk    0 99 hss optmal K
+wrms  0 99 rmse with wmo clim
+endvars
+EOF
+#
+else
+#
+ln -s $datadir/gocn_skill.vs.ltp.$season.prog.acc.gr  fort.60
+gocn_prd_hss.x > $datadir/gocn.ltp_test.$season.acc.out
+#
+cat>$datadir/gocn_skill.vs.ltp.$season.prog.acc.ctl<<EOF
+dset $datadir/gocn_skill.vs.ltp.$season.prog.acc.gr
+undef 999.0
+title Realtime Surface Obs
+xdef    $ltp linear  0.000  1
+ydef    1 linear  0.000  1
+zdef    1 levels  500
+tdef $ntprd linear jan1991  1yr
+vars   5
+rms   0 99 rmse of fcst
+acc   0 99 acc of fcst
+hss   0 99 hss of fcst
+mk    0 99 hss optmal K
+wrms  0 99 rmse with wmo clim
+endvars
+EOF
+fi
+#
+/bin/rm $tmp/fort.*         
+done

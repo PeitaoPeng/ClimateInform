@@ -1,0 +1,55 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ lcdir=/cpc/home/wd52pp/project/attr/djf14-15
+ datadir=/cpc/home/wd52pp/data/attr/djf14-15
+ tmp=/cpc/home/wd52pp/tmp
+#
+ cp corr_pc_vs_psi_div.f $tmp/.
+#
+ cd $tmp
+ \rm fort.*
+#
+cat > parm.h << eof
+       parameter(imx=64,jmx=40)
+       parameter(ltime=36,ltw=ltime-1)
+       parameter(nmod=6)
+eof
+#
+   ln -s $datadir/pc.sst.had-oi.djf.tnp.gr fort.10
+   ln -s $datadir/psi_div.200mb.1979-2015.cfsr.djf.R15.gr fort.11
+#
+   ln -s $datadir/corr.sstpc.vs.psi_div.gr  fort.50
+#
+#
+ gfortran -o corr.x corr_pc_vs_psi_div.f
+ corr.x > $lcdir/out
+#
+cat>$datadir/corr.sstpc.vs.psi_div.ctl<<EOF
+dset $datadir/corr.sstpc.vs.psi_div.gr
+
+undef -9999.0
+*
+TITLE  R15 maps
+*
+XDEF  64 LINEAR 0 5.625
+*
+YDEF  40 GAUSR15 1
+*
+ZDEF  1 linear 1 1
+*
+TDEF  999 LINEAR dec2014 1mon
+*
+vars   8
+scor   0 99 corr of psi200
+sreg   0 99 regr of psi200
+rscor   0 99 corr of psi200
+rsreg   0 99 regr of psi200
+dcor   0 99 corr of div200
+dreg   0 99 regr of div200
+rdcor   0 99 corr of div200
+rdreg   0 99 regr of div200
+endvars
+EOF 

@@ -1,0 +1,39 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/CFSv2_skill/vfc
+tmp=/export/hobbes/wd52pp/tmp
+datadir1=/export-12/cacsrv1/wd52pp/CFSv2_vfc/0data
+datadir2=/export-12/cacsrv1/wd52pp/CFSv2_vfc/skill
+datadir3=/export-12/cacsrv1/wd52pp/cpc_vfc/0data
+#
+#var=temp
+ var=prec
+nseason=180
+nyears=15
+tool=cfsv2
+#
+/bin/rm $tmp/fort.*         
+cp $lcdir/ctgcy_tbl.all_season.f $tmp/ctgcy_tbl.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nss=$nseason)
+       parameter(nyr=$nyears)
+       parameter(imx=36,jmx=19)
+eof
+#
+#
+f77 -o ctgcy_tbl.x ctgcy_tbl.f
+echo "done compiling"
+
+#
+ ln -s $datadir1/mask_2x2.data    fort.11
+ ln -s $datadir1/${var}.jfm1995-djf2009.cfsv2.us.gr   fort.12
+ ln -s $datadir3/${var}_seas_verif.bi  fort.13
+ ln -s $datadir2/ctgcy_table.$var.95-cur.$tool.txt  fort.61
+#
+ctgcy_tbl.x > $lcdir/out.$var
+#
+

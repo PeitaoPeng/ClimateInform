@@ -1,0 +1,52 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/LF_prd/ocn_prd
+tmp=/export/hobbes/wd52pp/tmp
+datadir1=/export/lnx160/wd51yf/ghcn_cams
+datadir2=/export-12/cacsrv1/wd52pp/LF_prd
+#
+nyear=60   #integer year number; i.e., 2007-1947=60
+nmonth=712     #record length
+#
+#
+cp $lcdir/anom_clim.yh.f $tmp/.
+cd $tmp
+
+for season in ndj; do
+
+if [ -s fort.10 ]; then
+/bin/rm $tmp/fort.*         
+fi
+
+#
+if [ "$season" = jfm ]; then mons=1; fi
+if [ "$season" = fma ]; then mons=2; fi
+if [ "$season" = mam ]; then mons=3; fi
+if [ "$season" = amj ]; then mons=4; fi
+if [ "$season" = mjj ]; then mons=5; fi
+if [ "$season" = jja ]; then mons=6; fi
+if [ "$season" = jas ]; then mons=7; fi
+if [ "$season" = aso ]; then mons=8; fi
+if [ "$season" = son ]; then mons=9; fi
+if [ "$season" = ond ]; then mons=10; fi
+if [ "$season" = ndj ]; then mons=11; fi
+if [ "$season" = djf ]; then mons=12; fi
+#
+cat > parm.h << eof
+       parameter(mons=$mons)
+       parameter(nyear=$nyear)
+       parameter(nmonth=$nmonth)
+eof
+#
+f77 -o anom_clim.x anom_clim.yh.f
+echo "done compiling"
+#
+ ln -s $datadir1/ghcn_cams_t62_1948_cur        fort.10
+ ln -s $datadir2/T62-land-sea-mask.i3e         fort.11
+ ln -s $datadir2/temp_t62_anom.$season.yh.i3e  fort.20
+#
+anom_clim.x
+#
+done

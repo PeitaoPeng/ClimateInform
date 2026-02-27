@@ -1,0 +1,4 @@
+C...PIMAX
+C    IMAX.GE.3*(MEND1-1)+1
+c     parameter(imax=64)
+      parameter(imax=32)

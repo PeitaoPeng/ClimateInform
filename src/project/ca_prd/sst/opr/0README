@@ -1,0 +1,24 @@
+
+For monthly prelim run:
+prelim.ca_msic.mon_seas.sst.sh
+prelim.monthly_sst.sh
+prelim.nino34.sh
+prelim.plot_nino34.sh
+prelim.weight_avg.sh
+
+For monthly final run:
+final.ca_msic.mon_seas.sst.sh
+final.monthly_sst.sh
+
+For real-time seasonal run
+realtime.ca_msic.season.hadoisst.sh
+realtime.ca_msic.season.ersst.sh
+realtime.ca_msic.season.sst_tpz.sh
+realtime.nino34.sh
+realtime.weight_avg.sh
+realtime.plot.fcst.sh
+realtime.plot.sstonly.sh
+
+
+
+

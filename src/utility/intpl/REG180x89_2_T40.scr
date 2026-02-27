@@ -1,0 +1,25 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ datadir1=/export-8/cacsrv1/cpc/anal/verif/ocean/sst/ERSST
+ datadir2=/export-6/cacsrv1/wd52pp/obs/sst
+#
+ nmonth=1788
+#nmonth=1
+ iskip=0
+# 
+ /bin/rm  fort.*
+   ln -s $datadir1/ersst.1854.2009.gr        fort.11
+   ln -s $datadir2/ersst_180x89_mask.gr      fort.15
+   ln -s $datadir2/ersst.1854.2009.T40.gr    fort.21
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth,iskip=$iskip)
+eof
+#
+ f77  REG180x89_2_T40.f setxy.f intp2d.sst.f
+ a.out
+#
+ja -s

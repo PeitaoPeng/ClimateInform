@@ -1,0 +1,1248 @@
++ datadir=/disk50/data/wd52pp/wavy
++ wkdir=/disk50/data/wd52pp/wavy/wkdir
++ tgtdir=/export-6/sgi9/wd52pp/utility/wavy/e001
++ locdir=/export-6/sgi9/wd52pp/utility/wavy
++ echo wavy linear model diagnostics
+wavy linear model diagnostics
++ TEMP=/disk50/data/wd52pp/wavy/wkdir
++ ja
+./Runwavy.scr[15]: ja:  not found
++ cd /disk50/data/wd52pp/wavy/wkdir
++ rm /disk50/data/wd52pp/wavy/wkdir/ACOFIL.f /disk50/data/wd52pp/wavy/wkdir/ACOFIL.o /disk50/data/wd52pp/wavy/wkdir/AMHMTM.f /disk50/data/wd52pp/wavy/wkdir/AMHMTM.o /disk50/data/wd52pp/wavy/wkdir/BLKDAT.f /disk50/data/wd52pp/wavy/wkdir/BLKDAT.o /disk50/data/wd52pp/wavy/wkdir/BMCM.f /disk50/data/wd52pp/wavy/wkdir/BMCM.o /disk50/data/wd52pp/wavy/wkdir/COMINT.f /disk50/data/wd52pp/wavy/wkdir/COMINT.o /disk50/data/wd52pp/wavy/wkdir/DEL2.f /disk50/data/wd52pp/wavy/wkdir/DEL2.o /disk50/data/wd52pp/wavy/wkdir/DEL4.f /disk50/data/wd52pp/wavy/wkdir/DEL4.o /disk50/data/wd52pp/wavy/wkdir/DELLNP.f /disk50/data/wd52pp/wavy/wkdir/DELLNP.o /disk50/data/wd52pp/wavy/wkdir/DIFFUS.f /disk50/data/wd52pp/wavy/wkdir/DIFFUS.o /disk50/data/wd52pp/wavy/wkdir/DMTM.f /disk50/data/wd52pp/wavy/wkdir/DMTM.o /disk50/data/wd52pp/wavy/wkdir/DZTOUV.f /disk50/data/wd52pp/wavy/wkdir/DZTOUV.o /disk50/data/wd52pp/wavy/wkdir/EPSLON.f /disk50/data/wd52pp/wavy/wkdir/EPSLON.o /disk50/data/wd52pp/wavy/wkdir/FAX.f /disk50/data/wd52pp/wavy/wkdir/FAX.o /disk50/data/wd52pp/wavy/wkdir/FFT991.f /disk50/data/wd52pp/wavy/wkdir/FFT991.o /disk50/data/wd52pp/wavy/wkdir/FFT99A.f /disk50/data/wd52pp/wavy/wkdir/FFT99A.o /disk50/data/wd52pp/wavy/wkdir/FFT99B.f /disk50/data/wd52pp/wavy/wkdir/FFT99B.o /disk50/data/wd52pp/wavy/wkdir/FFTRIG.f /disk50/data/wd52pp/wavy/wkdir/FFTRIG.o /disk50/data/wd52pp/wavy/wkdir/FILL.f /disk50/data/wd52pp/wavy/wkdir/FILL.o /disk50/data/wd52pp/wavy/wkdir/FL22.f /disk50/data/wd52pp/wavy/wkdir/FL22.o /disk50/data/wd52pp/wavy/wkdir/GETABG.f /disk50/data/wd52pp/wavy/wkdir/GETABG.o /disk50/data/wd52pp/wavy/wkdir/GETANOM.f /disk50/data/wd52pp/wavy/wkdir/GETANOM.o /disk50/data/wd52pp/wavy/wkdir/GETBS.f /disk50/data/wd52pp/wavy/wkdir/GETBS.o /disk50/data/wd52pp/wavy/wkdir/GETFRC.f /disk50/data/wd52pp/wavy/wkdir/GETFRC.o /disk50/data/wd52pp/wavy/wkdir/GETGEO.f /disk50/data/wd52pp/wavy/wkdir/GETGEO.o /disk50/data/wd52pp/wavy/wkdir/GETMAT.f /disk50/data/wd52pp/wavy/wkdir/GETMAT.o /disk50/data/wd52pp/wavy/wkdir/GFIDI.f /disk50/data/wd52pp/wavy/wkdir/GFIDI.o /disk50/data/wd52pp/wavy/wkdir/GFRC.f /disk50/data/wd52pp/wavy/wkdir/GFRC.o /disk50/data/wd52pp/wavy/wkdir/GLATS.f /disk50/data/wd52pp/wavy/wkdir/GLATS.o /disk50/data/wd52pp/wavy/wkdir/GLOOP.f /disk50/data/wd52pp/wavy/wkdir/GLOOP.o /disk50/data/wd52pp/wavy/wkdir/GOZRIM.f /disk50/data/wd52pp/wavy/wkdir/GOZRIM.o /disk50/data/wd52pp/wavy/wkdir/GSSTCD.f /disk50/data/wd52pp/wavy/wkdir/GSSTCD.o /disk50/data/wd52pp/wavy/wkdir/IMINV.f /disk50/data/wd52pp/wavy/wkdir/IMINV.o /disk50/data/wd52pp/wavy/wkdir/MSU22.f /disk50/data/wd52pp/wavy/wkdir/MSU22.o /disk50/data/wd52pp/wavy/wkdir/MTDM.f /disk50/data/wd52pp/wavy/wkdir/MTDM.o /disk50/data/wd52pp/wavy/wkdir/MTM.f /disk50/data/wd52pp/wavy/wkdir/MTM.o /disk50/data/wd52pp/wavy/wkdir/MTV.f /disk50/data/wd52pp/wavy/wkdir/MTV.o /disk50/data/wd52pp/wavy/wkdir/MULAM.f /disk50/data/wd52pp/wavy/wkdir/MULAM.o /disk50/data/wd52pp/wavy/wkdir/MULMB.f /disk50/data/wd52pp/wavy/wkdir/MULMB.o /disk50/data/wd52pp/wavy/wkdir/MULMC.f /disk50/data/wd52pp/wavy/wkdir/MULMC.o /disk50/data/wd52pp/wavy/wkdir/MULMD.f /disk50/data/wd52pp/wavy/wkdir/MULMD.o /disk50/data/wd52pp/wavy/wkdir/PLN2.f /disk50/data/wd52pp/wavy/wkdir/PLN2.o /disk50/data/wd52pp/wavy/wkdir/POLY.f /disk50/data/wd52pp/wavy/wkdir/POLY.o /disk50/data/wd52pp/wavy/wkdir/PSU22.f /disk50/data/wd52pp/wavy/wkdir/PSU22.o /disk50/data/wd52pp/wavy/wkdir/RDFLD.f /disk50/data/wd52pp/wavy/wkdir/RDFLD.o /disk50/data/wd52pp/wavy/wkdir/RESET.f /disk50/data/wd52pp/wavy/wkdir/RESET.o /disk50/data/wd52pp/wavy/wkdir/SAVABG.f /disk50/data/wd52pp/wavy/wkdir/SAVABG.o /disk50/data/wd52pp/wavy/wkdir/SCLOUT.f /disk50/data/wd52pp/wavy/wkdir/SCLOUT.o /disk50/data/wd52pp/wavy/wkdir/SETFRC.f /disk50/data/wd52pp/wavy/wkdir/SETFRC.o /disk50/data/wd52pp/wavy/wkdir/SETSIG.f /disk50/data/wd52pp/wavy/wkdir/SETSIG.o /disk50/data/wd52pp/wavy/wkdir/SLNOUT.f /disk50/data/wd52pp/wavy/wkdir/SLNOUT.o /disk50/data/wd52pp/wavy/wkdir/SUMPLS.f /disk50/data/wd52pp/wavy/wkdir/SUMPLS.o /disk50/data/wd52pp/wavy/wkdir/SUMPLV.f /disk50/data/wd52pp/wavy/wkdir/SUMPLV.o /disk50/data/wd52pp/wavy/wkdir/SYMASY.f /disk50/data/wd52pp/wavy/wkdir/SYMASY.o /disk50/data/wd52pp/wavy/wkdir/TRANSP.f /disk50/data/wd52pp/wavy/wkdir/TRANSP.o /disk50/data/wd52pp/wavy/wkdir/TSTZER.f /disk50/data/wd52pp/wavy/wkdir/TSTZER.o /disk50/data/wd52pp/wavy/wkdir/VPASSM.f /disk50/data/wd52pp/wavy/wkdir/VPASSM.o /disk50/data/wd52pp/wavy/wkdir/WAVY.f /disk50/data/wd52pp/wavy/wkdir/WAVY.o /disk50/data/wd52pp/wavy/wkdir/WRFLD.f /disk50/data/wd52pp/wavy/wkdir/WRFLD.o /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.f /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.o /disk50/data/wd52pp/wavy/wkdir/a.out /disk50/data/wd52pp/wavy/wkdir/data.h /disk50/data/wd52pp/wavy/wkdir/fort.18 /disk50/data/wd52pp/wavy/wkdir/fort.28 /disk50/data/wd52pp/wavy/wkdir/fort.39 /disk50/data/wd52pp/wavy/wkdir/fort.49 /disk50/data/wd52pp/wavy/wkdir/fort.50 /disk50/data/wd52pp/wavy/wkdir/fort.66 /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.f /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.o /disk50/data/wd52pp/wavy/wkdir/model_comp.scr /disk50/data/wd52pp/wavy/wkdir/ptrunk.h
++ cp /export-6/sgi9/wd52pp/utility/wavy/src_model/ACOFIL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/AMHMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BLKDAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BMCM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/COMINT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL4.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DELLNP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DIFFUS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DZTOUV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/EPSLON.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FAX.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT991.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99A.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99B.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFTRIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FILL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FL22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETANOM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETBS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETGEO.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETMAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFIDI.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLATS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLOOP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GOZRIM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GSSTCD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/IMINV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTDM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULAM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMB.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PLN2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/POLY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RDFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RESET.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SAVABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SCLOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETSIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SLNOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SYMASY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TRANSP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TSTZER.f /export-6/sgi9/wd52pp/utility/wavy/src_model/VPASSM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WAVY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WRFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/ZNLSYM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/comcom /export-6/sgi9/wd52pp/utility/wavy/src_model/comcon /export-6/sgi9/wd52pp/utility/wavy/src_model/comctl /export-6/sgi9/wd52pp/utility/wavy/src_model/commnt /export-6/sgi9/wd52pp/utility/wavy/src_model/comnum /export-6/sgi9/wd52pp/utility/wavy/src_model/comphc /export-6/sgi9/wd52pp/utility/wavy/src_model/comsig /export-6/sgi9/wd52pp/utility/wavy/src_model/comtim /export-6/sgi9/wd52pp/utility/wavy/src_model/lae_sol.s.f /export-6/sgi9/wd52pp/utility/wavy/src_model/model_comp.scr /export-6/sgi9/wd52pp/utility/wavy/src_model/namcon /export-6/sgi9/wd52pp/utility/wavy/src_model/namttl /export-6/sgi9/wd52pp/utility/wavy/src_model/old_Makefile /export-6/sgi9/wd52pp/utility/wavy/src_model/output /export-6/sgi9/wd52pp/utility/wavy/src_model/pimax /export-6/sgi9/wd52pp/utility/wavy/src_model/pjmax /export-6/sgi9/wd52pp/utility/wavy/src_model/pkmax /export-6/sgi9/wd52pp/utility/wavy/src_model/ptrunk.h /export-6/sgi9/wd52pp/utility/wavy/src_model/sigdef .
++ cat
++ 1> data.h 0< /tmp/sh2007116.1
++ cat
++ 1> ptrunk 0< /tmp/sh2007116.2
++ model_comp.scr
++ f77 ACOFIL.f DMTM.f GETABG.f GOZRIM.f MULMD.f SLNOUT.f AMHMTM.f DZTOUV.f GETANOM.f GSSTCD.f PLN2.f SUMPLS.f BLKDAT.f EPSLON.f GETBS.f IMINV.f POLY.f SUMPLV.f BMCM.f FAX.f GETFRC.f MSU22.f PSU22.f SYMASY.f COMINT.f FFT991.f GETGEO.f MTDM.f RDFLD.f TRANSP.f DEL2.f FFT99A.f GETMAT.f MTM.f RESET.f TSTZER.f DEL4.f FFT99B.f GFIDI.f MTV.f SAVABG.f VPASSM.f DELLNP.f FFTRIG.f GFRC.f MULAM.f SCLOUT.f WAVY.f DIFFUS.f FILL.f GLATS.f MULMB.f SETFRC.f WRFLD.f FL22.f GLOOP.f MULMC.f SETSIG.f ZNLSYM.f lae_sol.s.f
+ACOFIL.f:
+DMTM.f:
+GETABG.f:
+GOZRIM.f:
+MULMD.f:
+SLNOUT.f:
+AMHMTM.f:
+DZTOUV.f:
+GETANOM.f:
+GSSTCD.f:
+PLN2.f:
+SUMPLS.f:
+BLKDAT.f:
+EPSLON.f:
+GETBS.f:
+IMINV.f:
+POLY.f:
+SUMPLV.f:
+BMCM.f:
+FAX.f:
+GETFRC.f:
+MSU22.f:
+PSU22.f:
+SYMASY.f:
+COMINT.f:
+FFT991.f:
+GETGEO.f:
+MTDM.f:
+RDFLD.f:
+TRANSP.f:
+DEL2.f:
+FFT99A.f:
+GETMAT.f:
+MTM.f:
+RESET.f:
+TSTZER.f:
+DEL4.f:
+FFT99B.f:
+GFIDI.f:
+MTV.f:
+SAVABG.f:
+VPASSM.f:
+DELLNP.f:
+FFTRIG.f:
+GFRC.f:
+MULAM.f:
+SCLOUT.f:
+WAVY.f:
+DIFFUS.f:
+FILL.f:
+GLATS.f:
+MULMB.f:
+SETFRC.f:
+WRFLD.f:
+FL22.f:
+GLOOP.f:
+MULMC.f:
+SETSIG.f:
+ZNLSYM.f:
+lae_sol.s.f:
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/basic.i3e fort.18
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/forcing.i3e fort.39
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/verify.i3e fort.28
++ ln -s /disk50/data/wd52pp/wavy/reanl_7996clim_jfm.Z11.1 fort.49
++ ln -s /disk50/data/wd52pp/wavy/reanl_7996clim_jfm.Z11.2 fort.50
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/e001.result fort.66
++ unlimit
++ a.out
+  level            1
+  BASIC STATE READ IN FROM UNIT           18
+ TGLOB=   285.1670       279.8302       274.7420       268.7636    
+    261.0514       251.5907       239.9191       226.4813       213.2413    
+    213.9256    
+  level            2
+  level            3
+  level            4
+  level            5
+  level            6
+  level            7
+  level            8
+  level            9
+  level           10
+  GCM ANOMALY READ IN FROM UNIT           28
+ DONE WITH WRPROG AT     2    1    1   92        0.0
++ ja -cst
+./Runwavy.scr[47]: ja:  not found
++ datadir=/disk50/data/wd52pp/wavy
++ wkdir=/disk50/data/wd52pp/wavy/wkdir
++ tgtdir=/export-6/sgi9/wd52pp/utility/wavy/e001
++ locdir=/export-6/sgi9/wd52pp/utility/wavy
++ echo wavy linear model diagnostics
+wavy linear model diagnostics
++ TEMP=/disk50/data/wd52pp/wavy/wkdir
++ ja
+./Runwavy.scr[15]: ja:  not found
++ cd /disk50/data/wd52pp/wavy/wkdir
++ rm /disk50/data/wd52pp/wavy/wkdir/ACOFIL.f /disk50/data/wd52pp/wavy/wkdir/ACOFIL.o /disk50/data/wd52pp/wavy/wkdir/AMHMTM.f /disk50/data/wd52pp/wavy/wkdir/AMHMTM.o /disk50/data/wd52pp/wavy/wkdir/BLKDAT.f /disk50/data/wd52pp/wavy/wkdir/BLKDAT.o /disk50/data/wd52pp/wavy/wkdir/BMCM.f /disk50/data/wd52pp/wavy/wkdir/BMCM.o /disk50/data/wd52pp/wavy/wkdir/COMINT.f /disk50/data/wd52pp/wavy/wkdir/COMINT.o /disk50/data/wd52pp/wavy/wkdir/DEL2.f /disk50/data/wd52pp/wavy/wkdir/DEL2.o /disk50/data/wd52pp/wavy/wkdir/DEL4.f /disk50/data/wd52pp/wavy/wkdir/DEL4.o /disk50/data/wd52pp/wavy/wkdir/DELLNP.f /disk50/data/wd52pp/wavy/wkdir/DELLNP.o /disk50/data/wd52pp/wavy/wkdir/DIFFUS.f /disk50/data/wd52pp/wavy/wkdir/DIFFUS.o /disk50/data/wd52pp/wavy/wkdir/DMTM.f /disk50/data/wd52pp/wavy/wkdir/DMTM.o /disk50/data/wd52pp/wavy/wkdir/DZTOUV.f /disk50/data/wd52pp/wavy/wkdir/DZTOUV.o /disk50/data/wd52pp/wavy/wkdir/EPSLON.f /disk50/data/wd52pp/wavy/wkdir/EPSLON.o /disk50/data/wd52pp/wavy/wkdir/FAX.f /disk50/data/wd52pp/wavy/wkdir/FAX.o /disk50/data/wd52pp/wavy/wkdir/FFT991.f /disk50/data/wd52pp/wavy/wkdir/FFT991.o /disk50/data/wd52pp/wavy/wkdir/FFT99A.f /disk50/data/wd52pp/wavy/wkdir/FFT99A.o /disk50/data/wd52pp/wavy/wkdir/FFT99B.f /disk50/data/wd52pp/wavy/wkdir/FFT99B.o /disk50/data/wd52pp/wavy/wkdir/FFTRIG.f /disk50/data/wd52pp/wavy/wkdir/FFTRIG.o /disk50/data/wd52pp/wavy/wkdir/FILL.f /disk50/data/wd52pp/wavy/wkdir/FILL.o /disk50/data/wd52pp/wavy/wkdir/FL22.f /disk50/data/wd52pp/wavy/wkdir/FL22.o /disk50/data/wd52pp/wavy/wkdir/GETABG.f /disk50/data/wd52pp/wavy/wkdir/GETABG.o /disk50/data/wd52pp/wavy/wkdir/GETANOM.f /disk50/data/wd52pp/wavy/wkdir/GETANOM.o /disk50/data/wd52pp/wavy/wkdir/GETBS.f /disk50/data/wd52pp/wavy/wkdir/GETBS.o /disk50/data/wd52pp/wavy/wkdir/GETFRC.f /disk50/data/wd52pp/wavy/wkdir/GETFRC.o /disk50/data/wd52pp/wavy/wkdir/GETGEO.f /disk50/data/wd52pp/wavy/wkdir/GETGEO.o /disk50/data/wd52pp/wavy/wkdir/GETMAT.f /disk50/data/wd52pp/wavy/wkdir/GETMAT.o /disk50/data/wd52pp/wavy/wkdir/GFIDI.f /disk50/data/wd52pp/wavy/wkdir/GFIDI.o /disk50/data/wd52pp/wavy/wkdir/GFRC.f /disk50/data/wd52pp/wavy/wkdir/GFRC.o /disk50/data/wd52pp/wavy/wkdir/GLATS.f /disk50/data/wd52pp/wavy/wkdir/GLATS.o /disk50/data/wd52pp/wavy/wkdir/GLOOP.f /disk50/data/wd52pp/wavy/wkdir/GLOOP.o /disk50/data/wd52pp/wavy/wkdir/GOZRIM.f /disk50/data/wd52pp/wavy/wkdir/GOZRIM.o /disk50/data/wd52pp/wavy/wkdir/GSSTCD.f /disk50/data/wd52pp/wavy/wkdir/GSSTCD.o /disk50/data/wd52pp/wavy/wkdir/IMINV.f /disk50/data/wd52pp/wavy/wkdir/IMINV.o /disk50/data/wd52pp/wavy/wkdir/MSU22.f /disk50/data/wd52pp/wavy/wkdir/MSU22.o /disk50/data/wd52pp/wavy/wkdir/MTDM.f /disk50/data/wd52pp/wavy/wkdir/MTDM.o /disk50/data/wd52pp/wavy/wkdir/MTM.f /disk50/data/wd52pp/wavy/wkdir/MTM.o /disk50/data/wd52pp/wavy/wkdir/MTV.f /disk50/data/wd52pp/wavy/wkdir/MTV.o /disk50/data/wd52pp/wavy/wkdir/MULAM.f /disk50/data/wd52pp/wavy/wkdir/MULAM.o /disk50/data/wd52pp/wavy/wkdir/MULMB.f /disk50/data/wd52pp/wavy/wkdir/MULMB.o /disk50/data/wd52pp/wavy/wkdir/MULMC.f /disk50/data/wd52pp/wavy/wkdir/MULMC.o /disk50/data/wd52pp/wavy/wkdir/MULMD.f /disk50/data/wd52pp/wavy/wkdir/MULMD.o /disk50/data/wd52pp/wavy/wkdir/PLN2.f /disk50/data/wd52pp/wavy/wkdir/PLN2.o /disk50/data/wd52pp/wavy/wkdir/POLY.f /disk50/data/wd52pp/wavy/wkdir/POLY.o /disk50/data/wd52pp/wavy/wkdir/PSU22.f /disk50/data/wd52pp/wavy/wkdir/PSU22.o /disk50/data/wd52pp/wavy/wkdir/RDFLD.f /disk50/data/wd52pp/wavy/wkdir/RDFLD.o /disk50/data/wd52pp/wavy/wkdir/RESET.f /disk50/data/wd52pp/wavy/wkdir/RESET.o /disk50/data/wd52pp/wavy/wkdir/SAVABG.f /disk50/data/wd52pp/wavy/wkdir/SAVABG.o /disk50/data/wd52pp/wavy/wkdir/SCLOUT.f /disk50/data/wd52pp/wavy/wkdir/SCLOUT.o /disk50/data/wd52pp/wavy/wkdir/SETFRC.f /disk50/data/wd52pp/wavy/wkdir/SETFRC.o /disk50/data/wd52pp/wavy/wkdir/SETSIG.f /disk50/data/wd52pp/wavy/wkdir/SETSIG.o /disk50/data/wd52pp/wavy/wkdir/SLNOUT.f /disk50/data/wd52pp/wavy/wkdir/SLNOUT.o /disk50/data/wd52pp/wavy/wkdir/SUMPLS.f /disk50/data/wd52pp/wavy/wkdir/SUMPLS.o /disk50/data/wd52pp/wavy/wkdir/SUMPLV.f /disk50/data/wd52pp/wavy/wkdir/SUMPLV.o /disk50/data/wd52pp/wavy/wkdir/SYMASY.f /disk50/data/wd52pp/wavy/wkdir/SYMASY.o /disk50/data/wd52pp/wavy/wkdir/TRANSP.f /disk50/data/wd52pp/wavy/wkdir/TRANSP.o /disk50/data/wd52pp/wavy/wkdir/TSTZER.f /disk50/data/wd52pp/wavy/wkdir/TSTZER.o /disk50/data/wd52pp/wavy/wkdir/VPASSM.f /disk50/data/wd52pp/wavy/wkdir/VPASSM.o /disk50/data/wd52pp/wavy/wkdir/WAVY.f /disk50/data/wd52pp/wavy/wkdir/WAVY.o /disk50/data/wd52pp/wavy/wkdir/WRFLD.f /disk50/data/wd52pp/wavy/wkdir/WRFLD.o /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.f /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.o /disk50/data/wd52pp/wavy/wkdir/a.out /disk50/data/wd52pp/wavy/wkdir/data.h /disk50/data/wd52pp/wavy/wkdir/fort.10 /disk50/data/wd52pp/wavy/wkdir/fort.18 /disk50/data/wd52pp/wavy/wkdir/fort.28 /disk50/data/wd52pp/wavy/wkdir/fort.39 /disk50/data/wd52pp/wavy/wkdir/fort.49 /disk50/data/wd52pp/wavy/wkdir/fort.50 /disk50/data/wd52pp/wavy/wkdir/fort.66 /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.f /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.o /disk50/data/wd52pp/wavy/wkdir/model_comp.scr /disk50/data/wd52pp/wavy/wkdir/ptrunk.h
++ cp /export-6/sgi9/wd52pp/utility/wavy/src_model/ACOFIL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/AMHMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BLKDAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BMCM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/COMINT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL4.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DELLNP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DIFFUS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DZTOUV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/EPSLON.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FAX.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT991.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99A.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99B.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFTRIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FILL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FL22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETANOM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETBS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETGEO.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETMAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFIDI.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLATS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLOOP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GOZRIM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GSSTCD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/IMINV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTDM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULAM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMB.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PLN2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/POLY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RDFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RESET.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SAVABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SCLOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETSIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SLNOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SYMASY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TRANSP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TSTZER.f /export-6/sgi9/wd52pp/utility/wavy/src_model/VPASSM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WAVY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WRFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/ZNLSYM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/comcom /export-6/sgi9/wd52pp/utility/wavy/src_model/comcon /export-6/sgi9/wd52pp/utility/wavy/src_model/comctl /export-6/sgi9/wd52pp/utility/wavy/src_model/commnt /export-6/sgi9/wd52pp/utility/wavy/src_model/comnum /export-6/sgi9/wd52pp/utility/wavy/src_model/comphc /export-6/sgi9/wd52pp/utility/wavy/src_model/comsig /export-6/sgi9/wd52pp/utility/wavy/src_model/comtim /export-6/sgi9/wd52pp/utility/wavy/src_model/lae_sol.s.f /export-6/sgi9/wd52pp/utility/wavy/src_model/model_comp.scr /export-6/sgi9/wd52pp/utility/wavy/src_model/namcon /export-6/sgi9/wd52pp/utility/wavy/src_model/namttl /export-6/sgi9/wd52pp/utility/wavy/src_model/old_Makefile /export-6/sgi9/wd52pp/utility/wavy/src_model/output /export-6/sgi9/wd52pp/utility/wavy/src_model/pimax /export-6/sgi9/wd52pp/utility/wavy/src_model/pjmax /export-6/sgi9/wd52pp/utility/wavy/src_model/pkmax /export-6/sgi9/wd52pp/utility/wavy/src_model/ptrunk.h /export-6/sgi9/wd52pp/utility/wavy/src_model/sigdef .
++ cat
++ 1> data.h 0< /tmp/sh2248019.1
++ cat
++ 1> ptrunk 0< /tmp/sh2248019.2
++ model_comp.scr
++ f77 ACOFIL.f DMTM.f GETABG.f GOZRIM.f MULMD.f SLNOUT.f AMHMTM.f DZTOUV.f GETANOM.f GSSTCD.f PLN2.f SUMPLS.f BLKDAT.f EPSLON.f GETBS.f IMINV.f POLY.f SUMPLV.f BMCM.f FAX.f GETFRC.f MSU22.f PSU22.f SYMASY.f COMINT.f FFT991.f GETGEO.f MTDM.f RDFLD.f TRANSP.f DEL2.f FFT99A.f GETMAT.f MTM.f RESET.f TSTZER.f DEL4.f FFT99B.f GFIDI.f MTV.f SAVABG.f VPASSM.f DELLNP.f FFTRIG.f GFRC.f MULAM.f SCLOUT.f WAVY.f DIFFUS.f FILL.f GLATS.f MULMB.f SETFRC.f WRFLD.f FL22.f GLOOP.f MULMC.f SETSIG.f ZNLSYM.f lae_sol.s.f
+ACOFIL.f:
+DMTM.f:
+GETABG.f:
+GOZRIM.f:
+MULMD.f:
+SLNOUT.f:
+AMHMTM.f:
+DZTOUV.f:
+GETANOM.f:
+GSSTCD.f:
+PLN2.f:
+SUMPLS.f:
+BLKDAT.f:
+EPSLON.f:
+GETBS.f:
+IMINV.f:
+POLY.f:
+SUMPLV.f:
+BMCM.f:
+FAX.f:
+GETFRC.f:
+MSU22.f:
+PSU22.f:
+SYMASY.f:
+COMINT.f:
+FFT991.f:
+GETGEO.f:
+MTDM.f:
+RDFLD.f:
+TRANSP.f:
+DEL2.f:
+FFT99A.f:
+GETMAT.f:
+MTM.f:
+RESET.f:
+TSTZER.f:
+DEL4.f:
+FFT99B.f:
+GFIDI.f:
+MTV.f:
+SAVABG.f:
+VPASSM.f:
+DELLNP.f:
+FFTRIG.f:
+GFRC.f:
+MULAM.f:
+SCLOUT.f:
+WAVY.f:
+DIFFUS.f:
+FILL.f:
+GLATS.f:
+MULMB.f:
+SETFRC.f:
+WRFLD.f:
+FL22.f:
+GLOOP.f:
+MULMC.f:
+SETSIG.f:
+ZNLSYM.f:
+lae_sol.s.f:
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/basic.i3e fort.18
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/forcing.i3e fort.39
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/verify.i3e fort.28
++ ln -s /disk50/data/wd52pp/wavy/reanl_7996clim_jfm.Z11.1 fort.49
++ ln -s /disk50/data/wd52pp/wavy/reanl_7996clim_jfm.Z11.2 fort.50
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/e001.result fort.66
++ unlimit
++ a.out
+  level            1
+  BASIC STATE READ IN FROM UNIT           18
+ TGLOB=   285.1670       279.8302       274.7420       268.7636    
+    261.0514       251.5907       239.9191       226.4813       213.2413    
+    213.9256    
+  level            2
+  level            3
+  level            4
+  level            5
+  level            6
+  level            7
+  level            8
+  level            9
+  level           10
+  GCM ANOMALY READ IN FROM UNIT           28
+ DONE WITH WRPROG AT     2    1    1   92        0.0
++ ja -cst
+./Runwavy.scr[47]: ja:  not found
++ datadir=/disk50/data/wd52pp/wavy
++ wkdir=/disk50/data/wd52pp/wavy/wkdir
++ tgtdir=/export-6/sgi9/wd52pp/utility/wavy/e001
++ locdir=/export-6/sgi9/wd52pp/utility/wavy
++ echo wavy linear model diagnostics
+wavy linear model diagnostics
++ TEMP=/disk50/data/wd52pp/wavy/wkdir
++ ja
+./Runwavy.scr[15]: ja:  not found
++ cd /disk50/data/wd52pp/wavy/wkdir
++ rm /disk50/data/wd52pp/wavy/wkdir/ACOFIL.f /disk50/data/wd52pp/wavy/wkdir/ACOFIL.o /disk50/data/wd52pp/wavy/wkdir/AMHMTM.f /disk50/data/wd52pp/wavy/wkdir/AMHMTM.o /disk50/data/wd52pp/wavy/wkdir/BLKDAT.f /disk50/data/wd52pp/wavy/wkdir/BLKDAT.o /disk50/data/wd52pp/wavy/wkdir/BMCM.f /disk50/data/wd52pp/wavy/wkdir/BMCM.o /disk50/data/wd52pp/wavy/wkdir/COMINT.f /disk50/data/wd52pp/wavy/wkdir/COMINT.o /disk50/data/wd52pp/wavy/wkdir/DEL2.f /disk50/data/wd52pp/wavy/wkdir/DEL2.o /disk50/data/wd52pp/wavy/wkdir/DEL4.f /disk50/data/wd52pp/wavy/wkdir/DEL4.o /disk50/data/wd52pp/wavy/wkdir/DELLNP.f /disk50/data/wd52pp/wavy/wkdir/DELLNP.o /disk50/data/wd52pp/wavy/wkdir/DIFFUS.f /disk50/data/wd52pp/wavy/wkdir/DIFFUS.o /disk50/data/wd52pp/wavy/wkdir/DMTM.f /disk50/data/wd52pp/wavy/wkdir/DMTM.o /disk50/data/wd52pp/wavy/wkdir/DZTOUV.f /disk50/data/wd52pp/wavy/wkdir/DZTOUV.o /disk50/data/wd52pp/wavy/wkdir/EPSLON.f /disk50/data/wd52pp/wavy/wkdir/EPSLON.o /disk50/data/wd52pp/wavy/wkdir/FAX.f /disk50/data/wd52pp/wavy/wkdir/FAX.o /disk50/data/wd52pp/wavy/wkdir/FFT991.f /disk50/data/wd52pp/wavy/wkdir/FFT991.o /disk50/data/wd52pp/wavy/wkdir/FFT99A.f /disk50/data/wd52pp/wavy/wkdir/FFT99A.o /disk50/data/wd52pp/wavy/wkdir/FFT99B.f /disk50/data/wd52pp/wavy/wkdir/FFT99B.o /disk50/data/wd52pp/wavy/wkdir/FFTRIG.f /disk50/data/wd52pp/wavy/wkdir/FFTRIG.o /disk50/data/wd52pp/wavy/wkdir/FILL.f /disk50/data/wd52pp/wavy/wkdir/FILL.o /disk50/data/wd52pp/wavy/wkdir/FL22.f /disk50/data/wd52pp/wavy/wkdir/FL22.o /disk50/data/wd52pp/wavy/wkdir/GETABG.f /disk50/data/wd52pp/wavy/wkdir/GETABG.o /disk50/data/wd52pp/wavy/wkdir/GETANOM.f /disk50/data/wd52pp/wavy/wkdir/GETANOM.o /disk50/data/wd52pp/wavy/wkdir/GETBS.f /disk50/data/wd52pp/wavy/wkdir/GETBS.o /disk50/data/wd52pp/wavy/wkdir/GETFRC.f /disk50/data/wd52pp/wavy/wkdir/GETFRC.o /disk50/data/wd52pp/wavy/wkdir/GETGEO.f /disk50/data/wd52pp/wavy/wkdir/GETGEO.o /disk50/data/wd52pp/wavy/wkdir/GETMAT.f /disk50/data/wd52pp/wavy/wkdir/GETMAT.o /disk50/data/wd52pp/wavy/wkdir/GFIDI.f /disk50/data/wd52pp/wavy/wkdir/GFIDI.o /disk50/data/wd52pp/wavy/wkdir/GFRC.f /disk50/data/wd52pp/wavy/wkdir/GFRC.o /disk50/data/wd52pp/wavy/wkdir/GLATS.f /disk50/data/wd52pp/wavy/wkdir/GLATS.o /disk50/data/wd52pp/wavy/wkdir/GLOOP.f /disk50/data/wd52pp/wavy/wkdir/GLOOP.o /disk50/data/wd52pp/wavy/wkdir/GOZRIM.f /disk50/data/wd52pp/wavy/wkdir/GOZRIM.o /disk50/data/wd52pp/wavy/wkdir/GSSTCD.f /disk50/data/wd52pp/wavy/wkdir/GSSTCD.o /disk50/data/wd52pp/wavy/wkdir/IMINV.f /disk50/data/wd52pp/wavy/wkdir/IMINV.o /disk50/data/wd52pp/wavy/wkdir/MSU22.f /disk50/data/wd52pp/wavy/wkdir/MSU22.o /disk50/data/wd52pp/wavy/wkdir/MTDM.f /disk50/data/wd52pp/wavy/wkdir/MTDM.o /disk50/data/wd52pp/wavy/wkdir/MTM.f /disk50/data/wd52pp/wavy/wkdir/MTM.o /disk50/data/wd52pp/wavy/wkdir/MTV.f /disk50/data/wd52pp/wavy/wkdir/MTV.o /disk50/data/wd52pp/wavy/wkdir/MULAM.f /disk50/data/wd52pp/wavy/wkdir/MULAM.o /disk50/data/wd52pp/wavy/wkdir/MULMB.f /disk50/data/wd52pp/wavy/wkdir/MULMB.o /disk50/data/wd52pp/wavy/wkdir/MULMC.f /disk50/data/wd52pp/wavy/wkdir/MULMC.o /disk50/data/wd52pp/wavy/wkdir/MULMD.f /disk50/data/wd52pp/wavy/wkdir/MULMD.o /disk50/data/wd52pp/wavy/wkdir/PLN2.f /disk50/data/wd52pp/wavy/wkdir/PLN2.o /disk50/data/wd52pp/wavy/wkdir/POLY.f /disk50/data/wd52pp/wavy/wkdir/POLY.o /disk50/data/wd52pp/wavy/wkdir/PSU22.f /disk50/data/wd52pp/wavy/wkdir/PSU22.o /disk50/data/wd52pp/wavy/wkdir/RDFLD.f /disk50/data/wd52pp/wavy/wkdir/RDFLD.o /disk50/data/wd52pp/wavy/wkdir/RESET.f /disk50/data/wd52pp/wavy/wkdir/RESET.o /disk50/data/wd52pp/wavy/wkdir/SAVABG.f /disk50/data/wd52pp/wavy/wkdir/SAVABG.o /disk50/data/wd52pp/wavy/wkdir/SCLOUT.f /disk50/data/wd52pp/wavy/wkdir/SCLOUT.o /disk50/data/wd52pp/wavy/wkdir/SETFRC.f /disk50/data/wd52pp/wavy/wkdir/SETFRC.o /disk50/data/wd52pp/wavy/wkdir/SETSIG.f /disk50/data/wd52pp/wavy/wkdir/SETSIG.o /disk50/data/wd52pp/wavy/wkdir/SLNOUT.f /disk50/data/wd52pp/wavy/wkdir/SLNOUT.o /disk50/data/wd52pp/wavy/wkdir/SUMPLS.f /disk50/data/wd52pp/wavy/wkdir/SUMPLS.o /disk50/data/wd52pp/wavy/wkdir/SUMPLV.f /disk50/data/wd52pp/wavy/wkdir/SUMPLV.o /disk50/data/wd52pp/wavy/wkdir/SYMASY.f /disk50/data/wd52pp/wavy/wkdir/SYMASY.o /disk50/data/wd52pp/wavy/wkdir/TRANSP.f /disk50/data/wd52pp/wavy/wkdir/TRANSP.o /disk50/data/wd52pp/wavy/wkdir/TSTZER.f /disk50/data/wd52pp/wavy/wkdir/TSTZER.o /disk50/data/wd52pp/wavy/wkdir/VPASSM.f /disk50/data/wd52pp/wavy/wkdir/VPASSM.o /disk50/data/wd52pp/wavy/wkdir/WAVY.f /disk50/data/wd52pp/wavy/wkdir/WAVY.o /disk50/data/wd52pp/wavy/wkdir/WRFLD.f /disk50/data/wd52pp/wavy/wkdir/WRFLD.o /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.f /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.o /disk50/data/wd52pp/wavy/wkdir/a.out /disk50/data/wd52pp/wavy/wkdir/data.h /disk50/data/wd52pp/wavy/wkdir/fort.10 /disk50/data/wd52pp/wavy/wkdir/fort.18 /disk50/data/wd52pp/wavy/wkdir/fort.28 /disk50/data/wd52pp/wavy/wkdir/fort.39 /disk50/data/wd52pp/wavy/wkdir/fort.49 /disk50/data/wd52pp/wavy/wkdir/fort.50 /disk50/data/wd52pp/wavy/wkdir/fort.66 /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.f /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.o /disk50/data/wd52pp/wavy/wkdir/model_comp.scr /disk50/data/wd52pp/wavy/wkdir/ptrunk.h
++ cp /export-6/sgi9/wd52pp/utility/wavy/src_model/ACOFIL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/AMHMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BLKDAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BMCM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/COMINT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL4.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DELLNP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DIFFUS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DZTOUV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/EPSLON.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FAX.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT991.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99A.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99B.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFTRIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FILL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FL22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETANOM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETBS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETGEO.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETMAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFIDI.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLATS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLOOP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GOZRIM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GSSTCD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/IMINV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTDM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULAM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMB.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PLN2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/POLY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RDFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RESET.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SAVABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SCLOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETSIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SLNOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SYMASY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TRANSP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TSTZER.f /export-6/sgi9/wd52pp/utility/wavy/src_model/VPASSM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WAVY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WRFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/ZNLSYM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/comcom /export-6/sgi9/wd52pp/utility/wavy/src_model/comcon /export-6/sgi9/wd52pp/utility/wavy/src_model/comctl /export-6/sgi9/wd52pp/utility/wavy/src_model/commnt /export-6/sgi9/wd52pp/utility/wavy/src_model/comnum /export-6/sgi9/wd52pp/utility/wavy/src_model/comphc /export-6/sgi9/wd52pp/utility/wavy/src_model/comsig /export-6/sgi9/wd52pp/utility/wavy/src_model/comtim /export-6/sgi9/wd52pp/utility/wavy/src_model/lae_sol.s.f /export-6/sgi9/wd52pp/utility/wavy/src_model/model_comp.scr /export-6/sgi9/wd52pp/utility/wavy/src_model/namcon /export-6/sgi9/wd52pp/utility/wavy/src_model/namttl /export-6/sgi9/wd52pp/utility/wavy/src_model/old_Makefile /export-6/sgi9/wd52pp/utility/wavy/src_model/output /export-6/sgi9/wd52pp/utility/wavy/src_model/pimax /export-6/sgi9/wd52pp/utility/wavy/src_model/pjmax /export-6/sgi9/wd52pp/utility/wavy/src_model/pkmax /export-6/sgi9/wd52pp/utility/wavy/src_model/ptrunk.h /export-6/sgi9/wd52pp/utility/wavy/src_model/sigdef .
++ cat
++ 1> data.h 0< /tmp/sh2322153.1
++ cat
++ 1> ptrunk 0< /tmp/sh2322153.2
++ model_comp.scr
++ f77 ACOFIL.f DMTM.f GETABG.f GOZRIM.f MULMD.f SLNOUT.f AMHMTM.f DZTOUV.f GETANOM.f GSSTCD.f PLN2.f SUMPLS.f BLKDAT.f EPSLON.f GETBS.f IMINV.f POLY.f SUMPLV.f BMCM.f FAX.f GETFRC.f MSU22.f PSU22.f SYMASY.f COMINT.f FFT991.f GETGEO.f MTDM.f RDFLD.f TRANSP.f DEL2.f FFT99A.f GETMAT.f MTM.f RESET.f TSTZER.f DEL4.f FFT99B.f GFIDI.f MTV.f SAVABG.f VPASSM.f DELLNP.f FFTRIG.f GFRC.f MULAM.f SCLOUT.f WAVY.f DIFFUS.f FILL.f GLATS.f MULMB.f SETFRC.f WRFLD.f FL22.f GLOOP.f MULMC.f SETSIG.f ZNLSYM.f lae_sol.s.f
+ACOFIL.f:
+DMTM.f:
+GETABG.f:
+GOZRIM.f:
+MULMD.f:
+SLNOUT.f:
+AMHMTM.f:
+DZTOUV.f:
+GETANOM.f:
+GSSTCD.f:
+PLN2.f:
+SUMPLS.f:
+BLKDAT.f:
+EPSLON.f:
+GETBS.f:
+IMINV.f:
+POLY.f:
+SUMPLV.f:
+BMCM.f:
+FAX.f:
+GETFRC.f:
+MSU22.f:
+PSU22.f:
+SYMASY.f:
+COMINT.f:
+FFT991.f:
+GETGEO.f:
+MTDM.f:
+RDFLD.f:
+TRANSP.f:
+DEL2.f:
+FFT99A.f:
+GETMAT.f:
+MTM.f:
+RESET.f:
+TSTZER.f:
+DEL4.f:
+FFT99B.f:
+GFIDI.f:
+MTV.f:
+SAVABG.f:
+VPASSM.f:
+DELLNP.f:
+FFTRIG.f:
+GFRC.f:
+MULAM.f:
+SCLOUT.f:
+WAVY.f:
+DIFFUS.f:
+FILL.f:
+GLATS.f:
+MULMB.f:
+SETFRC.f:
+WRFLD.f:
+FL22.f:
+GLOOP.f:
+MULMC.f:
+SETSIG.f:
+ZNLSYM.f:
+lae_sol.s.f:
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/basic.i3e fort.18
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/forcing.i3e fort.39
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/verify.i3e fort.28
++ ln -s /disk50/data/wd52pp/wavy/reanl_7996clim_jfm.Z11.1 fort.49
++ ln -s /disk50/data/wd52pp/wavy/reanl_7996clim_jfm.Z11.2 fort.50
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/e001.result fort.66
++ unlimit
++ a.out
+  level            1
+  BASIC STATE READ IN FROM UNIT           18
+ TGLOB=   285.1670       279.8302       274.7420       268.7636    
+    261.0514       251.5907       239.9191       226.4813       213.2413    
+    213.9256    
+  level            2
+  level            3
+  level            4
+  level            5
+  level            6
+  level            7
+  level            8
+  level            9
+  level           10
+  GCM ANOMALY READ IN FROM UNIT           28
+ DONE WITH WRPROG AT     2    1    1   92        0.0
++ ja -cst
+./Runwavy.scr[47]: ja:  not found
++ datadir=/disk50/data/wd52pp/wavy
++ wkdir=/disk50/data/wd52pp/wavy/wkdir
++ tgtdir=/export-6/sgi9/wd52pp/utility/wavy/e001
++ locdir=/export-6/sgi9/wd52pp/utility/wavy
++ echo wavy linear model diagnostics
+wavy linear model diagnostics
++ TEMP=/disk50/data/wd52pp/wavy/wkdir
++ ja
+./Runwavy.scr[15]: ja:  not found
++ cd /disk50/data/wd52pp/wavy/wkdir
++ rm /disk50/data/wd52pp/wavy/wkdir/ACOFIL.f /disk50/data/wd52pp/wavy/wkdir/ACOFIL.o /disk50/data/wd52pp/wavy/wkdir/AMHMTM.f /disk50/data/wd52pp/wavy/wkdir/AMHMTM.o /disk50/data/wd52pp/wavy/wkdir/BLKDAT.f /disk50/data/wd52pp/wavy/wkdir/BLKDAT.o /disk50/data/wd52pp/wavy/wkdir/BMCM.f /disk50/data/wd52pp/wavy/wkdir/BMCM.o /disk50/data/wd52pp/wavy/wkdir/COMINT.f /disk50/data/wd52pp/wavy/wkdir/COMINT.o /disk50/data/wd52pp/wavy/wkdir/DEL2.f /disk50/data/wd52pp/wavy/wkdir/DEL2.o /disk50/data/wd52pp/wavy/wkdir/DEL4.f /disk50/data/wd52pp/wavy/wkdir/DEL4.o /disk50/data/wd52pp/wavy/wkdir/DELLNP.f /disk50/data/wd52pp/wavy/wkdir/DELLNP.o /disk50/data/wd52pp/wavy/wkdir/DIFFUS.f /disk50/data/wd52pp/wavy/wkdir/DIFFUS.o /disk50/data/wd52pp/wavy/wkdir/DMTM.f /disk50/data/wd52pp/wavy/wkdir/DMTM.o /disk50/data/wd52pp/wavy/wkdir/DZTOUV.f /disk50/data/wd52pp/wavy/wkdir/DZTOUV.o /disk50/data/wd52pp/wavy/wkdir/EPSLON.f /disk50/data/wd52pp/wavy/wkdir/EPSLON.o /disk50/data/wd52pp/wavy/wkdir/FAX.f /disk50/data/wd52pp/wavy/wkdir/FAX.o /disk50/data/wd52pp/wavy/wkdir/FFT991.f /disk50/data/wd52pp/wavy/wkdir/FFT991.o /disk50/data/wd52pp/wavy/wkdir/FFT99A.f /disk50/data/wd52pp/wavy/wkdir/FFT99A.o /disk50/data/wd52pp/wavy/wkdir/FFT99B.f /disk50/data/wd52pp/wavy/wkdir/FFT99B.o /disk50/data/wd52pp/wavy/wkdir/FFTRIG.f /disk50/data/wd52pp/wavy/wkdir/FFTRIG.o /disk50/data/wd52pp/wavy/wkdir/FILL.f /disk50/data/wd52pp/wavy/wkdir/FILL.o /disk50/data/wd52pp/wavy/wkdir/FL22.f /disk50/data/wd52pp/wavy/wkdir/FL22.o /disk50/data/wd52pp/wavy/wkdir/GETABG.f /disk50/data/wd52pp/wavy/wkdir/GETABG.o /disk50/data/wd52pp/wavy/wkdir/GETANOM.f /disk50/data/wd52pp/wavy/wkdir/GETANOM.o /disk50/data/wd52pp/wavy/wkdir/GETBS.f /disk50/data/wd52pp/wavy/wkdir/GETBS.o /disk50/data/wd52pp/wavy/wkdir/GETFRC.f /disk50/data/wd52pp/wavy/wkdir/GETFRC.o /disk50/data/wd52pp/wavy/wkdir/GETGEO.f /disk50/data/wd52pp/wavy/wkdir/GETGEO.o /disk50/data/wd52pp/wavy/wkdir/GETMAT.f /disk50/data/wd52pp/wavy/wkdir/GETMAT.o /disk50/data/wd52pp/wavy/wkdir/GFIDI.f /disk50/data/wd52pp/wavy/wkdir/GFIDI.o /disk50/data/wd52pp/wavy/wkdir/GFRC.f /disk50/data/wd52pp/wavy/wkdir/GFRC.o /disk50/data/wd52pp/wavy/wkdir/GLATS.f /disk50/data/wd52pp/wavy/wkdir/GLATS.o /disk50/data/wd52pp/wavy/wkdir/GLOOP.f /disk50/data/wd52pp/wavy/wkdir/GLOOP.o /disk50/data/wd52pp/wavy/wkdir/GOZRIM.f /disk50/data/wd52pp/wavy/wkdir/GOZRIM.o /disk50/data/wd52pp/wavy/wkdir/GSSTCD.f /disk50/data/wd52pp/wavy/wkdir/GSSTCD.o /disk50/data/wd52pp/wavy/wkdir/IMINV.f /disk50/data/wd52pp/wavy/wkdir/IMINV.o /disk50/data/wd52pp/wavy/wkdir/MSU22.f /disk50/data/wd52pp/wavy/wkdir/MSU22.o /disk50/data/wd52pp/wavy/wkdir/MTDM.f /disk50/data/wd52pp/wavy/wkdir/MTDM.o /disk50/data/wd52pp/wavy/wkdir/MTM.f /disk50/data/wd52pp/wavy/wkdir/MTM.o /disk50/data/wd52pp/wavy/wkdir/MTV.f /disk50/data/wd52pp/wavy/wkdir/MTV.o /disk50/data/wd52pp/wavy/wkdir/MULAM.f /disk50/data/wd52pp/wavy/wkdir/MULAM.o /disk50/data/wd52pp/wavy/wkdir/MULMB.f /disk50/data/wd52pp/wavy/wkdir/MULMB.o /disk50/data/wd52pp/wavy/wkdir/MULMC.f /disk50/data/wd52pp/wavy/wkdir/MULMC.o /disk50/data/wd52pp/wavy/wkdir/MULMD.f /disk50/data/wd52pp/wavy/wkdir/MULMD.o /disk50/data/wd52pp/wavy/wkdir/PLN2.f /disk50/data/wd52pp/wavy/wkdir/PLN2.o /disk50/data/wd52pp/wavy/wkdir/POLY.f /disk50/data/wd52pp/wavy/wkdir/POLY.o /disk50/data/wd52pp/wavy/wkdir/PSU22.f /disk50/data/wd52pp/wavy/wkdir/PSU22.o /disk50/data/wd52pp/wavy/wkdir/RDFLD.f /disk50/data/wd52pp/wavy/wkdir/RDFLD.o /disk50/data/wd52pp/wavy/wkdir/RESET.f /disk50/data/wd52pp/wavy/wkdir/RESET.o /disk50/data/wd52pp/wavy/wkdir/SAVABG.f /disk50/data/wd52pp/wavy/wkdir/SAVABG.o /disk50/data/wd52pp/wavy/wkdir/SCLOUT.f /disk50/data/wd52pp/wavy/wkdir/SCLOUT.o /disk50/data/wd52pp/wavy/wkdir/SETFRC.f /disk50/data/wd52pp/wavy/wkdir/SETFRC.o /disk50/data/wd52pp/wavy/wkdir/SETSIG.f /disk50/data/wd52pp/wavy/wkdir/SETSIG.o /disk50/data/wd52pp/wavy/wkdir/SLNOUT.f /disk50/data/wd52pp/wavy/wkdir/SLNOUT.o /disk50/data/wd52pp/wavy/wkdir/SUMPLS.f /disk50/data/wd52pp/wavy/wkdir/SUMPLS.o /disk50/data/wd52pp/wavy/wkdir/SUMPLV.f /disk50/data/wd52pp/wavy/wkdir/SUMPLV.o /disk50/data/wd52pp/wavy/wkdir/SYMASY.f /disk50/data/wd52pp/wavy/wkdir/SYMASY.o /disk50/data/wd52pp/wavy/wkdir/TRANSP.f /disk50/data/wd52pp/wavy/wkdir/TRANSP.o /disk50/data/wd52pp/wavy/wkdir/TSTZER.f /disk50/data/wd52pp/wavy/wkdir/TSTZER.o /disk50/data/wd52pp/wavy/wkdir/VPASSM.f /disk50/data/wd52pp/wavy/wkdir/VPASSM.o /disk50/data/wd52pp/wavy/wkdir/WAVY.f /disk50/data/wd52pp/wavy/wkdir/WAVY.o /disk50/data/wd52pp/wavy/wkdir/WRFLD.f /disk50/data/wd52pp/wavy/wkdir/WRFLD.o /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.f /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.o /disk50/data/wd52pp/wavy/wkdir/a.out /disk50/data/wd52pp/wavy/wkdir/data.h /disk50/data/wd52pp/wavy/wkdir/fort.10 /disk50/data/wd52pp/wavy/wkdir/fort.18 /disk50/data/wd52pp/wavy/wkdir/fort.28 /disk50/data/wd52pp/wavy/wkdir/fort.39 /disk50/data/wd52pp/wavy/wkdir/fort.49 /disk50/data/wd52pp/wavy/wkdir/fort.50 /disk50/data/wd52pp/wavy/wkdir/fort.66 /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.f /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.o /disk50/data/wd52pp/wavy/wkdir/model_comp.scr /disk50/data/wd52pp/wavy/wkdir/ptrunk.h
++ cp /export-6/sgi9/wd52pp/utility/wavy/src_model/ACOFIL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/AMHMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BLKDAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BMCM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/COMINT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL4.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DELLNP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DIFFUS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DZTOUV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/EPSLON.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FAX.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT991.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99A.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99B.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFTRIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FILL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FL22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETANOM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETBS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETGEO.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETMAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFIDI.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLATS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLOOP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GOZRIM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GSSTCD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/IMINV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTDM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULAM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMB.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PLN2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/POLY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RDFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RESET.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SAVABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SCLOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETSIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SLNOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SYMASY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TRANSP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TSTZER.f /export-6/sgi9/wd52pp/utility/wavy/src_model/VPASSM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WAVY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WRFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/ZNLSYM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/comcom /export-6/sgi9/wd52pp/utility/wavy/src_model/comcon /export-6/sgi9/wd52pp/utility/wavy/src_model/comctl /export-6/sgi9/wd52pp/utility/wavy/src_model/commnt /export-6/sgi9/wd52pp/utility/wavy/src_model/comnum /export-6/sgi9/wd52pp/utility/wavy/src_model/comphc /export-6/sgi9/wd52pp/utility/wavy/src_model/comsig /export-6/sgi9/wd52pp/utility/wavy/src_model/comtim /export-6/sgi9/wd52pp/utility/wavy/src_model/lae_sol.s.f /export-6/sgi9/wd52pp/utility/wavy/src_model/model_comp.scr /export-6/sgi9/wd52pp/utility/wavy/src_model/namcon /export-6/sgi9/wd52pp/utility/wavy/src_model/namttl /export-6/sgi9/wd52pp/utility/wavy/src_model/old_Makefile /export-6/sgi9/wd52pp/utility/wavy/src_model/output /export-6/sgi9/wd52pp/utility/wavy/src_model/pimax /export-6/sgi9/wd52pp/utility/wavy/src_model/pjmax /export-6/sgi9/wd52pp/utility/wavy/src_model/pkmax /export-6/sgi9/wd52pp/utility/wavy/src_model/ptrunk.h /export-6/sgi9/wd52pp/utility/wavy/src_model/sigdef .
++ cat
++ 1> data.h 0< /tmp/sh5401233.1
++ cat
++ 1> ptrunk 0< /tmp/sh5401233.2
++ model_comp.scr
++ f77 ACOFIL.f DMTM.f GETABG.f GOZRIM.f MULMD.f SLNOUT.f AMHMTM.f DZTOUV.f GETANOM.f GSSTCD.f PLN2.f SUMPLS.f BLKDAT.f EPSLON.f GETBS.f IMINV.f POLY.f SUMPLV.f BMCM.f FAX.f GETFRC.f MSU22.f PSU22.f SYMASY.f COMINT.f FFT991.f GETGEO.f MTDM.f RDFLD.f TRANSP.f DEL2.f FFT99A.f GETMAT.f MTM.f RESET.f TSTZER.f DEL4.f FFT99B.f GFIDI.f MTV.f SAVABG.f VPASSM.f DELLNP.f FFTRIG.f GFRC.f MULAM.f SCLOUT.f WAVY.f DIFFUS.f FILL.f GLATS.f MULMB.f SETFRC.f WRFLD.f FL22.f GLOOP.f MULMC.f SETSIG.f ZNLSYM.f lae_sol.s.f
+ACOFIL.f:
+DMTM.f:
+GETABG.f:
+GOZRIM.f:
+MULMD.f:
+SLNOUT.f:
+AMHMTM.f:
+DZTOUV.f:
+GETANOM.f:
+GSSTCD.f:
+PLN2.f:
+SUMPLS.f:
+BLKDAT.f:
+EPSLON.f:
+GETBS.f:
+IMINV.f:
+POLY.f:
+SUMPLV.f:
+BMCM.f:
+FAX.f:
+GETFRC.f:
+MSU22.f:
+PSU22.f:
+SYMASY.f:
+COMINT.f:
+FFT991.f:
+GETGEO.f:
+MTDM.f:
+RDFLD.f:
+TRANSP.f:
+DEL2.f:
+FFT99A.f:
+GETMAT.f:
+MTM.f:
+RESET.f:
+TSTZER.f:
+DEL4.f:
+FFT99B.f:
+GFIDI.f:
+MTV.f:
+SAVABG.f:
+VPASSM.f:
+DELLNP.f:
+FFTRIG.f:
+GFRC.f:
+MULAM.f:
+SCLOUT.f:
+WAVY.f:
+DIFFUS.f:
+FILL.f:
+GLATS.f:
+MULMB.f:
+SETFRC.f:
+WRFLD.f:
+FL22.f:
+GLOOP.f:
+MULMC.f:
+SETSIG.f:
+ZNLSYM.f:
+lae_sol.s.f:
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/basic.i3e fort.18
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/forcing.i3e fort.39
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/verify.i3e fort.28
++ ln -s /disk50/data/wd52pp/wavy/reanl_7998clim_jfm.Z7.1 fort.49
++ ln -s /disk50/data/wd52pp/wavy/reanl_7998clim_jfm.Z7.2 fort.50
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/e001.result fort.66
++ unlimit
++ a.out
+  level            1
+  BASIC STATE READ IN FROM UNIT           18
+ TGLOB=   285.1670       279.8302       274.7420       268.7636    
+    261.0514       251.5907       239.9191       226.4813       213.2413    
+    213.9256    
+  level            2
+  level            3
+  level            4
+  level            5
+  level            6
+  level            7
+  level            8
+  level            9
+  level           10
+  GCM ANOMALY READ IN FROM UNIT           28
+ DONE WITH WRPROG AT     2    1    1   92        0.0
++ ja -cst
+./Runwavy.scr[49]: ja:  not found
++ datadir=/disk50/data/wd52pp/wavy
++ wkdir=/disk50/data/wd52pp/wavy/wkdir
++ tgtdir=/export-6/sgi9/wd52pp/utility/wavy/e001
++ locdir=/export-6/sgi9/wd52pp/utility/wavy
++ echo wavy linear model diagnostics
+wavy linear model diagnostics
++ TEMP=/disk50/data/wd52pp/wavy/wkdir
++ ja
+./Runwavy.scr[15]: ja:  not found
++ cd /disk50/data/wd52pp/wavy/wkdir
++ rm /disk50/data/wd52pp/wavy/wkdir/ACOFIL.f /disk50/data/wd52pp/wavy/wkdir/ACOFIL.o /disk50/data/wd52pp/wavy/wkdir/AMHMTM.f /disk50/data/wd52pp/wavy/wkdir/AMHMTM.o /disk50/data/wd52pp/wavy/wkdir/BLKDAT.f /disk50/data/wd52pp/wavy/wkdir/BLKDAT.o /disk50/data/wd52pp/wavy/wkdir/BMCM.f /disk50/data/wd52pp/wavy/wkdir/BMCM.o /disk50/data/wd52pp/wavy/wkdir/COMINT.f /disk50/data/wd52pp/wavy/wkdir/COMINT.o /disk50/data/wd52pp/wavy/wkdir/DEL2.f /disk50/data/wd52pp/wavy/wkdir/DEL2.o /disk50/data/wd52pp/wavy/wkdir/DEL4.f /disk50/data/wd52pp/wavy/wkdir/DEL4.o /disk50/data/wd52pp/wavy/wkdir/DELLNP.f /disk50/data/wd52pp/wavy/wkdir/DELLNP.o /disk50/data/wd52pp/wavy/wkdir/DIFFUS.f /disk50/data/wd52pp/wavy/wkdir/DIFFUS.o /disk50/data/wd52pp/wavy/wkdir/DMTM.f /disk50/data/wd52pp/wavy/wkdir/DMTM.o /disk50/data/wd52pp/wavy/wkdir/DZTOUV.f /disk50/data/wd52pp/wavy/wkdir/DZTOUV.o /disk50/data/wd52pp/wavy/wkdir/EPSLON.f /disk50/data/wd52pp/wavy/wkdir/EPSLON.o /disk50/data/wd52pp/wavy/wkdir/FAX.f /disk50/data/wd52pp/wavy/wkdir/FAX.o /disk50/data/wd52pp/wavy/wkdir/FFT991.f /disk50/data/wd52pp/wavy/wkdir/FFT991.o /disk50/data/wd52pp/wavy/wkdir/FFT99A.f /disk50/data/wd52pp/wavy/wkdir/FFT99A.o /disk50/data/wd52pp/wavy/wkdir/FFT99B.f /disk50/data/wd52pp/wavy/wkdir/FFT99B.o /disk50/data/wd52pp/wavy/wkdir/FFTRIG.f /disk50/data/wd52pp/wavy/wkdir/FFTRIG.o /disk50/data/wd52pp/wavy/wkdir/FILL.f /disk50/data/wd52pp/wavy/wkdir/FILL.o /disk50/data/wd52pp/wavy/wkdir/FL22.f /disk50/data/wd52pp/wavy/wkdir/FL22.o /disk50/data/wd52pp/wavy/wkdir/GETABG.f /disk50/data/wd52pp/wavy/wkdir/GETABG.o /disk50/data/wd52pp/wavy/wkdir/GETANOM.f /disk50/data/wd52pp/wavy/wkdir/GETANOM.o /disk50/data/wd52pp/wavy/wkdir/GETBS.f /disk50/data/wd52pp/wavy/wkdir/GETBS.o /disk50/data/wd52pp/wavy/wkdir/GETFRC.f /disk50/data/wd52pp/wavy/wkdir/GETFRC.o /disk50/data/wd52pp/wavy/wkdir/GETGEO.f /disk50/data/wd52pp/wavy/wkdir/GETGEO.o /disk50/data/wd52pp/wavy/wkdir/GETMAT.f /disk50/data/wd52pp/wavy/wkdir/GETMAT.o /disk50/data/wd52pp/wavy/wkdir/GFIDI.f /disk50/data/wd52pp/wavy/wkdir/GFIDI.o /disk50/data/wd52pp/wavy/wkdir/GFRC.f /disk50/data/wd52pp/wavy/wkdir/GFRC.o /disk50/data/wd52pp/wavy/wkdir/GLATS.f /disk50/data/wd52pp/wavy/wkdir/GLATS.o /disk50/data/wd52pp/wavy/wkdir/GLOOP.f /disk50/data/wd52pp/wavy/wkdir/GLOOP.o /disk50/data/wd52pp/wavy/wkdir/GOZRIM.f /disk50/data/wd52pp/wavy/wkdir/GOZRIM.o /disk50/data/wd52pp/wavy/wkdir/GSSTCD.f /disk50/data/wd52pp/wavy/wkdir/GSSTCD.o /disk50/data/wd52pp/wavy/wkdir/IMINV.f /disk50/data/wd52pp/wavy/wkdir/IMINV.o /disk50/data/wd52pp/wavy/wkdir/MSU22.f /disk50/data/wd52pp/wavy/wkdir/MSU22.o /disk50/data/wd52pp/wavy/wkdir/MTDM.f /disk50/data/wd52pp/wavy/wkdir/MTDM.o /disk50/data/wd52pp/wavy/wkdir/MTM.f /disk50/data/wd52pp/wavy/wkdir/MTM.o /disk50/data/wd52pp/wavy/wkdir/MTV.f /disk50/data/wd52pp/wavy/wkdir/MTV.o /disk50/data/wd52pp/wavy/wkdir/MULAM.f /disk50/data/wd52pp/wavy/wkdir/MULAM.o /disk50/data/wd52pp/wavy/wkdir/MULMB.f /disk50/data/wd52pp/wavy/wkdir/MULMB.o /disk50/data/wd52pp/wavy/wkdir/MULMC.f /disk50/data/wd52pp/wavy/wkdir/MULMC.o /disk50/data/wd52pp/wavy/wkdir/MULMD.f /disk50/data/wd52pp/wavy/wkdir/MULMD.o /disk50/data/wd52pp/wavy/wkdir/PLN2.f /disk50/data/wd52pp/wavy/wkdir/PLN2.o /disk50/data/wd52pp/wavy/wkdir/POLY.f /disk50/data/wd52pp/wavy/wkdir/POLY.o /disk50/data/wd52pp/wavy/wkdir/PSU22.f /disk50/data/wd52pp/wavy/wkdir/PSU22.o /disk50/data/wd52pp/wavy/wkdir/RDFLD.f /disk50/data/wd52pp/wavy/wkdir/RDFLD.o /disk50/data/wd52pp/wavy/wkdir/RESET.f /disk50/data/wd52pp/wavy/wkdir/RESET.o /disk50/data/wd52pp/wavy/wkdir/SAVABG.f /disk50/data/wd52pp/wavy/wkdir/SAVABG.o /disk50/data/wd52pp/wavy/wkdir/SCLOUT.f /disk50/data/wd52pp/wavy/wkdir/SCLOUT.o /disk50/data/wd52pp/wavy/wkdir/SETFRC.f /disk50/data/wd52pp/wavy/wkdir/SETFRC.o /disk50/data/wd52pp/wavy/wkdir/SETSIG.f /disk50/data/wd52pp/wavy/wkdir/SETSIG.o /disk50/data/wd52pp/wavy/wkdir/SLNOUT.f /disk50/data/wd52pp/wavy/wkdir/SLNOUT.o /disk50/data/wd52pp/wavy/wkdir/SUMPLS.f /disk50/data/wd52pp/wavy/wkdir/SUMPLS.o /disk50/data/wd52pp/wavy/wkdir/SUMPLV.f /disk50/data/wd52pp/wavy/wkdir/SUMPLV.o /disk50/data/wd52pp/wavy/wkdir/SYMASY.f /disk50/data/wd52pp/wavy/wkdir/SYMASY.o /disk50/data/wd52pp/wavy/wkdir/TRANSP.f /disk50/data/wd52pp/wavy/wkdir/TRANSP.o /disk50/data/wd52pp/wavy/wkdir/TSTZER.f /disk50/data/wd52pp/wavy/wkdir/TSTZER.o /disk50/data/wd52pp/wavy/wkdir/VPASSM.f /disk50/data/wd52pp/wavy/wkdir/VPASSM.o /disk50/data/wd52pp/wavy/wkdir/WAVY.f /disk50/data/wd52pp/wavy/wkdir/WAVY.o /disk50/data/wd52pp/wavy/wkdir/WRFLD.f /disk50/data/wd52pp/wavy/wkdir/WRFLD.o /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.f /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.o /disk50/data/wd52pp/wavy/wkdir/a.out /disk50/data/wd52pp/wavy/wkdir/data.h /disk50/data/wd52pp/wavy/wkdir/fort.10 /disk50/data/wd52pp/wavy/wkdir/fort.18 /disk50/data/wd52pp/wavy/wkdir/fort.28 /disk50/data/wd52pp/wavy/wkdir/fort.39 /disk50/data/wd52pp/wavy/wkdir/fort.49 /disk50/data/wd52pp/wavy/wkdir/fort.50 /disk50/data/wd52pp/wavy/wkdir/fort.66 /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.f /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.o /disk50/data/wd52pp/wavy/wkdir/model_comp.scr /disk50/data/wd52pp/wavy/wkdir/ptrunk.h
++ cp /export-6/sgi9/wd52pp/utility/wavy/src_model/ACOFIL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/AMHMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BLKDAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BMCM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/COMINT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL4.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DELLNP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DIFFUS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DZTOUV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/EPSLON.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FAX.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT991.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99A.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99B.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFTRIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FILL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FL22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETANOM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETBS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETGEO.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETMAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFIDI.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLATS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLOOP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GOZRIM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GSSTCD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/IMINV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTDM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULAM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMB.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PLN2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/POLY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RDFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RESET.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SAVABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SCLOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETSIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SLNOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SYMASY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TRANSP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TSTZER.f /export-6/sgi9/wd52pp/utility/wavy/src_model/VPASSM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WAVY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WRFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/ZNLSYM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/comcom /export-6/sgi9/wd52pp/utility/wavy/src_model/comcon /export-6/sgi9/wd52pp/utility/wavy/src_model/comctl /export-6/sgi9/wd52pp/utility/wavy/src_model/commnt /export-6/sgi9/wd52pp/utility/wavy/src_model/comnum /export-6/sgi9/wd52pp/utility/wavy/src_model/comphc /export-6/sgi9/wd52pp/utility/wavy/src_model/comsig /export-6/sgi9/wd52pp/utility/wavy/src_model/comtim /export-6/sgi9/wd52pp/utility/wavy/src_model/lae_sol.s.f /export-6/sgi9/wd52pp/utility/wavy/src_model/model_comp.scr /export-6/sgi9/wd52pp/utility/wavy/src_model/namcon /export-6/sgi9/wd52pp/utility/wavy/src_model/namttl /export-6/sgi9/wd52pp/utility/wavy/src_model/old_Makefile /export-6/sgi9/wd52pp/utility/wavy/src_model/output /export-6/sgi9/wd52pp/utility/wavy/src_model/pimax /export-6/sgi9/wd52pp/utility/wavy/src_model/pjmax /export-6/sgi9/wd52pp/utility/wavy/src_model/pkmax /export-6/sgi9/wd52pp/utility/wavy/src_model/ptrunk.h /export-6/sgi9/wd52pp/utility/wavy/src_model/sigdef .
++ cat
++ 1> data.h 0< /tmp/sh5700464.1
++ cat
++ 1> ptrunk 0< /tmp/sh5700464.2
++ model_comp.scr
++ f77 ACOFIL.f DMTM.f GETABG.f GOZRIM.f MULMD.f SLNOUT.f AMHMTM.f DZTOUV.f GETANOM.f GSSTCD.f PLN2.f SUMPLS.f BLKDAT.f EPSLON.f GETBS.f IMINV.f POLY.f SUMPLV.f BMCM.f FAX.f GETFRC.f MSU22.f PSU22.f SYMASY.f COMINT.f FFT991.f GETGEO.f MTDM.f RDFLD.f TRANSP.f DEL2.f FFT99A.f GETMAT.f MTM.f RESET.f TSTZER.f DEL4.f FFT99B.f GFIDI.f MTV.f SAVABG.f VPASSM.f DELLNP.f FFTRIG.f GFRC.f MULAM.f SCLOUT.f WAVY.f DIFFUS.f FILL.f GLATS.f MULMB.f SETFRC.f WRFLD.f FL22.f GLOOP.f MULMC.f SETSIG.f ZNLSYM.f lae_sol.s.f
+ACOFIL.f:
+DMTM.f:
+GETABG.f:
+GOZRIM.f:
+MULMD.f:
+SLNOUT.f:
+AMHMTM.f:
+DZTOUV.f:
+GETANOM.f:
+GSSTCD.f:
+PLN2.f:
+SUMPLS.f:
+BLKDAT.f:
+EPSLON.f:
+GETBS.f:
+IMINV.f:
+POLY.f:
+SUMPLV.f:
+BMCM.f:
+FAX.f:
+GETFRC.f:
+MSU22.f:
+PSU22.f:
+SYMASY.f:
+COMINT.f:
+FFT991.f:
+GETGEO.f:
+MTDM.f:
+RDFLD.f:
+TRANSP.f:
+DEL2.f:
+FFT99A.f:
+GETMAT.f:
+MTM.f:
+RESET.f:
+TSTZER.f:
+DEL4.f:
+FFT99B.f:
+GFIDI.f:
+MTV.f:
+SAVABG.f:
+VPASSM.f:
+DELLNP.f:
+FFTRIG.f:
+GFRC.f:
+MULAM.f:
+SCLOUT.f:
+WAVY.f:
+DIFFUS.f:
+FILL.f:
+GLATS.f:
+MULMB.f:
+SETFRC.f:
+WRFLD.f:
+FL22.f:
+GLOOP.f:
+MULMC.f:
+SETSIG.f:
+ZNLSYM.f:
+lae_sol.s.f:
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/basic.i3e fort.18
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/forcing.i3e fort.39
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/verify.i3e fort.28
++ ln -s /disk50/data/wd52pp/wavy/reanl_7998clim_jfm.Z7.1 fort.49
++ ln -s /disk50/data/wd52pp/wavy/reanl_7998clim_jfm.Z7.2 fort.50
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/e001.result fort.66
++ unlimit
++ a.out
+  level            1
+  BASIC STATE READ IN FROM UNIT           18
+ TGLOB=   285.1670       279.8302       274.7420       268.7636    
+    261.0514       251.5907       239.9191       226.4813       213.2413    
+    213.9256    
+  level            2
+  level            3
+  level            4
+  level            5
+  level            6
+  level            7
+  level            8
+  level            9
+  level           10
+  GCM ANOMALY READ IN FROM UNIT           28
+ DONE WITH WRPROG AT     2    1    1   92        0.0
++ ja -cst
+./Runwavy.scr[49]: ja:  not found
++ datadir=/disk50/data/wd52pp/wavy
++ wkdir=/disk50/data/wd52pp/wavy/wkdir
++ tgtdir=/export-6/sgi9/wd52pp/utility/wavy/e001
++ locdir=/export-6/sgi9/wd52pp/utility/wavy
++ echo wavy linear model diagnostics
+wavy linear model diagnostics
++ TEMP=/disk50/data/wd52pp/wavy/wkdir
++ ja
+./Runwavy.scr[15]: ja:  not found
++ cd /disk50/data/wd52pp/wavy/wkdir
++ rm /disk50/data/wd52pp/wavy/wkdir/ACOFIL.f /disk50/data/wd52pp/wavy/wkdir/ACOFIL.o /disk50/data/wd52pp/wavy/wkdir/AMHMTM.f /disk50/data/wd52pp/wavy/wkdir/AMHMTM.o /disk50/data/wd52pp/wavy/wkdir/BLKDAT.f /disk50/data/wd52pp/wavy/wkdir/BLKDAT.o /disk50/data/wd52pp/wavy/wkdir/BMCM.f /disk50/data/wd52pp/wavy/wkdir/BMCM.o /disk50/data/wd52pp/wavy/wkdir/COMINT.f /disk50/data/wd52pp/wavy/wkdir/COMINT.o /disk50/data/wd52pp/wavy/wkdir/DEL2.f /disk50/data/wd52pp/wavy/wkdir/DEL2.o /disk50/data/wd52pp/wavy/wkdir/DEL4.f /disk50/data/wd52pp/wavy/wkdir/DEL4.o /disk50/data/wd52pp/wavy/wkdir/DELLNP.f /disk50/data/wd52pp/wavy/wkdir/DELLNP.o /disk50/data/wd52pp/wavy/wkdir/DIFFUS.f /disk50/data/wd52pp/wavy/wkdir/DIFFUS.o /disk50/data/wd52pp/wavy/wkdir/DMTM.f /disk50/data/wd52pp/wavy/wkdir/DMTM.o /disk50/data/wd52pp/wavy/wkdir/DZTOUV.f /disk50/data/wd52pp/wavy/wkdir/DZTOUV.o /disk50/data/wd52pp/wavy/wkdir/EPSLON.f /disk50/data/wd52pp/wavy/wkdir/EPSLON.o /disk50/data/wd52pp/wavy/wkdir/FAX.f /disk50/data/wd52pp/wavy/wkdir/FAX.o /disk50/data/wd52pp/wavy/wkdir/FFT991.f /disk50/data/wd52pp/wavy/wkdir/FFT991.o /disk50/data/wd52pp/wavy/wkdir/FFT99A.f /disk50/data/wd52pp/wavy/wkdir/FFT99A.o /disk50/data/wd52pp/wavy/wkdir/FFT99B.f /disk50/data/wd52pp/wavy/wkdir/FFT99B.o /disk50/data/wd52pp/wavy/wkdir/FFTRIG.f /disk50/data/wd52pp/wavy/wkdir/FFTRIG.o /disk50/data/wd52pp/wavy/wkdir/FILL.f /disk50/data/wd52pp/wavy/wkdir/FILL.o /disk50/data/wd52pp/wavy/wkdir/FL22.f /disk50/data/wd52pp/wavy/wkdir/FL22.o /disk50/data/wd52pp/wavy/wkdir/GETABG.f /disk50/data/wd52pp/wavy/wkdir/GETABG.o /disk50/data/wd52pp/wavy/wkdir/GETANOM.f /disk50/data/wd52pp/wavy/wkdir/GETANOM.o /disk50/data/wd52pp/wavy/wkdir/GETBS.f /disk50/data/wd52pp/wavy/wkdir/GETBS.o /disk50/data/wd52pp/wavy/wkdir/GETFRC.f /disk50/data/wd52pp/wavy/wkdir/GETFRC.o /disk50/data/wd52pp/wavy/wkdir/GETGEO.f /disk50/data/wd52pp/wavy/wkdir/GETGEO.o /disk50/data/wd52pp/wavy/wkdir/GETMAT.f /disk50/data/wd52pp/wavy/wkdir/GETMAT.o /disk50/data/wd52pp/wavy/wkdir/GFIDI.f /disk50/data/wd52pp/wavy/wkdir/GFIDI.o /disk50/data/wd52pp/wavy/wkdir/GFRC.f /disk50/data/wd52pp/wavy/wkdir/GFRC.o /disk50/data/wd52pp/wavy/wkdir/GLATS.f /disk50/data/wd52pp/wavy/wkdir/GLATS.o /disk50/data/wd52pp/wavy/wkdir/GLOOP.f /disk50/data/wd52pp/wavy/wkdir/GLOOP.o /disk50/data/wd52pp/wavy/wkdir/GOZRIM.f /disk50/data/wd52pp/wavy/wkdir/GOZRIM.o /disk50/data/wd52pp/wavy/wkdir/GSSTCD.f /disk50/data/wd52pp/wavy/wkdir/GSSTCD.o /disk50/data/wd52pp/wavy/wkdir/IMINV.f /disk50/data/wd52pp/wavy/wkdir/IMINV.o /disk50/data/wd52pp/wavy/wkdir/MSU22.f /disk50/data/wd52pp/wavy/wkdir/MSU22.o /disk50/data/wd52pp/wavy/wkdir/MTDM.f /disk50/data/wd52pp/wavy/wkdir/MTDM.o /disk50/data/wd52pp/wavy/wkdir/MTM.f /disk50/data/wd52pp/wavy/wkdir/MTM.o /disk50/data/wd52pp/wavy/wkdir/MTV.f /disk50/data/wd52pp/wavy/wkdir/MTV.o /disk50/data/wd52pp/wavy/wkdir/MULAM.f /disk50/data/wd52pp/wavy/wkdir/MULAM.o /disk50/data/wd52pp/wavy/wkdir/MULMB.f /disk50/data/wd52pp/wavy/wkdir/MULMB.o /disk50/data/wd52pp/wavy/wkdir/MULMC.f /disk50/data/wd52pp/wavy/wkdir/MULMC.o /disk50/data/wd52pp/wavy/wkdir/MULMD.f /disk50/data/wd52pp/wavy/wkdir/MULMD.o /disk50/data/wd52pp/wavy/wkdir/PLN2.f /disk50/data/wd52pp/wavy/wkdir/PLN2.o /disk50/data/wd52pp/wavy/wkdir/POLY.f /disk50/data/wd52pp/wavy/wkdir/POLY.o /disk50/data/wd52pp/wavy/wkdir/PSU22.f /disk50/data/wd52pp/wavy/wkdir/PSU22.o /disk50/data/wd52pp/wavy/wkdir/RDFLD.f /disk50/data/wd52pp/wavy/wkdir/RDFLD.o /disk50/data/wd52pp/wavy/wkdir/RESET.f /disk50/data/wd52pp/wavy/wkdir/RESET.o /disk50/data/wd52pp/wavy/wkdir/SAVABG.f /disk50/data/wd52pp/wavy/wkdir/SAVABG.o /disk50/data/wd52pp/wavy/wkdir/SCLOUT.f /disk50/data/wd52pp/wavy/wkdir/SCLOUT.o /disk50/data/wd52pp/wavy/wkdir/SETFRC.f /disk50/data/wd52pp/wavy/wkdir/SETFRC.o /disk50/data/wd52pp/wavy/wkdir/SETSIG.f /disk50/data/wd52pp/wavy/wkdir/SETSIG.o /disk50/data/wd52pp/wavy/wkdir/SLNOUT.f /disk50/data/wd52pp/wavy/wkdir/SLNOUT.o /disk50/data/wd52pp/wavy/wkdir/SUMPLS.f /disk50/data/wd52pp/wavy/wkdir/SUMPLS.o /disk50/data/wd52pp/wavy/wkdir/SUMPLV.f /disk50/data/wd52pp/wavy/wkdir/SUMPLV.o /disk50/data/wd52pp/wavy/wkdir/SYMASY.f /disk50/data/wd52pp/wavy/wkdir/SYMASY.o /disk50/data/wd52pp/wavy/wkdir/TRANSP.f /disk50/data/wd52pp/wavy/wkdir/TRANSP.o /disk50/data/wd52pp/wavy/wkdir/TSTZER.f /disk50/data/wd52pp/wavy/wkdir/TSTZER.o /disk50/data/wd52pp/wavy/wkdir/VPASSM.f /disk50/data/wd52pp/wavy/wkdir/VPASSM.o /disk50/data/wd52pp/wavy/wkdir/WAVY.f /disk50/data/wd52pp/wavy/wkdir/WAVY.o /disk50/data/wd52pp/wavy/wkdir/WRFLD.f /disk50/data/wd52pp/wavy/wkdir/WRFLD.o /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.f /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.o /disk50/data/wd52pp/wavy/wkdir/a.out /disk50/data/wd52pp/wavy/wkdir/data.h /disk50/data/wd52pp/wavy/wkdir/fort.18 /disk50/data/wd52pp/wavy/wkdir/fort.28 /disk50/data/wd52pp/wavy/wkdir/fort.39 /disk50/data/wd52pp/wavy/wkdir/fort.49 /disk50/data/wd52pp/wavy/wkdir/fort.50 /disk50/data/wd52pp/wavy/wkdir/fort.66 /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.f /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.o /disk50/data/wd52pp/wavy/wkdir/model_comp.scr /disk50/data/wd52pp/wavy/wkdir/ptrunk.h
++ cp /export-6/sgi9/wd52pp/utility/wavy/src_model/ACOFIL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/AMHMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BLKDAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BMCM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/COMINT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL4.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DELLNP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DIFFUS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DZTOUV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/EPSLON.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FAX.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT991.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99A.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99B.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFTRIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FILL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FL22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETANOM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETBS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETGEO.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETMAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFIDI.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLATS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLOOP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GOZRIM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GSSTCD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/IMINV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTDM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULAM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMB.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PLN2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/POLY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RDFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RESET.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SAVABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SCLOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETSIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SLNOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SYMASY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TRANSP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TSTZER.f /export-6/sgi9/wd52pp/utility/wavy/src_model/VPASSM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WAVY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WRFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/ZNLSYM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/comcom /export-6/sgi9/wd52pp/utility/wavy/src_model/comcon /export-6/sgi9/wd52pp/utility/wavy/src_model/comctl /export-6/sgi9/wd52pp/utility/wavy/src_model/commnt /export-6/sgi9/wd52pp/utility/wavy/src_model/comnum /export-6/sgi9/wd52pp/utility/wavy/src_model/comphc /export-6/sgi9/wd52pp/utility/wavy/src_model/comsig /export-6/sgi9/wd52pp/utility/wavy/src_model/comtim /export-6/sgi9/wd52pp/utility/wavy/src_model/lae_sol.s.f /export-6/sgi9/wd52pp/utility/wavy/src_model/model_comp.scr /export-6/sgi9/wd52pp/utility/wavy/src_model/namcon /export-6/sgi9/wd52pp/utility/wavy/src_model/namttl /export-6/sgi9/wd52pp/utility/wavy/src_model/old_Makefile /export-6/sgi9/wd52pp/utility/wavy/src_model/output /export-6/sgi9/wd52pp/utility/wavy/src_model/pimax /export-6/sgi9/wd52pp/utility/wavy/src_model/pjmax /export-6/sgi9/wd52pp/utility/wavy/src_model/pkmax /export-6/sgi9/wd52pp/utility/wavy/src_model/ptrunk.h /export-6/sgi9/wd52pp/utility/wavy/src_model/sigdef .
++ cat
++ 1> data.h 0< /tmp/sh5876209.1
++ cat
++ 1> ptrunk 0< /tmp/sh5876209.2
++ model_comp.scr
++ f77 ACOFIL.f DMTM.f GETABG.f GOZRIM.f MULMD.f SLNOUT.f AMHMTM.f DZTOUV.f GETANOM.f GSSTCD.f PLN2.f SUMPLS.f BLKDAT.f EPSLON.f GETBS.f IMINV.f POLY.f SUMPLV.f BMCM.f FAX.f GETFRC.f MSU22.f PSU22.f SYMASY.f COMINT.f FFT991.f GETGEO.f MTDM.f RDFLD.f TRANSP.f DEL2.f FFT99A.f GETMAT.f MTM.f RESET.f TSTZER.f DEL4.f FFT99B.f GFIDI.f MTV.f SAVABG.f VPASSM.f DELLNP.f FFTRIG.f GFRC.f MULAM.f SCLOUT.f WAVY.f DIFFUS.f FILL.f GLATS.f MULMB.f SETFRC.f WRFLD.f FL22.f GLOOP.f MULMC.f SETSIG.f ZNLSYM.f lae_sol.s.f
+ACOFIL.f:
+DMTM.f:
+GETABG.f:
+GOZRIM.f:
+MULMD.f:
+SLNOUT.f:
+AMHMTM.f:
+DZTOUV.f:
+GETANOM.f:
+GSSTCD.f:
+PLN2.f:
+SUMPLS.f:
+BLKDAT.f:
+EPSLON.f:
+GETBS.f:
+IMINV.f:
+POLY.f:
+SUMPLV.f:
+BMCM.f:
+FAX.f:
+GETFRC.f:
+MSU22.f:
+PSU22.f:
+SYMASY.f:
+COMINT.f:
+FFT991.f:
+GETGEO.f:
+MTDM.f:
+RDFLD.f:
+TRANSP.f:
+DEL2.f:
+FFT99A.f:
+GETMAT.f:
+MTM.f:
+RESET.f:
+TSTZER.f:
+DEL4.f:
+FFT99B.f:
+GFIDI.f:
+MTV.f:
+SAVABG.f:
+VPASSM.f:
+DELLNP.f:
+FFTRIG.f:
+GFRC.f:
+MULAM.f:
+SCLOUT.f:
+WAVY.f:
+DIFFUS.f:
+FILL.f:
+GLATS.f:
+MULMB.f:
+SETFRC.f:
+WRFLD.f:
+FL22.f:
+GLOOP.f:
+MULMC.f:
+SETSIG.f:
+ZNLSYM.f:
+lae_sol.s.f:
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/basic.i3e fort.18
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/forcing.i3e fort.39
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/verify.i3e fort.28
++ ln -s /disk50/data/wd52pp/wavy/reanl_7998clim_jfm.Z7.1 fort.49
++ ln -s /disk50/data/wd52pp/wavy/reanl_7998clim_jfm.Z7.2 fort.50
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/e001.result fort.66
++ unlimit
++ a.out
+  level            1
+  BASIC STATE READ IN FROM UNIT           18
+ TGLOB=   285.1670       279.8302       274.7420       268.7636    
+    261.0514       251.5907       239.9191       226.4813       213.2413    
+    213.9256    
+  level            2
+  level            3
+  level            4
+  level            5
+  level            6
+  level            7
+  level            8
+  level            9
+  level           10
+  GCM ANOMALY READ IN FROM UNIT           28
+ DONE WITH WRPROG AT     2    1    1   92        0.0
++ ja -cst
+./Runwavy.scr[49]: ja:  not found
++ datadir=/disk50/data/wd52pp/wavy
++ wkdir=/disk50/data/wd52pp/wavy/wkdir
++ tgtdir=/export-6/sgi9/wd52pp/utility/wavy/e001
++ locdir=/export-6/sgi9/wd52pp/utility/wavy
++ echo wavy linear model diagnostics
+wavy linear model diagnostics
++ TEMP=/disk50/data/wd52pp/wavy/wkdir
++ ja
+./Runwavy.scr[15]: ja:  not found
++ cd /disk50/data/wd52pp/wavy/wkdir
++ rm /disk50/data/wd52pp/wavy/wkdir/ACOFIL.f /disk50/data/wd52pp/wavy/wkdir/ACOFIL.o /disk50/data/wd52pp/wavy/wkdir/AMHMTM.f /disk50/data/wd52pp/wavy/wkdir/AMHMTM.o /disk50/data/wd52pp/wavy/wkdir/BLKDAT.f /disk50/data/wd52pp/wavy/wkdir/BLKDAT.o /disk50/data/wd52pp/wavy/wkdir/BMCM.f /disk50/data/wd52pp/wavy/wkdir/BMCM.o /disk50/data/wd52pp/wavy/wkdir/COMINT.f /disk50/data/wd52pp/wavy/wkdir/COMINT.o /disk50/data/wd52pp/wavy/wkdir/DEL2.f /disk50/data/wd52pp/wavy/wkdir/DEL2.o /disk50/data/wd52pp/wavy/wkdir/DEL4.f /disk50/data/wd52pp/wavy/wkdir/DEL4.o /disk50/data/wd52pp/wavy/wkdir/DELLNP.f /disk50/data/wd52pp/wavy/wkdir/DELLNP.o /disk50/data/wd52pp/wavy/wkdir/DIFFUS.f /disk50/data/wd52pp/wavy/wkdir/DIFFUS.o /disk50/data/wd52pp/wavy/wkdir/DMTM.f /disk50/data/wd52pp/wavy/wkdir/DMTM.o /disk50/data/wd52pp/wavy/wkdir/DZTOUV.f /disk50/data/wd52pp/wavy/wkdir/DZTOUV.o /disk50/data/wd52pp/wavy/wkdir/EPSLON.f /disk50/data/wd52pp/wavy/wkdir/EPSLON.o /disk50/data/wd52pp/wavy/wkdir/FAX.f /disk50/data/wd52pp/wavy/wkdir/FAX.o /disk50/data/wd52pp/wavy/wkdir/FFT991.f /disk50/data/wd52pp/wavy/wkdir/FFT991.o /disk50/data/wd52pp/wavy/wkdir/FFT99A.f /disk50/data/wd52pp/wavy/wkdir/FFT99A.o /disk50/data/wd52pp/wavy/wkdir/FFT99B.f /disk50/data/wd52pp/wavy/wkdir/FFT99B.o /disk50/data/wd52pp/wavy/wkdir/FFTRIG.f /disk50/data/wd52pp/wavy/wkdir/FFTRIG.o /disk50/data/wd52pp/wavy/wkdir/FILL.f /disk50/data/wd52pp/wavy/wkdir/FILL.o /disk50/data/wd52pp/wavy/wkdir/FL22.f /disk50/data/wd52pp/wavy/wkdir/FL22.o /disk50/data/wd52pp/wavy/wkdir/GETABG.f /disk50/data/wd52pp/wavy/wkdir/GETABG.o /disk50/data/wd52pp/wavy/wkdir/GETANOM.f /disk50/data/wd52pp/wavy/wkdir/GETANOM.o /disk50/data/wd52pp/wavy/wkdir/GETBS.f /disk50/data/wd52pp/wavy/wkdir/GETBS.o /disk50/data/wd52pp/wavy/wkdir/GETFRC.f /disk50/data/wd52pp/wavy/wkdir/GETFRC.o /disk50/data/wd52pp/wavy/wkdir/GETGEO.f /disk50/data/wd52pp/wavy/wkdir/GETGEO.o /disk50/data/wd52pp/wavy/wkdir/GETMAT.f /disk50/data/wd52pp/wavy/wkdir/GETMAT.o /disk50/data/wd52pp/wavy/wkdir/GFIDI.f /disk50/data/wd52pp/wavy/wkdir/GFIDI.o /disk50/data/wd52pp/wavy/wkdir/GFRC.f /disk50/data/wd52pp/wavy/wkdir/GFRC.o /disk50/data/wd52pp/wavy/wkdir/GLATS.f /disk50/data/wd52pp/wavy/wkdir/GLATS.o /disk50/data/wd52pp/wavy/wkdir/GLOOP.f /disk50/data/wd52pp/wavy/wkdir/GLOOP.o /disk50/data/wd52pp/wavy/wkdir/GOZRIM.f /disk50/data/wd52pp/wavy/wkdir/GOZRIM.o /disk50/data/wd52pp/wavy/wkdir/GSSTCD.f /disk50/data/wd52pp/wavy/wkdir/GSSTCD.o /disk50/data/wd52pp/wavy/wkdir/IMINV.f /disk50/data/wd52pp/wavy/wkdir/IMINV.o /disk50/data/wd52pp/wavy/wkdir/MSU22.f /disk50/data/wd52pp/wavy/wkdir/MSU22.o /disk50/data/wd52pp/wavy/wkdir/MTDM.f /disk50/data/wd52pp/wavy/wkdir/MTDM.o /disk50/data/wd52pp/wavy/wkdir/MTM.f /disk50/data/wd52pp/wavy/wkdir/MTM.o /disk50/data/wd52pp/wavy/wkdir/MTV.f /disk50/data/wd52pp/wavy/wkdir/MTV.o /disk50/data/wd52pp/wavy/wkdir/MULAM.f /disk50/data/wd52pp/wavy/wkdir/MULAM.o /disk50/data/wd52pp/wavy/wkdir/MULMB.f /disk50/data/wd52pp/wavy/wkdir/MULMB.o /disk50/data/wd52pp/wavy/wkdir/MULMC.f /disk50/data/wd52pp/wavy/wkdir/MULMC.o /disk50/data/wd52pp/wavy/wkdir/MULMD.f /disk50/data/wd52pp/wavy/wkdir/MULMD.o /disk50/data/wd52pp/wavy/wkdir/PLN2.f /disk50/data/wd52pp/wavy/wkdir/PLN2.o /disk50/data/wd52pp/wavy/wkdir/POLY.f /disk50/data/wd52pp/wavy/wkdir/POLY.o /disk50/data/wd52pp/wavy/wkdir/PSU22.f /disk50/data/wd52pp/wavy/wkdir/PSU22.o /disk50/data/wd52pp/wavy/wkdir/RDFLD.f /disk50/data/wd52pp/wavy/wkdir/RDFLD.o /disk50/data/wd52pp/wavy/wkdir/RESET.f /disk50/data/wd52pp/wavy/wkdir/RESET.o /disk50/data/wd52pp/wavy/wkdir/SAVABG.f /disk50/data/wd52pp/wavy/wkdir/SAVABG.o /disk50/data/wd52pp/wavy/wkdir/SCLOUT.f /disk50/data/wd52pp/wavy/wkdir/SCLOUT.o /disk50/data/wd52pp/wavy/wkdir/SETFRC.f /disk50/data/wd52pp/wavy/wkdir/SETFRC.o /disk50/data/wd52pp/wavy/wkdir/SETSIG.f /disk50/data/wd52pp/wavy/wkdir/SETSIG.o /disk50/data/wd52pp/wavy/wkdir/SLNOUT.f /disk50/data/wd52pp/wavy/wkdir/SLNOUT.o /disk50/data/wd52pp/wavy/wkdir/SUMPLS.f /disk50/data/wd52pp/wavy/wkdir/SUMPLS.o /disk50/data/wd52pp/wavy/wkdir/SUMPLV.f /disk50/data/wd52pp/wavy/wkdir/SUMPLV.o /disk50/data/wd52pp/wavy/wkdir/SYMASY.f /disk50/data/wd52pp/wavy/wkdir/SYMASY.o /disk50/data/wd52pp/wavy/wkdir/TRANSP.f /disk50/data/wd52pp/wavy/wkdir/TRANSP.o /disk50/data/wd52pp/wavy/wkdir/TSTZER.f /disk50/data/wd52pp/wavy/wkdir/TSTZER.o /disk50/data/wd52pp/wavy/wkdir/VPASSM.f /disk50/data/wd52pp/wavy/wkdir/VPASSM.o /disk50/data/wd52pp/wavy/wkdir/WAVY.f /disk50/data/wd52pp/wavy/wkdir/WAVY.o /disk50/data/wd52pp/wavy/wkdir/WRFLD.f /disk50/data/wd52pp/wavy/wkdir/WRFLD.o /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.f /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.o /disk50/data/wd52pp/wavy/wkdir/a.out /disk50/data/wd52pp/wavy/wkdir/data.h /disk50/data/wd52pp/wavy/wkdir/fort.10 /disk50/data/wd52pp/wavy/wkdir/fort.18 /disk50/data/wd52pp/wavy/wkdir/fort.28 /disk50/data/wd52pp/wavy/wkdir/fort.39 /disk50/data/wd52pp/wavy/wkdir/fort.49 /disk50/data/wd52pp/wavy/wkdir/fort.50 /disk50/data/wd52pp/wavy/wkdir/fort.66 /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.f /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.o /disk50/data/wd52pp/wavy/wkdir/model_comp.scr /disk50/data/wd52pp/wavy/wkdir/ptrunk.h
++ cp /export-6/sgi9/wd52pp/utility/wavy/src_model/ACOFIL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/AMHMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BLKDAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BMCM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/COMINT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL4.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DELLNP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DIFFUS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DZTOUV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/EPSLON.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FAX.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT991.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99A.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99B.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFTRIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FILL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FL22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETANOM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETBS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETGEO.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETMAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFIDI.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLATS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLOOP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GOZRIM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GSSTCD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/IMINV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTDM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULAM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMB.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PLN2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/POLY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RDFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RESET.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SAVABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SCLOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETSIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SLNOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SYMASY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TRANSP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TSTZER.f /export-6/sgi9/wd52pp/utility/wavy/src_model/VPASSM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WAVY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WRFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/ZNLSYM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/comcom /export-6/sgi9/wd52pp/utility/wavy/src_model/comcon /export-6/sgi9/wd52pp/utility/wavy/src_model/comctl /export-6/sgi9/wd52pp/utility/wavy/src_model/commnt /export-6/sgi9/wd52pp/utility/wavy/src_model/comnum /export-6/sgi9/wd52pp/utility/wavy/src_model/comphc /export-6/sgi9/wd52pp/utility/wavy/src_model/comsig /export-6/sgi9/wd52pp/utility/wavy/src_model/comtim /export-6/sgi9/wd52pp/utility/wavy/src_model/lae_sol.s.f /export-6/sgi9/wd52pp/utility/wavy/src_model/model_comp.scr /export-6/sgi9/wd52pp/utility/wavy/src_model/namcon /export-6/sgi9/wd52pp/utility/wavy/src_model/namttl /export-6/sgi9/wd52pp/utility/wavy/src_model/old_Makefile /export-6/sgi9/wd52pp/utility/wavy/src_model/output /export-6/sgi9/wd52pp/utility/wavy/src_model/pimax /export-6/sgi9/wd52pp/utility/wavy/src_model/pjmax /export-6/sgi9/wd52pp/utility/wavy/src_model/pkmax /export-6/sgi9/wd52pp/utility/wavy/src_model/ptrunk.h /export-6/sgi9/wd52pp/utility/wavy/src_model/sigdef .
++ cat
++ 1> data.h 0< /tmp/sh5852203.1
++ cat
++ 1> ptrunk 0< /tmp/sh5852203.2
++ model_comp.scr
++ f77 ACOFIL.f DMTM.f GETABG.f GOZRIM.f MULMD.f SLNOUT.f AMHMTM.f DZTOUV.f GETANOM.f GSSTCD.f PLN2.f SUMPLS.f BLKDAT.f EPSLON.f GETBS.f IMINV.f POLY.f SUMPLV.f BMCM.f FAX.f GETFRC.f MSU22.f PSU22.f SYMASY.f COMINT.f FFT991.f GETGEO.f MTDM.f RDFLD.f TRANSP.f DEL2.f FFT99A.f GETMAT.f MTM.f RESET.f TSTZER.f DEL4.f FFT99B.f GFIDI.f MTV.f SAVABG.f VPASSM.f DELLNP.f FFTRIG.f GFRC.f MULAM.f SCLOUT.f WAVY.f DIFFUS.f FILL.f GLATS.f MULMB.f SETFRC.f WRFLD.f FL22.f GLOOP.f MULMC.f SETSIG.f ZNLSYM.f lae_sol.s.f
+ACOFIL.f:
+DMTM.f:
+GETABG.f:
+GOZRIM.f:
+MULMD.f:
+SLNOUT.f:
+AMHMTM.f:
+DZTOUV.f:
+GETANOM.f:
+GSSTCD.f:
+PLN2.f:
+SUMPLS.f:
+BLKDAT.f:
+EPSLON.f:
+GETBS.f:
+IMINV.f:
+POLY.f:
+SUMPLV.f:
+BMCM.f:
+FAX.f:
+GETFRC.f:
+MSU22.f:
+PSU22.f:
+SYMASY.f:
+COMINT.f:
+FFT991.f:
+GETGEO.f:
+MTDM.f:
+RDFLD.f:
+TRANSP.f:
+DEL2.f:
+FFT99A.f:
+GETMAT.f:
+MTM.f:
+RESET.f:
+TSTZER.f:
+DEL4.f:
+FFT99B.f:
+GFIDI.f:
+MTV.f:
+SAVABG.f:
+VPASSM.f:
+DELLNP.f:
+FFTRIG.f:
+GFRC.f:
+MULAM.f:
+SCLOUT.f:
+WAVY.f:
+DIFFUS.f:
+FILL.f:
+GLATS.f:
+MULMB.f:
+SETFRC.f:
+WRFLD.f:
+FL22.f:
+GLOOP.f:
+MULMC.f:
+SETSIG.f:
+ZNLSYM.f:
+lae_sol.s.f:
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/basic.i3e fort.18
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/forcing.i3e fort.39
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/verify.i3e fort.28
++ ln -s /disk50/data/wd52pp/wavy/reanl_7998clim_jfm.Z7.1 fort.49
++ ln -s /disk50/data/wd52pp/wavy/reanl_7998clim_jfm.Z7.2 fort.50
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/e001.result fort.66
++ unlimit
++ a.out
+  level            1
+  BASIC STATE READ IN FROM UNIT           18
+ TGLOB=   285.1670       279.8302       274.7420       268.7636    
+    261.0514       251.5907       239.9191       226.4813       213.2413    
+    213.9256    
+  level            2
+  level            3
+  level            4
+  level            5
+  level            6
+  level            7
+  level            8
+  level            9
+  level           10
+  GCM ANOMALY READ IN FROM UNIT           28
+ DONE WITH WRPROG AT     2    1    1   92        0.0
++ ja -cst
+./Runwavy.scr[49]: ja:  not found
++ datadir=/disk50/data/wd52pp/wavy
++ wkdir=/disk50/data/wd52pp/wavy/wkdir
++ tgtdir=/export-6/sgi9/wd52pp/utility/wavy/e001
++ locdir=/export-6/sgi9/wd52pp/utility/wavy
++ echo wavy linear model diagnostics
+wavy linear model diagnostics
++ TEMP=/disk50/data/wd52pp/wavy/wkdir
++ ja
+./Runwavy.scr[15]: ja:  not found
++ cd /disk50/data/wd52pp/wavy/wkdir
++ rm /disk50/data/wd52pp/wavy/wkdir/ACOFIL.f /disk50/data/wd52pp/wavy/wkdir/ACOFIL.o /disk50/data/wd52pp/wavy/wkdir/AMHMTM.f /disk50/data/wd52pp/wavy/wkdir/AMHMTM.o /disk50/data/wd52pp/wavy/wkdir/BLKDAT.f /disk50/data/wd52pp/wavy/wkdir/BLKDAT.o /disk50/data/wd52pp/wavy/wkdir/BMCM.f /disk50/data/wd52pp/wavy/wkdir/BMCM.o /disk50/data/wd52pp/wavy/wkdir/COMINT.f /disk50/data/wd52pp/wavy/wkdir/COMINT.o /disk50/data/wd52pp/wavy/wkdir/DEL2.f /disk50/data/wd52pp/wavy/wkdir/DEL2.o /disk50/data/wd52pp/wavy/wkdir/DEL4.f /disk50/data/wd52pp/wavy/wkdir/DEL4.o /disk50/data/wd52pp/wavy/wkdir/DELLNP.f /disk50/data/wd52pp/wavy/wkdir/DELLNP.o /disk50/data/wd52pp/wavy/wkdir/DIFFUS.f /disk50/data/wd52pp/wavy/wkdir/DIFFUS.o /disk50/data/wd52pp/wavy/wkdir/DMTM.f /disk50/data/wd52pp/wavy/wkdir/DMTM.o /disk50/data/wd52pp/wavy/wkdir/DZTOUV.f /disk50/data/wd52pp/wavy/wkdir/DZTOUV.o /disk50/data/wd52pp/wavy/wkdir/EPSLON.f /disk50/data/wd52pp/wavy/wkdir/EPSLON.o /disk50/data/wd52pp/wavy/wkdir/FAX.f /disk50/data/wd52pp/wavy/wkdir/FAX.o /disk50/data/wd52pp/wavy/wkdir/FFT991.f /disk50/data/wd52pp/wavy/wkdir/FFT991.o /disk50/data/wd52pp/wavy/wkdir/FFT99A.f /disk50/data/wd52pp/wavy/wkdir/FFT99A.o /disk50/data/wd52pp/wavy/wkdir/FFT99B.f /disk50/data/wd52pp/wavy/wkdir/FFT99B.o /disk50/data/wd52pp/wavy/wkdir/FFTRIG.f /disk50/data/wd52pp/wavy/wkdir/FFTRIG.o /disk50/data/wd52pp/wavy/wkdir/FILL.f /disk50/data/wd52pp/wavy/wkdir/FILL.o /disk50/data/wd52pp/wavy/wkdir/FL22.f /disk50/data/wd52pp/wavy/wkdir/FL22.o /disk50/data/wd52pp/wavy/wkdir/GETABG.f /disk50/data/wd52pp/wavy/wkdir/GETABG.o /disk50/data/wd52pp/wavy/wkdir/GETANOM.f /disk50/data/wd52pp/wavy/wkdir/GETANOM.o /disk50/data/wd52pp/wavy/wkdir/GETBS.f /disk50/data/wd52pp/wavy/wkdir/GETBS.o /disk50/data/wd52pp/wavy/wkdir/GETFRC.f /disk50/data/wd52pp/wavy/wkdir/GETFRC.o /disk50/data/wd52pp/wavy/wkdir/GETGEO.f /disk50/data/wd52pp/wavy/wkdir/GETGEO.o /disk50/data/wd52pp/wavy/wkdir/GETMAT.f /disk50/data/wd52pp/wavy/wkdir/GETMAT.o /disk50/data/wd52pp/wavy/wkdir/GFIDI.f /disk50/data/wd52pp/wavy/wkdir/GFIDI.o /disk50/data/wd52pp/wavy/wkdir/GFRC.f /disk50/data/wd52pp/wavy/wkdir/GFRC.o /disk50/data/wd52pp/wavy/wkdir/GLATS.f /disk50/data/wd52pp/wavy/wkdir/GLATS.o /disk50/data/wd52pp/wavy/wkdir/GLOOP.f /disk50/data/wd52pp/wavy/wkdir/GLOOP.o /disk50/data/wd52pp/wavy/wkdir/GOZRIM.f /disk50/data/wd52pp/wavy/wkdir/GOZRIM.o /disk50/data/wd52pp/wavy/wkdir/GSSTCD.f /disk50/data/wd52pp/wavy/wkdir/GSSTCD.o /disk50/data/wd52pp/wavy/wkdir/IMINV.f /disk50/data/wd52pp/wavy/wkdir/IMINV.o /disk50/data/wd52pp/wavy/wkdir/MSU22.f /disk50/data/wd52pp/wavy/wkdir/MSU22.o /disk50/data/wd52pp/wavy/wkdir/MTDM.f /disk50/data/wd52pp/wavy/wkdir/MTDM.o /disk50/data/wd52pp/wavy/wkdir/MTM.f /disk50/data/wd52pp/wavy/wkdir/MTM.o /disk50/data/wd52pp/wavy/wkdir/MTV.f /disk50/data/wd52pp/wavy/wkdir/MTV.o /disk50/data/wd52pp/wavy/wkdir/MULAM.f /disk50/data/wd52pp/wavy/wkdir/MULAM.o /disk50/data/wd52pp/wavy/wkdir/MULMB.f /disk50/data/wd52pp/wavy/wkdir/MULMB.o /disk50/data/wd52pp/wavy/wkdir/MULMC.f /disk50/data/wd52pp/wavy/wkdir/MULMC.o /disk50/data/wd52pp/wavy/wkdir/MULMD.f /disk50/data/wd52pp/wavy/wkdir/MULMD.o /disk50/data/wd52pp/wavy/wkdir/PLN2.f /disk50/data/wd52pp/wavy/wkdir/PLN2.o /disk50/data/wd52pp/wavy/wkdir/POLY.f /disk50/data/wd52pp/wavy/wkdir/POLY.o /disk50/data/wd52pp/wavy/wkdir/PSU22.f /disk50/data/wd52pp/wavy/wkdir/PSU22.o /disk50/data/wd52pp/wavy/wkdir/RDFLD.f /disk50/data/wd52pp/wavy/wkdir/RDFLD.o /disk50/data/wd52pp/wavy/wkdir/RESET.f /disk50/data/wd52pp/wavy/wkdir/RESET.o /disk50/data/wd52pp/wavy/wkdir/SAVABG.f /disk50/data/wd52pp/wavy/wkdir/SAVABG.o /disk50/data/wd52pp/wavy/wkdir/SCLOUT.f /disk50/data/wd52pp/wavy/wkdir/SCLOUT.o /disk50/data/wd52pp/wavy/wkdir/SETFRC.f /disk50/data/wd52pp/wavy/wkdir/SETFRC.o /disk50/data/wd52pp/wavy/wkdir/SETSIG.f /disk50/data/wd52pp/wavy/wkdir/SETSIG.o /disk50/data/wd52pp/wavy/wkdir/SLNOUT.f /disk50/data/wd52pp/wavy/wkdir/SLNOUT.o /disk50/data/wd52pp/wavy/wkdir/SUMPLS.f /disk50/data/wd52pp/wavy/wkdir/SUMPLS.o /disk50/data/wd52pp/wavy/wkdir/SUMPLV.f /disk50/data/wd52pp/wavy/wkdir/SUMPLV.o /disk50/data/wd52pp/wavy/wkdir/SYMASY.f /disk50/data/wd52pp/wavy/wkdir/SYMASY.o /disk50/data/wd52pp/wavy/wkdir/TRANSP.f /disk50/data/wd52pp/wavy/wkdir/TRANSP.o /disk50/data/wd52pp/wavy/wkdir/TSTZER.f /disk50/data/wd52pp/wavy/wkdir/TSTZER.o /disk50/data/wd52pp/wavy/wkdir/VPASSM.f /disk50/data/wd52pp/wavy/wkdir/VPASSM.o /disk50/data/wd52pp/wavy/wkdir/WAVY.f /disk50/data/wd52pp/wavy/wkdir/WAVY.o /disk50/data/wd52pp/wavy/wkdir/WRFLD.f /disk50/data/wd52pp/wavy/wkdir/WRFLD.o /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.f /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.o /disk50/data/wd52pp/wavy/wkdir/a.out /disk50/data/wd52pp/wavy/wkdir/data.h /disk50/data/wd52pp/wavy/wkdir/fort.10 /disk50/data/wd52pp/wavy/wkdir/fort.18 /disk50/data/wd52pp/wavy/wkdir/fort.28 /disk50/data/wd52pp/wavy/wkdir/fort.39 /disk50/data/wd52pp/wavy/wkdir/fort.49 /disk50/data/wd52pp/wavy/wkdir/fort.50 /disk50/data/wd52pp/wavy/wkdir/fort.66 /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.f /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.o /disk50/data/wd52pp/wavy/wkdir/model_comp.scr /disk50/data/wd52pp/wavy/wkdir/ptrunk.h
++ cp /export-6/sgi9/wd52pp/utility/wavy/src_model/ACOFIL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/AMHMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BLKDAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BMCM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/COMINT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL4.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DELLNP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DIFFUS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DZTOUV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/EPSLON.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FAX.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT991.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99A.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99B.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFTRIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FILL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FL22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETANOM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETBS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETGEO.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETMAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFIDI.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLATS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLOOP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GOZRIM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GSSTCD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/IMINV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTDM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULAM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMB.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PLN2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/POLY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RDFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RESET.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SAVABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SCLOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETSIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SLNOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SYMASY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TRANSP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TSTZER.f /export-6/sgi9/wd52pp/utility/wavy/src_model/VPASSM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WAVY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WRFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/ZNLSYM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/comcom /export-6/sgi9/wd52pp/utility/wavy/src_model/comcon /export-6/sgi9/wd52pp/utility/wavy/src_model/comctl /export-6/sgi9/wd52pp/utility/wavy/src_model/commnt /export-6/sgi9/wd52pp/utility/wavy/src_model/comnum /export-6/sgi9/wd52pp/utility/wavy/src_model/comphc /export-6/sgi9/wd52pp/utility/wavy/src_model/comsig /export-6/sgi9/wd52pp/utility/wavy/src_model/comtim /export-6/sgi9/wd52pp/utility/wavy/src_model/lae_sol.s.f /export-6/sgi9/wd52pp/utility/wavy/src_model/model_comp.scr /export-6/sgi9/wd52pp/utility/wavy/src_model/namcon /export-6/sgi9/wd52pp/utility/wavy/src_model/namttl /export-6/sgi9/wd52pp/utility/wavy/src_model/old_Makefile /export-6/sgi9/wd52pp/utility/wavy/src_model/output /export-6/sgi9/wd52pp/utility/wavy/src_model/pimax /export-6/sgi9/wd52pp/utility/wavy/src_model/pjmax /export-6/sgi9/wd52pp/utility/wavy/src_model/pkmax /export-6/sgi9/wd52pp/utility/wavy/src_model/ptrunk.h /export-6/sgi9/wd52pp/utility/wavy/src_model/sigdef .
++ cat
++ 1> data.h 0< /tmp/sh5928220.1
++ cat
++ 1> ptrunk 0< /tmp/sh5928220.2
++ model_comp.scr
++ f77 ACOFIL.f DMTM.f GETABG.f GOZRIM.f MULMD.f SLNOUT.f AMHMTM.f DZTOUV.f GETANOM.f GSSTCD.f PLN2.f SUMPLS.f BLKDAT.f EPSLON.f GETBS.f IMINV.f POLY.f SUMPLV.f BMCM.f FAX.f GETFRC.f MSU22.f PSU22.f SYMASY.f COMINT.f FFT991.f GETGEO.f MTDM.f RDFLD.f TRANSP.f DEL2.f FFT99A.f GETMAT.f MTM.f RESET.f TSTZER.f DEL4.f FFT99B.f GFIDI.f MTV.f SAVABG.f VPASSM.f DELLNP.f FFTRIG.f GFRC.f MULAM.f SCLOUT.f WAVY.f DIFFUS.f FILL.f GLATS.f MULMB.f SETFRC.f WRFLD.f FL22.f GLOOP.f MULMC.f SETSIG.f ZNLSYM.f lae_sol.s.f
+ACOFIL.f:
+DMTM.f:
+GETABG.f:
+GOZRIM.f:
+MULMD.f:
+SLNOUT.f:
+AMHMTM.f:
+DZTOUV.f:
+GETANOM.f:
+GSSTCD.f:
+PLN2.f:
+SUMPLS.f:
+BLKDAT.f:
+EPSLON.f:
+GETBS.f:
+IMINV.f:
+POLY.f:
+SUMPLV.f:
+BMCM.f:
+FAX.f:
+GETFRC.f:
+MSU22.f:
+PSU22.f:
+SYMASY.f:
+COMINT.f:
+FFT991.f:
+GETGEO.f:
+MTDM.f:
+RDFLD.f:
+TRANSP.f:
+DEL2.f:
+FFT99A.f:
+GETMAT.f:
+MTM.f:
+RESET.f:
+TSTZER.f:
+DEL4.f:
+FFT99B.f:
+GFIDI.f:
+MTV.f:
+SAVABG.f:
+VPASSM.f:
+DELLNP.f:
+FFTRIG.f:
+GFRC.f:
+MULAM.f:
+SCLOUT.f:
+WAVY.f:
+DIFFUS.f:
+FILL.f:
+GLATS.f:
+MULMB.f:
+SETFRC.f:
+WRFLD.f:
+FL22.f:
+GLOOP.f:
+MULMC.f:
+SETSIG.f:
+ZNLSYM.f:
+lae_sol.s.f:
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/basic.i3e fort.18
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/forcing.i3e fort.39
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/verify.i3e fort.28
++ ln -s /disk50/data/wd52pp/wavy/reanl_7998clim_jfm.Z7.1 fort.49
++ ln -s /disk50/data/wd52pp/wavy/reanl_7998clim_jfm.Z7.2 fort.50
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/e001.result fort.66
++ unlimit
++ a.out
+  level            1
+  BASIC STATE READ IN FROM UNIT           18
+ TGLOB=   285.1670       279.8302       274.7420       268.7636    
+    261.0514       251.5907       239.9191       226.4813       213.2413    
+    213.9256    
+  level            2
+  level            3
+  level            4
+  level            5
+  level            6
+  level            7
+  level            8
+  level            9
+  level           10
+  GCM ANOMALY READ IN FROM UNIT           28
+ DONE WITH WRPROG AT     2    1    1   92        0.0
++ ja -cst
+./Runwavy.scr[49]: ja:  not found
++ datadir=/disk50/data/wd52pp/wavy
++ wkdir=/disk50/data/wd52pp/wavy/wkdir
++ tgtdir=/export-6/sgi9/wd52pp/utility/wavy/e001
++ locdir=/export-6/sgi9/wd52pp/utility/wavy
++ echo wavy linear model diagnostics
+wavy linear model diagnostics
++ TEMP=/disk50/data/wd52pp/wavy/wkdir
++ ja
+./Runwavy.scr[15]: ja:  not found
++ cd /disk50/data/wd52pp/wavy/wkdir
++ rm /disk50/data/wd52pp/wavy/wkdir/ACOFIL.f /disk50/data/wd52pp/wavy/wkdir/ACOFIL.o /disk50/data/wd52pp/wavy/wkdir/AMHMTM.f /disk50/data/wd52pp/wavy/wkdir/AMHMTM.o /disk50/data/wd52pp/wavy/wkdir/BLKDAT.f /disk50/data/wd52pp/wavy/wkdir/BLKDAT.o /disk50/data/wd52pp/wavy/wkdir/BMCM.f /disk50/data/wd52pp/wavy/wkdir/BMCM.o /disk50/data/wd52pp/wavy/wkdir/COMINT.f /disk50/data/wd52pp/wavy/wkdir/COMINT.o /disk50/data/wd52pp/wavy/wkdir/DEL2.f /disk50/data/wd52pp/wavy/wkdir/DEL2.o /disk50/data/wd52pp/wavy/wkdir/DEL4.f /disk50/data/wd52pp/wavy/wkdir/DEL4.o /disk50/data/wd52pp/wavy/wkdir/DELLNP.f /disk50/data/wd52pp/wavy/wkdir/DELLNP.o /disk50/data/wd52pp/wavy/wkdir/DIFFUS.f /disk50/data/wd52pp/wavy/wkdir/DIFFUS.o /disk50/data/wd52pp/wavy/wkdir/DMTM.f /disk50/data/wd52pp/wavy/wkdir/DMTM.o /disk50/data/wd52pp/wavy/wkdir/DZTOUV.f /disk50/data/wd52pp/wavy/wkdir/DZTOUV.o /disk50/data/wd52pp/wavy/wkdir/EPSLON.f /disk50/data/wd52pp/wavy/wkdir/EPSLON.o /disk50/data/wd52pp/wavy/wkdir/FAX.f /disk50/data/wd52pp/wavy/wkdir/FAX.o /disk50/data/wd52pp/wavy/wkdir/FFT991.f /disk50/data/wd52pp/wavy/wkdir/FFT991.o /disk50/data/wd52pp/wavy/wkdir/FFT99A.f /disk50/data/wd52pp/wavy/wkdir/FFT99A.o /disk50/data/wd52pp/wavy/wkdir/FFT99B.f /disk50/data/wd52pp/wavy/wkdir/FFT99B.o /disk50/data/wd52pp/wavy/wkdir/FFTRIG.f /disk50/data/wd52pp/wavy/wkdir/FFTRIG.o /disk50/data/wd52pp/wavy/wkdir/FILL.f /disk50/data/wd52pp/wavy/wkdir/FILL.o /disk50/data/wd52pp/wavy/wkdir/FL22.f /disk50/data/wd52pp/wavy/wkdir/FL22.o /disk50/data/wd52pp/wavy/wkdir/GETABG.f /disk50/data/wd52pp/wavy/wkdir/GETABG.o /disk50/data/wd52pp/wavy/wkdir/GETANOM.f /disk50/data/wd52pp/wavy/wkdir/GETANOM.o /disk50/data/wd52pp/wavy/wkdir/GETBS.f /disk50/data/wd52pp/wavy/wkdir/GETBS.o /disk50/data/wd52pp/wavy/wkdir/GETFRC.f /disk50/data/wd52pp/wavy/wkdir/GETFRC.o /disk50/data/wd52pp/wavy/wkdir/GETGEO.f /disk50/data/wd52pp/wavy/wkdir/GETGEO.o /disk50/data/wd52pp/wavy/wkdir/GETMAT.f /disk50/data/wd52pp/wavy/wkdir/GETMAT.o /disk50/data/wd52pp/wavy/wkdir/GFIDI.f /disk50/data/wd52pp/wavy/wkdir/GFIDI.o /disk50/data/wd52pp/wavy/wkdir/GFRC.f /disk50/data/wd52pp/wavy/wkdir/GFRC.o /disk50/data/wd52pp/wavy/wkdir/GLATS.f /disk50/data/wd52pp/wavy/wkdir/GLATS.o /disk50/data/wd52pp/wavy/wkdir/GLOOP.f /disk50/data/wd52pp/wavy/wkdir/GLOOP.o /disk50/data/wd52pp/wavy/wkdir/GOZRIM.f /disk50/data/wd52pp/wavy/wkdir/GOZRIM.o /disk50/data/wd52pp/wavy/wkdir/GSSTCD.f /disk50/data/wd52pp/wavy/wkdir/GSSTCD.o /disk50/data/wd52pp/wavy/wkdir/IMINV.f /disk50/data/wd52pp/wavy/wkdir/IMINV.o /disk50/data/wd52pp/wavy/wkdir/MSU22.f /disk50/data/wd52pp/wavy/wkdir/MSU22.o /disk50/data/wd52pp/wavy/wkdir/MTDM.f /disk50/data/wd52pp/wavy/wkdir/MTDM.o /disk50/data/wd52pp/wavy/wkdir/MTM.f /disk50/data/wd52pp/wavy/wkdir/MTM.o /disk50/data/wd52pp/wavy/wkdir/MTV.f /disk50/data/wd52pp/wavy/wkdir/MTV.o /disk50/data/wd52pp/wavy/wkdir/MULAM.f /disk50/data/wd52pp/wavy/wkdir/MULAM.o /disk50/data/wd52pp/wavy/wkdir/MULMB.f /disk50/data/wd52pp/wavy/wkdir/MULMB.o /disk50/data/wd52pp/wavy/wkdir/MULMC.f /disk50/data/wd52pp/wavy/wkdir/MULMC.o /disk50/data/wd52pp/wavy/wkdir/MULMD.f /disk50/data/wd52pp/wavy/wkdir/MULMD.o /disk50/data/wd52pp/wavy/wkdir/PLN2.f /disk50/data/wd52pp/wavy/wkdir/PLN2.o /disk50/data/wd52pp/wavy/wkdir/POLY.f /disk50/data/wd52pp/wavy/wkdir/POLY.o /disk50/data/wd52pp/wavy/wkdir/PSU22.f /disk50/data/wd52pp/wavy/wkdir/PSU22.o /disk50/data/wd52pp/wavy/wkdir/RDFLD.f /disk50/data/wd52pp/wavy/wkdir/RDFLD.o /disk50/data/wd52pp/wavy/wkdir/RESET.f /disk50/data/wd52pp/wavy/wkdir/RESET.o /disk50/data/wd52pp/wavy/wkdir/SAVABG.f /disk50/data/wd52pp/wavy/wkdir/SAVABG.o /disk50/data/wd52pp/wavy/wkdir/SCLOUT.f /disk50/data/wd52pp/wavy/wkdir/SCLOUT.o /disk50/data/wd52pp/wavy/wkdir/SETFRC.f /disk50/data/wd52pp/wavy/wkdir/SETFRC.o /disk50/data/wd52pp/wavy/wkdir/SETSIG.f /disk50/data/wd52pp/wavy/wkdir/SETSIG.o /disk50/data/wd52pp/wavy/wkdir/SLNOUT.f /disk50/data/wd52pp/wavy/wkdir/SLNOUT.o /disk50/data/wd52pp/wavy/wkdir/SUMPLS.f /disk50/data/wd52pp/wavy/wkdir/SUMPLS.o /disk50/data/wd52pp/wavy/wkdir/SUMPLV.f /disk50/data/wd52pp/wavy/wkdir/SUMPLV.o /disk50/data/wd52pp/wavy/wkdir/SYMASY.f /disk50/data/wd52pp/wavy/wkdir/SYMASY.o /disk50/data/wd52pp/wavy/wkdir/TRANSP.f /disk50/data/wd52pp/wavy/wkdir/TRANSP.o /disk50/data/wd52pp/wavy/wkdir/TSTZER.f /disk50/data/wd52pp/wavy/wkdir/TSTZER.o /disk50/data/wd52pp/wavy/wkdir/VPASSM.f /disk50/data/wd52pp/wavy/wkdir/VPASSM.o /disk50/data/wd52pp/wavy/wkdir/WAVY.f /disk50/data/wd52pp/wavy/wkdir/WAVY.o /disk50/data/wd52pp/wavy/wkdir/WRFLD.f /disk50/data/wd52pp/wavy/wkdir/WRFLD.o /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.f /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.o /disk50/data/wd52pp/wavy/wkdir/a.out /disk50/data/wd52pp/wavy/wkdir/data.h /disk50/data/wd52pp/wavy/wkdir/fort.10 /disk50/data/wd52pp/wavy/wkdir/fort.18 /disk50/data/wd52pp/wavy/wkdir/fort.28 /disk50/data/wd52pp/wavy/wkdir/fort.39 /disk50/data/wd52pp/wavy/wkdir/fort.49 /disk50/data/wd52pp/wavy/wkdir/fort.50 /disk50/data/wd52pp/wavy/wkdir/fort.66 /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.f /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.o /disk50/data/wd52pp/wavy/wkdir/model_comp.scr /disk50/data/wd52pp/wavy/wkdir/ptrunk.h
++ cp /export-6/sgi9/wd52pp/utility/wavy/src_model/ACOFIL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/AMHMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BLKDAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BMCM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/COMINT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL4.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DELLNP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DIFFUS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DZTOUV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/EPSLON.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FAX.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT991.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99A.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99B.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFTRIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FILL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FL22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETANOM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETBS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETGEO.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETMAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFIDI.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLATS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLOOP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GOZRIM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GSSTCD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/IMINV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTDM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULAM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMB.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PLN2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/POLY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RDFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RESET.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SAVABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SCLOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETSIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SLNOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SYMASY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TRANSP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TSTZER.f /export-6/sgi9/wd52pp/utility/wavy/src_model/VPASSM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WAVY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WRFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/ZNLSYM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/comcom /export-6/sgi9/wd52pp/utility/wavy/src_model/comcon /export-6/sgi9/wd52pp/utility/wavy/src_model/comctl /export-6/sgi9/wd52pp/utility/wavy/src_model/commnt /export-6/sgi9/wd52pp/utility/wavy/src_model/comnum /export-6/sgi9/wd52pp/utility/wavy/src_model/comphc /export-6/sgi9/wd52pp/utility/wavy/src_model/comsig /export-6/sgi9/wd52pp/utility/wavy/src_model/comtim /export-6/sgi9/wd52pp/utility/wavy/src_model/lae_sol.s.f /export-6/sgi9/wd52pp/utility/wavy/src_model/model_comp.scr /export-6/sgi9/wd52pp/utility/wavy/src_model/namcon /export-6/sgi9/wd52pp/utility/wavy/src_model/namttl /export-6/sgi9/wd52pp/utility/wavy/src_model/old_Makefile /export-6/sgi9/wd52pp/utility/wavy/src_model/output /export-6/sgi9/wd52pp/utility/wavy/src_model/pimax /export-6/sgi9/wd52pp/utility/wavy/src_model/pjmax /export-6/sgi9/wd52pp/utility/wavy/src_model/pkmax /export-6/sgi9/wd52pp/utility/wavy/src_model/ptrunk.h /export-6/sgi9/wd52pp/utility/wavy/src_model/sigdef .
++ cat
++ 1> data.h 0< /tmp/sh5923905.1
++ cat
++ 1> ptrunk 0< /tmp/sh5923905.2
++ model_comp.scr
++ f77 ACOFIL.f DMTM.f GETABG.f GOZRIM.f MULMD.f SLNOUT.f AMHMTM.f DZTOUV.f GETANOM.f GSSTCD.f PLN2.f SUMPLS.f BLKDAT.f EPSLON.f GETBS.f IMINV.f POLY.f SUMPLV.f BMCM.f FAX.f GETFRC.f MSU22.f PSU22.f SYMASY.f COMINT.f FFT991.f GETGEO.f MTDM.f RDFLD.f TRANSP.f DEL2.f FFT99A.f GETMAT.f MTM.f RESET.f TSTZER.f DEL4.f FFT99B.f GFIDI.f MTV.f SAVABG.f VPASSM.f DELLNP.f FFTRIG.f GFRC.f MULAM.f SCLOUT.f WAVY.f DIFFUS.f FILL.f GLATS.f MULMB.f SETFRC.f WRFLD.f FL22.f GLOOP.f MULMC.f SETSIG.f ZNLSYM.f lae_sol.s.f
+ACOFIL.f:
+DMTM.f:
+GETABG.f:
+GOZRIM.f:
+MULMD.f:
+SLNOUT.f:
+AMHMTM.f:
+DZTOUV.f:
+GETANOM.f:
+GSSTCD.f:
+PLN2.f:
+SUMPLS.f:
+BLKDAT.f:
+EPSLON.f:
+GETBS.f:
+IMINV.f:
+POLY.f:
+SUMPLV.f:
+BMCM.f:
+FAX.f:
+GETFRC.f:
+MSU22.f:
+PSU22.f:
+SYMASY.f:
+COMINT.f:
+FFT991.f:
+GETGEO.f:
+MTDM.f:
+RDFLD.f:
+TRANSP.f:
+DEL2.f:
+FFT99A.f:
+GETMAT.f:
+MTM.f:
+RESET.f:
+TSTZER.f:
+DEL4.f:
+FFT99B.f:
+GFIDI.f:
+MTV.f:
+SAVABG.f:
+VPASSM.f:
+DELLNP.f:
+FFTRIG.f:
+GFRC.f:
+MULAM.f:
+SCLOUT.f:
+WAVY.f:
+DIFFUS.f:
+FILL.f:
+GLATS.f:
+MULMB.f:
+SETFRC.f:
+WRFLD.f:
+FL22.f:
+GLOOP.f:
+MULMC.f:
+SETSIG.f:
+ZNLSYM.f:
+lae_sol.s.f:
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/basic.i3e fort.18
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/forcing.i3e fort.39
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/verify.i3e fort.28
++ ln -s /disk50/data/wd52pp/wavy/reanl_7998clim_jfm.Z7.1 fort.49
++ ln -s /disk50/data/wd52pp/wavy/reanl_7998clim_jfm.Z7.2 fort.50
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/e001.result fort.66
++ unlimit
++ a.out
+  level            1
+  BASIC STATE READ IN FROM UNIT           18
+ TGLOB=   285.1670       279.8302       274.7420       268.7636    
+    261.0514       251.5907       239.9191       226.4813       213.2413    
+    213.9256    
+  level            2
+  level            3
+  level            4
+  level            5
+  level            6
+  level            7
+  level            8
+  level            9
+  level           10
+  GCM ANOMALY READ IN FROM UNIT           28
+ DONE WITH WRPROG AT     2    1    1   92        0.0
++ ja -cst
+./Runwavy.scr[49]: ja:  not found
++ datadir=/disk50/data/wd52pp/wavy
++ wkdir=/disk50/data/wd52pp/wavy/wkdir
++ tgtdir=/export-6/sgi9/wd52pp/utility/wavy/e001
++ locdir=/export-6/sgi9/wd52pp/utility/wavy
++ echo wavy linear model diagnostics
+wavy linear model diagnostics
++ TEMP=/disk50/data/wd52pp/wavy/wkdir
++ ja
+./Runwavy.scr[15]: ja:  not found
++ cd /disk50/data/wd52pp/wavy/wkdir
++ rm /disk50/data/wd52pp/wavy/wkdir/ACOFIL.f /disk50/data/wd52pp/wavy/wkdir/ACOFIL.o /disk50/data/wd52pp/wavy/wkdir/AMHMTM.f /disk50/data/wd52pp/wavy/wkdir/AMHMTM.o /disk50/data/wd52pp/wavy/wkdir/BLKDAT.f /disk50/data/wd52pp/wavy/wkdir/BLKDAT.o /disk50/data/wd52pp/wavy/wkdir/BMCM.f /disk50/data/wd52pp/wavy/wkdir/BMCM.o /disk50/data/wd52pp/wavy/wkdir/COMINT.f /disk50/data/wd52pp/wavy/wkdir/COMINT.o /disk50/data/wd52pp/wavy/wkdir/DEL2.f /disk50/data/wd52pp/wavy/wkdir/DEL2.o /disk50/data/wd52pp/wavy/wkdir/DEL4.f /disk50/data/wd52pp/wavy/wkdir/DEL4.o /disk50/data/wd52pp/wavy/wkdir/DELLNP.f /disk50/data/wd52pp/wavy/wkdir/DELLNP.o /disk50/data/wd52pp/wavy/wkdir/DIFFUS.f /disk50/data/wd52pp/wavy/wkdir/DIFFUS.o /disk50/data/wd52pp/wavy/wkdir/DMTM.f /disk50/data/wd52pp/wavy/wkdir/DMTM.o /disk50/data/wd52pp/wavy/wkdir/DZTOUV.f /disk50/data/wd52pp/wavy/wkdir/DZTOUV.o /disk50/data/wd52pp/wavy/wkdir/EPSLON.f /disk50/data/wd52pp/wavy/wkdir/EPSLON.o /disk50/data/wd52pp/wavy/wkdir/FAX.f /disk50/data/wd52pp/wavy/wkdir/FAX.o /disk50/data/wd52pp/wavy/wkdir/FFT991.f /disk50/data/wd52pp/wavy/wkdir/FFT991.o /disk50/data/wd52pp/wavy/wkdir/FFT99A.f /disk50/data/wd52pp/wavy/wkdir/FFT99A.o /disk50/data/wd52pp/wavy/wkdir/FFT99B.f /disk50/data/wd52pp/wavy/wkdir/FFT99B.o /disk50/data/wd52pp/wavy/wkdir/FFTRIG.f /disk50/data/wd52pp/wavy/wkdir/FFTRIG.o /disk50/data/wd52pp/wavy/wkdir/FILL.f /disk50/data/wd52pp/wavy/wkdir/FILL.o /disk50/data/wd52pp/wavy/wkdir/FL22.f /disk50/data/wd52pp/wavy/wkdir/FL22.o /disk50/data/wd52pp/wavy/wkdir/GETABG.f /disk50/data/wd52pp/wavy/wkdir/GETABG.o /disk50/data/wd52pp/wavy/wkdir/GETANOM.f /disk50/data/wd52pp/wavy/wkdir/GETANOM.o /disk50/data/wd52pp/wavy/wkdir/GETBS.f /disk50/data/wd52pp/wavy/wkdir/GETBS.o /disk50/data/wd52pp/wavy/wkdir/GETFRC.f /disk50/data/wd52pp/wavy/wkdir/GETFRC.o /disk50/data/wd52pp/wavy/wkdir/GETGEO.f /disk50/data/wd52pp/wavy/wkdir/GETGEO.o /disk50/data/wd52pp/wavy/wkdir/GETMAT.f /disk50/data/wd52pp/wavy/wkdir/GETMAT.o /disk50/data/wd52pp/wavy/wkdir/GFIDI.f /disk50/data/wd52pp/wavy/wkdir/GFIDI.o /disk50/data/wd52pp/wavy/wkdir/GFRC.f /disk50/data/wd52pp/wavy/wkdir/GFRC.o /disk50/data/wd52pp/wavy/wkdir/GLATS.f /disk50/data/wd52pp/wavy/wkdir/GLATS.o /disk50/data/wd52pp/wavy/wkdir/GLOOP.f /disk50/data/wd52pp/wavy/wkdir/GLOOP.o /disk50/data/wd52pp/wavy/wkdir/GOZRIM.f /disk50/data/wd52pp/wavy/wkdir/GOZRIM.o /disk50/data/wd52pp/wavy/wkdir/GSSTCD.f /disk50/data/wd52pp/wavy/wkdir/GSSTCD.o /disk50/data/wd52pp/wavy/wkdir/IMINV.f /disk50/data/wd52pp/wavy/wkdir/IMINV.o /disk50/data/wd52pp/wavy/wkdir/MSU22.f /disk50/data/wd52pp/wavy/wkdir/MSU22.o /disk50/data/wd52pp/wavy/wkdir/MTDM.f /disk50/data/wd52pp/wavy/wkdir/MTDM.o /disk50/data/wd52pp/wavy/wkdir/MTM.f /disk50/data/wd52pp/wavy/wkdir/MTM.o /disk50/data/wd52pp/wavy/wkdir/MTV.f /disk50/data/wd52pp/wavy/wkdir/MTV.o /disk50/data/wd52pp/wavy/wkdir/MULAM.f /disk50/data/wd52pp/wavy/wkdir/MULAM.o /disk50/data/wd52pp/wavy/wkdir/MULMB.f /disk50/data/wd52pp/wavy/wkdir/MULMB.o /disk50/data/wd52pp/wavy/wkdir/MULMC.f /disk50/data/wd52pp/wavy/wkdir/MULMC.o /disk50/data/wd52pp/wavy/wkdir/MULMD.f /disk50/data/wd52pp/wavy/wkdir/MULMD.o /disk50/data/wd52pp/wavy/wkdir/PLN2.f /disk50/data/wd52pp/wavy/wkdir/PLN2.o /disk50/data/wd52pp/wavy/wkdir/POLY.f /disk50/data/wd52pp/wavy/wkdir/POLY.o /disk50/data/wd52pp/wavy/wkdir/PSU22.f /disk50/data/wd52pp/wavy/wkdir/PSU22.o /disk50/data/wd52pp/wavy/wkdir/RDFLD.f /disk50/data/wd52pp/wavy/wkdir/RDFLD.o /disk50/data/wd52pp/wavy/wkdir/RESET.f /disk50/data/wd52pp/wavy/wkdir/RESET.o /disk50/data/wd52pp/wavy/wkdir/SAVABG.f /disk50/data/wd52pp/wavy/wkdir/SAVABG.o /disk50/data/wd52pp/wavy/wkdir/SCLOUT.f /disk50/data/wd52pp/wavy/wkdir/SCLOUT.o /disk50/data/wd52pp/wavy/wkdir/SETFRC.f /disk50/data/wd52pp/wavy/wkdir/SETFRC.o /disk50/data/wd52pp/wavy/wkdir/SETSIG.f /disk50/data/wd52pp/wavy/wkdir/SETSIG.o /disk50/data/wd52pp/wavy/wkdir/SLNOUT.f /disk50/data/wd52pp/wavy/wkdir/SLNOUT.o /disk50/data/wd52pp/wavy/wkdir/SUMPLS.f /disk50/data/wd52pp/wavy/wkdir/SUMPLS.o /disk50/data/wd52pp/wavy/wkdir/SUMPLV.f /disk50/data/wd52pp/wavy/wkdir/SUMPLV.o /disk50/data/wd52pp/wavy/wkdir/SYMASY.f /disk50/data/wd52pp/wavy/wkdir/SYMASY.o /disk50/data/wd52pp/wavy/wkdir/TRANSP.f /disk50/data/wd52pp/wavy/wkdir/TRANSP.o /disk50/data/wd52pp/wavy/wkdir/TSTZER.f /disk50/data/wd52pp/wavy/wkdir/TSTZER.o /disk50/data/wd52pp/wavy/wkdir/VPASSM.f /disk50/data/wd52pp/wavy/wkdir/VPASSM.o /disk50/data/wd52pp/wavy/wkdir/WAVY.f /disk50/data/wd52pp/wavy/wkdir/WAVY.o /disk50/data/wd52pp/wavy/wkdir/WRFLD.f /disk50/data/wd52pp/wavy/wkdir/WRFLD.o /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.f /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.o /disk50/data/wd52pp/wavy/wkdir/a.out /disk50/data/wd52pp/wavy/wkdir/data.h /disk50/data/wd52pp/wavy/wkdir/fort.10 /disk50/data/wd52pp/wavy/wkdir/fort.18 /disk50/data/wd52pp/wavy/wkdir/fort.28 /disk50/data/wd52pp/wavy/wkdir/fort.39 /disk50/data/wd52pp/wavy/wkdir/fort.49 /disk50/data/wd52pp/wavy/wkdir/fort.50 /disk50/data/wd52pp/wavy/wkdir/fort.66 /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.f /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.o /disk50/data/wd52pp/wavy/wkdir/model_comp.scr /disk50/data/wd52pp/wavy/wkdir/ptrunk.h
++ cp /export-6/sgi9/wd52pp/utility/wavy/src_model/ACOFIL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/AMHMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BLKDAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BMCM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/COMINT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL4.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DELLNP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DIFFUS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DZTOUV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/EPSLON.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FAX.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT991.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99A.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99B.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFTRIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FILL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FL22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETANOM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETBS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETGEO.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETMAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFIDI.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLATS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLOOP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GOZRIM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GSSTCD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/IMINV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTDM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULAM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMB.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PLN2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/POLY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RDFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RESET.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SAVABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SCLOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETSIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SLNOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SYMASY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TRANSP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TSTZER.f /export-6/sgi9/wd52pp/utility/wavy/src_model/VPASSM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WAVY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WRFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/ZNLSYM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/comcom /export-6/sgi9/wd52pp/utility/wavy/src_model/comcon /export-6/sgi9/wd52pp/utility/wavy/src_model/comctl /export-6/sgi9/wd52pp/utility/wavy/src_model/commnt /export-6/sgi9/wd52pp/utility/wavy/src_model/comnum /export-6/sgi9/wd52pp/utility/wavy/src_model/comphc /export-6/sgi9/wd52pp/utility/wavy/src_model/comsig /export-6/sgi9/wd52pp/utility/wavy/src_model/comtim /export-6/sgi9/wd52pp/utility/wavy/src_model/lae_sol.s.f /export-6/sgi9/wd52pp/utility/wavy/src_model/model_comp.scr /export-6/sgi9/wd52pp/utility/wavy/src_model/namcon /export-6/sgi9/wd52pp/utility/wavy/src_model/namttl /export-6/sgi9/wd52pp/utility/wavy/src_model/old_Makefile /export-6/sgi9/wd52pp/utility/wavy/src_model/output /export-6/sgi9/wd52pp/utility/wavy/src_model/pimax /export-6/sgi9/wd52pp/utility/wavy/src_model/pjmax /export-6/sgi9/wd52pp/utility/wavy/src_model/pkmax /export-6/sgi9/wd52pp/utility/wavy/src_model/ptrunk.h /export-6/sgi9/wd52pp/utility/wavy/src_model/sigdef .
++ cat
++ 1> data.h 0< /tmp/sh6062988.1
++ cat
++ 1> ptrunk 0< /tmp/sh6062988.2
++ model_comp.scr
++ f77 ACOFIL.f DMTM.f GETABG.f GOZRIM.f MULMD.f SLNOUT.f AMHMTM.f DZTOUV.f GETANOM.f GSSTCD.f PLN2.f SUMPLS.f BLKDAT.f EPSLON.f GETBS.f IMINV.f POLY.f SUMPLV.f BMCM.f FAX.f GETFRC.f MSU22.f PSU22.f SYMASY.f COMINT.f FFT991.f GETGEO.f MTDM.f RDFLD.f TRANSP.f DEL2.f FFT99A.f GETMAT.f MTM.f RESET.f TSTZER.f DEL4.f FFT99B.f GFIDI.f MTV.f SAVABG.f VPASSM.f DELLNP.f FFTRIG.f GFRC.f MULAM.f SCLOUT.f WAVY.f DIFFUS.f FILL.f GLATS.f MULMB.f SETFRC.f WRFLD.f FL22.f GLOOP.f MULMC.f SETSIG.f ZNLSYM.f lae_sol.s.f
+ACOFIL.f:
+DMTM.f:
+GETABG.f:
+GOZRIM.f:
+MULMD.f:
+SLNOUT.f:
+AMHMTM.f:
+DZTOUV.f:
+GETANOM.f:
+GSSTCD.f:
+PLN2.f:
+SUMPLS.f:
+BLKDAT.f:
+EPSLON.f:
+GETBS.f:
+IMINV.f:
+POLY.f:
+SUMPLV.f:
+BMCM.f:
+FAX.f:
+GETFRC.f:
+MSU22.f:
+PSU22.f:
+SYMASY.f:
+COMINT.f:
+FFT991.f:
+GETGEO.f:
+MTDM.f:
+RDFLD.f:
+TRANSP.f:
+DEL2.f:
+FFT99A.f:
+GETMAT.f:
+MTM.f:
+RESET.f:
+TSTZER.f:
+DEL4.f:
+FFT99B.f:
+GFIDI.f:
+MTV.f:
+SAVABG.f:
+VPASSM.f:
+DELLNP.f:
+FFTRIG.f:
+GFRC.f:
+MULAM.f:
+SCLOUT.f:
+WAVY.f:
+DIFFUS.f:
+FILL.f:
+GLATS.f:
+MULMB.f:
+SETFRC.f:
+WRFLD.f:
+FL22.f:
+GLOOP.f:
+MULMC.f:
+SETSIG.f:
+ZNLSYM.f:
+lae_sol.s.f:
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/basic.i3e fort.18
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/forcing.i3e fort.39
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/verify.i3e fort.28
++ ln -s /disk50/data/wd52pp/wavy/reanl_7998clim_jfm.Z7.1 fort.49
++ ln -s /disk50/data/wd52pp/wavy/reanl_7998clim_jfm.Z7.2 fort.50
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/e001.result fort.66
++ unlimit
++ a.out
+  level            1
+  BASIC STATE READ IN FROM UNIT           18
+ TGLOB=   285.1670       279.8302       274.7420       268.7636    
+    261.0514       251.5907       239.9191       226.4813       213.2413    
+    213.9256    
+  level            2
+  level            3
+  level            4
+  level            5
+  level            6
+  level            7
+  level            8
+  level            9
+  level           10
+  GCM ANOMALY READ IN FROM UNIT           28
+ DONE WITH WRPROG AT     2    1    1   92        0.0
++ ja -cst
+./Runwavy.scr[49]: ja:  not found
++ datadir=/disk50/data/wd52pp/wavy
++ wkdir=/disk50/data/wd52pp/wavy/wkdir
++ tgtdir=/export-6/sgi9/wd52pp/utility/wavy/e001
++ locdir=/export-6/sgi9/wd52pp/utility/wavy
++ echo wavy linear model diagnostics
+wavy linear model diagnostics
++ TEMP=/disk50/data/wd52pp/wavy/wkdir
++ ja
+./Runwavy.scr[15]: ja:  not found
++ cd /disk50/data/wd52pp/wavy/wkdir
++ rm /disk50/data/wd52pp/wavy/wkdir/ACOFIL.f /disk50/data/wd52pp/wavy/wkdir/ACOFIL.o /disk50/data/wd52pp/wavy/wkdir/AMHMTM.f /disk50/data/wd52pp/wavy/wkdir/AMHMTM.o /disk50/data/wd52pp/wavy/wkdir/BLKDAT.f /disk50/data/wd52pp/wavy/wkdir/BLKDAT.o /disk50/data/wd52pp/wavy/wkdir/BMCM.f /disk50/data/wd52pp/wavy/wkdir/BMCM.o /disk50/data/wd52pp/wavy/wkdir/COMINT.f /disk50/data/wd52pp/wavy/wkdir/COMINT.o /disk50/data/wd52pp/wavy/wkdir/DEL2.f /disk50/data/wd52pp/wavy/wkdir/DEL2.o /disk50/data/wd52pp/wavy/wkdir/DEL4.f /disk50/data/wd52pp/wavy/wkdir/DEL4.o /disk50/data/wd52pp/wavy/wkdir/DELLNP.f /disk50/data/wd52pp/wavy/wkdir/DELLNP.o /disk50/data/wd52pp/wavy/wkdir/DIFFUS.f /disk50/data/wd52pp/wavy/wkdir/DIFFUS.o /disk50/data/wd52pp/wavy/wkdir/DMTM.f /disk50/data/wd52pp/wavy/wkdir/DMTM.o /disk50/data/wd52pp/wavy/wkdir/DZTOUV.f /disk50/data/wd52pp/wavy/wkdir/DZTOUV.o /disk50/data/wd52pp/wavy/wkdir/EPSLON.f /disk50/data/wd52pp/wavy/wkdir/EPSLON.o /disk50/data/wd52pp/wavy/wkdir/FAX.f /disk50/data/wd52pp/wavy/wkdir/FAX.o /disk50/data/wd52pp/wavy/wkdir/FFT991.f /disk50/data/wd52pp/wavy/wkdir/FFT991.o /disk50/data/wd52pp/wavy/wkdir/FFT99A.f /disk50/data/wd52pp/wavy/wkdir/FFT99A.o /disk50/data/wd52pp/wavy/wkdir/FFT99B.f /disk50/data/wd52pp/wavy/wkdir/FFT99B.o /disk50/data/wd52pp/wavy/wkdir/FFTRIG.f /disk50/data/wd52pp/wavy/wkdir/FFTRIG.o /disk50/data/wd52pp/wavy/wkdir/FILL.f /disk50/data/wd52pp/wavy/wkdir/FILL.o /disk50/data/wd52pp/wavy/wkdir/FL22.f /disk50/data/wd52pp/wavy/wkdir/FL22.o /disk50/data/wd52pp/wavy/wkdir/GETABG.f /disk50/data/wd52pp/wavy/wkdir/GETABG.o /disk50/data/wd52pp/wavy/wkdir/GETANOM.f /disk50/data/wd52pp/wavy/wkdir/GETANOM.o /disk50/data/wd52pp/wavy/wkdir/GETBS.f /disk50/data/wd52pp/wavy/wkdir/GETBS.o /disk50/data/wd52pp/wavy/wkdir/GETFRC.f /disk50/data/wd52pp/wavy/wkdir/GETFRC.o /disk50/data/wd52pp/wavy/wkdir/GETGEO.f /disk50/data/wd52pp/wavy/wkdir/GETGEO.o /disk50/data/wd52pp/wavy/wkdir/GETMAT.f /disk50/data/wd52pp/wavy/wkdir/GETMAT.o /disk50/data/wd52pp/wavy/wkdir/GFIDI.f /disk50/data/wd52pp/wavy/wkdir/GFIDI.o /disk50/data/wd52pp/wavy/wkdir/GFRC.f /disk50/data/wd52pp/wavy/wkdir/GFRC.o /disk50/data/wd52pp/wavy/wkdir/GLATS.f /disk50/data/wd52pp/wavy/wkdir/GLATS.o /disk50/data/wd52pp/wavy/wkdir/GLOOP.f /disk50/data/wd52pp/wavy/wkdir/GLOOP.o /disk50/data/wd52pp/wavy/wkdir/GOZRIM.f /disk50/data/wd52pp/wavy/wkdir/GOZRIM.o /disk50/data/wd52pp/wavy/wkdir/GSSTCD.f /disk50/data/wd52pp/wavy/wkdir/GSSTCD.o /disk50/data/wd52pp/wavy/wkdir/IMINV.f /disk50/data/wd52pp/wavy/wkdir/IMINV.o /disk50/data/wd52pp/wavy/wkdir/MSU22.f /disk50/data/wd52pp/wavy/wkdir/MSU22.o /disk50/data/wd52pp/wavy/wkdir/MTDM.f /disk50/data/wd52pp/wavy/wkdir/MTDM.o /disk50/data/wd52pp/wavy/wkdir/MTM.f /disk50/data/wd52pp/wavy/wkdir/MTM.o /disk50/data/wd52pp/wavy/wkdir/MTV.f /disk50/data/wd52pp/wavy/wkdir/MTV.o /disk50/data/wd52pp/wavy/wkdir/MULAM.f /disk50/data/wd52pp/wavy/wkdir/MULAM.o /disk50/data/wd52pp/wavy/wkdir/MULMB.f /disk50/data/wd52pp/wavy/wkdir/MULMB.o /disk50/data/wd52pp/wavy/wkdir/MULMC.f /disk50/data/wd52pp/wavy/wkdir/MULMC.o /disk50/data/wd52pp/wavy/wkdir/MULMD.f /disk50/data/wd52pp/wavy/wkdir/MULMD.o /disk50/data/wd52pp/wavy/wkdir/PLN2.f /disk50/data/wd52pp/wavy/wkdir/PLN2.o /disk50/data/wd52pp/wavy/wkdir/POLY.f /disk50/data/wd52pp/wavy/wkdir/POLY.o /disk50/data/wd52pp/wavy/wkdir/PSU22.f /disk50/data/wd52pp/wavy/wkdir/PSU22.o /disk50/data/wd52pp/wavy/wkdir/RDFLD.f /disk50/data/wd52pp/wavy/wkdir/RDFLD.o /disk50/data/wd52pp/wavy/wkdir/RESET.f /disk50/data/wd52pp/wavy/wkdir/RESET.o /disk50/data/wd52pp/wavy/wkdir/SAVABG.f /disk50/data/wd52pp/wavy/wkdir/SAVABG.o /disk50/data/wd52pp/wavy/wkdir/SCLOUT.f /disk50/data/wd52pp/wavy/wkdir/SCLOUT.o /disk50/data/wd52pp/wavy/wkdir/SETFRC.f /disk50/data/wd52pp/wavy/wkdir/SETFRC.o /disk50/data/wd52pp/wavy/wkdir/SETSIG.f /disk50/data/wd52pp/wavy/wkdir/SETSIG.o /disk50/data/wd52pp/wavy/wkdir/SLNOUT.f /disk50/data/wd52pp/wavy/wkdir/SLNOUT.o /disk50/data/wd52pp/wavy/wkdir/SUMPLS.f /disk50/data/wd52pp/wavy/wkdir/SUMPLS.o /disk50/data/wd52pp/wavy/wkdir/SUMPLV.f /disk50/data/wd52pp/wavy/wkdir/SUMPLV.o /disk50/data/wd52pp/wavy/wkdir/SYMASY.f /disk50/data/wd52pp/wavy/wkdir/SYMASY.o /disk50/data/wd52pp/wavy/wkdir/TRANSP.f /disk50/data/wd52pp/wavy/wkdir/TRANSP.o /disk50/data/wd52pp/wavy/wkdir/TSTZER.f /disk50/data/wd52pp/wavy/wkdir/TSTZER.o /disk50/data/wd52pp/wavy/wkdir/VPASSM.f /disk50/data/wd52pp/wavy/wkdir/VPASSM.o /disk50/data/wd52pp/wavy/wkdir/WAVY.f /disk50/data/wd52pp/wavy/wkdir/WAVY.o /disk50/data/wd52pp/wavy/wkdir/WRFLD.f /disk50/data/wd52pp/wavy/wkdir/WRFLD.o /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.f /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.o /disk50/data/wd52pp/wavy/wkdir/a.out /disk50/data/wd52pp/wavy/wkdir/data.h /disk50/data/wd52pp/wavy/wkdir/fort.10 /disk50/data/wd52pp/wavy/wkdir/fort.18 /disk50/data/wd52pp/wavy/wkdir/fort.28 /disk50/data/wd52pp/wavy/wkdir/fort.39 /disk50/data/wd52pp/wavy/wkdir/fort.49 /disk50/data/wd52pp/wavy/wkdir/fort.50 /disk50/data/wd52pp/wavy/wkdir/fort.66 /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.f /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.o /disk50/data/wd52pp/wavy/wkdir/model_comp.scr /disk50/data/wd52pp/wavy/wkdir/ptrunk.h
++ cp /export-6/sgi9/wd52pp/utility/wavy/src_model/ACOFIL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/AMHMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BLKDAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BMCM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/COMINT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL4.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DELLNP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DIFFUS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DZTOUV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/EPSLON.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FAX.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT991.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99A.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99B.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFTRIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FILL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FL22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETANOM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETBS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETGEO.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETMAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFIDI.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLATS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLOOP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GOZRIM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GSSTCD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/IMINV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTDM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULAM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMB.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PLN2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/POLY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RDFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RESET.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SAVABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SCLOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETSIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SLNOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SYMASY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TRANSP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TSTZER.f /export-6/sgi9/wd52pp/utility/wavy/src_model/VPASSM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WAVY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WRFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/ZNLSYM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/comcom /export-6/sgi9/wd52pp/utility/wavy/src_model/comcon /export-6/sgi9/wd52pp/utility/wavy/src_model/comctl /export-6/sgi9/wd52pp/utility/wavy/src_model/commnt /export-6/sgi9/wd52pp/utility/wavy/src_model/comnum /export-6/sgi9/wd52pp/utility/wavy/src_model/comphc /export-6/sgi9/wd52pp/utility/wavy/src_model/comsig /export-6/sgi9/wd52pp/utility/wavy/src_model/comtim /export-6/sgi9/wd52pp/utility/wavy/src_model/lae_sol.s.f /export-6/sgi9/wd52pp/utility/wavy/src_model/model_comp.scr /export-6/sgi9/wd52pp/utility/wavy/src_model/namcon /export-6/sgi9/wd52pp/utility/wavy/src_model/namttl /export-6/sgi9/wd52pp/utility/wavy/src_model/old_Makefile /export-6/sgi9/wd52pp/utility/wavy/src_model/output /export-6/sgi9/wd52pp/utility/wavy/src_model/pimax /export-6/sgi9/wd52pp/utility/wavy/src_model/pjmax /export-6/sgi9/wd52pp/utility/wavy/src_model/pkmax /export-6/sgi9/wd52pp/utility/wavy/src_model/ptrunk.h /export-6/sgi9/wd52pp/utility/wavy/src_model/sigdef .
++ cat
++ 1> data.h 0< /tmp/sh6063383.1
++ cat
++ 1> ptrunk 0< /tmp/sh6063383.2
++ model_comp.scr
++ f77 ACOFIL.f DMTM.f GETABG.f GOZRIM.f MULMD.f SLNOUT.f AMHMTM.f DZTOUV.f GETANOM.f GSSTCD.f PLN2.f SUMPLS.f BLKDAT.f EPSLON.f GETBS.f IMINV.f POLY.f SUMPLV.f BMCM.f FAX.f GETFRC.f MSU22.f PSU22.f SYMASY.f COMINT.f FFT991.f GETGEO.f MTDM.f RDFLD.f TRANSP.f DEL2.f FFT99A.f GETMAT.f MTM.f RESET.f TSTZER.f DEL4.f FFT99B.f GFIDI.f MTV.f SAVABG.f VPASSM.f DELLNP.f FFTRIG.f GFRC.f MULAM.f SCLOUT.f WAVY.f DIFFUS.f FILL.f GLATS.f MULMB.f SETFRC.f WRFLD.f FL22.f GLOOP.f MULMC.f SETSIG.f ZNLSYM.f lae_sol.s.f
+ACOFIL.f:
+DMTM.f:
+GETABG.f:
+GOZRIM.f:
+MULMD.f:
+SLNOUT.f:
+AMHMTM.f:
+DZTOUV.f:
+GETANOM.f:
+GSSTCD.f:
+PLN2.f:
+SUMPLS.f:
+BLKDAT.f:
+EPSLON.f:
+GETBS.f:
+IMINV.f:
+POLY.f:
+SUMPLV.f:
+BMCM.f:
+FAX.f:
+GETFRC.f:
+MSU22.f:
+PSU22.f:
+SYMASY.f:
+COMINT.f:
+FFT991.f:
+GETGEO.f:
+MTDM.f:
+RDFLD.f:
+TRANSP.f:
+DEL2.f:
+FFT99A.f:
+GETMAT.f:
+MTM.f:
+RESET.f:
+TSTZER.f:
+DEL4.f:
+FFT99B.f:
+GFIDI.f:
+MTV.f:
+SAVABG.f:
+VPASSM.f:
+DELLNP.f:
+FFTRIG.f:
+GFRC.f:
+MULAM.f:
+SCLOUT.f:
+WAVY.f:
+DIFFUS.f:
+FILL.f:
+GLATS.f:
+MULMB.f:
+SETFRC.f:
+WRFLD.f:
+FL22.f:
+GLOOP.f:
+MULMC.f:
+SETSIG.f:
+ZNLSYM.f:
+lae_sol.s.f:
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/basic.i3e fort.18
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/forcing.i3e fort.39
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/verify.i3e fort.28
++ ln -s /disk50/data/wd52pp/wavy/reanl_7998clim_jfm.Z7.1 fort.49
++ ln -s /disk50/data/wd52pp/wavy/reanl_7998clim_jfm.Z7.2 fort.50
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/e001.result fort.66
++ unlimit
++ a.out
+  level            1
+  BASIC STATE READ IN FROM UNIT           18
+ TGLOB=   285.1670       279.8302       274.7420       268.7636    
+    261.0514       251.5907       239.9191       226.4813       213.2413    
+    213.9256    
+  level            2
+  level            3
+  level            4
+  level            5
+  level            6
+  level            7
+  level            8
+  level            9
+  level           10
+  GCM ANOMALY READ IN FROM UNIT           28
+ DONE WITH WRPROG AT     2    1    1   92        0.0
++ ja -cst
+./Runwavy.scr[49]: ja:  not found
++ datadir=/disk50/data/wd52pp/wavy
++ wkdir=/disk50/data/wd52pp/wavy/wkdir
++ tgtdir=/export-6/sgi9/wd52pp/utility/wavy/e001
++ locdir=/export-6/sgi9/wd52pp/utility/wavy
++ echo wavy linear model diagnostics
+wavy linear model diagnostics
++ TEMP=/disk50/data/wd52pp/wavy/wkdir
++ ja
+./Runwavy.scr[15]: ja:  not found
++ cd /disk50/data/wd52pp/wavy/wkdir
++ rm /disk50/data/wd52pp/wavy/wkdir/ACOFIL.f /disk50/data/wd52pp/wavy/wkdir/ACOFIL.o /disk50/data/wd52pp/wavy/wkdir/AMHMTM.f /disk50/data/wd52pp/wavy/wkdir/AMHMTM.o /disk50/data/wd52pp/wavy/wkdir/BLKDAT.f /disk50/data/wd52pp/wavy/wkdir/BLKDAT.o /disk50/data/wd52pp/wavy/wkdir/BMCM.f /disk50/data/wd52pp/wavy/wkdir/BMCM.o /disk50/data/wd52pp/wavy/wkdir/COMINT.f /disk50/data/wd52pp/wavy/wkdir/COMINT.o /disk50/data/wd52pp/wavy/wkdir/DEL2.f /disk50/data/wd52pp/wavy/wkdir/DEL2.o /disk50/data/wd52pp/wavy/wkdir/DEL4.f /disk50/data/wd52pp/wavy/wkdir/DEL4.o /disk50/data/wd52pp/wavy/wkdir/DELLNP.f /disk50/data/wd52pp/wavy/wkdir/DELLNP.o /disk50/data/wd52pp/wavy/wkdir/DIFFUS.f /disk50/data/wd52pp/wavy/wkdir/DIFFUS.o /disk50/data/wd52pp/wavy/wkdir/DMTM.f /disk50/data/wd52pp/wavy/wkdir/DMTM.o /disk50/data/wd52pp/wavy/wkdir/DZTOUV.f /disk50/data/wd52pp/wavy/wkdir/DZTOUV.o /disk50/data/wd52pp/wavy/wkdir/EPSLON.f /disk50/data/wd52pp/wavy/wkdir/EPSLON.o /disk50/data/wd52pp/wavy/wkdir/FAX.f /disk50/data/wd52pp/wavy/wkdir/FAX.o /disk50/data/wd52pp/wavy/wkdir/FFT991.f /disk50/data/wd52pp/wavy/wkdir/FFT991.o /disk50/data/wd52pp/wavy/wkdir/FFT99A.f /disk50/data/wd52pp/wavy/wkdir/FFT99A.o /disk50/data/wd52pp/wavy/wkdir/FFT99B.f /disk50/data/wd52pp/wavy/wkdir/FFT99B.o /disk50/data/wd52pp/wavy/wkdir/FFTRIG.f /disk50/data/wd52pp/wavy/wkdir/FFTRIG.o /disk50/data/wd52pp/wavy/wkdir/FILL.f /disk50/data/wd52pp/wavy/wkdir/FILL.o /disk50/data/wd52pp/wavy/wkdir/FL22.f /disk50/data/wd52pp/wavy/wkdir/FL22.o /disk50/data/wd52pp/wavy/wkdir/GETABG.f /disk50/data/wd52pp/wavy/wkdir/GETABG.o /disk50/data/wd52pp/wavy/wkdir/GETANOM.f /disk50/data/wd52pp/wavy/wkdir/GETANOM.o /disk50/data/wd52pp/wavy/wkdir/GETBS.f /disk50/data/wd52pp/wavy/wkdir/GETBS.o /disk50/data/wd52pp/wavy/wkdir/GETFRC.f /disk50/data/wd52pp/wavy/wkdir/GETFRC.o /disk50/data/wd52pp/wavy/wkdir/GETGEO.f /disk50/data/wd52pp/wavy/wkdir/GETGEO.o /disk50/data/wd52pp/wavy/wkdir/GETMAT.f /disk50/data/wd52pp/wavy/wkdir/GETMAT.o /disk50/data/wd52pp/wavy/wkdir/GFIDI.f /disk50/data/wd52pp/wavy/wkdir/GFIDI.o /disk50/data/wd52pp/wavy/wkdir/GFRC.f /disk50/data/wd52pp/wavy/wkdir/GFRC.o /disk50/data/wd52pp/wavy/wkdir/GLATS.f /disk50/data/wd52pp/wavy/wkdir/GLATS.o /disk50/data/wd52pp/wavy/wkdir/GLOOP.f /disk50/data/wd52pp/wavy/wkdir/GLOOP.o /disk50/data/wd52pp/wavy/wkdir/GOZRIM.f /disk50/data/wd52pp/wavy/wkdir/GOZRIM.o /disk50/data/wd52pp/wavy/wkdir/GSSTCD.f /disk50/data/wd52pp/wavy/wkdir/GSSTCD.o /disk50/data/wd52pp/wavy/wkdir/IMINV.f /disk50/data/wd52pp/wavy/wkdir/IMINV.o /disk50/data/wd52pp/wavy/wkdir/MSU22.f /disk50/data/wd52pp/wavy/wkdir/MSU22.o /disk50/data/wd52pp/wavy/wkdir/MTDM.f /disk50/data/wd52pp/wavy/wkdir/MTDM.o /disk50/data/wd52pp/wavy/wkdir/MTM.f /disk50/data/wd52pp/wavy/wkdir/MTM.o /disk50/data/wd52pp/wavy/wkdir/MTV.f /disk50/data/wd52pp/wavy/wkdir/MTV.o /disk50/data/wd52pp/wavy/wkdir/MULAM.f /disk50/data/wd52pp/wavy/wkdir/MULAM.o /disk50/data/wd52pp/wavy/wkdir/MULMB.f /disk50/data/wd52pp/wavy/wkdir/MULMB.o /disk50/data/wd52pp/wavy/wkdir/MULMC.f /disk50/data/wd52pp/wavy/wkdir/MULMC.o /disk50/data/wd52pp/wavy/wkdir/MULMD.f /disk50/data/wd52pp/wavy/wkdir/MULMD.o /disk50/data/wd52pp/wavy/wkdir/PLN2.f /disk50/data/wd52pp/wavy/wkdir/PLN2.o /disk50/data/wd52pp/wavy/wkdir/POLY.f /disk50/data/wd52pp/wavy/wkdir/POLY.o /disk50/data/wd52pp/wavy/wkdir/PSU22.f /disk50/data/wd52pp/wavy/wkdir/PSU22.o /disk50/data/wd52pp/wavy/wkdir/RDFLD.f /disk50/data/wd52pp/wavy/wkdir/RDFLD.o /disk50/data/wd52pp/wavy/wkdir/RESET.f /disk50/data/wd52pp/wavy/wkdir/RESET.o /disk50/data/wd52pp/wavy/wkdir/SAVABG.f /disk50/data/wd52pp/wavy/wkdir/SAVABG.o /disk50/data/wd52pp/wavy/wkdir/SCLOUT.f /disk50/data/wd52pp/wavy/wkdir/SCLOUT.o /disk50/data/wd52pp/wavy/wkdir/SETFRC.f /disk50/data/wd52pp/wavy/wkdir/SETFRC.o /disk50/data/wd52pp/wavy/wkdir/SETSIG.f /disk50/data/wd52pp/wavy/wkdir/SETSIG.o /disk50/data/wd52pp/wavy/wkdir/SLNOUT.f /disk50/data/wd52pp/wavy/wkdir/SLNOUT.o /disk50/data/wd52pp/wavy/wkdir/SUMPLS.f /disk50/data/wd52pp/wavy/wkdir/SUMPLS.o /disk50/data/wd52pp/wavy/wkdir/SUMPLV.f /disk50/data/wd52pp/wavy/wkdir/SUMPLV.o /disk50/data/wd52pp/wavy/wkdir/SYMASY.f /disk50/data/wd52pp/wavy/wkdir/SYMASY.o /disk50/data/wd52pp/wavy/wkdir/TRANSP.f /disk50/data/wd52pp/wavy/wkdir/TRANSP.o /disk50/data/wd52pp/wavy/wkdir/TSTZER.f /disk50/data/wd52pp/wavy/wkdir/TSTZER.o /disk50/data/wd52pp/wavy/wkdir/VPASSM.f /disk50/data/wd52pp/wavy/wkdir/VPASSM.o /disk50/data/wd52pp/wavy/wkdir/WAVY.f /disk50/data/wd52pp/wavy/wkdir/WAVY.o /disk50/data/wd52pp/wavy/wkdir/WRFLD.f /disk50/data/wd52pp/wavy/wkdir/WRFLD.o /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.f /disk50/data/wd52pp/wavy/wkdir/ZNLSYM.o /disk50/data/wd52pp/wavy/wkdir/a.out /disk50/data/wd52pp/wavy/wkdir/data.h /disk50/data/wd52pp/wavy/wkdir/fort.10 /disk50/data/wd52pp/wavy/wkdir/fort.18 /disk50/data/wd52pp/wavy/wkdir/fort.28 /disk50/data/wd52pp/wavy/wkdir/fort.39 /disk50/data/wd52pp/wavy/wkdir/fort.49 /disk50/data/wd52pp/wavy/wkdir/fort.50 /disk50/data/wd52pp/wavy/wkdir/fort.66 /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.f /disk50/data/wd52pp/wavy/wkdir/lae_sol.s.o /disk50/data/wd52pp/wavy/wkdir/model_comp.scr /disk50/data/wd52pp/wavy/wkdir/ptrunk.h
++ cp /export-6/sgi9/wd52pp/utility/wavy/src_model/ACOFIL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/AMHMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BLKDAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/BMCM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/COMINT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DEL4.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DELLNP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DIFFUS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DMTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/DZTOUV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/EPSLON.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FAX.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT991.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99A.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFT99B.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FFTRIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FILL.f /export-6/sgi9/wd52pp/utility/wavy/src_model/FL22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETANOM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETBS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETGEO.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GETMAT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFIDI.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLATS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GLOOP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GOZRIM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/GSSTCD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/IMINV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTDM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MTV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULAM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMB.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/MULMD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PLN2.f /export-6/sgi9/wd52pp/utility/wavy/src_model/POLY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/PSU22.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RDFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/RESET.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SAVABG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SCLOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETFRC.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SETSIG.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SLNOUT.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLS.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SUMPLV.f /export-6/sgi9/wd52pp/utility/wavy/src_model/SYMASY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TRANSP.f /export-6/sgi9/wd52pp/utility/wavy/src_model/TSTZER.f /export-6/sgi9/wd52pp/utility/wavy/src_model/VPASSM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WAVY.f /export-6/sgi9/wd52pp/utility/wavy/src_model/WRFLD.f /export-6/sgi9/wd52pp/utility/wavy/src_model/ZNLSYM.f /export-6/sgi9/wd52pp/utility/wavy/src_model/comcom /export-6/sgi9/wd52pp/utility/wavy/src_model/comcon /export-6/sgi9/wd52pp/utility/wavy/src_model/comctl /export-6/sgi9/wd52pp/utility/wavy/src_model/commnt /export-6/sgi9/wd52pp/utility/wavy/src_model/comnum /export-6/sgi9/wd52pp/utility/wavy/src_model/comphc /export-6/sgi9/wd52pp/utility/wavy/src_model/comsig /export-6/sgi9/wd52pp/utility/wavy/src_model/comtim /export-6/sgi9/wd52pp/utility/wavy/src_model/lae_sol.s.f /export-6/sgi9/wd52pp/utility/wavy/src_model/model_comp.scr /export-6/sgi9/wd52pp/utility/wavy/src_model/namcon /export-6/sgi9/wd52pp/utility/wavy/src_model/namttl /export-6/sgi9/wd52pp/utility/wavy/src_model/old_Makefile /export-6/sgi9/wd52pp/utility/wavy/src_model/output /export-6/sgi9/wd52pp/utility/wavy/src_model/pimax /export-6/sgi9/wd52pp/utility/wavy/src_model/pjmax /export-6/sgi9/wd52pp/utility/wavy/src_model/pkmax /export-6/sgi9/wd52pp/utility/wavy/src_model/ptrunk.h /export-6/sgi9/wd52pp/utility/wavy/src_model/sigdef .
++ cat
++ 1> data.h 0< /tmp/sh6168996.1
++ cat
++ 1> ptrunk 0< /tmp/sh6168996.2
++ model_comp.scr
++ f77 ACOFIL.f DMTM.f GETABG.f GOZRIM.f MULMD.f SLNOUT.f AMHMTM.f DZTOUV.f GETANOM.f GSSTCD.f PLN2.f SUMPLS.f BLKDAT.f EPSLON.f GETBS.f IMINV.f POLY.f SUMPLV.f BMCM.f FAX.f GETFRC.f MSU22.f PSU22.f SYMASY.f COMINT.f FFT991.f GETGEO.f MTDM.f RDFLD.f TRANSP.f DEL2.f FFT99A.f GETMAT.f MTM.f RESET.f TSTZER.f DEL4.f FFT99B.f GFIDI.f MTV.f SAVABG.f VPASSM.f DELLNP.f FFTRIG.f GFRC.f MULAM.f SCLOUT.f WAVY.f DIFFUS.f FILL.f GLATS.f MULMB.f SETFRC.f WRFLD.f FL22.f GLOOP.f MULMC.f SETSIG.f ZNLSYM.f lae_sol.s.f
+ACOFIL.f:
+DMTM.f:
+GETABG.f:
+GOZRIM.f:
+MULMD.f:
+SLNOUT.f:
+AMHMTM.f:
+DZTOUV.f:
+GETANOM.f:
+GSSTCD.f:
+PLN2.f:
+SUMPLS.f:
+BLKDAT.f:
+EPSLON.f:
+GETBS.f:
+IMINV.f:
+POLY.f:
+SUMPLV.f:
+BMCM.f:
+FAX.f:
+GETFRC.f:
+MSU22.f:
+PSU22.f:
+SYMASY.f:
+COMINT.f:
+FFT991.f:
+GETGEO.f:
+MTDM.f:
+RDFLD.f:
+TRANSP.f:
+DEL2.f:
+FFT99A.f:
+GETMAT.f:
+MTM.f:
+RESET.f:
+TSTZER.f:
+DEL4.f:
+FFT99B.f:
+GFIDI.f:
+MTV.f:
+SAVABG.f:
+VPASSM.f:
+DELLNP.f:
+FFTRIG.f:
+GFRC.f:
+MULAM.f:
+SCLOUT.f:
+WAVY.f:
+DIFFUS.f:
+FILL.f:
+GLATS.f:
+MULMB.f:
+SETFRC.f:
+WRFLD.f:
+FL22.f:
+GLOOP.f:
+MULMC.f:
+SETSIG.f:
+ZNLSYM.f:
+lae_sol.s.f:
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/basic.i3e fort.18
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/forcing.i3e fort.39
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/verify.i3e fort.28
++ ln -s /disk50/data/wd52pp/wavy/reanl_7996clim_feb.Z7.1 fort.49
++ ln -s /disk50/data/wd52pp/wavy/reanl_7996clim_feb.Z7.2 fort.50
++ ln -s /export-6/sgi9/wd52pp/utility/wavy/e001/e001.result fort.66
++ unlimit
++ a.out
+  level            1
+  BASIC STATE READ IN FROM UNIT           18
+ TGLOB=   285.0401       279.7449       274.6760       268.7205    
+    261.0306       251.5847       239.9680       226.6012       213.2912    
+    213.8998    
+  level            2
+  level            3
+  level            4
+  level            5
+  level            6
+  level            7
+  level            8
+  level            9
+  level           10
+  GCM ANOMALY READ IN FROM UNIT           28
+ DONE WITH WRPROG AT     2    1    1   92        0.0
++ ja -cst
+./Runwavy.scr[51]: ja:  not found

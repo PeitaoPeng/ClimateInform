@@ -1,0 +1,6 @@
+
+for monthly opi data
+1. Rread_opi.gs
+2. REG72_2_REG72x72.scr
+3. mon_anom.gs
+ must change eym and nmonth 

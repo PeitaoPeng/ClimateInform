@@ -1,0 +1,30 @@
+      program read_data 
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C. read ASCII 102CD data from DU
+C===========================================================
+      PARAMETER (mdvs=102,nyr=9000,nmo=12)
+      real fld(mdvs),obs3d(mdvs,nyr,nmo)
+c
+      open(unit=10,form='formatted')
+      open(unit=60,form='formatted')
+
+      do iyr=1,nyr
+      do imo=1,nmo
+
+        read(10,666,end=1000) IY,IM,IP,NP,NSTA
+        write(6,666) IY,IM,IP,NP,NSTA
+        write(60,666) IY,IM,IP,NP,NSTA
+        read(10,777,end=1000) fld
+        write(60,777) fld
+
+      enddo
+      enddo
+ 1000 continue
+  666 format(5I5)
+  777 format(10f6.1)
+C 777 format(12f6.1)
+
+      stop
+      END
+
+

@@ -1,0 +1,108 @@
+13c13
+<       parameter(kpdf=1000)   ! # of pdf bin
+---
+>       parameter(kpdf=100)   ! # of pdf bin
+68d67
+<       dimension    pa(imt,jmt),pb(imt,jmt),pn(imt,jmt)
+947,961c946,948
+<           esm=pwk2d2(i,j)
+<           b1=-esm-0.43
+<           b2=-esm+0.43
+< c         write(6,*) 'esm=',esm
+<           n1=kpdf/2+int(b1/xdel)
+<           n2=kpdf/2+int(b2/xdel)+1
+< c         write(6,*) 'n1,n2=',n1,n2
+<  
+<         call prob_3c(kpdf,n1,n2,xbin,xdel,ypdf,pb(i,j),pa(i,j),pn(i,j))
+<  
+<           if(esm.gt.0) then
+<           prbprd(i,j)=pa(i,j)
+<           else
+<           prbprd(i,j)=-pb(i,j)
+<           endif
+---
+>         call prob(pwk2d2(i,j),kpdf,xbin,xdel,ypdf,pp,pn)
+>         if(pwk2d2(i,j).gt.0) then 
+>         prbprd(i,j)=pp
+963c950,953
+<           prbprd(i,j)=obsstd(i,j)
+---
+>         prbprd(i,j)=-pn
+>         endif
+>         else
+>         prbprd(i,j)=undef2
+980c970
+< c have 3-class obs and prd
+---
+> c have 2-class obs and prd
+985,987c975
+<       obsprew34(i,j,iw,is)= obsprew34(i,j,iw,is)/obsstd(i,j)
+<       prdprew34(i,j,iw,is)=(prdprew34(i,j,iw,is)+sattrd(i,j,is))/
+<      &w34std(i,j)
+---
+>       prdsatw34(i,j,iw,is)=prdsatw34(i,j,iw,is)+sattrd(i,j,is)
+1000,1008c988,991
+<         odata=obsprew34(i,j,iw,is)
+<         pdata=prdprew34(i,j,iw,is)
+<         if(odata.gt.0.43) nts4(it)=1
+<         if(odata.lt.0.43) nts4(it)=-1
+<         if(odata.ge.-0.43.and.odata.le.0.43) nts4(it)=0
+< 
+<         if(pdata.gt.0.43) nts5(it)=1
+<         if(pdata.lt.0.43) nts5(it)=-1
+<         if(pdata.ge.-0.43.and.pdata.le.0.43) nts5(it)=0
+---
+>         if(obssatw34(i,j,iw,is).gt.0) nts4(it)=1
+>         if(obssatw34(i,j,iw,is).lt.0) nts4(it)=-1
+>         if(prdsatw34(i,j,iw,is).gt.0) nts5(it)=1
+>         if(prdsatw34(i,j,iw,is).lt.0) nts5(it)=-1
+1011c994,995
+<         call hss3c_t(nts4,nts5,hs(i,j),npp*27,npp*nseason,npp*nseason)
+---
+>         call hss2c_t(nts4,nts5,hs(i,j),npp*27,npp*nseason,npp*nseason)
+> c       call hss2c_t(nts4,nts5,hs(i,j),npp*33,npp*nseason,npp*nseason)
+1747c1731
+< c     xde=0.1
+---
+>       xde=0.1
+1758c1742
+< C  Have 3-category prob by integratinge PDF
+---
+> C  Have prob by integratinge PDF
+1760c1744
+<       subroutine prob_3c(n,n1,n2,xx,xdel,yy,pb,pa,pn)
+---
+>       subroutine prob(x1,n,xx,xde,yy,pp,pn)
+1762,1769c1746,1750
+<       pb=0
+<       do i=1,n1
+<       pb=pb+xdel*yy(i)
+<       enddo
+<       pa=0
+<       do i=n2,n
+<       pa=pa+xdel*yy(i)
+<       enddo
+---
+>       if(x1.gt.0) then
+>       x2=0-x1
+>       else
+>       x2=abs(x1)
+>       endif
+1771,1772c1752,1754
+<       do i=n1+1,n2-1
+<       pn=pn+xdel*yy(i)
+---
+>       do i=1,n
+>       if(xx(i).gt.x2) go to 111
+>       pn=pn+xde*yy(i)
+1773a1756,1757
+>   111 continue
+>       pp=1-pn
+1847c1831
+<       subroutine hss3c_t(mw1,mw2,hs,its,ite,n)
+---
+>       subroutine hss2c_t(mw1,mw2,hs,its,ite,n)
+1856c1840
+<       hs=(h-tot/3.)/(tot-tot/3.)*100.
+---
+>       hs=(h-tot/2.)/(tot-tot/2.)*100.

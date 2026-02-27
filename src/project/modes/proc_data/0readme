@@ -1,0 +1,5 @@
+
+1. jfm_mean.model.tot.scr for JFM mean of model data
+2. jfm_mean.obs.tot.gs for JFM mean of obs
+3. REG73-T40.scr in uti for regrid
+4. jfm_mean.a_c.scr to have anom and clim for both model and obs data

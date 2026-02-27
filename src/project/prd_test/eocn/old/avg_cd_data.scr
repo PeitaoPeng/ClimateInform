@@ -1,0 +1,31 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/project/prd_skill
+tmp=/export-6/sgi9/wd52pp/tmp
+datadir=/export-6/cacsrv1/wd52pp/LF_prd
+#
+longtime=883
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/avg_cd_data.f $tmp/.
+cd $tmp
+unlimit
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(imax=102)
+eof
+#
+#
+f77 -o avg_cd_data.x avg_cd_data.f
+echo "done compiling"
+
+#
+ ln -s $datadir/temp_102.txt        fort.10
+ ln -s $datadir/avg_cd.temp.1931-cur.anom.i3e     fort.20
+#
+avg_cd_data.x
+#
+

@@ -1,0 +1,122 @@
+irun=  1  yr=   1957  maxp=  3   start mon=  1   cr=    0.802    0.783    0.579    0.338
+irun=  1  yr=   1958  maxp=  3   start mon=  2   cr=    0.787    0.693    0.773   -9.990
+irun=  1  yr=   1959  maxp=  2   start mon=  1   cr=   -0.691    0.569    0.653    0.286
+irun=  1  yr=   1960  maxp=  3   start mon=  2   cr=    0.548    0.675    0.548   -9.990
+irun=  1  yr=   1962  maxp=  1   start mon=  1   cr=    0.437    0.512   -0.244    0.259
+irun=  1  yr=   1963  maxp=  1   start mon=  4   cr=    0.561   -9.990   -9.990   -9.990
+irun=  1  yr=   1964  maxp=  1   start mon=  1   cr=    0.064    0.529    0.011    0.125
+irun=  1  yr=   1965  maxp=  2   start mon=  2   cr=    0.831    0.755    0.266   -9.990
+irun=  1  yr=   1966  maxp=  1   start mon=  2   cr=    0.433    0.657    0.489   -9.990
+irun=  1  yr=   1967  maxp=  2   start mon=  1   cr=   -0.071   -0.269    0.623    0.537
+irun=  1  yr=   1968  maxp=  2   start mon=  3   cr=    0.751    0.526   -9.990   -9.990
+irun=  1  yr=   1969  maxp=  4   start mon=  1   cr=    0.526    0.739    0.859    0.758
+irun=  1  yr=   1970  maxp=  2   start mon=  3   cr=    0.609    0.762   -9.990   -9.990
+irun=  1  yr=   1971  maxp=  1   start mon=  2   cr=    0.632    0.153   -0.004   -9.990
+irun=  1  yr=   1972  maxp=  3   start mon=  2   cr=    0.877    0.671    0.579   -9.990
+irun=  1  yr=   1973  maxp=  2   start mon=  2   cr=    0.480    0.566    0.786   -9.990
+irun=  1  yr=   1974  maxp=  2   start mon=  2   cr=    0.521    0.608    0.392   -9.990
+irun=  1  yr=   1975  maxp=  4   start mon=  1   cr=    0.712    0.714    0.628    0.781
+irun=  1  yr=   1976  maxp=  2   start mon=  3   cr=    0.738    0.653   -9.990   -9.990
+irun=  1  yr=   1977  maxp=  4   start mon=  1   cr=    0.709    0.622    0.598    0.636
+irun=  1  yr=   1978  maxp=  1   start mon=  1   cr=    0.637   -0.102    0.172    0.718
+irun=  1  yr=   1979  maxp=  2   start mon=  1   cr=    0.781    0.641   -0.037   -0.161
+irun=  1  yr=   1980  maxp=  2   start mon=  3   cr=    0.638    0.853   -9.990   -9.990
+irun=  1  yr=   1981  maxp=  1   start mon=  4   cr=    0.637   -9.990   -9.990   -9.990
+irun=  1  yr=   1982  maxp=  3   start mon=  2   cr=    0.786    0.844    0.856   -9.990
+irun=  1  yr=   1983  maxp=  1   start mon=  1   cr=    0.369    0.509   -0.083    0.435
+irun=  1  yr=   1984  maxp=  2   start mon=  2   cr=    0.759    0.678    0.411   -9.990
+irun=  1  yr=   1985  maxp=  1   start mon=  4   cr=    0.905   -9.990   -9.990   -9.990
+irun=  1  yr=   1986  maxp=  1   start mon=  2   cr=    0.666    0.442    0.036   -9.990
+irun=  1  yr=   1987  maxp=  2   start mon=  1   cr=    0.699    0.620    0.283   -0.276
+irun=  1  yr=   1988  maxp=  3   start mon=  1   cr=    0.565    0.676    0.582    0.390
+irun=  1  yr=   1989  maxp=  1   start mon=  3   cr=    0.696    0.251   -9.990   -9.990
+irun=  1  yr=   1991  maxp=  4   start mon=  1   cr=    0.802    0.660    0.726    0.754
+irun=  1  yr=   1992  maxp=  3   start mon=  2   cr=    0.780    0.833    0.830   -9.990
+irun=  1  yr=   1994  maxp=  4   start mon=  1   cr=    0.733    0.641    0.819    0.851
+irun=  1  yr=   1995  maxp=  2   start mon=  2   cr=    0.558    0.595    0.263   -9.990
+irun=  1  yr=   1996  maxp=  2   start mon=  1   cr=    0.598    0.657    0.403    0.501
+irun=  1  yr=   1997  maxp=  3   start mon=  2   cr=    0.779    0.872    0.696   -9.990
+irun=  1  yr=   1998  maxp=  4   start mon=  1   cr=    0.744    0.717    0.570    0.651
+irun=  1  yr=   1999  maxp=  3   start mon=  2   cr=    0.736    0.677    0.725   -9.990
+irun=  1  yr=   2000  maxp=  3   start mon=  2   cr=    0.797    0.766    0.782   -9.990
+irun=  1  yr=   2001  maxp=  2   start mon=  3   cr=    0.870    0.512   -9.990   -9.990
+irun=  1  yr=   2002  maxp=  3   start mon=  2   cr=    0.828    0.638    0.827   -9.990
+irun=  1  yr=   2003  maxp=  2   start mon=  1   cr=    0.460    0.351    0.647    0.583
+irun=  1  yr=   2004  maxp=  2   start mon=  1   cr=    0.674    0.645    0.416    0.388
+irun=  1  yr=   2005  maxp=  4   start mon=  1   cr=    0.879    0.782    0.830    0.923
+irun=  1  yr=   2006  maxp=  2   start mon=  3   cr=    0.766    0.588   -9.990   -9.990
+irun=  1  yr=   2007  maxp=  3   start mon=  2   cr=    0.622    0.585    0.601   -9.990
+irun=  1  yr=   2008  maxp=  1   start mon=  1   cr=    0.527    0.069   -0.103    0.288
+irun=  1  yr=   2009  maxp=  2   start mon=  2   cr=    0.664    0.719    0.457   -9.990
+irun=  1  yr=   2010  maxp=  3   start mon=  2   cr=    0.831    0.936    0.626   -9.990
+irun=  1  yr=   2011  maxp=  3   start mon=  2   cr=    0.615    0.606    0.529   -9.990
+irun=  1  yr=   2012  maxp=  3   start mon=  2   cr=    0.730    0.603    0.529   -9.990
+irun=  1  yr=   2013  maxp=  4   start mon=  1   cr=    0.901    0.776    0.811    0.535
+ p1=           3 p2=          12 p3=          19 p4=          15 p5=           8
+ pw1=          49 pw2=           0 pw3=           0 pw4=           0 pw5=           0
+ pc1=           0 pc2=           0 pc3=           0 pc4=           0 pc5=           0
+ yr=        1957 p1=           0 p2=           0 p3=           0 p4=           1 p5=           0
+ yr=        1958 p1=           0 p2=           0 p3=           0 p4=           1 p5=           0
+ yr=        1959 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        1960 p1=           0 p2=           0 p3=           0 p4=           1 p5=           0
+ yr=        1961 p1=           1 p2=           0 p3=           0 p4=           0 p5=           0
+ yr=        1962 p1=           0 p2=           1 p3=           0 p4=           0 p5=           0
+ yr=        1963 p1=           0 p2=           1 p3=           0 p4=           0 p5=           0
+ yr=        1964 p1=           0 p2=           1 p3=           0 p4=           0 p5=           0
+ yr=        1965 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        1966 p1=           0 p2=           1 p3=           0 p4=           0 p5=           0
+ yr=        1967 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        1968 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        1969 p1=           0 p2=           0 p3=           0 p4=           0 p5=           1
+ yr=        1970 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        1971 p1=           0 p2=           1 p3=           0 p4=           0 p5=           0
+ yr=        1972 p1=           0 p2=           0 p3=           0 p4=           1 p5=           0
+ yr=        1973 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        1974 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        1975 p1=           0 p2=           0 p3=           0 p4=           0 p5=           1
+ yr=        1976 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        1977 p1=           0 p2=           0 p3=           0 p4=           0 p5=           1
+ yr=        1978 p1=           0 p2=           1 p3=           0 p4=           0 p5=           0
+ yr=        1979 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        1980 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        1981 p1=           0 p2=           1 p3=           0 p4=           0 p5=           0
+ yr=        1982 p1=           0 p2=           0 p3=           0 p4=           1 p5=           0
+ yr=        1983 p1=           0 p2=           1 p3=           0 p4=           0 p5=           0
+ yr=        1984 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        1985 p1=           0 p2=           1 p3=           0 p4=           0 p5=           0
+ yr=        1986 p1=           0 p2=           1 p3=           0 p4=           0 p5=           0
+ yr=        1987 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        1988 p1=           0 p2=           0 p3=           0 p4=           1 p5=           0
+ yr=        1989 p1=           0 p2=           1 p3=           0 p4=           0 p5=           0
+ yr=        1990 p1=           1 p2=           0 p3=           0 p4=           0 p5=           0
+ yr=        1991 p1=           0 p2=           0 p3=           0 p4=           0 p5=           1
+ yr=        1992 p1=           0 p2=           0 p3=           0 p4=           1 p5=           0
+ yr=        1993 p1=           1 p2=           0 p3=           0 p4=           0 p5=           0
+ yr=        1994 p1=           0 p2=           0 p3=           0 p4=           0 p5=           1
+ yr=        1995 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        1996 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        1997 p1=           0 p2=           0 p3=           0 p4=           1 p5=           0
+ yr=        1998 p1=           0 p2=           0 p3=           0 p4=           0 p5=           1
+ yr=        1999 p1=           0 p2=           0 p3=           0 p4=           1 p5=           0
+ yr=        2000 p1=           0 p2=           0 p3=           0 p4=           1 p5=           0
+ yr=        2001 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        2002 p1=           0 p2=           0 p3=           0 p4=           1 p5=           0
+ yr=        2003 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        2004 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        2005 p1=           0 p2=           0 p3=           0 p4=           0 p5=           1
+ yr=        2006 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        2007 p1=           0 p2=           0 p3=           0 p4=           1 p5=           0
+ yr=        2008 p1=           0 p2=           1 p3=           0 p4=           0 p5=           0
+ yr=        2009 p1=           0 p2=           0 p3=           1 p4=           0 p5=           0
+ yr=        2010 p1=           0 p2=           0 p3=           0 p4=           1 p5=           0
+ yr=        2011 p1=           0 p2=           0 p3=           0 p4=           1 p5=           0
+ yr=        2012 p1=           0 p2=           0 p3=           0 p4=           1 p5=           0
+ yr=        2013 p1=           0 p2=           0 p3=           0 p4=           0 p5=           1
+ lag=           0  ncase=         228
+ mean=  0.5539725      std=  0.3046831    
+ lag=           1  ncase=         171
+ mean=  0.3997766      std=  0.3349767    
+ lag=           2  ncase=         114
+ mean=  0.3464837      std=  0.3437688    
+ lag=           3  ncase=          57
+ mean=  0.2780749      std=  0.3499601    

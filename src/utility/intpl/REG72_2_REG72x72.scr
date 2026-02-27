@@ -1,0 +1,26 @@
+#!/bin/sh
+
+set -eaux
+
+#
+#datadir1=/export-2/lnx193/xping2/PRODUCTS/CMAP/pentad/current
+ datadir=/export-6/cacsrv1/wd52pp/obs/prcp
+#
+ nmonth=297
+#nmonth=1752
+ iskip=0
+#
+/bin/rm fort.11 fort.21
+   ln -s $datadir/opi_7901-0309.i3e fort.11
+#  ln -s $datadir2/cmap_pen.sgi fort.11
+   ln -s $datadir/opi_7901-0309.72x72.i3e fort.21
+#  ln -s $datadir2/cmap_pen.sgi.72x72.i3e fort.21
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth,iskip=$iskip)
+eof
+#
+ f77  REG72_2_REG72x72.f setxy.f intp2d.f
+ a.out
+#
+ja -s

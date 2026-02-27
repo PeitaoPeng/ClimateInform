@@ -1,0 +1,46 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/LF_prd/ocn_prd
+tmp=/export/hobbes/wd52pp/tmp
+datadir=/export-12/cacsrv1/wd52pp/LF_prd
+#
+nyear=80  #if any month of the season is in the current year, the nyear must include current year, e.g., for ndj/2007, nyear=77
+#
+#
+cp $lcdir/anom_clim.f $tmp/.
+cd $tmp
+
+for season in mjj jja jas; do
+
+/bin/rm $tmp/fort.*         
+
+#
+if [ "$season" = jfm ]; then mons=1; fi
+if [ "$season" = fma ]; then mons=2; fi
+if [ "$season" = mam ]; then mons=3; fi
+if [ "$season" = amj ]; then mons=4; fi
+if [ "$season" = mjj ]; then mons=5; fi
+if [ "$season" = jja ]; then mons=6; fi
+if [ "$season" = jas ]; then mons=7; fi
+if [ "$season" = aso ]; then mons=8; fi
+if [ "$season" = son ]; then mons=9; fi
+if [ "$season" = ond ]; then mons=10; fi
+if [ "$season" = ndj ]; then mons=11; fi
+if [ "$season" = djf ]; then mons=12; fi
+#
+cat > parm.h << eof
+       parameter(mons=$mons)
+       parameter(nyear=$nyear)
+eof
+#
+f77 -o anom_clim.x anom_clim.f
+echo "done compiling"
+#
+ ln -s $datadir/temp_102.txt                         fort.10
+ ln -s $datadir/temp_102_anom.$season.txt  fort.40
+#
+anom_clim.x
+#
+done

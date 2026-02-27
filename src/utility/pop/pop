@@ -1,0 +1,64 @@
+#!/bin/sh
+#
+# All lines beginning like this one are comments from here on!
+#
+echo "**********************************************************************"
+echo "**********************************************************************"
+echo " "
+#/usr/5bin/banner "   pop   "
+echo "                          V E R S I O N  3.0"
+echo " "
+#
+# The following statement assumes that the executable program is named pop.x
+# and is located somewhere in the search path for commands. "pop.x" may be 
+# substituted by the full path name which leads to it's location. You may also
+# link the actual executable by setting the environment variable POP_PROGRAM
+# to the full path name of the executable, e.g. in the c-shell by setting
+#     setenv POP_PROGRAM /usr/local/bin/pop.x
+# prior to the execution of this script.
+#
+POP_EXEC=${POP_PROGRAM:=pop.x}
+#
+set -- `getopt  PECTDhdrupfln:t:e:c:s:m:i:o:  $*` 
+err=$?
+if echo $* | grep '\-h' >/dev/null ;then err=1 ;fi
+if echo $* | grep '\-P' >/dev/null
+then
+   echo " ... ATTENTION: Option \"-P\" is no longer valid. "
+   echo "                A POP Analysis is now performed by default."
+   echo "                New option: \"-E\" to perform only an EOF analysis."
+   echo "                (This is now in accordance with the POP Manual V3.0)"
+   exit 1
+fi
+#
+# Give user help for syntax error or if called with option -h    
+#
+if [ $err -ne 0 ]
+then
+  echo "Usage: $0 [-ECThdrupfl] [-n NTS] [-t NTO] [-e NEOF] "
+  echo "........... [-c NC] [-s DT] [-m FACT]"
+  echo "........... [-i infile] [-o outfile] -- [PMIN P2 P1 PMAX]"
+  echo
+  echo "      -E : EOF analysis only  -C : Complex EOFs    -T : Time filtering"
+  echo "      -d : Trend filt.        -r : Normalisation   -u : Turning"
+  echo "      -p : Large printout     -h : help "
+  echo "      -f : Force flipping of covariance matrix for gappy data"
+  echo "      -l : Coefficients are computed by least squares fit "
+  echo '             (otherwise by projection of the POP onto the data)'
+  echo '      -n : Number of time series (optional)    -e : Number of EOFs'
+  echo '      -t : Length of time series (optional)    -c : Number of chunks'
+  echo "      -s : Time step         -m : Multiply data with FACT"
+  echo "      -i : Input file        -o : Base name of output files"
+  echo " "
+  exit 1
+fi
+#
+echo ">>>>> POP program $POP_EXEC started at `date`"
+#
+echo $* | $POP_EXEC 
+#
+echo "<<<<< POP program terminated normally at `date`"
+echo " "
+echo "**********************************************************************"
+echo "**********************************************************************"
+exit 0

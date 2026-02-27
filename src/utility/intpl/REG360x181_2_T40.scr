@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ datadir1=/cpc/home/wd52pp/data/para
+#
+ datadir2=/cpc/home/wd52pp/project/attr/win13-14
+#
+#nmonth=10
+ nmonth=5
+# 
+ /bin/rm  fort.*
+#  ln -s $datadir1/v200.clim_anom.ndjfm2013-14.mon.para.esm.gr       fort.11
+#  ln -s $datadir2/v200.clim_anom.ndjfm2013-14.mon.para.esm.T40.gr   fort.21
+#  ln -s $datadir1/prate.ndjfm2013-14.mon.para.esm.gr       fort.11
+#  ln -s $datadir2/prate.ndjfm2013-14.mon.para.esm.T40.gr   fort.21
+   ln -s $datadir1/v200.nov13-mar14.esm.gr       fort.11
+   ln -s $datadir2/v200.nov13-mar14.esm.T40.gr   fort.21
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth)
+eof
+#
+ gfortran  REG360x181_2_T40.f setxy.f intp2d.f
+ a.out
+#

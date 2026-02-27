@@ -1,0 +1,151 @@
+
+ T =  0.5000000      Path Length =   3.951000    
+ Successful Moves:          100
+
+ T =  0.4500000      Path Length =   4.017372    
+ Successful Moves:          100
+
+ T =  0.4050000      Path Length =   3.921508    
+ Successful Moves:          100
+
+ T =  0.3645000      Path Length =   3.873551    
+ Successful Moves:          100
+
+ T =  0.3280500      Path Length =   4.428962    
+ Successful Moves:          100
+
+ T =  0.2952450      Path Length =   3.400978    
+ Successful Moves:          100
+
+ T =  0.2657205      Path Length =   4.024462    
+ Successful Moves:          100
+
+ T =  0.2391484      Path Length =   3.138469    
+ Successful Moves:          100
+
+ T =  0.2152336      Path Length =   3.955515    
+ Successful Moves:          100
+
+ T =  0.1937102      Path Length =   3.550861    
+ Successful Moves:          100
+
+ T =  0.1743392      Path Length =   3.028266    
+ Successful Moves:          100
+
+ T =  0.1569052      Path Length =   3.066343    
+ Successful Moves:          100
+
+ T =  0.1412147      Path Length =   2.895015    
+ Successful Moves:          100
+
+ T =  0.1270932      Path Length =   2.744375    
+ Successful Moves:          100
+
+ T =  0.1143839      Path Length =   2.860126    
+ Successful Moves:          100
+
+ T =  0.1029455      Path Length =   2.656679    
+ Successful Moves:          100
+
+ T =  9.2650965E-02  Path Length =   2.708646    
+ Successful Moves:          100
+
+ T =  8.3385870E-02  Path Length =   2.800368    
+ Successful Moves:          100
+
+ T =  7.5047284E-02  Path Length =   2.649487    
+ Successful Moves:          100
+
+ T =  6.7542553E-02  Path Length =   2.741048    
+ Successful Moves:          100
+
+ T =  6.0788296E-02  Path Length =   2.727559    
+ Successful Moves:          100
+
+ T =  5.4709464E-02  Path Length =   2.728270    
+ Successful Moves:           99
+
+ T =  4.9238518E-02  Path Length =   2.609908    
+ Successful Moves:           88
+
+ T =  4.4314664E-02  Path Length =   2.603739    
+ Successful Moves:           82
+
+ T =  3.9883196E-02  Path Length =   2.609909    
+ Successful Moves:           87
+
+ T =  3.5894874E-02  Path Length =   2.770682    
+ Successful Moves:           71
+
+ T =  3.2305386E-02  Path Length =   2.632233    
+ Successful Moves:           58
+
+ T =  2.9074846E-02  Path Length =   2.604872    
+ Successful Moves:           47
+
+ T =  2.6167361E-02  Path Length =   2.652916    
+ Successful Moves:           42
+
+ T =  2.3550624E-02  Path Length =   2.805705    
+ Successful Moves:           46
+
+ T =  2.1195561E-02  Path Length =   2.627834    
+ Successful Moves:           40
+
+ T =  1.9076005E-02  Path Length =   2.582547    
+ Successful Moves:           32
+
+ T =  1.7168405E-02  Path Length =   2.632232    
+ Successful Moves:           30
+
+ T =  1.5451564E-02  Path Length =   2.622123    
+ Successful Moves:           33
+
+ T =  1.3906407E-02  Path Length =   2.609907    
+ Successful Moves:           22
+
+ T =  1.2515767E-02  Path Length =   2.582547    
+ Successful Moves:           17
+
+ T =  1.1264189E-02  Path Length =   2.582547    
+ Successful Moves:           10
+
+ T =  1.0137770E-02  Path Length =   2.582547    
+ Successful Moves:           14
+
+ T =  9.1239931E-03  Path Length =   2.582547    
+ Successful Moves:            6
+
+ T =  8.2115931E-03  Path Length =   2.582547    
+ Successful Moves:            6
+
+ T =  7.3904335E-03  Path Length =   2.582547    
+ Successful Moves:            6
+
+ T =  6.6513899E-03  Path Length =   2.609907    
+ Successful Moves:            5
+
+ T =  5.9862509E-03  Path Length =   2.582547    
+ Successful Moves:            3
+
+ T =  5.3876257E-03  Path Length =   2.582547    
+ Successful Moves:            2
+
+ T =  4.8488630E-03  Path Length =   2.582547    
+ Successful Moves:            2
+
+ T =  4.3639764E-03  Path Length =   2.582547    
+ Successful Moves:            0
+ *** System Frozen ***
+ Final path:
+  city      x         y
+    9    0.6519    0.2565
+    1    0.6542    0.1943
+    7    0.9786    0.1123
+    8    0.4858    0.0130
+    6    0.3294    0.0950
+    3    0.2525    0.0607
+    4    0.2916    0.3519
+    2    0.3001    0.3626
+   10    0.2350    0.7930
+    5    0.3158    0.6849

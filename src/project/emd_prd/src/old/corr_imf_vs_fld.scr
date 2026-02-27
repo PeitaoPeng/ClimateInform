@@ -1,0 +1,37 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ lcdir=/export-6/sgi9/wd52pp/project/emd_prd/src
+ datadir=/export-6/cacsrv1/wd52pp/emd
+#datadir2=/export-6/cacsrv1/wd52pp/obs/sst
+ datadir2=/export-6/cacsrv1/wd52pp/obs/reanl
+ tmp=/export-6/sgi9/wd52pp/tmp
+#
+ cp corr_imf_vs_fld.f $tmp/.
+ cd $tmp
+ \rm fort.*
+#
+cat > parm.h << eof
+c      parameter(imax=128,jmax=64)
+       parameter(imax=72,jmax=37)
+       parameter(mode=6,ltime=636,nin=660)
+eof
+#
+   ln -s $datadir/imf_monthly.ao.index.5001-0212.i3e  fort.10
+
+   ln -s $datadir/test_1d.i3e                         fort.11
+ 
+#  ln -s $datadir2/ersst.5001-0212.T40.gr             fort.20
+   ln -s $datadir2/z200_4901-0212.reg.i3e             fort.20
+#
+#  ln -s $datadir/corr.ao_imf.vs.sst.5001-0212.i3e    fort.30
+   ln -s $datadir/corr.ao_imf.vs.z200.5001-0212.i3e    fort.30
+#
+#
+ unlimit
+ f77  corr_imf_vs_fld.f
+ a.out > $lcdir/out
+#
+ja -s

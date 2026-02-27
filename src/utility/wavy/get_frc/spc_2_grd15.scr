@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -eaux
+
+locdir=/cpc/home/wd52pp/utility/wavy/get_frc
+TMPDIR=/cpc/home/wd52pp/tmp
+#
+/bin/rm $TMPDIR/fort.*
+#
+cp spc_2_grd15.L9.f  $TMPDIR/sg.f
+cp glats.f       $TMPDIR/gl.f
+cp genpnme15.f   $TMPDIR/gm.f
+cp fftgcm.f      $TMPDIR/fftgcm.f
+#
+cd $TMPDIR
+#
+gfortran sg.f gl.f gm.f fftgcm.f
+#
+ln -s $locdir/frc_view.i3e   fort.10
+ln -s $locdir/frc_view.gr    fort.90
+#
+a.out > $locdir/out

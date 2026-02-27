@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>
+AR-Model
+</title>
+</head>
+<body bgcolor=white>
+<h1 align=center>Description of the program: <font color=Blue>ar-model
+</font>
+</h1>
+<hr>
+This program fits a simple autoregressive (AR) model to the data. The
+model is given by the equation
+<blockquote>
+x<sub>n</sub>=a<sub>1</sub>x<sub>n-1</sub>+...+a<sub>p</sub>x<sub>n-p</sub> + noise.
+</blockquote>
+The output file contains the coefficients of the model and the
+residuals.  Note that now the mean is subtracted first, conforming
+with common practice.  If you want to run the resulting model to
+generate a time series, you can pipe the output to <a
+href="../wuppertal/ar-run.html">ar-run</a>. Note that no attempt has
+been made to generate a <em>stable</em> model.
+<hr>
+<h2 align=center>Usage:</h2>
+<center>
+<font color=Red>ar-model [Options]</font>
+<p>
+Everything not being a valid option will be interpreted as a potential datafile name. Given no datafile at all, means read stdin. Also <font color=Red>-</font> means stdin
+<p>
+Possible options are:
+<p>
+<table border=2>
+<tr>
+<th>Option
+<th>Description
+<th>Default
+</tr>
+<tr>
+<th>-l#
+<td>number of data to use
+<td>whole file
+</tr>
+<tr>
+<th>-x#
+<td>number of lines to be ignored
+<td>0
+</tr>
+<tr>
+<th>-c#
+<td><a href=../general.html#column>column to be read</a>
+<td>1
+</tr>
+<tr>
+<th>-p#
+<td>order of the model
+<td>5
+</tr>
+<tr>
+<th>-o#
+<td><a href=../general.html#outfile>output file name</a>
+<td>without file name: 'datafile'.ar<br>
+(or stdin.ar if stdin was used)<br>
+if no -o is given stdout is used
+</tr>
+<tr>
+<th>-V#
+<td><a href=../general.html#verbosity>verbosity level</a><br>
+&nbsp;&nbsp;0: only panic messages<br>
+&nbsp;&nbsp;1: add input/output messages
+<td>1
+</tr>
+<tr>
+<th>-h
+<td>show these options
+<td>none
+</tr>
+</table>
+</center>
+<hr>
+<h2 align=center>Description of the Output:</h2>
+The first line is just the average forecast error of the model, the
+next <font color=blue>p</font> lines contain the AR coefficients and
+the rest of the file are the individual errors (residuals), not the
+forecasted values.
+<hr>
+View the <a href="../../source_c/ar-model.c">C-sources</a>
+<hr>
+<a href=../contents.html>Table of Contents</a> * <a href="../../index.html" target="_top">TISEAN home</a>
+</body>
+</html>
+
+
+
+

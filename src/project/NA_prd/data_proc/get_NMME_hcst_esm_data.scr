@@ -1,0 +1,174 @@
+#!/bin/sh
+
+set -eaux
+#cccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+# have 1-5 mon_lead monthly and season ENSMEAN NMME HCST data
+# In this data set the first read is current month(0-mon_lead)
+#ccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+ 
+lcdir=/cpc/home/wd52pp/project/NA_prd/data_proc
+tmp=/cpc/home/wd52pp/tmp
+if [ ! -d $tmp ] ; then
+  mkdir -p $tmp
+fi
+datadir=/cpc/nmme
+dataout=/cpc/consistency/NA_prd/nmme
+#
+cd $tmp
+#
+nlead=7
+for var in tmpsfc tmp2m prate; do
+conv=1
+if [ $var = prate ]; then conv=86400; fi
+
+for model in CFSv2 CanCM4i NCAR_CCSM4 GEM_NEMO NASA_GEOS5v2; do
+for icmon in 01 02 03 04 05 06 07 08 09 10 11 12; do
+#
+if [ $icmon = 01 ]; then tmon=feb; tseason=fma; icmonw=jan; fi 
+if [ $icmon = 02 ]; then tmon=mar; tseason=mam; icmonw=feb; fi 
+if [ $icmon = 03 ]; then tmon=apr; tseason=amj; icmonw=mar; fi 
+if [ $icmon = 04 ]; then tmon=may; tseason=mjj; icmonw=apr; fi 
+if [ $icmon = 05 ]; then tmon=jun; tseason=jja; icmonw=may; fi 
+if [ $icmon = 06 ]; then tmon=jul; tseason=jas; icmonw=jun; fi 
+if [ $icmon = 07 ]; then tmon=aug; tseason=aso; icmonw=jul; fi 
+if [ $icmon = 08 ]; then tmon=sep; tseason=son; icmonw=aug; fi 
+if [ $icmon = 09 ]; then tmon=oct; tseason=ond; icmonw=sep; fi 
+if [ $icmon = 10 ]; then tmon=nov; tseason=ndj; icmonw=oct; fi 
+if [ $icmon = 11 ]; then tmon=dec; tseason=djf; icmonw=nov; fi 
+if [ $icmon = 12 ]; then tmon=jan; tseason=jfm; icmonw=dec; fi 
+#
+yend=2020
+yyyy=1982
+while [ $yyyy -le $yend ]; do
+
+icdir=${icmon}0100
+icmy=$yyyy$icmon
+
+cat >nmme_data<<EOF
+run read_write.gs
+EOF
+
+cat >read_write.gs<<EOF
+'reinit'
+'sdfopen $datadir/$model/hcst_new/$icdir/$model.$var.$yyyy$icmon.ENSMEAN.fcst.nc'
+'set x 1 360'
+'set y 1 181'
+nte=1+$nlead
+'set gxout fwrite'
+'set fwrite $var$yyyy.mon.gr'
+nt=2
+while ( nt <= nte)
+'set t 'nt
+say 'nt='nt
+'d fcst*$conv'
+nt=nt+1
+endwhile
+'disable fwrite'
+*
+'set gxout fwrite'
+'set fwrite $var$yyyy.ss.gr'
+nt=2
+while ( nt <= nte)
+'set t 'nt
+ntend=nt+2
+say 'ntend='ntend
+'define ss=ave(fcst,t='nt',t='ntend')'
+'d ss*$conv'
+nt=nt+1
+endwhile
+EOF
+#
+grads -bl <nmme_data
+#
+cat>$var$yyyy.mon.ctl<<EOF
+dset ^$var$yyyy.mon.gr
+undef -9.99e+08
+*
+TITLE fcst
+*
+xdef  360 linear    0.  1.
+ydef  181 linear  -90   1.
+zdef    1 linear 1 1
+tdef    $nlead linear feb1982 1mo
+vars 1
+f 1 99 1_mon lead
+ENDVARS
+EOF
+#
+cat>$var$yyyy.ss.ctl<<EOF
+dset ^$var$yyyy.ss.gr
+undef -9.99e+08
+*
+TITLE fcst
+*
+xdef  360 linear    0.  1.
+ydef  181 linear  -90   1.
+zdef    1 linear 1 1
+tdef    $nlead linear feb1982 1mo
+vars 1
+f 1 99 1_mon lead
+ENDVARS
+EOF
+#
+yyyy=`expr $yyyy + 1`
+done  # yyyy loop
+
+#======================================
+# cat files together
+#======================================
+mv ${var}1982.mon.gr tm.1982
+mv ${var}1982.ss.gr ts.1982
+yy=1983
+while [ $yy -le $yend ]
+do
+
+yym=`expr $yy - 1`
+
+cat tm.$yym $var$yy.mon.gr > tm.$yy
+cat ts.$yym $var$yy.ss.gr > ts.$yy
+
+\rm tm.$yym
+\rm ts.$yym
+
+yy=`expr $yy + 1`
+done
+
+mv tm.$yend $dataout/$model.$var.mon.${icmonw}_ic.1982-${yend}.ld1-$nlead.esm.gr
+mv ts.$yend $dataout/$model.$var.ss.${icmonw}_ic.1982-${yend}.ld1-$nlead.esm.gr
+
+cat>$dataout/$model.$var.ss.${icmonw}_ic.1982-${yend}.ld1-$nlead.esm.ctl<<EOF
+dset ^$model.$var.ss.${icmonw}_ic.1982-${yend}.ld1-$nlead.esm.gr
+undef -9.99e+08
+*
+TITLE fcst
+*
+xdef  360 linear    0.  1.
+ydef  181 linear  -90   1.
+zdef    1 linear 1 1
+tdef  999 linear feb1982 1mon
+vars 1
+f 1 99 lead1-$nlead
+ENDVARS
+EOF
+#
+cat>$dataout/$model.$var.mon.${icmonw}_ic.1982-${yend}.ld1-$nlead.esm.ctl<<EOF
+dset ^$model.$var.mon.${icmonw}_ic.1982-${yend}.ld1-$nlead.esm.gr
+undef -9.99e+08
+*
+TITLE fcst
+*
+xdef  360 linear    0.  1.
+ydef  181 linear  -90   1.
+zdef    1 linear 1 1
+tdef  999 linear feb1982 1mon
+vars 1
+f 1 99 lead1-$nlead
+ENDVARS
+EOF
+#
+done  # ic_mon loop
+#
+done  # model loop
+#
+done  # var loop
+

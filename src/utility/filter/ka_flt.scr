@@ -1,0 +1,42 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/utility/filter
+tmp=/tmp/wd52pp
+datadir=/export-6/cacsrv1/wd52pp/obs/sst
+#
+longtime=603
+imax=128
+jmax=64
+pr1=84
+pr2=6
+ipass=1 # 1 LP; 2 HP; 0 BP
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/ka_flt.f $tmp/.
+cp $lcdir/fltKaylor.s.f $tmp/.
+cd $tmp
+unlimit
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(imax=$imax,jmax=$jmax)
+       parameter(ipass=$ipass,pr1=$pr1,pr2=$pr2)
+eof
+#
+#
+cat > parm.s.h << eof
+       parameter(ltime=$longtime)
+eof
+#
+f77 -o ka_flt.x ka_flt.f fltKaylor.s.f
+echo "done compiling"
+
+#
+ ln -s /cmb/d07/data/agcm/obs/SSTMon fort.10
+ ln -s $datadir/SSTMon.LP.i3e fort.20
+#ln -s $datadir/sst_5099jfm.i3e fort.10
+#ln -s $datadir/sst_5099jfm.LP.i3e fort.20
+#
+ka_flt.x

@@ -1,0 +1,115 @@
+#!/bin/sh
+
+set -eaux
+#cccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+# have clim and std of 1mon-lead monthly and seasonal MME MEAN HCST data
+#ccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+ 
+lcdir=/cpc/home/wd52pp/project/id/data_proc
+tmp=/cpc/home/wd52pp/tmp
+if [ ! -d $tmp ] ; then
+  mkdir -p $tmp
+fi
+datadir=/cpc/nmme
+dataout=/cpc/consistency/id/nmme/hcst
+#
+cd $tmp
+#
+for var in tmp2m prate; do
+#for var in tmp2m; do
+for icmon in 01 02 03 04 05 06 07 08 09 10 11 12; do
+#for icmon in 02; do
+#
+if [ $icmon = 12 ]; then tmon=feb; tseason=fma; fi 
+if [ $icmon = 01 ]; then tmon=mar; tseason=mam; fi 
+if [ $icmon = 02 ]; then tmon=apr; tseason=amj; fi 
+if [ $icmon = 03 ]; then tmon=may; tseason=mjj; fi 
+if [ $icmon = 04 ]; then tmon=jun; tseason=jja; fi 
+if [ $icmon = 05 ]; then tmon=jul; tseason=jas; fi 
+if [ $icmon = 06 ]; then tmon=aug; tseason=aso; fi 
+if [ $icmon = 07 ]; then tmon=sep; tseason=son; fi 
+if [ $icmon = 08 ]; then tmon=oct; tseason=ond; fi 
+if [ $icmon = 19 ]; then tmon=nov; tseason=ndj; fi 
+if [ $icmon = 10 ]; then tmon=dec; tseason=djf; fi 
+if [ $icmon = 11 ]; then tmon=jan; tseason=jfm; fi 
+#
+for tp in $tseason $tmon; do
+#
+cat >ensmean<<EOF
+run read_write.gs
+EOF
+#
+cat >read_write.gs<<EOF
+'reinit'
+'open $dataout/CFSv2.$var.$tp.1982-2017ic.1m-ld.esm.ctl'
+'open $dataout/CMC1.$var.$tp.1982-2017ic.1m-ld.esm.ctl'
+'open $dataout/CMC2.$var.$tp.1982-2017ic.1m-ld.esm.ctl'
+'open $dataout/GFDL.$var.$tp.1982-2017ic.1m-ld.esm.ctl'
+'open $dataout/GFDL_FLOR.$var.$tp.1982-2017ic.1m-ld.esm.ctl'
+'open $dataout/NASA.$var.$tp.1982-2017ic.1m-ld.esm.ctl'
+'open $dataout/NCAR_CCSM4.$var.$tp.1982-2017ic.1m-ld.esm.ctl'
+'set gxout fwrite'
+'set fwrite NMME.$var.$tp.1982-2017ic.1m-ld.esm.gr'
+'set x 1 360'
+'set y 1 181'
+'set t 1 36'
+'d (f+f.2+f.3+f.4+f.5+f.6+f.7)/7.'
+EOF
+#
+grads -bl <ensmean
+#
+cat>NMME.$var.$tp.1982-2017ic.1m-ld.esm.ctl<<EOF
+dset ^NMME.$var.$tp.1982-2017ic.1m-ld.esm.gr
+undef -9.99e+8
+*
+TITLE fcst
+*
+xdef  360 linear    0.  1.
+ydef  181 linear  -90   1.
+zdef    1 linear 1 1
+tdef 9999 linear mar1982 1mo
+vars 1
+f 1 99 ensmean
+ENDVARS
+EOF
+#
+cat >clm_std<<EOF
+run read_write.gs
+EOF
+#
+cat >read_write.gs<<EOF
+'reinit'
+'open NMME.$var.$tp.1982-2017ic.1m-ld.esm.ctl'
+'set gxout fwrite'
+'set fwrite NMME.$var.clim_std.$tp.1982-2010ic.1m-ld.esm.gr'
+'set x 1 360'
+'set y 1 181'
+'define clm=ave(f,t=1,t=29)'
+'d clm'
+'define std=sqrt(ave((f-clm)*(f-clm),t=1,t=29))'
+'d std'
+EOF
+#
+grads -bl <clm_std
+#
+cat>NMME.$var.clim_std.$tp.1982-2010ic.1m-ld.esm.ctl<<EOF
+dset ^NMME.$var.clim_std.$tp.1982-2010ic.1m-ld.esm.gr
+undef -9.99e+8
+*
+TITLE fcst
+*
+xdef  360 linear    0.  1.
+ydef  181 linear  -90   1.
+zdef    1 linear 1 1
+tdef 9999 linear mar1982 1mo
+vars 2
+clm 1 99 over 30-yrs
+std 1 99 over 30-yrs
+ENDVARS
+EOF
+
+mv NMME.$var.* $dataout
+#
+done  # tp loop
+done  # icmon loop
+done  # var loop

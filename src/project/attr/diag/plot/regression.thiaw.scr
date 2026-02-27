@@ -1,0 +1,193 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/diag/src
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/attr
+var1=temp
+var2=prec
+#
+season=ond
+tgt_season=OND
+#
+cd $tmp
+#
+#======================================
+# plot global map 
+#======================================
+cat >regr_map<<EOF1
+run global.gs
+EOF1
+
+cat >global.gs<<EOF2
+* temp
+    'reinit'
+    'set display color white'
+    'c'
+    'run /cpc/home/wd52pp/bin/rgbset.gs'
+*
+'open $datadir/diag.temp.regr_vs_nino34.$season.ctl'
+*---------------------------string/caption
+ 'set string 1 tc 4'
+ 'set strsiz 0.2 0.2'
+ 'draw string 4.25 10.65 ENSO Teleconnection: $tgt_season Temp'
+*---------------------------set dimsnesion, page size and style
+*'cp1=maskout(reg,abs(cor)-0.25)'
+*'cp2=maskout(reg,abs(cor)-0.25)'
+'set lat -60 80'
+'set lon -180 180'
+'cp1=reg'
+'cp2=cor*100'
+*
+nframe=2
+nframe2=2
+nframe3=4
+xmin0=0.5;  xlen=7.5;  xgap=0.5
+ymax0=10.; ylen=-4.;  ygap=-0.8
+*
+iframe=1
+while ( iframe <= nframe )
+  icx=1; if (iframe > nframe2); icx=2; endif
+  if (iframe > nframe3); icx=3; endif
+  xmin=xmin0+(icx-1)*(xlen+xgap)
+  xmax=xmin+xlen
+  icy=iframe; if (iframe > nframe2); icy=iframe-nframe2; endif
+  if (iframe > nframe3); icy=iframe-nframe3; endif
+  ymax=ymax0+(icy-1)*(ylen+ygap)
+  ymin=ymax+ylen
+  titlx=xmin+3.75
+  titly=ymax
+  barx=xmin+3.75
+  bary=ymin-0.3
+* say xmin; say xmax; say ymin; say ymax
+  'set vpage 0 85 0 11'
+  'set parea 'xmin' 'xmax' 'ymin' 'ymax''
+*
+'set ylint 20'
+'set xlint 60'
+*
+'set grads off'
+'set grid off'
+'set poli on'
+'set mpdset mres'
+'set gxout grfill'
+*
+if(iframe = 1);
+'set clevs   -1.5 -1.25 -1.0 -0.75 -0.5 -0.25 0 0.25 0.5 0.75 1.0 1.25 1.5'
+'set ccols  49 47 45 44 43 42 41 21 22 23 24 25 27 29'
+'d cp'%iframe
+ endif
+*
+if(iframe = 2);
+'set clevs -50 -45 -40 -35 -30 -25 25 30 35 40 45 50'
+'set ccols  49 47 45 44 43 42 0 22 23 24 25 27 29'
+'d cp'%iframe
+ endif
+*
+if(iframe = 1);
+ 'set string 4 tc 4'
+ 'set strsiz 0.15 0.15'
+'draw string 'titlx' 'titly' Regression(K)'
+'run /cpc/home/wd52pp/bin/cbarn.gs 1. 0 'barx' 'bary''
+ endif
+if(iframe = 2);
+ 'set string 4 tc 4'
+ 'set strsiz 0.15 0.15'
+'draw string 'titlx' 'titly' Correlation(%)'
+'run /cpc/home/wd52pp/bin/cbarn.gs 1. 0 'barx' 'bary''
+ endif
+*
+iframe=iframe+1
+endwhile
+'printim $datadir/diag.$var1.regr.$tgt_season.png gif x600 y800'
+'print'
+*
+* precipitation 
+    'reinit'
+    'set display color white'
+    'c'
+    'run /cpc/home/wd52pp/bin/rgbset.gs'
+*
+'open $datadir/diag.prec.regr_vs_nino34.$season.ctl'
+*---------------------------string/caption
+ 'set string 1 tc 4'
+ 'set strsiz 0.2 0.2'
+ 'draw string 4.25 10.65 ENSO Teleconnection: $tgt_season Precip'
+*---------------------------set dimsnesion, page size and style
+*'cp1=maskout(reg,abs(cor)-0.25)'
+*'cp2=maskout(reg,abs(cor)-0.25)'
+'set lat -60 80'
+'set lon -180 180'
+'cp1=reg'
+'cp2=cor*100'
+*
+nframe=2
+nframe2=2
+nframe3=4
+xmin0=0.5;  xlen=7.5;  xgap=0.5
+ymax0=10.; ylen=-4.;  ygap=-0.8
+*
+iframe=1
+while ( iframe <= nframe )
+  icx=1; if (iframe > nframe2); icx=2; endif
+  if (iframe > nframe3); icx=3; endif
+  xmin=xmin0+(icx-1)*(xlen+xgap)
+  xmax=xmin+xlen
+  icy=iframe; if (iframe > nframe2); icy=iframe-nframe2; endif
+  if (iframe > nframe3); icy=iframe-nframe3; endif
+  ymax=ymax0+(icy-1)*(ylen+ygap)
+  ymin=ymax+ylen
+  titlx=xmin+3.75
+  titly=ymax
+  barx=xmin+3.75
+  bary=ymin-0.3
+* say xmin; say xmax; say ymin; say ymax
+  'set vpage 0 11 0 8.5'
+  'set parea 'xmin' 'xmax' 'ymin' 'ymax''
+*
+'set ylint 20'
+'set xlint 60'
+*
+'set grads off'
+'set grid off'
+'set poli on'
+'set mpdset mres'
+'set gxout grfill'
+*
+if(iframe =1);
+'set clevs  -8. -4. -2. -1.0 -0.5 0. 0.5 1.0 2. 4. 8.'
+'set ccols  79 77 75 73 72 71 31 32 33 35 37 39 '
+'d cp'%iframe
+ endif
+*
+if(iframe = 2);
+'set clevs -50 -45 -40 -35 -30 -25 25 30 35 40 45 50'
+'set ccols  49 47 45 44 43 42 0 22 23 24 25 27 29'
+'d cp'%iframe
+ endif
+*
+if(iframe = 1);
+ 'set string 4 tc 4'
+ 'set strsiz 0.15 0.15'
+'draw string 'titlx' 'titly' Regression(mm/day)'
+'run /cpc/home/wd52pp/bin/cbarn.gs 1. 0 'barx' 'bary''
+ endif
+if(iframe = 2);
+ 'set string 4 tc 4'
+ 'set strsiz 0.15 0.15'
+'draw string 'titlx' 'titly' Correlation(%)'
+'run /cpc/home/wd52pp/bin/cbarn.gs 1. 0 'barx' 'bary''
+ endif
+*
+iframe=iframe+1
+endwhile
+'printim $datadir/diag.$var2.regr.$tgt_season.png gif x600 y800'
+'print'
+EOF2
+
+grads -p <regr_map
+#/usr/local/bin/grads2 -l <regr_map
+cp $datadir/diag.$var1.regr.$tgt_season.png /cpc/home/wd52pp/data/thiaw
+cp $datadir/diag.$var2.regr.$tgt_season.png /cpc/home/wd52pp/data/thiaw
+#done

@@ -1,0 +1,104 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/djf15-16
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/attr/djf15-16
+#
+var=hadoisst
+tmax=67  
+nmod=5
+mtx=var
+if [ "$mtx" = cor ]; then id=1; fi
+if [ "$mtx" = var ]; then id=0; fi
+#
+cp $lcdir/rsd_eof.sst.f $tmp/eof.f
+cp $lcdir/reof.s.f  $tmp/.
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$tmax)
+       parameter(imx=360,jmx=180)
+       parameter(nmod=$nmod)
+       parameter(lons=1,lone=360,lats=61,late=120)
+       parameter(id=$id)
+eof
+#
+for season in djf; do
+#
+\rm $tmp/fort.*         
+#
+gfortran -o eof.x reof.s.f eof.f
+echo "done compiling"
+
+#
+ ln -s $datadir/$var.$season.49-cur.gr    fort.10
+#
+ ln -s $datadir/nino34.$var.$season.49-cur.gr    fort.11
+#
+ ln -s $datadir/trd.$var.$season.gr    fort.31
+ ln -s $datadir/$var.$season.49-cur.rsd.gr  fort.32
+#
+ ln -s $datadir/rsd_eof.$var.$season.tp.$mtx.gr       fort.51
+ ln -s $datadir/rsd_pc.$var.$season.tp.$mtx.gr        fort.52
+#
+eof.x > $datadir/rsd_eof.$var.$season.tp.$mtx.out
+#
+
+cat>$datadir/rsd_eof.$var.$season.tp.$mtx.ctl<<EOF
+dset $datadir/rsd_eof.$var.$season.tp.$mtx.gr
+undef -9.99E+8
+title Realtime Surface Obs
+XDEF 360 LINEAR    0.5  1.0
+YDEF 180 LINEAR  -89.5  1.0
+zdef    1 levels 200
+tdef 999 linear jan1950  1yr
+vars  12
+eof1   0 99 corr of nino34
+reg1   0 99 regr of nino34
+eof2   0 99 corr of mode 1
+reg2   0 99 regr of mode 1
+eof3   0 99 corr of mode 2
+reg3   0 99 regr of mode 2
+eof4   0 99 corr of mode 3
+reg4   0 99 regr of mode 3
+eof5   0 99 corr of mode 4
+reg5   0 99 regr of mode 4
+eof6   0 99 corr of mode 5
+reg6   0 99 regr of mode 5
+endvars
+EOF
+
+cat>$datadir/rsd_pc.$var.$season.tp.$mtx.ctl<<EOF2
+dset $datadir/rsd_pc.$var.$season.tp.$mtx.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    1 linear 0 2.8125
+ydef    1 linear -90 2.8125
+zdef    1 levels 200
+tdef 999 linear jan1950  1yr
+vars   6
+cf1   0 99 nino34
+cf2   0 99 pc1
+cf3   0 99 pc2
+cf4   0 99 pc3
+cf5   0 99 pc4
+cf6   0 99 pc5
+endvars
+EOF2
+#
+cat>$datadir/trd.$var.$season.ctl<<EOF
+dset $datadir/trd.$var.$season.gr
+undef -9.99E+8
+title Realtime Surface Obs
+XDEF 360 LINEAR    0.5  1.0
+YDEF 180 LINEAR  -89.5  1.0
+zdef   1 levels 200
+tdef 999 linear jan1950  1yr
+vars  1
+trd   0 99 corr of mode 1
+endvars
+EOF
+#
+done

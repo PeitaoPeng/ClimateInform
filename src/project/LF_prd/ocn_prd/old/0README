@@ -1,0 +1,14 @@
+
+EOCN prd
+1. read_cd.sh to have temp_102.txt
+2. have anom and clim using anom_clim.scr
+3. have EOF analysis using eof_cd.scr
+4. prd using ocn_prd_pc.102cd.scr
+5. transform CD data to GrADS data with CD_2_GRADS in subdir plot
+6. plot with *.gs to have *png file
+
+OCN (10 yr)
+ocn_cd_grid.31-cur.scr
+
+To determine K
+ocn_pc_test_K.31-cur.scr

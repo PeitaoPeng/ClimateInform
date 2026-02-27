@@ -1,0 +1,153 @@
+#!/bin/sh
+
+set -eaux
+#cccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+# for skill check and other diagnostics
+#ccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+ 
+lcdir=/cpc/home/wd52pp/project/ca_proj/ca
+tmp=/cpc/home/wd52pp/tmp
+if [ ! -d $tmp ] ; then
+  mkdir -p $tmp
+fi
+datadir=/cpc/home/wd52pp/data/ca_proj
+#
+cd $tmp
+#
+#for icseason in jfm fma mam amj mjj jja jas aso son ond ndj djf; do
+for icseason in djf; do
+#
+if [ $icseason = jfm ]; then ic_midmon=feb; ic_ss=1; fi
+if [ $icseason = fma ]; then ic_midmon=mar; ic_ss=2; fi
+if [ $icseason = mam ]; then ic_midmon=apr; ic_ss=3; fi
+if [ $icseason = amj ]; then ic_midmon=may; ic_ss=4; fi
+if [ $icseason = mjj ]; then ic_midmon=jun; ic_ss=5; fi
+if [ $icseason = jja ]; then ic_midmon=jul; ic_ss=6; fi
+if [ $icseason = jas ]; then ic_midmon=aug; ic_ss=7; fi
+if [ $icseason = aso ]; then ic_midmon=sep; ic_ss=8; fi
+if [ $icseason = son ]; then ic_midmon=oct; ic_ss=9; fi
+if [ $icseason = ond ]; then ic_midmon=nov; ic_ss=10; fi
+if [ $icseason = ndj ]; then ic_midmon=dec; ic_ss=11; fi
+if [ $icseason = djf ]; then ic_midmon=jan; ic_ss=12; fi
+#
+ic_midmonyr=${ic_midmon}1979
+if [ $icseason = djf ]; then ic_midmonyr=${ic_midmon}1980; fi
+echo $icseason $ic_ss $ic_midmonyr
+#
+nyear=43 # 1979-2022
+ndec=2   #decade # 81-10, 91-20 
+#
+#for var in t2m precip z200; do
+for var in z200; do
+#
+#eof_range=tp_np   #30S-60N
+ eof_range=tp_ml   #45S-45N
+if [ $eof_range = tp_np ]; then neoflat=92; eoflats=-30.5; lats=60; late=151; fi
+if [ $eof_range = tp_ml ]; then neoflat=92; eoflats=-45.5; lats=45; late=136; fi
+#
+#
+if [ $eof_range = 'tp_ml' ]; then ngrd=25057; fi
+#
+nps=17     #width of data window in season
+nwextb=10  # 3mon season number to be extended at begining of a row of the array
+nwexte=16  # 3mon season number to be extended at the end of a row of the array
+runeof=1 # 0: read in ; 1: run eof
+nseason=`expr $nyear - 3` #for eof and ca analysis
+nskip=0 # output from 1980
+nsout=`expr $nyear - 3 - $nskip` #for eof and ca analysis
+#
+mlead=2  #maximum lead
+npp=`expr $nps - $mlead`
+mldp=`expr $mlead + 1` 
+#
+#for mseason in 1 2 3 4; do
+ for mseason in 1; do
+#for modemax in  20 30 35 45 50 55 60; do
+for modemax in 20; do
+cp $lcdir/ca.amip.tpz.f $tmp/ca.f
+cp $lcdir/eof_4_ca.s.f $tmp/eof_4_ca.s.f
+
+#
+cat > parm.h << eof
+      parameter(nruneof=$runeof)
+c
+      parameter(ims=360,jms=180)   !input sst dimension
+c
+      parameter(lons=1,lone=360)   !lon range for EOFs analysis (0-360)
+      parameter(eoflats=$eoflats,lats=$lats,late=$late)  !lat range for EOFs analysis (25S-65N)
+      parameter(imp=lone-lons+1,jmp=late-lats+1)
+c
+      parameter(modemax=$modemax)
+      parameter(nyear=$nyear)
+      parameter(nseason=$nseason)
+      parameter(nps=$nps)
+      parameter(nwextb=$nwextb)
+      parameter(nwexte=$nwexte)
+c
+      parameter(ndec=$ndec)
+      parameter(itgtm=$ic_ss)
+      parameter(npp=$npp)
+      parameter(mlead=$mlead)
+      parameter(mldp=$mldp)
+      parameter(ngrd=$ngrd)
+      parameter(mseason=$mseason)
+      parameter(nskip=$nskip)
+eof
+#
+#gfortran -o ca.x ca.f eof_4_ca.s.f
+gfortran -mcmodel=medium -g -o ca.x ca.f eof_4_ca.s.f
+echo "done compiling"
+
+/bin/rm $tmp/fort.*
+#
+ln -s $datadir/FV3amip.sst.3mon_anom.jfm1979-mam2022.gr fort.11
+ln -s $datadir/GFSFV3amip.$var.ens_mean_100runs.3mon_anom.jfm1979-aso2022.gr  fort.12
+#
+ln -s $datadir/ca_skill.amip.$var.EOF$modemax.$icseason.${mseason}ics.${eof_range}.gr fort.85
+ln -s $datadir/ca.amip.$var.EOF$modemax.$icseason.${mseason}ics.${eof_range}.gr fort.86
+#
+ca.x > $datadir/out.ca.amip.$var.EOF$modemax.$icseason.${mseason}ics.${eof_range}
+#ca.x 
+#
+undef_data=-9.99E+8
+cat>$datadir/ca_skill.amip.$var.EOF$modemax.$icseason.${mseason}ics.${eof_range}.ctl<<EOF
+dset ^ca_skill.amip.$var.EOF$modemax.$icseason.${mseason}ics.${eof_range}.gr
+undef $undef_data
+title EXP1
+XDEF 360 LINEAR    0.5  1.0
+YDEF 180 LINEAR  -89.5  1.0
+zdef  1 linear 1 1
+tdef  $mldp linear $ic_midmonyr 1mon
+vars  6
+stdo  1 99 $var std of obs
+stdf  1 99 $var std of fcst
+ac    1 99 $var ac skill
+rms   1 99 $var rms skill
+sac    1 99 SST ac skill
+srms   1 99 SST rms skill
+endvars
+EOF
+#
+cat>$datadir/ca.amip.$var.EOF$modemax.$icseason.${mseason}ics.${eof_range}.ctl<<EOF
+dset ^ca.amip.$var.EOF$modemax.$icseason.${mseason}ics.${eof_range}.gr
+undef $undef_data
+title EXP1
+XDEF 360 LINEAR    0.5  1.0
+YDEF 180 LINEAR  -89.5  1.0
+zdef  1 linear 1 1
+tdef  $nsout linear $ic_midmonyr 1yr
+vars  6
+ic  1 99 obs ic
+cic 1 99 constructed ic
+o1 1 99 obs 1
+p1 1 99 prd 1
+o2 1 99 obs 2
+p2 1 99 prd 2
+endvars
+EOF
+#
+done  # eof truncation loop
+done  # season # loop
+#
+done  # var loop
+done   # icseason loop

@@ -1,0 +1,76 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/modes/src
+tmp=/export/hobbes/wd52pp/tmp
+datadir=/export-12/cacsrv1/wd52pp/ipcc
+datadir2=/export-12/cacsrv1/wd52pp/modes
+#
+var=z500
+season=jfm
+nyears=60
+nmodel=5
+#
+/bin/rm $tmp/fort.*         
+cp $lcdir/pure_eof.ipcc_z500.f $tmp/pure_eof.f
+cp $lcdir/eof.s.new.f  $tmp/.
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$nyears)
+       parameter(imx=128,jmx=64)
+       parameter(nm=$nmodel)
+c      parameter(lons=54,lone=108,lats=40,late=58) !PNA area (150E-300E,20N-70N)
+c      parameter(lons2=43,lone2=108,lats2=32,late2=58) !Extended area (120E-300E, Eq 70N)
+c      parameter(lons=1,lone=128,lats=40,late=64)
+c      parameter(lons=1,lone=128,lats=33,late=64)
+       parameter(lons=1,lone=128,lats=1,late=64)
+eof
+#
+#
+f77 -o pure_eof.x eof.s.new.f pure_eof.f
+echo "done compiling"
+
+#
+ ln -s $datadir/ipcc.ens.z500.jfm.50-09.gr        fort.10
+ ln -s $datadir/ipcc.glm_z500.50-09jfm.gr         fort.11
+#
+ ln -s $datadir2/eof.$var.$season.ipcc.50-09.gr       fort.51
+ ln -s $datadir2/pc.$var.$season.ipcc.50-09.gr   fort.52
+#
+pure_eof.x > $lcdir/out
+#
+
+cat>$datadir2/eof.$var.$season.ipcc.50-09.ctl<<EOF
+dset $datadir2/eof.$var.$season.ipcc.50-09.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  128 linear 0 2.8125
+ydef   64 linear -90 2.8125
+zdef    1 levels 200
+tdef 999 linear jan1950  1yr
+vars   2
+eof   0 99 corr of mode 1
+reg   0 99 regr of mode 1
+endvars
+EOF
+
+cat>$datadir2/pc.$var.$season.ipcc.50-09.ctl<<EOF2
+dset $datadir2/pc.$var.$season.ipcc.50-09.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef   60 linear 0 2.8125
+ydef    1 linear -90 2.8125
+zdef   01 LEVELS 1
+tdef  999 linear jan1950  1yr
+vars   6
+glm   01 99 glm ipcc z500
+pc1   01 99 coef of mode 1
+pc2   01 99 coef of mode 1
+pc3   01 99 coef of mode 1
+pc4   01 99 coef of mode 1
+pc5   01 99 coef of mode 1
+endvars
+EOF2
+

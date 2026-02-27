@@ -1,0 +1,180 @@
+*set mproj nps
+*set mpvals 0 360 0 90
+set rgb 20 200 30 25
+set rgb 21 150 105 0
+set rgb 22 35 20  200
+set mproj latlon
+set lon 0 360
+set lat 10 90
+set z 4         
+set gxout contour
+set csmooth on
+set vpage 0 8 7.4 11 
+d arv1
+draw title avg relative vort  500mb amj87  
+set vpage 0 8 3.7 7.3 
+d vt31
+draw title baroclinic part of avg q  500mb amj87  
+set vpage 0 8 0 3.6
+d ptv1
+draw title avg q  500mb amj87  
+print 
+set vpage off
+c
+set vpage 0 8 7.4 11 
+d avh1
+draw title avg geoht  500mb amj87  
+set vpage 0 8 3.7 7.3 
+d avt1
+draw title avg temp  500mb amj87  
+set gxout vector
+set vpage 0 8 0 3.6
+d avu1;avv1
+draw title avg velocity  500mb amj87  
+print
+set vpage off
+c
+set gxout contour
+set csmooth on
+set vpage 0 8 7.4 11 
+d edh1
+draw title eddy geoht  500mb amj87  
+set vpage 0 8 3.7 7.3 
+d edt1
+draw title eddy temp  500mb amj87  
+set gxout vector
+set vpage 0 8 0 3.6
+set arrscl 0.4 20
+d edu1;edv1
+draw title eddy velocity  500mb amj87  
+print
+set vpage off
+c
+set vpage 0 8 7.4 11 
+*set arrscl 0.3 30
+d wvx1;wvy1
+draw title stwv vector  500mb amj87  
+set gxout contour
+set csmooth on
+*set clevs  -5e-06  5e-06  
+*d hdivg(wvx,wvy)
+d wvz1
+print
+set vpage off
+c
+set lon 0 360
+set lat 10 90
+set z 4         
+set gxout contour
+set csmooth on
+set vpage 0 8 7.4 11 
+d arv2
+draw title avg relative vort  500mb amj88  
+set vpage 0 8 3.7 7.3 
+d vt32
+draw title baroclinic part of avg q  500mb amj88  
+set vpage 0 8 0 3.6
+d ptv2
+draw title avg q  500mb amj88  
+print 
+set vpage off
+c
+set vpage 0 8 7.4 11 
+d avh2
+draw title avg geoht  500mb amj88  
+set vpage 0 8 3.7 7.3 
+d avt2
+draw title avg temp  500mb amj88  
+set gxout vector
+set vpage 0 8 0 3.6
+d avu2;avv2
+draw title avg velocity  500mb amj88  
+print
+set vpage off
+c
+set gxout contour
+set csmooth on
+set vpage 0 8 7.4 11 
+d edh2
+draw title eddy geoht  500mb amj88  
+set vpage 0 8 3.7 7.3 
+d edt2
+draw title eddy temp  500mb amj88  
+set gxout vector
+set vpage 0 8 0 3.6
+set arrscl 0.4 20
+d edu2;edv2
+draw title eddy velocity  500mb amj88  
+print
+set vpage off
+c
+set vpage 0 8 7.4 11 
+*set arrscl 0.3 30
+d wvx2;wvy2
+draw title stwv vector  500mb amj88  
+set gxout contour
+set csmooth on
+*set clevs  -5e-06  5e-06  
+*d hdivg(wvx,wvy)
+d wvz2
+print
+set vpage off
+c
+set lon 0 360
+set lat 10 90
+set z 4         
+set gxout contour
+set csmooth on
+set vpage 0 8 7.4 11 
+d arv2-arv1
+draw title avg relative vort  500mb amj88-amj87  
+set vpage 0 8 3.7 7.3 
+d vt32-vt31
+draw title baroclinic part of avg q  500mb amj88-amj87  
+set vpage 0 8 0 3.6
+d ptv2-ptv1
+draw title avg q  500mb amj88-amj87  
+print 
+set vpage off
+c
+set vpage 0 8 7.4 11 
+d avh2-avh1
+draw title avg geoht  500mb amj88-amj87  
+set vpage 0 8 3.7 7.3 
+d avt2-avt1
+draw title avg temp  500mb amj88-amj87  
+set gxout vector
+set vpage 0 8 0 3.6
+d avu2-avu1;avv2-avv1
+draw title avg velocity  500mb amj88-amj87  
+print
+set vpage off
+c
+set gxout contour
+set csmooth on
+set vpage 0 8 7.4 11 
+d edh2-edh1
+draw title eddy geoht  500mb amj88-amj87  
+set vpage 0 8 3.7 7.3 
+d edt2-edt1
+draw title eddy temp  500mb amj88-amj87  
+set gxout vector
+set vpage 0 8 0 3.6
+set arrscl 0.4 20
+d edu2-edu1;edv2-edv1
+draw title eddy velocity  500mb amj88-amj87  
+print
+set vpage off
+c
+set vpage 0 8 7.4 11 
+*set arrscl 0.3 30
+d wvx2-wvx1;wvy2-wvy1
+draw title stwv vector  500mb amj88-amj87  
+set gxout contour
+set csmooth on
+*set clevs  -5e-06  5e-06  
+*d hdivg(wvx,wvy)
+d wvz2-wvz1
+print
+set vpage off
+c

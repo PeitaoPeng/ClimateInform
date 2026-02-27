@@ -1,0 +1,31 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ lcdir=/export/hobbes/wd52pp/utility/intpl
+ tmp=/export/hobbes/wd52pp/tmp
+ datadir1=/export-12/cacsrv1/wd52pp/amip
+ datadir2=/export-12/cacsrv1/wd52pp/amip
+#
+ nmonth=50
+ iskip=0
+#
+  /bin/rm $tmp/*.*
+cp $lcdir/T62_2_CD102.f $tmp/.
+cp $lcdir/setxy.f       $tmp/.
+cd $tmp
+#
+   ln -s $lcdir/us.cd102.latlon.dat  fort.10
+#
+   ln -s $datadir1/test   fort.11
+   ln -s $datadir2/test   fort.61
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth,iskip=$iskip)
+eof
+#
+ f77  T62_2_CD102.f setxy.f
+ a.out
+#
+ja -s

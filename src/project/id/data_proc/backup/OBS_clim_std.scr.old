@@ -1,0 +1,283 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/id/data_proc
+tmp=/cpc/home/wd52pp/tmp
+if [ ! -d $tmp ] ; then
+  mkdir -p $tmp
+fi
+
+dataout=/cpc/consistency/id/nmme/hcst
+#
+cd $tmp
+#
+for var in tmp2m prate; do
+#for var in tmp2m; do
+#
+clm_bgn=397  #jan1081
+clm_end=`expr $clm_bgn + 360 + 2`
+outfile=obs.$var.1981-2010.mon
+imax=720
+jmax=360
+imx=360
+jmx=181
+#=======================================
+# rewrite t2m data from grib to grads
+#=======================================
+cat >havedata<<EOF
+run data_rewrite.gs
+EOF
+#
+if [ $var = 'tmp2m' ]; then
+cat >data_rewrite.gs<<EOF
+    'reinit'
+'open /cpc/home/ebecker/ghcn_cams/ghcn_cams_0.5_grb.ctl'
+'set x 1 $imax'
+'set y 1 $jmax'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+'set t $clm_bgn $clm_end'
+'d TMP2m'
+'c'
+EOF
+fi
+#
+#=======================================
+# rewrite prec data
+#=======================================
+undef_data=-9.99E+8
+#
+if [ $var = 'prate' ]; then
+cat >data_rewrite.gs<<EOF3
+    'reinit'
+'open /cpc/home/mingyue/PRODUCTS/50YR/gauge/grid05m/precl_mon_v1.0.ctl'
+'set x 1 $imax'
+'set y 1 $jmax'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+'set t $clm_bgn $clm_end'
+'d rain*0.1'
+'c'
+EOF3
+fi
+cat>$outfile.ctl<<EOF
+dset $outfile.gr
+undef $undef_data
+ydef 360 linear -89.750000 0.5
+xdef 720 linear 0.250000 0.500000
+tdef  999 linear jan1981 1mo
+zdef    1 linear 1 1
+vars 1
+$var 0 99 obs
+ENDVARS
+EOF
+#
+/usr/local/bin/grads -bl <havedata
+#
+#=======================================
+# regrid to 1x1
+#=======================================
+ntend=`expr $clm_end - $clm_bgn + 1` # 2-mon longer for 3-mon avg
+
+cat >int<<fEOF
+reinit
+run regrid.gs
+fEOF
+
+cat >regrid.gs<<gsEOF
+'reinit'
+'open $outfile.ctl'
+'open $dataout/NMME.tmp2m.clim_std.jan.1982-2010ic.1m-ld.esm.ctl'
+'set gxout fwrite'
+'set fwrite $outfile.1x1.gr'
+nt=1
+while ( nt <= $ntend)
+
+'set t 'nt
+say 'time='nt
+'set lon   0. 359.'
+'set lat -90.  90.'
+'d lterp($var,std.2(time=mar1982))'
+
+nt=nt+1
+endwhile
+gsEOF
+
+/usr/local/bin/grads -pb <int
+
+cat>$outfile.1x1.ctl<<EOF
+dset ^$outfile.1x1.gr
+undef -9.99E+8
+*
+options little_endian
+*
+XDEF 360 LINEAR    0.  1.0
+YDEF 181 LINEAR  -90.  1.0
+zdef  01 levels 1 
+tdef   9999 linear jan1981 1mo
+*
+VARS 1
+o    0 99   monthly ave
+ENDVARS
+EOF
+#=======================================
+#
+for imon in 01 02 03 04 05 06 07 08 09 10 11 12; do
+#for imon in 02; do
+#
+if [ $imon = 01 ]; then tmon=jan; tseason=jfm; fi
+if [ $imon = 02 ]; then tmon=feb; tseason=fma; fi
+if [ $imon = 03 ]; then tmon=mar; tseason=mam; fi
+if [ $imon = 04 ]; then tmon=apr; tseason=amj; fi
+if [ $imon = 05 ]; then tmon=may; tseason=mjj; fi
+if [ $imon = 06 ]; then tmon=jun; tseason=jja; fi
+if [ $imon = 07 ]; then tmon=jul; tseason=jas; fi
+if [ $imon = 08 ]; then tmon=aug; tseason=aso; fi
+if [ $imon = 09 ]; then tmon=sep; tseason=son; fi
+if [ $imon = 10 ]; then tmon=oct; tseason=ond; fi
+if [ $imon = 11 ]; then tmon=nov; tseason=ndj; fi
+if [ $imon = 12 ]; then tmon=dec; tseason=djf; fi
+#
+# have field for a particular month or season
+cat >mon_season<<fEOF
+reinit
+run wout.gs
+fEOF
+cat >wout.gs<<gsEOF
+'reinit'
+'open $outfile.1x1.ctl'
+'set x 1 $imx'
+'set y 1 $jmx'
+*
+'set gxout fwrite'
+'set fwrite mon.gr'
+*nt=$imon
+nt=2
+while ( nt <= $ntend)
+'set t 'nt
+'d o'
+nt=nt+12
+endwhile
+'disable fwrite'
+*
+'set gxout fwrite'
+'set fwrite season.gr'
+nt=$imon
+ntend2=$ntend-2
+while ( nt <= ntend2)
+nt2=nt+2
+say 'time='nt
+'d ave(o,t='nt',t='nt2')'
+nt=nt+12
+endwhile
+gsEOF
+#
+/usr/local/bin/grads -pb <mon_season
+
+cat>mon.ctl<<EOF
+dset ^mon.gr
+undef -9.99E+8
+*
+options little_endian
+*
+XDEF 360 LINEAR    0.  1.0
+YDEF 181 LINEAR  -90.  1.0
+zdef  01 levels 1 
+tdef   9999 linear jan1981 1mo
+*
+VARS 1
+o    0 99   monthly ave
+ENDVARS
+EOF
+
+cat>season.ctl<<EOF
+dset ^season.gr
+undef -9.99E+8
+*
+options little_endian
+*
+XDEF 360 LINEAR    0.  1.0
+YDEF 181 LINEAR  -90.  1.0
+zdef  01 levels 1 
+tdef   9999 linear jan1981 1mo
+*
+VARS 1
+o    0 99   monthly ave
+ENDVARS
+EOF
+#
+cat >clm_std_mon<<EOF
+run woutm.gs
+EOF
+#
+cat >woutm.gs<<EOF
+'reinit'
+'open mon.ctl'
+'set gxout fwrite'
+'set fwrite obs.$var.clim_std.$tmon.1981-2010.gr'
+'set x 1 360'
+'set y 1 181'
+'define clm=ave(o,t=1,t=30)'
+'d clm'
+'define std=sqrt(ave((o-clm)*(o-clm),t=1,t=30))'
+'d std'
+EOF
+#
+grads -bl <clm_std_mon
+#
+cat >clm_std_season<<EOF
+run wouts.gs
+EOF
+#
+cat >wouts.gs<<EOF
+'reinit'
+'open season.ctl'
+'set gxout fwrite'
+'set fwrite obs.$var.clim_std.$tseason.1981-2010.gr'
+'set x 1 360'
+'set y 1 181'
+'define clm=ave(o,t=1,t=30)'
+'d clm'
+'define std=sqrt(ave((o-clm)*(o-clm),t=1,t=30))'
+'d std'
+EOF
+#
+grads -bl <clm_std_season
+#
+cat>obs.$var.clim_std.$tmon.1981-2010.ctl<<EOF
+dset ^obs.$var.clim_std.$tmon.1981-2010.gr
+undef -9.99e+8
+*
+TITLE fcst
+*
+xdef  360 linear    0.  1.
+ydef  181 linear  -90   1.
+zdef    1 linear 1 1
+tdef 9999 linear jan1981 1mo
+vars 2
+clm 1 99 over 30-yrs
+std 1 99 over 30-yrs
+ENDVARS
+EOF
+#
+cat>obs.$var.clim_std.$tseason.1981-2010.ctl<<EOF
+dset ^obs.$var.clim_std.$tseason.1981-2010.gr
+undef -9.99e+8
+*
+TITLE fcst
+*
+xdef  360 linear    0.  1.
+ydef  181 linear  -90   1.
+zdef    1 linear 1 1
+tdef 9999 linear jan1981 1mo
+vars 2
+clm 1 99 over 30-yrs
+std 1 99 over 30-yrs
+ENDVARS
+EOF
+
+mv obs.$var.clim_std.* $dataout
+
+done  # for imon
+done  # for var

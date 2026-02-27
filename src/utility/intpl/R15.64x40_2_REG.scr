@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ datadir=/disk50/data/wd52pp/ncep/hcst
+#
+ nmonth=22
+ iskip=0
+#
+ /bin/rm fort.11 fort.21
+   ln -s $datadir/psi_trs_tend_200.80-00.jfm.stdv_spread.i3e fort.11
+   ln -s $datadir/psi_trs_tend_200.80-00.jfm.stdv_spread.reg.i3e fort.21
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth,iskip=$iskip)
+eof
+#
+ f77  R15.64x40_2_REG.f setxy.f intp2d.f
+ a.out
+#
+ja -s

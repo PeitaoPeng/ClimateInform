@@ -1,0 +1,51 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ lcdir=/cpc/home/wd52pp/project/ca_proj/src
+ datadir=/cpc/home/wd52pp/data/ca_proj
+ tmp=/cpc/home/wd52pp/tmp
+#
+eof_area=tp # or tp_ml
+var=z200
+ss=djf
+ts=rpc
+tmax=42 
+nmod=7
+#
+cp corr.AMIP.sst_pc2zpt.f $tmp/corr.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(imx=360,jmx=180)
+       parameter(ltime=$tmax)
+       parameter(nmod=$nmod)
+       parameter(iskip_idx=0)
+       parameter(iskip_fld=0)
+eof
+#
+
+\rm fort.*
+
+   ln -s $datadir/$ts.sst.had-oi.79-21.$ss.${eof_area}.gr fort.10
+   ln -s $datadir/FV3amip100runs.$var.$ss.ensm_anom.gr fort.11
+   ln -s $datadir/corr.sst${ts}_vs_$var.$ss.${eof_area}.gr fort.50
+#
+gfortran corr.f
+a.out
+#
+cat > $datadir/corr.sst${ts}_vs_$var.$ss.${eof_area}.ctl<<EOF2
+dset ^corr.sst${ts}_vs_$var.$ss.${eof_area}.gr
+undef -999.0
+title Realtime Surface Obs
+xdef  360 linear 0.5 1.
+ydef  180 linear -89.5 1.
+zdef    1 levels 200
+tdef $nmod linear jan1980  1yr
+vars   2
+cor   0 99 corr
+reg   0 99 regr
+endvars
+EOF2
+#

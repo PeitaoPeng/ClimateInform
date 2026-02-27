@@ -1,0 +1,13 @@
+'open /export-6/cacsrv1/wd52pp/obs/prcp/opi_7901-cur.72x72.ctl'
+'set gxout fwrite'
+'set fwrite /export-6/cacsrv1/wd52pp/obs/prcp/opi_7901-cur.72x72.anom_clim.i3e'
+'set x 1 72'
+'set y 1 72'
+'set t 1 12'
+* clim 79-02
+'define clim=ave(opi,t+0,t=300,1yr)'
+'modify clim seasonal'
+'set t 1 310'
+'d opi-clim'
+'set t 1 12'
+'d clim'

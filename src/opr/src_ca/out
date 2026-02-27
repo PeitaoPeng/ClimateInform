@@ -1,0 +1,23 @@
+9c9,10
+<       parameter(jmss=33,jmse=58)   ! 25S->25N
+---
+>       parameter(jmss=33,jmse=58)     ! 25S->25N
+>       parameter(kpdf=100)   ! # of pdf bin
+72c73
+<       xlat(j)=eoflats+(j-1)*2.0
+---
+>       xlat(j)=eoflats+(j-1)*1.0
+80c81
+<       xlat2(j)=-89.+(j-1)*2.0
+---
+>       xlat2(j)=-89.5+(j-1)*1.0
+281c282
+<       write(6,*) 'finished eof',' for', ' ic=',ic
+---
+>       write(6,*) 'finish3ed eof',' for', 'ic=',ic
+364a366
+> c     do ia=1,nseason
+473c475
+<         write(6,*) 'target season=',ntgts,'alphas=',alphas
+---
+> c       write(6,*) 'target season=',ntgts,'alphas=',alphas

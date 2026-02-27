@@ -1,0 +1,140 @@
+#!/bin/sh
+
+set -eaux
+
+tmp=/cpc/home/wd52pp/tmp
+t2mdir=/cpc/home/wd52pp/data/obs/ghcn
+cd $tmp
+tlatest=may2015
+#
+#=======================================
+# have GHCN t2m jan1949-cur
+#=======================================
+outfile=t2m.jan1949-cur.mon
+times=jan1949
+timee=$tlatest
+undf=-999000000
+#
+cat >ghcnt2m<<EOF
+run havet2m.gs
+EOF
+#
+cat >havet2m.gs<<EOF
+'reinit'
+'open   /cpc/home/ebecker/ghcn_cams/ghcn_cams_2.5.grb.ctl'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+'set x 1 144'
+'set y 1  73'
+'set time '$times' '$timee''
+'d tmp2m'
+'c'
+EOF
+#
+#===========================================
+# excute grads data process
+#===========================================
+grads -l <ghcnt2m
+#
+cat>$outfile.ctl<<EOF
+dset $outfile.gr
+undef $undf
+TITLE  ghcn
+XDEF 144 LINEAR   0. 2.5
+*
+YDEF  73 LINEAR -90. 2.5
+*
+ZDEF  1 LINEAR 1 1.
+tdef 9999 linear jan1949 1mo
+VARS 1
+t2m  0 99     anom
+ENDVARS
+EOF
+#
+#=======================================
+# have monthly anomalies
+#=======================================
+outfile2=$outfile.anom
+ts=1
+te=797  #792=dec2014
+#
+cat >anom<<EOF
+run haveanom.gs
+EOF
+#
+cat >haveanom.gs<<EOF
+'reinit'
+'open $outfile.ctl'
+'set gxout fwrite'
+'set fwrite $outfile2.gr'
+'set x 1 144'
+'set y 1 73'
+'set t 1 12'
+'define tc=ave(t2m,t+0,t='$te',1yr)'
+'modify tc seasonal'
+'set t 1 '$te''
+'d t2m-tc'
+'c'
+EOF
+#
+grads -l <anom
+#
+cat>$outfile2.ctl<<EOF
+dset $outfile2.gr
+undef $undf
+TITLE  ghcnt2m
+XDEF 144 LINEAR   0.  2.5
+*
+YDEF  73 LINEAR -90.  2.5
+*
+ZDEF  1 LINEAR 1 1.
+tdef 9999 linear jan1949 1mo
+VARS 1
+t2m  0 99     anom
+ENDVARS
+EOF
+#
+#
+#=======================================
+# have 3-mon avg anomalies
+#=======================================
+outfile3=t2m.jan1979-cur.3mon.anom
+ts=2
+te=796  #792=dec2014
+#
+cat >3mavg<<EOF
+run have3mavg.gs
+EOF
+#
+cat >have3mavg.gs<<EOF
+'reinit'
+'open $outfile2.ctl'
+'set x 1 144'
+'set y 1  73'
+'set gxout fwrite'
+'set fwrite $outfile3.gr'
+'set t '$ts' '$te''
+'d ave(t2m,t-1,t+1)'
+'c'
+EOF
+#
+grads -l <3mavg
+#
+cat>$outfile3.ctl<<EOF
+dset $outfile3.gr
+undef $undf
+TITLE  3mon avg
+XDEF 144 LINEAR  0.  2.5
+*
+YDEF  90 LINEAR  -90. 2.5
+*
+ZDEF  1 LINEAR 1 1.
+tdef 9999 linear feb1949 1mo
+VARS 1
+t2m  0 99     anom
+ENDVARS
+EOF
+#
+#mv $outfile* $t2mdir
+#\rm *gr
+

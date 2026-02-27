@@ -1,0 +1,18 @@
+COLA SIGMA HISTORY
+E001 SEQU R015  16 18 18  0  1  1   92  0  1  1   92 TAPE
+WAVY MODEL V1.1 TEST            01/01/92
+  0.10000000E-01  0.17000000E-01  0.25000000E-01  0.55000000E-01  0.73000000E-01
+  0.85000000E-01  0.93000000E-01  0.96000000E-01  0.96000000E-01  0.50000000E-01
+  0.50000000E-01  0.50000000E-01  0.50000000E-01  0.50000000E-01  0.50000000E-01
+  0.50000000E-01  0.50000000E-01  0.50000000E-01                                
+LN SURFACE PRESSURE                       PROG    512    1    142
+DIVERGENCE                                PROG    512   18     50
+VORTICITY                                 PROG    512   18     50
+SPECIFIC HUMIDITY                         PROG    512   18      0
+VIRTUAL TEMPERATURE                       PROG    512   18     40
+ANOM TSFC                                 DIAG    512    1     40
+VOT FORCING                               DIAG    512   18     72
+DIV FORCING                               DIAG    512   18     72
+TMP FORCING                               DIAG    512   18     71
+GEO FORCING                               DIAG    512   18     72
+CONT FORCING                              DIAG    512   18     72

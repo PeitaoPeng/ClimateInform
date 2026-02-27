@@ -1,0 +1,620 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/attr/opr
+tmp=/export/hobbes/wd52pp/tmp
+datadir=/export-12/cacsrv1/wd52pp/attr
+var1=temp
+var2=prec
+var3=z200
+#
+season=mam
+#tgt_season=DJF2010-11
+tgt_season=MAM2011
+casenmb=9 #composite case number
+nino34=-0.67 # nino34 SST of this season from regr.out
+#
+tgt_ss=`echo $tgt_season|cut -c 1-3`
+#
+cd $tmp
+#
+#======================================
+# plot global map 
+#======================================
+cat >regr_map<<EOF1
+run global.gs
+EOF1
+
+cat >global.gs<<EOF2
+* temp in global
+    'reinit'
+    'set display color white'
+    'c'
+    'run /export/hobbes/wd52pp/bin/rgbset.gs'
+*
+'open $datadir/temp.regr_vs_nino34.$season.ctl'
+'open $datadir/temp.ensocmp.$season.ctl'
+*---------------------------string/caption
+ 'set string 1 tc 4'
+ 'set strsiz 0.15 0.15'
+ 'draw string 5.5 8.2 $tgt_season Temp Anom(K): Observed vs Estimated from ENSO Teleconnection'
+ 'draw string 5.5 7.95 (Adjusted regression pattern & Nino34 SST based composite, Nino34 SST=${nino34}K)'
+ 'set string 4 tc 4'
+ 'set strsiz 0.15 0.15'
+*---------------------------set dimsnesion, page size and style
+xmin1=3.125
+xmax1=7.875
+xmin2=0.35
+xmax2=5.55
+xmin3=5.65
+xmax3=10.85
+ 
+ymin1=4.5
+ymax1=7.5
+ymin2=1.3
+ymax2=4.3
+ymin3=1.3
+ymax3=4.3
+
+'set vpage 0 8.5 0 11'
+*
+'set parea 'xmin1' 'xmax1' 'ymin1' 'ymax1''
+*
+'set ylint 20'
+'set xlint 60'
+*
+'set lat -60 80'
+'set lon 0 360'
+'set grads off'
+'set grid off'
+'set poli off'
+'set mpdset mres'
+'set gxout grfill'
+'set clevs  -2. -1.5 -1.0 -0.5 0 0.5 1.0 1.5 2.'
+'set ccols  49 47 45 43 41 21 23 25 27 29'
+'d obs'
+*'run /export/hobbes/wd52pp/bin/cbarn.gs 0.55 0 5.5 4.3'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 5.45 7.35 Observed Anom(K)'
+*
+'set parea 'xmin2' 'xmax2' 'ymin2' 'ymax2''
+*
+'set ylint 20'
+'set xlint 60'
+*
+'set lat -60 80'
+'set lon 0 360'
+'set grads off'
+'set grid off'
+*'set poli on'
+'set mpdset mres'
+'set gxout grfill'
+'set clevs  -2. -1.5 -1.0 -0.5 0 0.5 1.0 1.5 2.'
+'set ccols  49 47 45 43 41 21 23 25 27 29'
+'d maskout(est,abs(cor)-0.25)'
+*'run /export/hobbes/wd52pp/bin/cbarn.gs 0.55 0 2.9 0.75'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 3.0 4.25 From Regression with Significance > 95%'
+*
+'set parea 'xmin3' 'xmax3' 'ymin3' 'ymax3''
+*
+'set ylint 20'
+'set xlint 60'
+*
+'set lat -60 80'
+'set lon 0 360'
+'set ylab off'
+'set grads off'
+'set grid off'
+*'set poli on'
+'set mpdset mres'
+'set gxout grfill'
+'set clevs  -2. -1.5 -1.0 -0.5 0 0.5 1.0 1.5 2.'
+'set ccols  49 47 45 43 41 21 23 25 27 29'
+'d maskout(cmpp.2,freq.2-67)'
+*'run /export/hobbes/wd52pp/bin/cbarn.gs 0.55 0 8.125 0.75'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 8.2 4.25 Composite of $casenmb Cases with Frequency > 70%'
+
+ 'set string 1 tc 4'
+ 'set strsiz 0.14 0.14'
+
+'run /export/hobbes/wd52pp/bin/cbarn.gs 1. 0 5.5 0.8'
+'printim $datadir/$var1.$tgt_season.gl.png gif x800 y600'
+'print'
+* temp in NA region
+    'reinit'
+    'set display color white'
+    'c'
+    'run /export/hobbes/wd52pp/bin/rgbset.gs'
+*
+'open $datadir/temp.regr_vs_nino34.$season.ctl'
+'open $datadir/temp.ensocmp.$season.ctl'
+*---------------------------string/caption
+ 'set string 1 tc 4'
+ 'set strsiz 0.15 0.15'
+ 'draw string 5.5 8.4 $tgt_season Temp Anom(K): Observed vs Estimated from ENSO Teleconnection'
+ 'draw string 5.5 8.15 (Regression Pattern x $tgt_ss Nino34 SST (${nino34}K) and Nino34 SST based Composite)'
+ 'set string 4 tc 4'
+ 'set strsiz 0.15 0.15'
+*---------------------------set dimsnesion, page size and style
+xmin1=3.125
+xmax1=7.875
+xmin2=0.375
+xmax2=5.6
+xmin3=5.6
+xmax3=10.625
+ 
+ymin1=4.6
+ymax1=7.6
+ymin2=1.
+ymax2=4.
+ymin3=1.
+ymax3=4.
+
+'set vpage 0 8.5 0 11'
+*
+'set parea 'xmin1' 'xmax1' 'ymin1' 'ymax1''
+*
+'set ylint 10'
+'set xlint 20'
+*
+'set lat 15 75'
+'set lon 190 310'
+'set grads off'
+'set grid off'
+'set poli on'
+'set mpdset mres'
+'set gxout grfill'
+'set clevs  -2. -1.5 -1.0 -0.5 0 0.5 1.0 1.5 2.'
+'set ccols  49 47 45 43 41 21 23 25 27 29'
+'d obs'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 5.525 7.725 Observed Anom(K)'
+*
+'set parea 'xmin2' 'xmax2' 'ymin2' 'ymax2''
+*
+'set ylint 10'
+'set xlint 20'
+*
+'set lat 15 75'
+'set lon 190 310'
+'set grads off'
+'set grid off'
+'set poli on'
+'set mpdset mres'
+'set gxout grfill'
+'set clevs  -2. -1.5 -1.0 -0.5 0 0.5 1.0 1.5 2.'
+'set ccols  49 47 45 43 41 21 23 25 27 29'
+'d maskout(est,abs(cor)-0.25)'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 3.0 4.2 From Regression with Significance > 95%'
+*
+'set parea 'xmin3' 'xmax3' 'ymin3' 'ymax3''
+*
+'set ylint 10'
+'set xlint 20'
+*
+'set lat 15 75'
+'set lon 190 310'
+'set grads off'
+'set grid off'
+'set poli on'
+'set mpdset mres'
+'set gxout grfill'
+'set clevs  -2. -1.5 -1.0 -0.5 0 0.5 1.0 1.5 2.'
+'set ccols  49 47 45 43 41 21 23 25 27 29'
+'set ylab off'
+'d maskout(cmpp.2,freq.2-67)'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 8.1 4.2 Composite of $casenmb Cases with Frequency > 70%'
+'run /export/hobbes/wd52pp/bin/cbarn.gs 1. 0 5.5 0.3'
+
+ 'set string 1 tc 4'
+ 'set strsiz 0.14 0.14'
+
+'printim $datadir/$var1.$tgt_season.na.png gif x800 y600'
+'print'
+* prec in global
+    'reinit'
+    'set display color white'
+    'c'
+    'run /export/hobbes/wd52pp/bin/rgbset.gs'
+*
+'open $datadir/prec.regr_vs_nino34.$season.ctl'
+'open $datadir/prec.ensocmp.$season.ctl'
+*---------------------------string/caption
+ 'set string 1 tc 4'
+ 'set strsiz 0.15 0.15'
+ 'draw string 5.5 8.2 $tgt_season Prate Anom(mm/day): Observed vs Estimated from ENSO Teleconnection'
+ 'draw string 5.5 7.95 (Regression Pattern x $tgt_ss Nino34 SST (${nino34}K) and Nino34 SST based Composite)'
+ 'set string 4 tc 4'
+ 'set strsiz 0.15 0.15'
+*---------------------------set dimsnesion, page size and style
+xmin1=3.125
+xmax1=7.875
+xmin2=0.35
+xmax2=5.55
+xmin3=5.65
+xmax3=10.85
+ 
+ymin1=4.5
+ymax1=7.5
+ymin2=1.3
+ymax2=4.3
+ymin3=1.3
+ymax3=4.3
+
+'set vpage 0 8.5 0 11'
+*
+'set parea 'xmin1' 'xmax1' 'ymin1' 'ymax1''
+*
+'set ylint 20'
+'set xlint 60'
+*
+'set lat -60 80'
+'set lon 0 360'
+'set grads off'
+'set grid off'
+'set poli off'
+'set mpdset mres'
+'set gxout grfill'
+'set clevs  -8. -4. -2. -1.0 -0.5 0 0.5 1.0 2. 4. 8.'
+'set ccols  79 77 75 73 72 71 31 32 33 35 37 39 '
+'d obs'
+*'run /export/hobbes/wd52pp/bin/cbarn.gs 0.55 0 5.5 4.3'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 5.45 7.35 Observed Anom(mm/day)'
+*
+'set parea 'xmin2' 'xmax2' 'ymin2' 'ymax2''
+*
+'set ylint 20'
+'set xlint 60'
+*
+'set lat -60 80'
+'set lon 0 360'
+'set grads off'
+'set grid off'
+*'set poli on'
+'set mpdset mres'
+'set gxout grfill'
+'set clevs  -8. -4. -2. -1.0 -0.5 0 0.5 1.0 2. 4. 8.'
+'set ccols  79 77 75 73 72 71 31 32 33 35 37 39 '
+'d maskout(est,abs(cor)-0.25)'
+*'run /export/hobbes/wd52pp/bin/cbarn.gs 0.55 0 2.9 0.75'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 3.0 4.25 From Regression with Significance > 95%'
+*
+'set parea 'xmin3' 'xmax3' 'ymin3' 'ymax3''
+*
+'set ylint 20'
+'set xlint 60'
+*
+'set lat -60 80'
+'set lon 0 360'
+'set ylab off'
+'set grads off'
+'set grid off'
+*'set poli on'
+'set mpdset mres'
+'set gxout grfill'
+'set clevs  -8. -4. -2. -1.0 -0.5 0 0.5 1.0 2. 4. 8.'
+'set ccols  79 77 75 73 72 71 31 32 33 35 37 39 '
+'d maskout(cmpp.2,freq.2-67)'
+*'run /export/hobbes/wd52pp/bin/cbarn.gs 0.55 0 8.125 0.75'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 8.2 4.25 Composite of $casenmb Cases with Frequency > 70%'
+
+ 'set string 1 tc 4'
+ 'set strsiz 0.14 0.14'
+
+'run /export/hobbes/wd52pp/bin/cbarn.gs 1. 0 5.5 0.8'
+'printim $datadir/$var2.$tgt_season.gl.png gif x800 y600'
+'print'
+*---------------------------string/caption
+* prec in NA
+    'reinit'
+    'set display color white'
+    'c'
+    'run /export/hobbes/wd52pp/bin/rgbset.gs'
+'open $datadir/prec.regr_vs_nino34.$season.ctl'
+'open $datadir/prec.ensocmp.$season.ctl'
+*---------------------------string/caption
+ 'set string 1 tc 4'
+ 'set strsiz 0.15 0.15'
+ 'draw string 5.5 8.4 $tgt_season Prate Anom(mm/day): Observed vs Estimated from ENSO Teleconnection'
+ 'draw string 5.5 8.15 (Regression Pattern x $tgt_ss Nino34 SST (${nino34}K) and Nino34 SST based Composite)'
+ 'set string 4 tc 4'
+ 'set strsiz 0.15 0.15'
+*---------------------------set dimsnesion, page size and style
+xmin1=3.125
+xmax1=7.875
+xmin2=0.375
+xmax2=5.6
+xmin3=5.6
+xmax3=10.625
+ 
+ymin1=4.6
+ymax1=7.6
+ymin2=1.
+ymax2=4.
+ymin3=1.
+ymax3=4.
+
+'set vpage 0 8.5 0 11'
+*
+'set parea 'xmin1' 'xmax1' 'ymin1' 'ymax1''
+*
+'set ylint 10'
+'set xlint 20'
+*
+'set lat 15 75'
+'set lon 190 310'
+'set grads off'
+'set grid off'
+'set poli on'
+'set mpdset mres'
+'set gxout grfill'
+'set clevs  -8. -4. -2. -1.0 -0.5 0 0.5 1.0 2. 4. 8.'
+'set ccols  79 77 75 73 72 71 31 32 33 35 37 39 '
+'d obs'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 5.525 7.725 Observed Anom(mm/day)'
+*
+'set parea 'xmin2' 'xmax2' 'ymin2' 'ymax2''
+*
+'set ylint 10'
+'set xlint 20'
+*
+'set lat 15 75'
+'set lon 190 310'
+'set grads off'
+'set grid off'
+'set poli on'
+'set mpdset mres'
+'set gxout grfill'
+'set clevs  -8. -4. -2. -1.0 -0.5 0 0.5 1.0 2. 4. 8.'
+'set ccols  79 77 75 73 72 71 31 32 33 35 37 39 '
+'d maskout(est,abs(cor)-0.25)'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 3.0 4.2 From Regression with Significance > 95%'
+*
+'set parea 'xmin3' 'xmax3' 'ymin3' 'ymax3''
+*
+'set ylint 10'
+'set xlint 20'
+*
+'set lat 15 75'
+'set lon 190 310'
+'set grads off'
+'set grid off'
+'set poli on'
+'set mpdset mres'
+'set gxout grfill'
+'set clevs  -8. -4. -2. -1.0 -0.5 0 0.5 1.0 2. 4. 8.'
+'set ccols  79 77 75 73 72 71 31 32 33 35 37 39 '
+'set ylab off'
+'d maskout(cmpp.2,freq.2-67)'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 8.1 4.2 Composite of $casenmb Cases with Frequency > 70%'
+'run /export/hobbes/wd52pp/bin/cbarn.gs 1. 0 5.5 0.3'
+
+'printim $datadir/$var2.$tgt_season.na.png gif x800 y600'
+'print'
+* z200 in global
+    'reinit'
+    'set display color white'
+    'c'
+    'run /export/hobbes/wd52pp/bin/rgbset.gs'
+*
+'open $datadir/z200.regr_vs_nino34.$season.ctl'
+'open $datadir/z200.ensocmp.$season.ctl'
+*---------------------------string/caption
+ 'set string 1 tc 4'
+ 'set strsiz 0.15 0.15'
+ 'draw string 5.5 8.2 $tgt_season Z200 Anom(M): Observed vs Estimated from ENSO Teleconnection'
+ 'draw string 5.5 7.95 (Regression Pattern x $tgt_ss Nino34 SST (${nino34}K) and Nino34 SST based Composite)'
+ 'set string 4 tc 4'
+ 'set strsiz 0.15 0.15'
+*---------------------------set dimsnesion, page size and style
+xmin1=3.125
+xmax1=7.875
+xmin2=0.35
+xmax2=5.55
+xmin3=5.65
+xmax3=10.85
+ 
+ymin1=4.5
+ymax1=7.5
+ymin2=1.3
+ymax2=4.3
+ymin3=1.3
+ymax3=4.3
+
+'set vpage 0 8.5 0 11'
+*
+'set parea 'xmin1' 'xmax1' 'ymin1' 'ymax1''
+*
+'set ylint 20'
+'set xlint 60'
+*
+'set lat -60 80'
+'set lon 0 360'
+'set grads off'
+'set grid off'
+'set poli off'
+'set mpdset mres'
+'set gxout shaded'
+'set clevs  -100 -75 -50 -25 0 25 50 75 100'
+'set ccols  49 47 45 43 41 21 23 25 27 29'
+'d obs'
+*'run /export/hobbes/wd52pp/bin/cbarn.gs 0.55 0 5.5 4.3'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 5.45 7.35 Observed Anom(M)'
+*
+'set parea 'xmin2' 'xmax2' 'ymin2' 'ymax2''
+*
+'set ylint 20'
+'set xlint 60'
+*
+'set lat -60 80'
+'set lon 0 360'
+'set grads off'
+'set grid off'
+*'set poli on'
+'set mpdset mres'
+'set gxout shaded'
+'set clevs  -100 -75 -50 -25 0 25 50 75 100'
+'set ccols  49 47 45 43 41 21 23 25 27 29'
+'d maskout(est,abs(cor)-0.25)'
+*'run /export/hobbes/wd52pp/bin/cbarn.gs 0.55 0 2.9 0.75'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 3.0 4.25 From Regression with Significance > 95%'
+*
+'set parea 'xmin3' 'xmax3' 'ymin3' 'ymax3''
+*
+'set ylint 20'
+'set xlint 60'
+*
+'set lat -60 80'
+'set lon 0 360'
+'set ylab off'
+'set grads off'
+'set grid off'
+*'set poli on'
+'set mpdset mres'
+'set gxout shaded'
+'set clevs  -100 -75 -50 -25 0 25 50 75 100'
+'set ccols  49 47 45 43 41 21 23 25 27 29'
+'d maskout(cmpp.2,freq.2-67)'
+*'run /export/hobbes/wd52pp/bin/cbarn.gs 0.55 0 8.125 0.75'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 8.2 4.25 Composite of $casenmb Cases with Frequency > 70%'
+
+ 'set string 1 tc 4'
+ 'set strsiz 0.14 0.14'
+
+'run /export/hobbes/wd52pp/bin/cbarn.gs 1. 0 5.5 0.8'
+'printim $datadir/$var3.$tgt_season.gl.png gif x800 y600'
+'print'
+* z200 in NA region
+    'reinit'
+    'set display color white'
+    'c'
+    'run /export/hobbes/wd52pp/bin/rgbset.gs'
+*
+'open $datadir/z200.regr_vs_nino34.$season.ctl'
+'open $datadir/z200.ensocmp.$season.ctl'
+*---------------------------string/caption
+ 'set string 1 tc 4'
+ 'set strsiz 0.15 0.15'
+ 'draw string 5.5 8.4 $tgt_season Z200 Anom(M): Observed vs Estimated from ENSO Teleconnection'
+ 'draw string 5.5 8.15 (Regression Pattern x $tgt_ss Nino34 SST (${nino34}K) and Nino34 SST based Composite)'
+ 'set string 4 tc 4'
+ 'set strsiz 0.15 0.15'
+*---------------------------set dimsnesion, page size and style
+xmin1=3.125
+xmax1=7.875
+xmin2=0.375
+xmax2=5.6
+xmin3=5.6
+xmax3=10.625
+ 
+ymin1=4.6
+ymax1=7.6
+ymin2=1.
+ymax2=4.
+ymin3=1.
+ymax3=4.
+
+'set vpage 0 8.5 0 11'
+*
+'set parea 'xmin1' 'xmax1' 'ymin1' 'ymax1''
+*
+'set ylint 10'
+'set xlint 20'
+*
+'set lat 15 75'
+'set lon 190 310'
+'set grads off'
+'set grid off'
+'set poli on'
+'set mpdset mres'
+'set gxout shaded'
+'set clevs  -100 -75 -50 -25 0 25 50 75 100'
+'set ccols  49 47 45 43 41 21 23 25 27 29'
+'d obs'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 5.525 7.725 Observed Anom(M)'
+*
+'set parea 'xmin2' 'xmax2' 'ymin2' 'ymax2''
+*
+'set ylint 10'
+'set xlint 20'
+*
+'set lat 15 75'
+'set lon 190 310'
+'set grads off'
+'set grid off'
+'set poli on'
+'set mpdset mres'
+'set gxout shaded'
+'set clevs  -100 -75 -50 -25 0 25 50 75 100'
+'set ccols  49 47 45 43 41 21 23 25 27 29'
+'d maskout(est,abs(cor)-0.25)'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 3.0 4.2 From Regression with Significance > 95%'
+*
+'set parea 'xmin3' 'xmax3' 'ymin3' 'ymax3''
+*
+'set ylint 10'
+'set xlint 20'
+*
+'set lat 15 75'
+'set lon 190 310'
+'set grads off'
+'set grid off'
+'set poli on'
+'set mpdset mres'
+'set gxout shaded'
+'set clevs  -100 -75 -50 -25 0 25 50 75 100'
+'set ccols  49 47 45 43 41 21 23 25 27 29'
+'set ylab off'
+'d maskout(cmpp.2,freq.2-67)'
+'set string 4 tc 4'
+'set strsiz 0.13 0.13'
+'draw string 8.1 4.2 Composite of $casenmb Cases with Frequency > 70%'
+'run /export/hobbes/wd52pp/bin/cbarn.gs 1. 0 5.5 0.3'
+
+ 'set string 1 tc 4'
+ 'set strsiz 0.14 0.14'
+
+'printim $datadir/$var3.$tgt_season.na.png gif x800 y600'
+'print'
+EOF2
+
+/usr/local/bin/grads -l <regr_map
+cp $datadir/$var1.$tgt_season.gl.png /export/hobbes/wd52pp/data/maychen
+cp $datadir/$var1.$tgt_season.na.png /export/hobbes/wd52pp/data/maychen
+cp $datadir/$var2.$tgt_season.gl.png /export/hobbes/wd52pp/data/maychen
+cp $datadir/$var2.$tgt_season.na.png /export/hobbes/wd52pp/data/maychen
+cp $datadir/$var3.$tgt_season.gl.png /export/hobbes/wd52pp/data/maychen
+cp $datadir/$var3.$tgt_season.na.png /export/hobbes/wd52pp/data/maychen

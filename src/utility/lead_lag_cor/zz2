@@ -1,0 +1,95 @@
+#!/bin/sh
+set verbose
+rm tmp1.gs
+cat << EOR > tmp1.gs
+'reinit'
+'c'
+*----HadISST
+'sdfopen /cpc/home/hzz/DATAhu/HadISST/HadISST_sst.nc_Jan1870_May2017'
+*'sdfopen /cpc/home/hzz/DATAhu/HadISST/HadISST1_SST_update.nc'
+
+VAR1=sst
+T0=(1870-1870)*12
+T2=(2016-1870+1)*12
+Tmax=T2+5
+
+'set lon 0 360'
+'set lat -90 90'
+'set z 1'
+'set t 1 12'
+'define s0=ave('VAR1'.1,t+'T0',t='T2',12)'
+
+*'set time Jan1870 'LASTmon
+'set t 1 'Tmax
+'modify s0 seasonal'
+'define tmp='VAR1'.1-s0'
+*'define SSTa=const(tmp,-999.0,-u)'
+'define SSTa=maskout('VAR1'.1,'VAR1'.1(t=1))'
+
+*'set t 1'
+*'d SSTa'
+*'d maskout('VAR1'.1,'VAR1'.1)'
+*'d maskout('VAR1'.1,5.0-abs(SSTa))'
+
+*pull dummy
+*-----------------------------------------------------------
+*'set t 1 'Tmax
+'set lon 0 359'
+'set lat -89.5 89.5'
+
+'set fwrite x0_SSTA_Composite01.SSTa'
+'set gxout fwrite'
+t0=1
+WHILE (t0<=Tmax)
+'set t 't0
+'d const(SSTa,-999.0,-u)'
+*'d maskout(SSTa,SSTa)'
+*'d ssta'
+t0=t0+1
+ENDWHILE
+'disable fwrite'
+'quit'
+EOR
+#grads -lc "run tmp1.gs"
+/usr/local/grads/2.0.1/grads -lc "run tmp1.gs"
+
+rm tmp1.gs
+cat << EOR > tmp2.gs
+'reinit'
+'c'
+'run /cpc/home/hzz/bin/rgbset2.gs'
+'open x0_SSTA_Composite01_Test.ctl'
+'enable print x0_SSTA_Composite01.met'
+LON1=0
+LON2=360-0
+LAT1=-30
+LAT2=30
+*'set frame off'
+'set grads off'
+'set grid on'
+'set mproj scaled'
+'set xlab on'
+'set ylab on'
+
+'set xlopts 1 4 0.13'
+'set ylopts 1 4 0.13'
+'set xlint 60'
+'set ylint 10'
+
+'set LAT 'LAT1 ' 'LAT2
+'set LON 'LON1 ' 'LON2
+'set z 1'
+'set t 1'
+'set parea 0.8 10.0 0.5 8.0'
+'set gxout shaded'
+'set clevs  -0.8 -0.6 -0.4 -0.2 0.0 0.2 0.4 0.6 0.8'
+'set ccols 48   47   46   45   44  24  25  26  27  28'
+'d SSTa'
+'print'
+'disable print'
+pull dummy
+'quit'
+EOR
+/usr/local/grads/2.0.1/grads -lc "run tmp2.gs"
+
+rm x0_SSTA_Composite01.met tmp2.gs

@@ -1,0 +1,125 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/modes/src
+tmp=/export/hobbes/wd52pp/tmp
+datadir=/export-12/cacsrv1/wd52pp/modes/data
+datadir2=/export-12/cacsrv1/wd52pp/modes
+#
+var=z200
+season=jfm
+nyears=49
+nmodel=11
+nmod=15
+#
+/bin/rm $tmp/fort.*         
+cp $lcdir/pure_eof.f $tmp/pure_eof.f
+cp $lcdir/eof.s.new.f  $tmp/.
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$nyears)
+       parameter(imx=128,jmx=64)
+       parameter(nm=$nmodel)
+       parameter(nmod=$nmod)
+c      parameter(lons=54,lone=108,lats=40,late=58) !PNA area (150E-300E,20N-70N)
+c      parameter(lons2=43,lone2=108,lats2=32,late2=58) !Extended area (120E-300E, Eq 70N)
+c      parameter(lons=1,lone=128,lats=40,late=64)
+       parameter(lons=1,lone=128,lats=33,late=64)
+eof
+#
+#
+f77 -o pure_eof.x eof.s.new.f pure_eof.f
+echo "done compiling"
+
+#
+ ln -s $datadir/obs.$var.a_c.$season.51-99.gr         fort.10
+#
+ ln -s $datadir/cam2.$var.a_c.$season.51-99.gr        fort.11
+ ln -s $datadir/ccm3.$var.a_c.$season.51-99.gr        fort.12
+ ln -s $datadir/echam3.$var.a_c.$season.51-99.gr      fort.13
+ ln -s $datadir/echam4.5.$var.a_c.$season.51-99.gr    fort.14
+ ln -s $datadir/gfdlv1.$var.a_c.$season.51-99.gr      fort.15
+ ln -s $datadir/gfdlv2.$var.a_c.$season.51-99.gr      fort.16
+ ln -s $datadir/gfdlv3.$var.a_c.$season.51-99.gr      fort.17
+ ln -s $datadir/nsipp.$var.a_c.$season.51-99.gr       fort.18
+ ln -s $datadir/sfmv1.$var.a_c.$season.51-99.gr       fort.19
+ ln -s $datadir/sfmv2.$var.a_c.$season.51-99.gr       fort.20
+ ln -s $datadir/sfmv3.$var.a_c.$season.51-99.gr       fort.21
+#
+ ln -s $datadir2/reof.$var.$season.51-99.gr       fort.51
+ ln -s $datadir2/rcoef.$var.$season.51-99.gr   fort.52
+#
+pure_eof.x > $lcdir/out
+#
+
+cat>$datadir2/reof.$var.$season.51-99.ctl<<EOF
+dset $datadir2/reof.$var.$season.51-99.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  128 linear 0 2.8125
+ydef   64 linear -90 2.8125
+zdef    1 levels 200
+tdef 999 linear jan1950  1yr
+vars   30
+eof1   0 99 corr of mode 1
+reg1   0 99 regr of mode 1
+eof2   0 99 corr of mode 2
+reg2   0 99 regr of mode 2
+eof3   0 99 corr of mode 3
+reg3   0 99 regr of mode 3
+eof4   0 99 corr of mode 4
+reg4   0 99 regr of mode 4
+eof5   0 99 corr of mode 5
+reg5   0 99 regr of mode 5
+eof6   0 99 corr of mode 6
+reg6   0 99 regr of mode 6
+eof7   0 99 corr of mode 7
+reg7   0 99 regr of mode 7
+eof8   0 99 corr of mode 8
+reg8   0 99 regr of mode 8
+eof9   0 99 corr of mode 9
+reg9   0 99 regr of mode 9
+eof10   0 99 corr of mode 10
+reg10   0 99 regr of mode 10
+eof11   0 99 corr of mode 11
+reg11   0 99 regr of mode 11
+eof12   0 99 corr of mode 12
+reg12   0 99 regr of mode 12
+eof13   0 99 corr of mode 13
+reg13   0 99 regr of mode 13
+eof14   0 99 corr of mode 14
+reg14   0 99 regr of mode 14
+eof15   0 99 corr of mode 15
+reg15   0 99 regr of mode 15
+endvars
+EOF
+
+cat>$datadir2/rcoef.$var.$season.51-99.ctl<<EOF2
+dset $datadir2/rcoef.$var.$season.51-99.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef   49 linear 0 2.8125
+ydef    1 linear -90 2.8125
+zdef    1 levels 200
+tdef 999 linear jan1951  1yr
+vars   15
+cf1   0 99 rcoef of mode 1
+cf2   0 99 rcoef of mode 2
+cf3   0 99 rcoef
+cf4   0 99 rcoef
+cf5   0 99 rcoef
+cf6   0 99 rcoef
+cf7   0 99 rcoef
+cf8   0 99 rcoef
+cf9   0 99 rcoef
+cf10   0 99 rcoef
+cf11   0 99 rcoef
+cf13   0 99 rcoef
+cf13   0 99 rcoef
+cf14   0 99 rcoef
+cf15   0 99 rcoef
+endvars
+EOF2
+

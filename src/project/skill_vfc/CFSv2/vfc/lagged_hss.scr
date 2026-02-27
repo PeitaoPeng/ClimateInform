@@ -1,0 +1,59 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/CFSv2_skill/vfc
+tmp=/cpc/home/wd52pp/tmp
+datadir1=/cpc/home/wd52pp/data/CFSv2_vfc/0data
+datadir3=/cpc/home/wd52pp/data/cpc_vfc/0data
+datadir2=/cpc/home/wd52pp/data/CFSv2_vfc/skill
+#
+#var=temp
+ var=prec
+nseason=180
+nyears=15
+tool=cfsv2
+#
+#/bin/rm $tmp/fort.*         
+cp $lcdir/lagged_hss.f $tmp/heidke.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nss=$nseason)
+       parameter(nyr=$nyears)
+       parameter(imx=36,jmx=19)
+eof
+#
+#
+gfortran -o heidke.x heidke.f
+echo "done compiling"
+
+#
+ ln -s $datadir1/mask_2x2.data    fort.11
+ ln -s $datadir1/${var}.jfm1995-djf2009.$tool.us.gr   fort.12
+ ln -s $datadir3/${var}_seas_verif.bi  fort.13
+ ln -s $datadir2/lagged_hss.$var.95-cur.$tool.gr  fort.51
+#
+heidke.x > $lcdir/out
+#
+
+cat>$datadir2/lagged_hss.$var.95-cur.$tool.ctl<<EOF
+dset $datadir2/lagged_hss.$var.95-cur.$tool.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    1 linear    0.000  1
+ydef    1 linear    0.000  5
+zdef    1 levels 500
+tdef 999 linear feb1995  1mon
+vars   8
+hs11   0 99 prd to  obs
+hs12   0 99 prd to  obs
+hs21   0 99 prd to lagged obs
+hs22   0 99 prd to lagged obs
+hs31   0 99 obs t lagged obs
+hs32   0 99 obs t lagged obs
+hs41   0 99 prd to lagged prd
+hs42   0 99 prd to lagged prd
+endvars
+EOF
+

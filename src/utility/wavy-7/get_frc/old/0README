@@ -1,0 +1,7 @@
+
+AfrcL9p.scr: for 10 level anomaly frc, which can be prescribed or from prcp or
+             read in from residual totfrc and can be smoothed or localized.
+
+Res_tot_frc.scr: have totfrc by residual method; output are
+                 two, one is for target yr, another for clim, format is R20L18. they
+                 can be used as inputs of AfrcL9p.scr.

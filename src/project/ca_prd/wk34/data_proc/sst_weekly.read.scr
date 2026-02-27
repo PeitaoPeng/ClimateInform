@@ -1,0 +1,60 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/ca_prd/wk34/data_proc
+tmp=/cpc/home/wd52pp/tmp/test
+datadir1=/cpc/analysis/verif/ocean/sst/oi/ctl
+datadir2=/cpc/home/wd52pp/data/ca_prd
+#
+cd $tmp
+
+#outfile=sst.weekly.01nov1981-31dec1989
+outfile=sst.weekly.03jan1990-04feb2015
+#syear=1981
+#eyear=1989
+#totwk=427
+syear=1990
+eyear=2015
+totwk=1310
+#======================================
+# read weekly sst
+#======================================
+cat >sstread<<EOF
+run read.gs
+EOF
+cat >read.gs<<EOF
+'reinit'
+*'open $datadir1/oiv2_80s.ctl'
+'open $datadir1/oiv2.ctl'
+'open $datadir1/mask.ctl'
+'set x 1 360'
+'set y 1 180'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+*'set time 01nov$syear 31dec$eyear'
+'set time 03jan$syear 04feb$eyear'
+'d maskout(t,mask.2(time=1jan1993)-1)'
+'c'
+EOF
+grads -l <sstread
+
+cat>$outfile.ctl<<EOF
+dset ^$outfile.gr
+undef -9.99e+8
+*
+TITLE Weekly SST
+*
+XDEF 360 LINEAR  0.5  1.0                                                       
+*
+YDEF 180 LINEAR  -89.5 1.0
+zdef   1 linear 1 1
+*tdef 2000 linear 01nov1981 7dy
+tdef 2000 linear 03jan1990 7dy
+vars 1
+sst  1 99 weekly SST
+ENDVARS
+EOF
+
+#cp $outfile.*
+

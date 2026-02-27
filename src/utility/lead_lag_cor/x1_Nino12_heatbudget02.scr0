@@ -1,0 +1,517 @@
+#! /bin/sh
+#------/cpc/home/hzz/CPChu/CoastalENSO/x1_Nino12_heatbudget02.scr---------------c
+set verbose
+# Nino1+2 heat budget term evolution in extreme Nino1+2-Nino34/Nino12 years: GODAS 
+
+rm tmp1.gs
+cat << EOR > tmp1.gs
+*-----------------------------------------------------------
+'reinit'
+'c'
+*-----GODAS SST: Jan1979-present
+*'open /cpc/GODAS/month/mnth.temp.ctl'
+
+*----HadISST
+*'sdfopen /cpc/home/hzz/DATAhu/HadISST/HadISST_sst.nc_Jan1854_May2017'
+
+**----ERSSTv5: Jan1854-Current, 2x2 grid
+*'open /export/cpc-lw-mlheureux/wd52ml/enso/oni.v5/data/ersst.v5/ersst.v5.1854.pres.ctl'
+*'open /export/cpc-lw-mlheureux/wd52ml/enso/oni.v5/data/ersst.v5/mnth.clim.ersst.v5.1981-2010.ctl'
+
+'open /cpc/home/hzz/DATAhu/HeatBudget/mnth.hbudget.ctl'
+
+LASTmon=Jul2017
+
+VAR1=udtdx
+VAR2=vdtdy
+VAR3a=ent
+VAR3b=dtdzq
+VAR4=hflx
+
+*--Nino1+2
+lon1=360-90
+lon2=360-80
+lat1=-10
+lat2=0
+
+'set dfile 1'
+'set x 1'
+'set y 1'
+'set z 1'
+'set time Jan1979 'LASTmon
+'define Qu=tloop(aave('VAR1'.1,lon='lon1',lon='lon2',lat='lat1',lat='lat2'))'
+'define Qv=tloop(aave('VAR2'.1,lon='lon1',lon='lon2',lat='lat1',lat='lat2'))'
+'define Qw=tloop(aave('VAR3a'.1+'VAR3b'.1,lon='lon1',lon='lon2',lat='lat1',lat='lat2'))'
+'define Qq=tloop(aave('VAR4'.1,lon='lon1',lon='lon2',lat='lat1',lat='lat2'))'
+
+*-----1981-2010 climatology
+T0=(1981-1979)*12
+T2=(2010-1979+1)*12
+
+'set t 1 12'
+'define s1=ave(Qu,t+'T0',t='T2',12)'
+'define s2=ave(Qv,t+'T0',t='T2',12)'
+'define s3=ave(Qw,t+'T0',t='T2',12)'
+'define s4=ave(Qq,t+'T0',t='T2',12)'
+
+'set time Jan1979 'LASTmon
+'modify s1 seasonal'
+'modify s2 seasonal'
+'modify s3 seasonal'
+'modify s4 seasonal'
+'define Qua=Qu-s1'
+'define Qva=Qv-s2'
+'define Qwa=Qw-s3'
+'define Qqa=Qq-s4'
+
+'set t 1 24'
+*--- 6 coastal El Nino years
+Pyear1=1983-1
+T0=(Pyear1-1979)*12
+'define Qu1=ave(Qua,t+'T0',t+'T0')'
+'define Qv1=ave(Qva,t+'T0',t+'T0')'
+'define Qw1=ave(Qwa,t+'T0',t+'T0')'
+'define Qq1=ave(Qqa,t+'T0',t+'T0')'
+
+Pyear2=1998-1
+T0=(Pyear2-1979)*12
+'define Qu2=ave(Qua,t+'T0',t+'T0')'
+'define Qv2=ave(Qva,t+'T0',t+'T0')'
+'define Qw2=ave(Qwa,t+'T0',t+'T0')'
+'define Qq2=ave(Qqa,t+'T0',t+'T0')'
+
+Pyear3=2008-1
+T0=(Pyear3-1979)*12
+'define Qu3=ave(Qua,t+'T0',t+'T0')'
+'define Qv3=ave(Qva,t+'T0',t+'T0')'
+'define Qw3=ave(Qwa,t+'T0',t+'T0')'
+'define Qq3=ave(Qqa,t+'T0',t+'T0')'
+
+Pyear4=2012-1
+T0=(Pyear4-1979)*12
+'define Qu4=ave(Qua,t+'T0',t+'T0')'
+'define Qv4=ave(Qva,t+'T0',t+'T0')'
+'define Qw4=ave(Qwa,t+'T0',t+'T0')'
+'define Qq4=ave(Qqa,t+'T0',t+'T0')'
+
+Pyear5=2014-1
+T0=(Pyear5-1979)*12
+'define Qu5=ave(Qua,t+'T0',t+'T0')'
+'define Qv5=ave(Qva,t+'T0',t+'T0')'
+'define Qw5=ave(Qwa,t+'T0',t+'T0')'
+'define Qq5=ave(Qqa,t+'T0',t+'T0')'
+
+Pyear6=2017-1
+T0=(Pyear6-1979)*12
+'define Qu6=ave(Qua,t+'T0',t+'T0')'
+'define Qv6=ave(Qva,t+'T0',t+'T0')'
+'define Qw6=ave(Qwa,t+'T0',t+'T0')'
+'define Qq6=ave(Qqa,t+'T0',t+'T0')'
+
+*-----------------------------------------------------------
+'run /cpc/home/hzz/bin/rgbset2.gs'
+'enable print x1_Nino12_heatbudget02.met'
+*-------------------------------figure A1-------------------
+'set grads off'
+'set xlab on'
+'set ylab on'
+'set grid off'
+*'set yflip off'
+'set mproj scaled'
+'set ylint 2'
+'set vrange -5.5 5.5'
+'set xlabs Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|'
+*'set xlabs Nov|Dec|Jan|Feb|Mar|Apr'
+*'set xlabs Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec'
+
+'set x 1'
+'set y 1'
+'set z 1'
+'set t 13 21'
+'define x0=0.0'
+
+'set parea 0.8 3.8 4.8 8.0'
+'set lfcols 94 98'
+'set gxout linefill'
+'d Qu1+Qv1+Qw1+Qq1;x0'
+
+'set cmark 0'
+'set cstyle 1'
+'set ccolor 1'
+'set cthick 8'
+'set gxout line'
+'d Qu1'
+
+'set cmark 0'
+'set cstyle 2'
+'set ccolor 2'
+'set cthick 8'
+'set gxout line'
+'d Qv1'
+
+'set cmark 0'
+'set cstyle 3'
+'set ccolor 3'
+'set cthick 8'
+'set gxout line'
+'d Qw1'
+
+'set cmark 0'
+'set cstyle 4'
+'set ccolor 4'
+'set cthick 8'
+'set gxout line'
+'d Qq1'
+
+'set cmark 0'
+'set cstyle 6'
+'set ccolor 14'
+'set cthick 8'
+'set gxout line'
+*'d Qu5'
+
+'set cmark 0'
+'set cstyle 1'
+'set cmark 0'
+'set cstyle 1'
+'set cthick 5'
+'set ccolor 15'
+'set gxout line'
+'d x0'
+
+'set string 1 c 3 0'
+'set strsiz 0.12 0.12'
+'draw string 5.55 8.35 Nino1+2 Region Heat Budget Term Anomaly Evolution For Coastal El Nino Years (GODAS; C/Mon)'
+'draw string 2.3 8.15 (a) 1983'
+
+'set line 1 1 6' 
+'draw line 1.0 0.7 2.0 0.7' 
+'set string 1 l 3 00'
+'draw string 2.1 0.7 Qu'
+
+'set line 2 2 6' 
+'draw line 2.7 0.7 3.7 0.7' 
+'set string 2 l 3 00'
+'draw string 3.8 0.7 Qv'
+
+'set line 3 3 6' 
+'draw line 4.4 0.7 5.4 0.7' 
+'set string 3 l 3 00'
+'draw string 5.5 0.7 Qw+Qzz'
+
+'set line 4 4 6' 
+'draw line 6.5 0.7 7.5 0.7' 
+'set string 4 l 3 00'
+'draw string 7.6 0.7 Qq'
+
+'set line 14 6 6' 
+*'draw line 9.4 0.7 10.4 0.7' 
+'set string 14 l 3 00'
+*'draw string 8.4 0.7 2016-17'
+
+'set line 97 1 6' 
+'draw recf 8.2 0.65 9.2 0.75' 
+'set string 97 l 3 00'
+'draw string 9.3 0.7 Total'
+
+'set strsiz 0.09 0.09'
+'set string 1 c 3 0'
+'draw string 5.0 0.2 /cpc/home/hzz/CPChu/CoastalENSO/x1_Nino12_heatbudget02.scr'
+
+*'run /cpc/home/hzz/bin/cbarn.gs 0.75 0 5.6 0.5'
+'print'
+
+*-------------------------------figure A2-------------------
+'set vpage off'
+'set grads off'
+'set xlab on'
+'set ylab on'
+'set grid off'
+'set mproj scaled'
+'set ylint 2'
+*'set ylpos 0.0 r'
+'set vrange -5.5 5.5'
+'set xlabs Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|'
+
+'set parea 4.2 7.2 4.8 8.0'
+'set lfcols 94 98'
+'set gxout linefill'
+'d Qu2+Qv2+Qw2+Qq2;x0'
+
+'set cmark 0'
+'set cstyle 1'
+'set ccolor 1'
+'set cthick 8'
+'set gxout line'
+'d Qu2'
+
+'set cmark 0'
+'set cstyle 2'
+'set ccolor 2'
+'set cthick 8'
+'set gxout line'
+'d Qv2'
+
+'set cmark 0'
+'set cstyle 3'
+'set ccolor 3'
+'set cthick 8'
+'set gxout line'
+'d Qw2'
+
+'set cmark 0'
+'set cstyle 4'
+'set ccolor 4'
+'set cthick 8'
+'set gxout line'
+'d Qq2'
+
+'set cmark 0'
+'set cstyle 1'
+'set cthick 5'
+'set ccolor 15'
+'set gxout line'
+'d x0'
+
+'set string 1 c 3 0'
+'set strsiz 0.13 0.13'
+'draw string 5.7 8.15 (b) 1998'
+'print'
+
+*-------------------------------figure A3-------------------
+'set vpage off'
+'set grads off'
+'set xlab on'
+'set ylab on'
+'set grid off'
+'set ylint 2'
+'set vrange -5.5 5.5'
+'set xlabs Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|'
+
+'set mproj scaled'
+'set parea 7.6 10.6 4.8 8.0'
+'set lfcols 94 98'
+'set gxout linefill'
+'d Qu3+Qv3+Qw3+Qq3;x0'
+
+'set cmark 0'
+'set cstyle 1'
+'set ccolor 1'
+'set cthick 8'
+'set gxout line'
+'d Qu3'
+
+'set cmark 0'
+'set cstyle 2'
+'set ccolor 2'
+'set cthick 8'
+'set gxout line'
+'d Qv3'
+
+'set cmark 0'
+'set cstyle 3'
+'set ccolor 3'
+'set cthick 8'
+'set gxout line'
+'d Qw3'
+
+'set cmark 0'
+'set cstyle 4'
+'set ccolor 4'
+'set cthick 8'
+'set gxout line'
+'d Qq3'
+
+'set cmark 0'
+'set cstyle 1'
+'set cthick 5'
+'set ccolor 15'
+'set gxout line'
+'d x0'
+
+'set string 1 c 3 00'
+'set strsiz 0.12 0.12'
+'draw string 9.1 8.15 (c) 2008'
+'print'
+
+*-------------------------------figure B1-------------------
+'set vpage off'
+'set grads off'
+'set xlab on'
+'set ylab on'
+'set grid off'
+'set xlabs Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|'
+'set mproj scaled'
+'set ylint 2'
+'set vrange -5.5 5.5'
+*'set ylpos 0.0 r'
+
+'set parea 0.8 3.8 1.1 4.3'
+'set lfcols 94 98'
+'set gxout linefill'
+'d Qu4+Qv4+Qw4+Qq4;x0'
+
+'set cmark 0'
+'set cstyle 1'
+'set ccolor 1'
+'set cthick 8'
+'set gxout line'
+'d Qu4'
+
+'set cmark 0'
+'set cstyle 2'
+'set ccolor 2'
+'set cthick 8'
+'set gxout line'
+'d Qv4'
+
+'set cmark 0'
+'set cstyle 3'
+'set ccolor 3'
+'set cthick 8'
+'set gxout line'
+'d Qw4'
+
+'set cmark 0'
+'set cstyle 4'
+'set ccolor 4'
+'set cthick 8'
+'set gxout line'
+'d Qq4'
+
+'set cmark 0'
+'set cstyle 1'
+'set cthick 5'
+'set ccolor 15'
+'set gxout line'
+'d x0'
+
+'set string 1 c 3 0'
+'set strsiz 0.13 0.13'
+'draw string 2.3 4.45 (d) 2012'
+'print'
+
+*-------------------------------figure B2-------------------
+'set vpage off'
+'set grads off'
+'set xlab on'
+'set ylab on'
+'set grid off'
+'set xlabs Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|'
+'set mproj scaled'
+'set ylint 2'
+'set vrange -5.5 5.5'
+*'set ylpos 0.0 r'
+
+'set parea 4.2 7.2 1.1 4.3'
+'set lfcols 94 98'
+'set gxout linefill'
+'d Qu5+Qv5+Qw5+Qq5;x0'
+
+'set cmark 0'
+'set cstyle 1'
+'set ccolor 1'
+'set cthick 8'
+'set gxout line'
+'d Qu5'
+
+'set cmark 0'
+'set cstyle 2'
+'set ccolor 2'
+'set cthick 8'
+'set gxout line'
+'d Qv5'
+
+'set cmark 0'
+'set cstyle 3'
+'set ccolor 3'
+'set cthick 8'
+'set gxout line'
+'d Qw5'
+
+'set cmark 0'
+'set cstyle 4'
+'set ccolor 4'
+'set cthick 8'
+'set gxout line'
+'d Qq5'
+
+'set cmark 0'
+'set cstyle 1'
+'set cthick 5'
+'set ccolor 15'
+'set gxout line'
+'d x0'
+
+'set string 1 c 3 0'
+'set strsiz 0.13 0.13'
+'draw string 5.7 4.45 (e) 2014'
+'print'
+
+*-------------------------------figure B3-------------------
+'set vpage off'
+'set grads off'
+'set xlab on'
+'set ylab on'
+'set grid off'
+'set xlabs Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|'
+'set mproj scaled'
+'set ylint 2'
+'set vrange -5.5 5.5'
+*'set ylpos 0.0 r'
+
+'set parea 7.6 10.6 1.1 4.3'
+'set lfcols 94 98'
+'set gxout linefill'
+'d Qu6+Qv6+Qw6+Qq6;x0'
+
+'set cmark 0'
+'set cstyle 1'
+'set ccolor 1'
+'set cthick 8'
+'set gxout line'
+'d Qu6'
+
+'set cmark 0'
+'set cstyle 2'
+'set ccolor 2'
+'set cthick 8'
+'set gxout line'
+'d Qv6'
+
+'set cmark 0'
+'set cstyle 3'
+'set ccolor 3'
+'set cthick 8'
+'set gxout line'
+'d Qw6'
+
+'set cmark 0'
+'set cstyle 4'
+'set ccolor 4'
+'set cthick 8'
+'set gxout line'
+'d Qq6'
+
+'set cmark 0'
+'set cstyle 1'
+'set cthick 5'
+'set ccolor 15'
+'set gxout line'
+'d x0'
+
+'set string 1 c 3 0'
+'set strsiz 0.13 0.13'
+'draw string 9.1 4.45 (f) 2017'
+'print'
+
+*'printim x1_Nino12_heatbudget02.jpeg jpeg white'
+*'printim x1_Nino12_heatbudget02.gif gif white'
+'disable print'
+pull dummy 
+*'quit'
+EOR
+/usr/local/grads/2.0.1/grads -lc "run tmp1.gs"
+
+gxeps -c -i x1_Nino12_heatbudget02.met -o x1_Nino12_heatbudget02.eps
+rm tmp1.gs x1_Nino12_heatbudget02.met

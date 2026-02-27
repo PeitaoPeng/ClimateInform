@@ -1,0 +1,55 @@
+3c3,4
+< C PCR for forecst TPZ
+---
+> C PCR for forecst TPZ,
+> C with EOF_mode # increasing with time
+5d5
+< c     PARAMETER (ngrd=(late-lats+1)*(lone-lons+1))
+15d14
+<       real pj(nmod),proj(nmod,nyr)
+85a85
+> 
+87a88
+> 
+109c110
+<       call havenino34(wsst,xn34,imx,jmx,nyr)
+---
+> c     call havenino34(wsst,xn34,imx,jmx,nyr)
+133a135,137
+>       imod=nclm
+>       write(6,*)'imod=',imod
+> 
+141c145
+<      &ngrd,nmod,tcof,corr,regr,undef,id)
+---
+>      &ngrd,nmod,imod,tcof,corr,regr,undef,id)
+147c151
+<       do m=1,nmod
+---
+>       do m=1,imod
+210c214
+<       do m=1,nmod
+---
+>       do m=1,imod
+240c244
+<         do m=1,nmod
+---
+>         do m=1,imod
+262c266
+<           do m=1,nmod
+---
+>           do m=1,imod
+273a278
+>       write(6,*) 'w2d(i=270,j=130)=',w2d(270,130)
+408c413
+<      &ngrd,nmod,tcof,corr,regr,undef,id)
+---
+>      &ngrd,nmodmax,nmod,tcof,corr,regr,undef,id)
+410c415
+<       real wf3d(imx,jmx,ltime),tcof(nmod,ltime)
+---
+>       real wf3d(imx,jmx,ltime),tcof(nmodmax,ltime)
+412c417
+<       real regr(imx,jmx,nmod),corr(imx,jmx,nmod),pc(nmod,nfld)
+---
+>       real regr(imx,jmx,nmodmax),corr(imx,jmx,nmodmax),pc(nmod,nfld)

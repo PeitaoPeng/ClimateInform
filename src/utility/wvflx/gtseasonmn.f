@@ -1,0 +1,258 @@
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C    PROGRAM TO to get average of 87 & 88 year selected sason data    
+C 
+C    JINITZ = 1 IF UNINITIALIZED AND INITIALIZED FILES ARE WRITTEN     C
+C               IN PRESSURE HISTORY FILES                              C
+C    JINITZ = 0 IF UNINITIALIZED AND INITIALIZED FILES ARE NOT WRITTEN C
+C               IN PRESSURE HISTORY FILES                              C
+C                                                                      C
+C    CURRENTLY SET UP SO THAT INITIAL (UNINITIALIZED AND INITIALIZED)  C
+C    FIELDS ARE SKIPPED, IF THEY ARE WRITTEN ON THE PRESSURE HISTORY   C
+C    FILES (THAT IS, IF JINITZ=1)                                      C
+C                                                                      C
+C    INPUT UNIT NUMBERS ARE 61,62,63,..  (PRESSURE HISTORY FILES)      C
+C    FULL SEASONAL AVERAGE ON UNIT 40    (STORED ON CFS)               C
+C                                                                      C
+C    LDRCT DETERMINES IF A PARTICULAR FIELD IS TO BE AVERAGED          C
+C             LDRCT(1)     REFERS TO SURFACE PRESSURE                  C
+C             LDRCT(2 -8)  REFER  TO  7 LEVELS OF U-VELOCITY           C
+C             LDRCT(9-15)  REFER  TO  7 LEVELS OF V-VELOCITY           C
+C             LDRCT(16-22) REFER  TO  7 LEVELS OF OMEGA                C
+C             LDRCT(23)    REFERS TO SEA-LEVEL PRESSURE                C
+C             LDRCT(24-30) REFER  TO  7 LEVELS OF GEOPOTENTIAL HEIGHT  C
+C             LDRCT(31-37) REFER  TO  7 LEVELS OF TEMPERATURE          C
+C             LDRCT(38-44) REFER  TO  7 LEVELS OF SPECIFIC HUMIDITY    C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C     CONFIG.2                                                         C
+C       "REDUCED SET" OF VARIABLES (DOES NOT INCLUDE HEATING)          C
+C     CONFIG.2H                                                        C
+C       "REDUCED SET" OF VARIABLES (INCLUDES DIABATIC HEATING)         C
+C                                                                      C
+C (1)  (DAILY) SURFACE PRESSURE                                        C
+C (2-8)        U VELOCITY                     (7 LEVELS)               C
+C (9-15)       V VELOCITY                     (7 LEVELS)               C
+C (16-22)      OMEGA                          (7 LEVELS)               C
+C (23)         SEA LEVEL PRESSURE                                      C
+C (24-30)      GEOPOTENTIAL HEIGHT            (7 LEVELS)               C
+C (31-37)      ABSOLUTE TEMPERATURE           (7 LEVELS)               C
+C (38-44)      SPECIFIC HUMIDITY              (7 LEVELS)               C
+C                                                                      C
+C (45-51)      DIABATIC HEATING               (7 LEVELS)               C
+C                                                                      C
+C  NLEV (=7) LEVELS ON CONFIG. 2 HISTORY FILES:                        C
+C  1000,850,700,500,300,200,100                                        C
+C                                                                      C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C   parameters need to be changed for different purpose of use are:  C
+C   JINITZ......should be 0 except for January                         C
+C   LDRCT(XX)                                                          C
+C   FHRBEG
+C   FHREND
+C   NEDDY
+C   NTIME
+C   NFCUT
+C   NFBS NFBE
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C   Needed Subroutings Are in Source Files:
+C           fftgcm.f  genpnme.f   glats.f
+C
+C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+      PARAMETER(NW=40)
+      PARAMETER(NLEG=NW+1)
+      PARAMETER(NM=NW)
+      PARAMETER(NMP=NW+1)
+      PARAMETER(NLONG=128)
+      PARAMETER(NLATG=102)
+      PARAMETER(NMAND=7,MAND=NMAND-2)
+      PARAMETER(NSKPIN=44,NFIELD=44)
+CC    PARAMETER(NSKPIN=44,NFIELD=51)
+      PARAMETER(NAVFLD=NFIELD,JINITZ=0)
+      PARAMETER(NLEGP=NLEG+1)
+      PARAMETER(NLONGP=NLONG+1,IMAXT=3*NLONG/2)
+      PARAMETER(KHALF=(NLATG+1)/2)
+      LOGICAL LDRCT
+      DIMENSION LDRCT(NFIELD)
+      COMMON/GAUSS/RADG(NLATG),GWGT(NLATG)
+      COMMON/POLY1/PLEG(NLEG,NMP,NLATG),DPLEG(NLEG,NMP,NLATG)
+      COMMON/FFTAR1/TRIGS(IMAXT),IFAX(10)
+      COMMON/FFTAR2/ARRAY(NLONGP,NLATG),WORK(NLONGP,NLATG)
+      COMMON/EPSLON/EPS(NLEG,NMP),XXN(NLEG,NMP),XXM(NMP)
+      DIMENSION AVGGRD(NLONG,NLATG,NAVFLD)
+      DIMENSION WRKGRD(NLONG,NLATG,NMAND)
+      DIMENSION AVGSPC(2,NLEG,NMP,NAVFLD)
+      DIMENSION COLRAD(KHALF),WGT(KHALF),WGTCS(KHALF),RCS2(KHALF)
+      DIMENSION FIELDG(NLONG,NLATG)
+      DIMENSION FLDSPC(2,NLEG,NMP)
+      DIMENSION IDATE(4)
+      DIMENSION AVSPRV(2,NLEG,NMP,MAND),AVGDRV(NLONG,NLATG,MAND)
+      DIMENSION AVGPTV(NLONG,NLATG,MAND)
+      DIMENSION PLEVEL(NMAND), POOVRP(NMAND)
+      FHRBEG=7992 
+      FHREND=10128
+      DATA PLEVEL/100000.,85000.,70000.,50000.,30000.,20000.,10000./
+      PI=ACOS(-1.0)
+      GRAVITY=9.8
+      LENG1=NLONG*NLATG
+      LENG2=NLONG*NLATG*NMAND
+      R=6.37E+06
+      RR=R**2
+      UNDEF=9.99E+55
+      DO 10 JJ=1,NFIELD
+      LDRCT(JJ)=.FALSE.
+   10 CONTINUE
+      DO 15 II=2,15 
+      LDRCT(II)=.TRUE.
+   15 CONTINUE
+      DO 25 II=24,37 
+      LDRCT(II)=.TRUE.
+   25 CONTINUE
+      CALL GLATS(KHALF,COLRAD,WGT,WGTCS,RCS2)
+      DO 30 K=1,KHALF
+      RADG(K)=PI/2.0 - COLRAD(K)
+      RADG(NLATG-K+1)=-RADG(K)
+      GWGT(K)=WGT(K)
+      GWGT(NLATG-K+1)=+GWGT(K)
+   30 CONTINUE
+      DO 40 JG=1,NLATG
+      CALL GENPNME(RADG(JG),PLEG(1,1,JG),DPLEG(1,1,JG))
+   40 CONTINUE
+C.....Compute the (po/p)**xkapa        
+      GASCON=287.
+      CP=1004.
+      XKAPA=287./1004.       
+      DO 45 K=1,NMAND
+         POOVRP(K)=(PLEVEL(1)/PLEVEL(K))**XKAPA
+   45 CONTINUE
+      IUNIT=61
+      IREAD=0
+      DO 50 IP=1,NAVFLD
+      DO 50 J=1,NLATG
+      DO 50 I=1,NLONG
+      AVGGRD(I,J,IP)=0.0
+   50 CONTINUE
+      IF(JINITZ .EQ. 1) THEN
+C.....UNINITIALIZED AND INITIALIZED FIELDS
+         READ(IUNIT) FHOUR,IDATE
+         WRITE(6,7000) FHOUR,IDATE
+ 7000    FORMAT(' FHOUR=',F10.2,' IDATE=',4I4,' UNINITIALIZED FIELDS ')
+         DO 100 IP=1,NSKPIN
+         READ(IUNIT)
+  100    CONTINUE
+         READ(IUNIT) FHOUR,IDATE
+         WRITE(6,7010) FHOUR,IDATE
+ 7010    FORMAT(' FHOUR=',F10.2,' IDATE=',4I4,'   INITIALIZED FIELDS ')
+         DO 120 IP=1,NSKPIN
+         READ(IUNIT)
+  120    CONTINUE
+      END IF
+C===== REFERENCE POINT FROM WHICH PROGRAM READS NEW TIME RECORD =====
+  123 CONTINUE
+      READ(IUNIT,END=130) FHOUR,IDATE
+      GO TO 132
+  130 IUNIT=IUNIT+1
+      GO TO 123
+  132 CONTINUE
+      IF(FHOUR-FHRBEG .LE. -.01) THEN
+C.....TIME TOO EARLY, SKIP DATA
+         DO 140 IP=1,NFIELD
+         READ(IUNIT)
+  140    CONTINUE
+         WRITE(6,7020) FHOUR,IDATE
+ 7020    FORMAT(' FHOUR=',F10.2,' IDATE=',4I4,'   TIME TOO EARLY     ')
+         GO TO 123
+      END IF
+      IREAD=IREAD+1
+C.....READ INDIVIDUAL FIELDS AND UPDATE ACCUMULATION
+      DO 205 IFLD=1,NFIELD
+      IF(LDRCT(IFLD)) THEN
+         READ(IUNIT) FIELDG
+         CALL XUPDTG(FIELDG,AVGGRD(1,1,IFLD),NLONG,NLATG)
+      ELSE
+         READ(IUNIT)
+      END IF
+  205 CONTINUE
+C==== END OF ACCUMULATIONS ===================
+      IF(FHOUR-FHREND .LE. -.01) THEN
+          WRITE(6,7200) FHOUR,IREAD
+ 7200     FORMAT(' DATA PROCESSED FOR FHOUR',F10.1,
+     1     'IREAD= ',I4)
+          GO TO 123
+      ELSE
+          WRITE(6,7200) FHOUR,IREAD
+          GO TO 600
+      END IF
+  600 CONTINUE
+C=====DIVIDE BY NUMBER OF READS, TRANSFORM AND WRITE DATA ======
+      XREAD=IREAD
+      DO 620 IG=1,NAVFLD
+      DO 620 J=1,NLATG
+      DO 620 I=1,NLONG
+      AVGGRD(I,J,IG)=AVGGRD(I,J,IG)/XREAD
+  620 CONTINUE
+  630 CONTINUE
+C.....write out average geopotential height
+      JUNIT=40
+      DO 645 K=1,NMAND
+      DO 645 J=1,NLATG
+      DO 645 I=1,NLONG
+         WRKGRD(I,J,K)=AVGGRD(I,J,K+23)
+  645 CONTINUE
+      CALL XWRITE(WRKGRD,JUNIT,LENG2)
+C.....write out average U             
+      DO 655 K=1,NMAND
+      DO 655 J=1,NLATG
+      DO 655 I=1,NLONG
+         WRKGRD(I,J,K)=AVGGRD(I,J,K+2)
+  655 CONTINUE
+      CALL XWRITE(WRKGRD,JUNIT,LENG2)
+C.....write out average V             
+      DO 665 K=1,NMAND
+      DO 665 J=1,NLATG
+      DO 665 I=1,NLONG
+         WRKGRD(I,J,K)=AVGGRD(I,J,K+8)
+  665 CONTINUE
+      CALL XWRITE(WRKGRD,JUNIT,LENG2)
+C.....write out average temperature
+      DO 650 K=1,NMAND
+      DO 650 J=1,NLATG
+      DO 650 I=1,NLONG
+         WRKGRD(I,J,K)=AVGGRD(I,J,K+30)
+  650 CONTINUE
+      CALL XWRITE(WRKGRD,JUNIT,LENG2)
+C.....transform absolute tamp to potential temp         
+      DO 640 IG=31,37
+      DO 640 J=1,NLATG
+      DO 640 I=1,NLONG
+      AVGGRD(I,J,IG)=AVGGRD(I,J,IG)*POOVRP(IG-30) 
+  640 CONTINUE
+      DO 660 IG=1,NAVFLD
+      CALL XWRITE(AVGGRD(1,1,IG),50,LENG1)
+  660 CONTINUE
+      STOP
+      END
+ 
+      SUBROUTINE XWRITE(ARRAY,JUNIT,N)
+      DIMENSION ARRAY(N)
+      WRITE(JUNIT) ARRAY
+      RETURN
+      END
+
+
+ 
+      SUBROUTINE XUPDTG(FIELD,AVE,NLON,NLAT)
+      DIMENSION FIELD(NLON,NLAT),AVE(NLON,NLAT)
+      DO 100 J=1,NLAT
+      DO 100 I=1,NLON
+      AVE(I,J)=AVE(I,J)+FIELD(I,J)
+  100 CONTINUE
+      RETURN
+      END
+ 
+      SUBROUTINE FORWRT(FLDSPC,N,JUNIT)
+      DIMENSION FLDSPC(N)
+      WRITE(JUNIT,7000) FLDSPC
+ 7000 FORMAT(5(E16.8))
+      RETURN
+      END
+ 

@@ -1,0 +1,1046 @@
+ undef in is=           1 np=          13 i,j=         103          12
+ undef in is=           1 np=          14 i,j=         141          12
+ undef in is=           1 np=          16 i,j=           2           9
+ undef in is=           1 np=          16 i,j=          68          17
+ undef in is=           1 np=          17 i,j=          47          14
+ undef in is=           1 np=          17 i,j=         119          17
+ undef in is=           1 np=          20 i,j=          12           9
+ undef in is=           1 np=          21 i,j=         122           6
+ it=          46
+ time length of data =          21
+ undef in is=           2 np=          13 i,j=         103          12
+ undef in is=           2 np=          14 i,j=         141          12
+ undef in is=           2 np=          16 i,j=           2           9
+ undef in is=           2 np=          16 i,j=          68          17
+ undef in is=           2 np=          17 i,j=          47          14
+ undef in is=           2 np=          17 i,j=         119          17
+ undef in is=           2 np=          20 i,j=          12           9
+ undef in is=           2 np=          21 i,j=         122           6
+ it=          98
+ time length of data =          42
+ undef in is=           3 np=          13 i,j=         103          12
+ undef in is=           3 np=          14 i,j=         141          12
+ undef in is=           3 np=          16 i,j=           2           9
+ undef in is=           3 np=          16 i,j=          68          17
+ undef in is=           3 np=          17 i,j=          47          14
+ undef in is=           3 np=          17 i,j=         119          17
+ undef in is=           3 np=          20 i,j=          12           9
+ undef in is=           3 np=          21 i,j=         122           6
+ it=         150
+ time length of data =          63
+ undef in is=           4 np=          13 i,j=         103          12
+ undef in is=           4 np=          14 i,j=         141          12
+ undef in is=           4 np=          16 i,j=           2           9
+ undef in is=           4 np=          16 i,j=          68          17
+ undef in is=           4 np=          17 i,j=          47          14
+ undef in is=           4 np=          17 i,j=         119          17
+ undef in is=           4 np=          20 i,j=          12           9
+ undef in is=           4 np=          21 i,j=         122           6
+ it=         202
+ time length of data =          84
+ undef in is=           5 np=          13 i,j=         103          12
+ undef in is=           5 np=          14 i,j=         141          12
+ undef in is=           5 np=          16 i,j=           2           9
+ undef in is=           5 np=          16 i,j=          68          17
+ undef in is=           5 np=          17 i,j=          47          14
+ undef in is=           5 np=          17 i,j=         119          17
+ undef in is=           5 np=          20 i,j=          12           9
+ undef in is=           5 np=          21 i,j=         122           6
+ it=         254
+ time length of data =         105
+ undef in is=           6 np=          13 i,j=         103          12
+ undef in is=           6 np=          14 i,j=         141          12
+ undef in is=           6 np=          16 i,j=           2           9
+ undef in is=           6 np=          16 i,j=          68          17
+ undef in is=           6 np=          17 i,j=          47          14
+ undef in is=           6 np=          17 i,j=         119          17
+ undef in is=           6 np=          20 i,j=          12           9
+ undef in is=           6 np=          21 i,j=         122           6
+ it=         306
+ time length of data =         126
+ undef in is=           7 np=          13 i,j=         103          12
+ undef in is=           7 np=          14 i,j=         141          12
+ undef in is=           7 np=          16 i,j=           2           9
+ undef in is=           7 np=          16 i,j=          68          17
+ undef in is=           7 np=          17 i,j=          47          14
+ undef in is=           7 np=          17 i,j=         119          17
+ undef in is=           7 np=          20 i,j=          12           9
+ undef in is=           7 np=          21 i,j=         122           6
+ it=         358
+ time length of data =         147
+ undef in is=           8 np=          13 i,j=         103          12
+ undef in is=           8 np=          14 i,j=         141          12
+ undef in is=           8 np=          16 i,j=           2           9
+ undef in is=           8 np=          16 i,j=          68          17
+ undef in is=           8 np=          17 i,j=          47          14
+ undef in is=           8 np=          17 i,j=         119          17
+ undef in is=           8 np=          20 i,j=          12           9
+ undef in is=           8 np=          21 i,j=         122           6
+ it=         410
+ time length of data =         168
+ undef in is=           9 np=          13 i,j=         103          12
+ undef in is=           9 np=          14 i,j=         141          12
+ undef in is=           9 np=          16 i,j=           2           9
+ undef in is=           9 np=          16 i,j=          68          17
+ undef in is=           9 np=          17 i,j=          47          14
+ undef in is=           9 np=          17 i,j=         119          17
+ undef in is=           9 np=          20 i,j=          12           9
+ undef in is=           9 np=          21 i,j=         122           6
+ it=         462
+ time length of data =         189
+ undef in is=          10 np=          13 i,j=         103          12
+ undef in is=          10 np=          14 i,j=         141          12
+ undef in is=          10 np=          16 i,j=           2           9
+ undef in is=          10 np=          16 i,j=          68          17
+ undef in is=          10 np=          17 i,j=          47          14
+ undef in is=          10 np=          17 i,j=         119          17
+ undef in is=          10 np=          20 i,j=          12           9
+ undef in is=          10 np=          21 i,j=         122           6
+ it=         514
+ time length of data =         210
+ undef in is=          11 np=          13 i,j=         103          12
+ undef in is=          11 np=          14 i,j=         141          12
+ undef in is=          11 np=          16 i,j=           2           9
+ undef in is=          11 np=          16 i,j=          68          17
+ undef in is=          11 np=          17 i,j=          47          14
+ undef in is=          11 np=          17 i,j=         119          17
+ undef in is=          11 np=          20 i,j=          12           9
+ undef in is=          11 np=          21 i,j=         122           6
+ it=         566
+ time length of data =         231
+ undef in is=          12 np=          13 i,j=         103          12
+ undef in is=          12 np=          14 i,j=         141          12
+ undef in is=          12 np=          16 i,j=           2           9
+ undef in is=          12 np=          16 i,j=          68          17
+ undef in is=          12 np=          17 i,j=          47          14
+ undef in is=          12 np=          17 i,j=         119          17
+ undef in is=          12 np=          20 i,j=          12           9
+ undef in is=          12 np=          21 i,j=         122           6
+ it=         618
+ time length of data =         252
+ undef in is=          13 np=          13 i,j=         103          12
+ undef in is=          13 np=          14 i,j=         141          12
+ undef in is=          13 np=          16 i,j=           2           9
+ undef in is=          13 np=          16 i,j=          68          17
+ undef in is=          13 np=          17 i,j=          47          14
+ undef in is=          13 np=          17 i,j=         119          17
+ undef in is=          13 np=          20 i,j=          12           9
+ undef in is=          13 np=          21 i,j=         122           6
+ it=         670
+ time length of data =         273
+ undef in is=          14 np=          13 i,j=         103          12
+ undef in is=          14 np=          14 i,j=         141          12
+ undef in is=          14 np=          16 i,j=           2           9
+ undef in is=          14 np=          16 i,j=          68          17
+ undef in is=          14 np=          17 i,j=          47          14
+ undef in is=          14 np=          17 i,j=         119          17
+ undef in is=          14 np=          20 i,j=          12           9
+ undef in is=          14 np=          21 i,j=         122           6
+ it=         722
+ time length of data =         294
+ undef in is=          15 np=          13 i,j=         103          12
+ undef in is=          15 np=          14 i,j=         141          12
+ undef in is=          15 np=          16 i,j=           2           9
+ undef in is=          15 np=          16 i,j=          68          17
+ undef in is=          15 np=          17 i,j=          47          14
+ undef in is=          15 np=          17 i,j=         119          17
+ undef in is=          15 np=          20 i,j=          12           9
+ undef in is=          15 np=          21 i,j=         122           6
+ it=         774
+ time length of data =         315
+ undef in is=          16 np=          13 i,j=         103          12
+ undef in is=          16 np=          14 i,j=         141          12
+ undef in is=          16 np=          16 i,j=           2           9
+ undef in is=          16 np=          16 i,j=          68          17
+ undef in is=          16 np=          17 i,j=          47          14
+ undef in is=          16 np=          17 i,j=         119          17
+ undef in is=          16 np=          20 i,j=          12           9
+ undef in is=          16 np=          21 i,j=         122           6
+ it=         826
+ time length of data =         336
+ undef in is=          17 np=          13 i,j=         103          12
+ undef in is=          17 np=          14 i,j=         141          12
+ undef in is=          17 np=          16 i,j=           2           9
+ undef in is=          17 np=          16 i,j=          68          17
+ undef in is=          17 np=          17 i,j=          47          14
+ undef in is=          17 np=          17 i,j=         119          17
+ undef in is=          17 np=          20 i,j=          12           9
+ undef in is=          17 np=          21 i,j=         122           6
+ it=         878
+ time length of data =         357
+ undef in is=          18 np=          13 i,j=         103          12
+ undef in is=          18 np=          14 i,j=         141          12
+ undef in is=          18 np=          16 i,j=           2           9
+ undef in is=          18 np=          16 i,j=          68          17
+ undef in is=          18 np=          17 i,j=          47          14
+ undef in is=          18 np=          17 i,j=         119          17
+ undef in is=          18 np=          20 i,j=          12           9
+ undef in is=          18 np=          21 i,j=         122           6
+ it=         930
+ time length of data =         378
+ undef in is=          19 np=          13 i,j=         103          12
+ undef in is=          19 np=          14 i,j=         141          12
+ undef in is=          19 np=          16 i,j=           2           9
+ undef in is=          19 np=          16 i,j=          68          17
+ undef in is=          19 np=          17 i,j=          47          14
+ undef in is=          19 np=          17 i,j=         119          17
+ undef in is=          19 np=          20 i,j=          12           9
+ undef in is=          19 np=          21 i,j=         122           6
+ it=         982
+ time length of data =         399
+ undef in is=          20 np=          13 i,j=         103          12
+ undef in is=          20 np=          14 i,j=         141          12
+ undef in is=          20 np=          16 i,j=           2           9
+ undef in is=          20 np=          16 i,j=          68          17
+ undef in is=          20 np=          17 i,j=          47          14
+ undef in is=          20 np=          17 i,j=         119          17
+ undef in is=          20 np=          20 i,j=          12           9
+ undef in is=          20 np=          21 i,j=         122           6
+ it=        1034
+ time length of data =         420
+ undef in is=          21 np=          13 i,j=         103          12
+ undef in is=          21 np=          14 i,j=         141          12
+ undef in is=          21 np=          16 i,j=           2           9
+ undef in is=          21 np=          16 i,j=          68          17
+ undef in is=          21 np=          17 i,j=          47          14
+ undef in is=          21 np=          17 i,j=         119          17
+ undef in is=          21 np=          20 i,j=          12           9
+ undef in is=          21 np=          21 i,j=         122           6
+ it=        1086
+ time length of data =         441
+ undef in is=          22 np=          13 i,j=         103          12
+ undef in is=          22 np=          14 i,j=         141          12
+ undef in is=          22 np=          16 i,j=           2           9
+ undef in is=          22 np=          16 i,j=          68          17
+ undef in is=          22 np=          17 i,j=          47          14
+ undef in is=          22 np=          17 i,j=         119          17
+ undef in is=          22 np=          20 i,j=          12           9
+ undef in is=          22 np=          21 i,j=         122           6
+ it=        1138
+ time length of data =         462
+ undef in is=          23 np=          13 i,j=         103          12
+ undef in is=          23 np=          14 i,j=         141          12
+ undef in is=          23 np=          16 i,j=           2           9
+ undef in is=          23 np=          16 i,j=          68          17
+ undef in is=          23 np=          17 i,j=          47          14
+ undef in is=          23 np=          17 i,j=         119          17
+ undef in is=          23 np=          20 i,j=          12           9
+ undef in is=          23 np=          21 i,j=         122           6
+ it=        1190
+ time length of data =         483
+ undef in is=          24 np=          13 i,j=         103          12
+ undef in is=          24 np=          14 i,j=         141          12
+ undef in is=          24 np=          16 i,j=           2           9
+ undef in is=          24 np=          16 i,j=          68          17
+ undef in is=          24 np=          17 i,j=          47          14
+ undef in is=          24 np=          17 i,j=         119          17
+ undef in is=          24 np=          20 i,j=          12           9
+ undef in is=          24 np=          21 i,j=         122           6
+ it=        1242
+ time length of data =         504
+ undef in is=          25 np=          13 i,j=         103          12
+ undef in is=          25 np=          14 i,j=         141          12
+ undef in is=          25 np=          16 i,j=           2           9
+ undef in is=          25 np=          16 i,j=          68          17
+ undef in is=          25 np=          17 i,j=          47          14
+ undef in is=          25 np=          17 i,j=         119          17
+ undef in is=          25 np=          20 i,j=          12           9
+ undef in is=          25 np=          21 i,j=         122           6
+ it=        1294
+ time length of data =         525
+ undef in is=          26 np=          13 i,j=         103          12
+ undef in is=          26 np=          14 i,j=         141          12
+ undef in is=          26 np=          16 i,j=           2           9
+ undef in is=          26 np=          16 i,j=          68          17
+ undef in is=          26 np=          17 i,j=          47          14
+ undef in is=          26 np=          17 i,j=         119          17
+ undef in is=          26 np=          20 i,j=          12           9
+ undef in is=          26 np=          21 i,j=         122           6
+ it=        1346
+ time length of data =         546
+ undef in is=          27 np=          13 i,j=         103          12
+ undef in is=          27 np=          14 i,j=         141          12
+ undef in is=          27 np=          16 i,j=           2           9
+ undef in is=          27 np=          16 i,j=          68          17
+ undef in is=          27 np=          17 i,j=          47          14
+ undef in is=          27 np=          17 i,j=         119          17
+ undef in is=          27 np=          20 i,j=          12           9
+ undef in is=          27 np=          21 i,j=         122           6
+ it=        1398
+ time length of data =         567
+ undef in is=          28 np=          13 i,j=         103          12
+ undef in is=          28 np=          14 i,j=         141          12
+ undef in is=          28 np=          16 i,j=           2           9
+ undef in is=          28 np=          16 i,j=          68          17
+ undef in is=          28 np=          17 i,j=          47          14
+ undef in is=          28 np=          17 i,j=         119          17
+ undef in is=          28 np=          20 i,j=          12           9
+ undef in is=          28 np=          21 i,j=         122           6
+ it=        1450
+ time length of data =         588
+ undef in is=          29 np=          13 i,j=         103          12
+ undef in is=          29 np=          14 i,j=         141          12
+ undef in is=          29 np=          16 i,j=           2           9
+ undef in is=          29 np=          16 i,j=          68          17
+ undef in is=          29 np=          17 i,j=          47          14
+ undef in is=          29 np=          17 i,j=         119          17
+ undef in is=          29 np=          20 i,j=          12           9
+ undef in is=          29 np=          21 i,j=         122           6
+ it=        1502
+ time length of data =         609
+ undef in is=          30 np=          13 i,j=         103          12
+ undef in is=          30 np=          14 i,j=         141          12
+ undef in is=          30 np=          16 i,j=           2           9
+ undef in is=          30 np=          16 i,j=          68          17
+ undef in is=          30 np=          17 i,j=          47          14
+ undef in is=          30 np=          17 i,j=         119          17
+ undef in is=          30 np=          20 i,j=          12           9
+ undef in is=          30 np=          21 i,j=         122           6
+ it=        1554
+ time length of data =         630
+ undef in is=          31 np=          13 i,j=         103          12
+ undef in is=          31 np=          14 i,j=         141          12
+ undef in is=          31 np=          16 i,j=           2           9
+ undef in is=          31 np=          16 i,j=          68          17
+ undef in is=          31 np=          17 i,j=          47          14
+ undef in is=          31 np=          17 i,j=         119          17
+ undef in is=          31 np=          20 i,j=          12           9
+ undef in is=          31 np=          21 i,j=         122           6
+ it=        1606
+ time length of data =         651
+ undef in is=          32 np=          13 i,j=         103          12
+ undef in is=          32 np=          14 i,j=         141          12
+ undef in is=          32 np=          16 i,j=           2           9
+ undef in is=          32 np=          16 i,j=          68          17
+ undef in is=          32 np=          17 i,j=          47          14
+ undef in is=          32 np=          17 i,j=         119          17
+ undef in is=          32 np=          20 i,j=          12           9
+ undef in is=          32 np=          21 i,j=         122           6
+ it=        1658
+ time length of data =         672
+ undef in is=          33 np=          13 i,j=         103          12
+ undef in is=          33 np=          14 i,j=         141          12
+ undef in is=          33 np=          16 i,j=           2           9
+ undef in is=          33 np=          16 i,j=          68          17
+ undef in is=          33 np=          17 i,j=          47          14
+ undef in is=          33 np=          17 i,j=         119          17
+ undef in is=          33 np=          20 i,j=          12           9
+ undef in is=          33 np=          21 i,j=         122           6
+ it=        1710
+ time length of data =         693
+ undef in is=          34 np=          13 i,j=         103          12
+ undef in is=          34 np=          14 i,j=         141          12
+ undef in is=          34 np=          16 i,j=           2           9
+ undef in is=          34 np=          16 i,j=          68          17
+ undef in is=          34 np=          17 i,j=          47          14
+ undef in is=          34 np=          17 i,j=         119          17
+ undef in is=          34 np=          20 i,j=          12           9
+ undef in is=          34 np=          21 i,j=         122           6
+ it=        1762
+ time length of data =         714
+ length of input data to EOF calculation=         578
+ eval=
+  0.1119  0.0547  0.0383  0.0310  0.0264  0.0229
+  0.0208  0.0194  0.0182  0.0175  0.0159  0.0147
+  0.0142  0.0133  0.0126  0.0124  0.0119  0.0110
+  0.0106  0.0102  0.0098  0.0096  0.0094  0.0092
+  0.0084  0.0081  0.0080  0.0078  0.0076  0.0074
+  0.0072  0.0070  0.0069  0.0065  0.0064  0.0062
+  0.0059  0.0059  0.0057  0.0055  0.0054  0.0053
+  0.0052  0.0050  0.0050  0.0048  0.0047  0.0045
+  0.0045  0.0044  0.0043  0.0042  0.0040  0.0040
+  0.0039  0.0038  0.0038  0.0036  0.0035  0.0035
+  0.0034  0.0034  0.0034  0.0032  0.0032  0.0030
+  0.0030  0.0030  0.0029  0.0028  0.0028  0.0028
+  0.0028  0.0027  0.0026  0.0025  0.0025  0.0025
+  0.0024  0.0024  0.0023  0.0023  0.0022  0.0022
+  0.0022  0.0021  0.0021  0.0021  0.0021  0.0020
+  0.0020  0.0020  0.0019  0.0019  0.0018  0.0018
+  0.0018  0.0018  0.0017  0.0017  0.0017  0.0017
+  0.0017  0.0016  0.0016  0.0016  0.0016  0.0016
+  0.0015  0.0015  0.0015  0.0015  0.0015  0.0014
+  0.0014  0.0014  0.0014  0.0014  0.0013  0.0013
+  0.0013  0.0013  0.0013  0.0012  0.0012  0.0012
+  0.0012  0.0012  0.0012  0.0012  0.0012  0.0011
+  0.0011  0.0011  0.0011  0.0011  0.0011  0.0011
+  0.0011  0.0010  0.0010  0.0010  0.0010  0.0010
+  0.0010  0.0010  0.0010  0.0009  0.0009  0.0009
+  0.0009  0.0009  0.0009  0.0009  0.0009  0.0009
+  0.0008  0.0008  0.0008  0.0008  0.0008  0.0008
+  0.0008  0.0008  0.0008  0.0008  0.0008  0.0008
+  0.0007  0.0007  0.0007  0.0007  0.0007  0.0007
+  0.0007  0.0007  0.0007  0.0007  0.0007  0.0007
+  0.0007  0.0007  0.0007  0.0007  0.0007  0.0006
+  0.0006  0.0006  0.0006  0.0006  0.0006  0.0006
+  0.0006  0.0006  0.0006  0.0006  0.0006  0.0006
+  0.0006  0.0006  0.0006  0.0006  0.0006  0.0006
+  0.0006  0.0005  0.0005  0.0005  0.0005  0.0005
+  0.0005  0.0005  0.0005  0.0005  0.0005  0.0005
+  0.0005  0.0005  0.0005  0.0005  0.0005  0.0005
+  0.0005  0.0005  0.0005  0.0005  0.0005  0.0005
+  0.0005  0.0005  0.0005  0.0005  0.0004  0.0004
+  0.0004  0.0004  0.0004  0.0004  0.0004  0.0004
+  0.0004  0.0004  0.0004  0.0004  0.0004  0.0004
+  0.0004  0.0004  0.0004  0.0004  0.0004  0.0004
+  0.0004  0.0004  0.0004  0.0004  0.0004  0.0004
+  0.0004  0.0004  0.0004  0.0004  0.0004  0.0004
+  0.0004  0.0004  0.0004  0.0004  0.0003  0.0003
+  0.0003  0.0003  0.0003  0.0003  0.0003  0.0003
+  0.0003  0.0003  0.0003  0.0003  0.0003  0.0003
+  0.0003  0.0003  0.0003  0.0003  0.0003  0.0003
+  0.0003  0.0003  0.0003  0.0003  0.0003  0.0003
+  0.0003  0.0003  0.0003  0.0003  0.0003  0.0003
+  0.0003  0.0003  0.0003  0.0003  0.0003  0.0003
+  0.0003  0.0003  0.0003  0.0003  0.0003  0.0003
+  0.0003  0.0003  0.0003  0.0003  0.0003  0.0003
+  0.0003  0.0003  0.0003  0.0003  0.0003  0.0002
+  0.0002  0.0002  0.0002  0.0002  0.0002  0.0002
+  0.0002  0.0002  0.0002  0.0002  0.0002  0.0002
+  0.0002  0.0002  0.0002  0.0002  0.0002  0.0002
+  0.0002  0.0002  0.0002  0.0002  0.0002  0.0002
+  0.0002  0.0002  0.0002  0.0002  0.0002  0.0002
+  0.0002  0.0002  0.0002  0.0002  0.0002  0.0002
+  0.0002  0.0002  0.0002  0.0002  0.0002  0.0002
+  0.0002  0.0002  0.0002  0.0002  0.0002  0.0002
+  0.0002  0.0002  0.0002  0.0002  0.0002  0.0002
+  0.0002  0.0002  0.0002  0.0002  0.0002  0.0002
+  0.0002  0.0002  0.0002  0.0002  0.0002  0.0002
+  0.0002  0.0002  0.0002  0.0002  0.0002  0.0002
+  0.0002  0.0002  0.0002  0.0002  0.0002  0.0002
+  0.0002  0.0002  0.0002  0.0002  0.0002  0.0002
+  0.0002  0.0002  0.0002  0.0002  0.0002  0.0002
+  0.0002  0.0002  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0001  0.0001  0.0001
+  0.0001  0.0001  0.0001  0.0000  0.0000  0.0000
+  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+  0.0000  0.0000  0.0000  0.0000  0.0000  0.0000
+  0.0000  0.0000  0.0000  0.0000  0.0000 -0.0000
+ -0.0000 -0.0000 -0.0000 -0.0000 -0.0000 -0.0000
+ -0.0000 -0.0000 -0.0000 -0.0000 -0.0000 -0.0000
+ -0.0000 -0.0000 -0.0000 -0.0000 -0.0000 -0.0000
+ -0.0000 -0.0000 -0.0000 -0.0000 -0.0000 -0.0000
+ -0.0000 -0.0000 -0.0000 -0.0000 -0.0000 -0.0000
+ -0.0000 -0.0000 -0.0000 -0.0000 -0.0000 -0.0000
+ -0.0000 -0.0000 -0.0000 -0.0000 -0.0000 -0.0000
+ -0.0000 -0.0000 -0.0000 -0.0000 -0.0000 -0.0000
+ -0.0000 -0.0000 -0.0000 -0.0000 -0.0000 -0.0000
+ -0.0000 -0.0000 -0.0000 -0.0000 -0.0000 -0.0000
+ -0.0000 -0.0000 -0.0000 -0.0000 -0.0000 -0.0000
+ -0.0000 -0.0000 -0.0000 -0.0000 -0.0000 -0.0000
+ alpha2=  3.96020804E-03
+ alpha2=  7.73414504E-03
+ alpha2=  6.93593826E-03
+ alpha2=  1.11241089E-02
+ alpha2=  7.22483685E-03
+ alpha2=  8.98989756E-03
+ alpha2=  8.86251917E-04
+ alpha2=  1.71709643E-03
+ alpha2=  6.05714042E-03
+ alpha2=  1.12046013E-02
+ alpha2=  1.02248983E-02
+ alpha2=  5.54454327E-03
+ alpha2=  1.50897400E-02
+ alpha2=  1.23995207E-02
+ alpha2=  1.91632342E-02
+ alpha2=  9.26423259E-03
+ alpha2=  9.65786446E-03
+ alpha2=  3.10756802E-03
+ alpha2=  7.64131604E-04
+ alpha2=  5.90383541E-03
+ alpha2=  7.99471326E-03
+ alpha2=  9.35569033E-03
+ alpha2=  7.10048852E-03
+ alpha2=  6.91575650E-03
+ alpha2=  6.55621197E-03
+ alpha2=  2.12233327E-02
+ alpha2=  1.82208102E-02
+ alpha2=  7.14912079E-03
+ alpha2=  3.16487276E-03
+ alpha2=  7.22171785E-03
+ alpha2=  6.34648604E-03
+ alpha2=  7.10117025E-03
+ alpha2=  1.49396388E-02
+ alpha2=  1.46324998E-02
+ alpha2=  6.23634458E-03
+ alpha2=  1.70450006E-03
+ alpha2=  7.61782285E-03
+ alpha2=  7.96390511E-03
+ alpha2=  6.99750101E-03
+ alpha2=  6.95370557E-03
+ alpha2=  2.96094711E-03
+ alpha2=  3.80547298E-03
+ alpha2=  3.69718042E-03
+ alpha2=  5.27610583E-03
+ alpha2=  6.16773590E-03
+ alpha2=  1.21746082E-02
+ alpha2=  6.40371116E-03
+ alpha2=  3.78326885E-03
+ alpha2=  7.30637228E-03
+ alpha2=  9.86524625E-04
+ alpha2=  5.08204754E-03
+ alpha2=  2.32267864E-02
+ alpha2=  1.07298521E-02
+ alpha2=  9.38117225E-03
+ alpha2=  1.20430710E-02
+ alpha2=  2.26982441E-02
+ alpha2=  1.43644344E-02
+ alpha2=  1.99607331E-02
+ alpha2=  3.02742440E-02
+ alpha2=  2.39955746E-02
+ alpha2=  2.68461071E-02
+ alpha2=  3.05860527E-02
+ alpha2=  2.37193871E-02
+ alpha2=  1.75018366E-02
+ alpha2=  2.51748804E-02
+ alpha2=  3.31464000E-02
+ alpha2=  2.90263817E-02
+ alpha2=  3.79726849E-02
+ alpha2=  9.78305377E-03
+ alpha2=  9.93083417E-03
+ alpha2=  6.08270941E-03
+ alpha2=  4.46278090E-03
+ alpha2=  8.26882944E-03
+ alpha2=  1.39769847E-02
+ alpha2=  8.48961156E-03
+ alpha2=  8.55845492E-03
+ alpha2=  7.38970283E-03
+ alpha2=  4.31816187E-03
+ alpha2=  4.92717186E-03
+ alpha2=  7.52196973E-03
+ alpha2=  1.23847416E-02
+ alpha2=  1.08347163E-02
+ alpha2=  9.12176259E-03
+ alpha2=  1.74958538E-03
+ alpha2=  1.63661856E-02
+ alpha2=  9.65475850E-03
+ alpha2=  2.72266683E-03
+ alpha2=  5.82119124E-03
+ alpha2=  3.58150131E-03
+ alpha2=  9.31067113E-03
+ alpha2=  1.07236141E-02
+ alpha2=  9.29267146E-03
+ alpha2=  1.97544564E-02
+ alpha2=  1.63131300E-02
+ alpha2=  1.37176821E-02
+ alpha2=  1.11876139E-02
+ alpha2=  1.52398553E-02
+ alpha2=  3.03088389E-02
+ alpha2=  2.72209868E-02
+ alpha2=  5.88815520E-03
+ alpha2=  1.11831371E-02
+ alpha2=  2.59730648E-02
+ alpha2=  2.22736201E-03
+ alpha2=  4.00187261E-03
+ alpha2=  2.03162385E-03
+ alpha2=  1.62627746E-03
+ alpha2=  1.27766812E-02
+ alpha2=  8.61773826E-03
+ alpha2=  1.87933922E-03
+ alpha2=  6.41078688E-03
+ alpha2=  2.48532444E-02
+ alpha2=  1.76813044E-02
+ alpha2=  1.02706039E-02
+ alpha2=  1.48814591E-02
+ alpha2=  6.95029227E-03
+ alpha2=  1.28871882E-02
+ alpha2=  1.18097812E-02
+ alpha2=  8.91609024E-03
+ alpha2=  2.67171394E-02
+ alpha2=  9.24705900E-03
+ alpha2=  6.17668917E-03
+ alpha2=  5.35534276E-03
+ alpha2=  8.77219718E-03
+ alpha2=  8.49190261E-03
+ alpha2=  1.16094593E-02
+ alpha2=  7.83283636E-03
+ alpha2=  1.29148513E-02
+ alpha2=  1.35507211E-02
+ alpha2=  1.12544456E-02
+ alpha2=  1.19829876E-02
+ alpha2=  1.93765145E-02
+ alpha2=  1.01582184E-02
+ alpha2=  7.00823963E-03
+ alpha2=  8.82028788E-03
+ alpha2=  7.72572961E-03
+ alpha2=  1.39895752E-02
+ alpha2=  9.59276501E-03
+ alpha2=  4.77090711E-03
+ alpha2=  1.19458896E-03
+ alpha2=  7.82003906E-03
+ alpha2=  5.00069140E-03
+ alpha2=  1.18468655E-02
+ alpha2=  9.89464112E-03
+ alpha2=  1.01220626E-02
+ alpha2=  2.86506582E-03
+ alpha2=  3.48128006E-03
+ alpha2=  4.37442679E-03
+ alpha2=  6.83837244E-03
+ alpha2=  5.42114442E-03
+ alpha2=  1.61068048E-02
+ alpha2=  1.83454435E-02
+ alpha2=  2.26344448E-02
+ alpha2=  4.24100086E-03
+ alpha2=  2.65365257E-03
+ alpha2=  1.03257103E-02
+ alpha2=  7.37486966E-03
+ alpha2=  1.56365260E-02
+ alpha2=  1.05409147E-02
+ alpha2=  1.74483433E-02
+ alpha2=  1.78106353E-02
+ alpha2=  9.18520987E-03
+ alpha2=  1.92640144E-02
+ alpha2=  2.33008433E-02
+ alpha2=  4.51873662E-03
+ alpha2=  1.26924822E-02
+ alpha2=  1.76978651E-02
+ alpha2=  9.04428586E-03
+ alpha2=  4.90625342E-03
+ alpha2=  5.74346492E-03
+ alpha2=  6.97668549E-03
+ alpha2=  3.41802160E-03
+ alpha2=  4.22481261E-03
+ alpha2=  9.15789139E-03
+ alpha2=  1.17989443E-02
+ alpha2=  5.04131988E-03
+ alpha2=  2.78417282E-02
+ alpha2=  1.88922249E-02
+ alpha2=  9.74152889E-03
+ alpha2=  5.16825868E-03
+ alpha2=  1.61377415E-02
+ alpha2=  1.25456238E-02
+ alpha2=  1.35071557E-02
+ alpha2=  1.85094830E-02
+ alpha2=  1.27286036E-02
+ alpha2=  1.91687346E-02
+ alpha2=  8.62199534E-03
+ alpha2=  2.14850102E-02
+ alpha2=  2.73123826E-03
+ alpha2=  6.12837449E-03
+ alpha2=  2.83629238E-03
+ alpha2=  4.00743401E-03
+ alpha2=  8.64418782E-03
+ alpha2=  6.49609696E-03
+ alpha2=  7.97846448E-03
+ alpha2=  4.42605326E-03
+ alpha2=  3.16911633E-03
+ alpha2=  1.01573952E-03
+ alpha2=  3.52300936E-03
+ alpha2=  9.30780079E-03
+ alpha2=  5.29111223E-03
+ alpha2=  1.51206437E-03
+ alpha2=  1.02764610E-02
+ alpha2=  1.25830835E-02
+ alpha2=  1.54347029E-02
+ alpha2=  3.48322163E-03
+ alpha2=  6.16410654E-03
+ alpha2=  4.93122870E-03
+ alpha2=  2.09656321E-02
+ alpha2=  1.29660210E-02
+ alpha2=  1.12961018E-02
+ alpha2=  1.44360559E-02
+ alpha2=  1.54899135E-02
+ alpha2=  6.31595915E-03
+ alpha2=  1.84755269E-02
+ alpha2=  2.50566602E-02
+ alpha2=  1.98925789E-02
+ alpha2=  1.66245438E-02
+ alpha2=  6.93226187E-03
+ alpha2=  3.36326240E-03
+ alpha2=  4.63788118E-03
+ alpha2=  1.42342467E-02
+ alpha2=  4.29111859E-03
+ alpha2=  1.25100638E-03
+ alpha2=  1.62317313E-03
+ alpha2=  9.90321743E-04
+ alpha2=  1.44357805E-03
+ alpha2=  2.35103420E-03
+ alpha2=  1.37161836E-02
+ alpha2=  1.39721520E-02
+ alpha2=  1.41395554E-02
+ alpha2=  1.56138297E-02
+ alpha2=  9.47942957E-03
+ alpha2=  1.28743276E-02
+ alpha2=  6.47293963E-03
+ alpha2=  5.00822673E-03
+ alpha2=  4.58726007E-03
+ alpha2=  4.99828532E-03
+ alpha2=  9.59784072E-03
+ alpha2=  2.85470090E-03
+ alpha2=  3.16422642E-03
+ alpha2=  2.92500807E-03
+ alpha2=  4.58627008E-03
+ alpha2=  1.24337361E-03
+ alpha2=  3.33399326E-03
+ alpha2=  6.42599352E-03
+ alpha2=  2.59013753E-03
+ alpha2=  3.41467583E-03
+ alpha2=  3.10550630E-03
+ alpha2=  1.05036590E-02
+ alpha2=  3.88112105E-03
+ alpha2=  1.16244126E-02
+ alpha2=  9.75464936E-03
+ alpha2=  3.96528235E-03
+ alpha2=  3.51549848E-03
+ alpha2=  1.36476930E-03
+ alpha2=  7.20842415E-03
+ alpha2=  5.85831003E-03
+ alpha2=  2.23199208E-03
+ alpha2=  1.14412690E-02
+ alpha2=  1.70939788E-02
+ alpha2=  1.29047735E-02
+ alpha2=  1.26976054E-02
+ alpha2=  8.99330061E-03
+ alpha2=  3.73186450E-03
+ alpha2=  8.50303657E-03
+ alpha2=  6.16483064E-03
+ alpha2=  9.93416738E-03
+ alpha2=  4.50355746E-03
+ alpha2=  3.43517051E-03
+ alpha2=  2.03594705E-03
+ alpha2=  4.71306220E-03
+ alpha2=  6.78430591E-03
+ alpha2=  5.44160372E-03
+ alpha2=  3.75224324E-03
+ alpha2=  1.21825458E-02
+ alpha2=  8.52319412E-03
+ alpha2=  1.43274013E-02
+ alpha2=  6.93771569E-03
+ alpha2=  1.48277115E-02
+ alpha2=  4.84283315E-03
+ alpha2=  1.71923134E-02
+ alpha2=  7.89321214E-03
+ alpha2=  6.66323071E-03
+ alpha2=  7.28330296E-03
+ alpha2=  8.10120814E-03
+ alpha2=  4.13001888E-03
+ alpha2=  4.39413730E-03
+ alpha2=  8.24994128E-03
+ alpha2=  1.09988116E-02
+ alpha2=  9.21397284E-03
+ alpha2=  2.74792290E-03
+ alpha2=  3.27463960E-03
+ alpha2=  1.00045521E-02
+ alpha2=  1.65071525E-02
+ alpha2=  1.36014242E-02
+ alpha2=  7.03853415E-03
+ alpha2=  3.90142761E-03
+ alpha2=  3.13569605E-03
+ alpha2=  5.21006249E-03
+ alpha2=  3.61329201E-03
+ alpha2=  2.98320875E-03
+ alpha2=  4.10656258E-03
+ alpha2=  8.37205723E-03
+ alpha2=  1.55425128E-02
+ alpha2=  1.20516000E-02
+ alpha2=  2.33853832E-02
+ alpha2=  2.76029482E-02
+ alpha2=  1.64300110E-02
+ alpha2=  2.17757039E-02
+ alpha2=  1.53899882E-02
+ alpha2=  1.23990430E-02
+ alpha2=  1.23825055E-02
+ alpha2=  2.01325119E-02
+ alpha2=  3.89187485E-02
+ alpha2=  3.12152430E-02
+ alpha2=  2.50318069E-02
+ alpha2=  3.43315639E-02
+ alpha2=  3.02838646E-02
+ alpha2=  1.78047493E-02
+ alpha2=  1.94380209E-02
+ alpha2=  2.38733571E-02
+ alpha2=  1.89904142E-02
+ alpha2=  2.02500783E-02
+ alpha2=  5.19808568E-03
+ alpha2=  7.33011449E-03
+ alpha2=  8.67135916E-03
+ alpha2=  6.38408633E-03
+ alpha2=  5.00522926E-03
+ alpha2=  1.05561605E-02
+ alpha2=  9.31020174E-03
+ alpha2=  1.97922289E-02
+ alpha2=  1.38404779E-02
+ alpha2=  4.82910126E-03
+ alpha2=  8.81601591E-03
+ alpha2=  1.74209718E-02
+ alpha2=  1.55568905E-02
+ alpha2=  1.51350303E-02
+ alpha2=  2.78187892E-03
+ alpha2=  9.87827498E-03
+ alpha2=  9.31969378E-03
+ alpha2=  1.83009135E-03
+ alpha2=  3.96052049E-03
+ alpha2=  7.48762907E-03
+ alpha2=  9.83744860E-03
+ alpha2=  1.02641443E-02
+ alpha2=  1.02970088E-02
+ alpha2=  9.40087903E-03
+ alpha2=  1.54256411E-02
+ alpha2=  1.28801679E-02
+ alpha2=  6.94293156E-03
+ alpha2=  3.60014662E-03
+ alpha2=  6.71667000E-03
+ alpha2=  9.70842689E-03
+ alpha2=  8.59916769E-03
+ alpha2=  1.09681338E-02
+ alpha2=  1.54191218E-02
+ alpha2=  8.11383780E-03
+ alpha2=  1.52384490E-02
+ alpha2=  1.23177795E-02
+ alpha2=  7.21955812E-03
+ alpha2=  5.92678180E-03
+ alpha2=  6.78249402E-03
+ alpha2=  1.17143744E-03
+ alpha2=  6.17616624E-03
+ alpha2=  9.23295971E-03
+ alpha2=  1.09459450E-02
+ alpha2=  1.04366373E-02
+ alpha2=  1.38560534E-02
+ alpha2=  1.05737112E-02
+ alpha2=  1.70441065E-02
+ alpha2=  1.85982678E-02
+ alpha2=  1.15435543E-02
+ alpha2=  4.47733467E-03
+ alpha2=  2.43262434E-03
+ alpha2=  8.77504796E-03
+ alpha2=  9.76261683E-03
+ alpha2=  4.45208373E-03
+ alpha2=  9.22546722E-03
+ alpha2=  9.51328687E-03
+ alpha2=  5.73876640E-03
+ alpha2=  9.73675400E-03
+ alpha2=  1.76691413E-02
+ alpha2=  1.20421359E-02
+ alpha2=  1.00949621E-02
+ alpha2=  2.98445970E-02
+ alpha2=  7.84247834E-03
+ alpha2=  5.28395991E-04
+ alpha2=  8.68616812E-03
+ alpha2=  1.29820742E-02
+ alpha2=  1.15561746E-02
+ alpha2=  1.06568281E-02
+ alpha2=  9.66642052E-03
+ alpha2=  6.94193132E-03
+ alpha2=  1.67866182E-02
+ alpha2=  1.20510496E-02
+ alpha2=  8.49188305E-03
+ alpha2=  1.91505104E-02
+ alpha2=  1.51679385E-02
+ alpha2=  3.08683384E-02
+ alpha2=  1.54158799E-02
+ alpha2=  5.31119201E-03
+ alpha2=  4.03527729E-03
+ alpha2=  5.60533907E-03
+ alpha2=  2.88278866E-03
+ alpha2=  1.89960212E-03
+ alpha2=  1.90467353E-03
+ alpha2=  4.51921299E-03
+ alpha2=  4.88714082E-03
+ alpha2=  3.04017705E-03
+ alpha2=  4.94967448E-03
+ alpha2=  2.93615949E-03
+ alpha2=  3.11876205E-03
+ alpha2=  6.88403891E-03
+ alpha2=  1.33102210E-02
+ alpha2=  7.54231121E-03
+ alpha2=  7.98074529E-03
+ alpha2=  1.03207687E-02
+ alpha2=  1.31042441E-02
+ alpha2=  1.13435583E-02
+ alpha2=  4.78419475E-03
+ alpha2=  1.12877367E-02
+ alpha2=  4.00396017E-03
+ alpha2=  3.55210062E-03
+ alpha2=  3.36827245E-03
+ alpha2=  8.21446255E-03
+ alpha2=  3.97711992E-03
+ alpha2=  1.23722164E-03
+ alpha2=  2.02057208E-03
+ alpha2=  1.02218911E-02
+ alpha2=  5.50552225E-03
+ alpha2=  3.20070051E-03
+ alpha2=  4.94606700E-03
+ alpha2=  1.22998236E-02
+ alpha2=  5.87987667E-03
+ alpha2=  6.90081669E-03
+ alpha2=  9.47377738E-03
+ alpha2=  3.52520263E-03
+ alpha2=  8.52250587E-03
+ alpha2=  9.90878884E-03
+ alpha2=  9.77629237E-03
+ alpha2=  6.19960949E-03
+ alpha2=  7.90144783E-03
+ alpha2=  3.65198799E-03
+ alpha2=  2.90339952E-03
+ alpha2=  1.79613638E-03
+ alpha2=  4.32080356E-03
+ alpha2=  7.65964389E-03
+ alpha2=  8.09892546E-03
+ alpha2=  7.73764076E-03
+ alpha2=  3.62338242E-03
+ alpha2=  9.52266436E-03
+ alpha2=  1.07059162E-02
+ alpha2=  1.74586382E-02
+ alpha2=  1.12275388E-02
+ alpha2=  8.57979245E-03
+ alpha2=  9.36638378E-03
+ alpha2=  1.21593382E-02
+ alpha2=  5.18616987E-03
+ alpha2=  5.20743756E-03
+ alpha2=  5.99896861E-03
+ alpha2=  1.30767208E-02
+ alpha2=  1.32174874E-02
+ alpha2=  4.70891641E-03
+ alpha2=  5.03803231E-03
+ alpha2=  1.65469944E-02
+ alpha2=  1.04691470E-02
+ alpha2=  7.50340521E-03
+ alpha2=  1.38302837E-02
+ alpha2=  1.66090503E-02
+ alpha2=  1.11154281E-02
+ alpha2=  1.49085093E-02
+ alpha2=  1.00536337E-02
+ alpha2=  8.63587484E-03
+ alpha2=  5.33437124E-03
+ alpha2=  6.01960858E-03
+ alpha2=  4.46338719E-03
+ alpha2=  5.15424600E-03
+ alpha2=  5.40854596E-03
+ alpha2=  3.99472611E-03
+ alpha2=  1.16047747E-02
+ alpha2=  1.77232269E-02
+ alpha2=  9.81511921E-03
+ alpha2=  1.28399637E-02
+ alpha2=  1.88563690E-02
+ alpha2=  1.34190377E-02
+ alpha2=  1.76901482E-02
+ alpha2=  6.03816006E-03
+ alpha2=  1.45026483E-02
+ alpha2=  1.16000222E-02
+ alpha2=  1.40112406E-02
+ alpha2=  9.53026861E-03
+ alpha2=  1.09842885E-02
+ alpha2=  1.15357367E-02
+ alpha2=  3.65213328E-03
+ alpha2=  8.04292504E-03
+ alpha2=  4.29996802E-03
+ alpha2=  2.05556140E-03
+ alpha2=  4.08534985E-03
+ alpha2=  6.80625532E-03
+ alpha2=  1.66939758E-02
+ alpha2=  1.23356394E-02
+ alpha2=  1.06636547E-02
+ alpha2=  1.47146750E-02
+ alpha2=  8.35945271E-03
+ alpha2=  7.34649925E-03
+ alpha2=  8.41245428E-03
+ alpha2=  6.95656054E-03
+ alpha2=  3.40439333E-03
+ alpha2=  4.17308137E-03
+ alpha2=  5.23755746E-03
+ alpha2=  3.30676953E-03
+ alpha2=  7.24263582E-03
+ alpha2=  1.31602259E-02
+ alpha2=  1.09127136E-02
+ alpha2=  6.20044162E-03
+ alpha2=  4.41134162E-03
+ alpha2=  1.47130294E-02
+ alpha2=  1.94361284E-02
+ alpha2=  1.75822396E-02
+ alpha2=  1.69613399E-02
+ alpha2=  4.40718234E-03
+ alpha2=  1.38960136E-02
+ alpha2=  1.32672749E-02
+ alpha2=  1.76039767E-02
+ alpha2=  1.01062227E-02
+ alpha2=  5.31304674E-03
+ alpha2=  1.85429510E-02
+ alpha2=  8.57376680E-03
+ alpha2=  9.97307617E-03
+ alpha2=  1.39841167E-02
+ alpha2=  1.16023077E-02
+ alpha2=  1.27661945E-02
+ alpha2=  1.23887165E-02
+ alpha2=  1.52369924E-02
+ alpha2=  1.59504898E-02
+ alpha2=  1.69025734E-02
+ alpha2=  1.60799641E-02
+ alpha2=  4.92999936E-03
+ alpha2=  7.04379985E-03
+ alpha2=  9.67177469E-03
+ alpha2=  9.26593691E-03
+ alpha2=  8.10747407E-03
+ alpha2=  8.30509514E-03
+ alpha2=  7.56492745E-03
+ alpha2=  2.60267500E-03
+ alpha2=  8.10472015E-03
+ alpha2=  1.23375207E-02
+ alpha2=  5.05132973E-03
+ alpha2=  8.60050600E-03
+ alpha2=  1.15462774E-02
+ alpha2=  5.73030673E-03
+ alpha2=  1.78147794E-03
+ alpha2=  5.92095358E-03
+ alpha2=  3.09275812E-03
+ alpha2=  1.05912015E-02
+ alpha2=  3.82606871E-03
+ alpha2=  1.43399453E-02
+ alpha2=  1.51906135E-02
+ alpha2=  1.57821663E-02
+ alpha2=  9.35596041E-03
+ alpha2=  1.77855194E-02
+ alpha2=  2.17214436E-03
+ alpha2=  3.26280436E-03
+ alpha2=  4.07140888E-03
+ alpha2=  3.46808485E-03
+ alpha2=  1.08380057E-02
+ alpha2=  5.89544838E-03
+ alpha2=  7.13366549E-03
+ alpha2=  5.65189263E-03
+ alpha2=  6.89991331E-03
+ alpha2=  5.86270820E-03
+ alpha2=  8.51285830E-03
+ alpha2=  8.44931416E-03
+ alpha2=  9.67302732E-03
+ alpha2=  7.71678239E-03
+ alpha2=  1.37937758E-02
+ alpha2=  3.05395061E-03
+ alpha2=  1.88648480E-03
+ ldwk=           1   number of prd write out=         578
+ ldwk=           2   number of prd write out=         578
+ ldwk=           3   number of prd write out=         578
+ ldwk=           4   number of prd write out=         578
+ ldwk=           5   number of prd write out=         578
+ ldwk=           6   number of prd write out=         578
+ end of excution

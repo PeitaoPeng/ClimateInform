@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ datadir=/disk50/data/wd52pp/gsfc
+#
+ nmonth=45 
+ iskip=0
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth,iskip=$iskip)
+eof
+#
+ f77  REG_72x44_2_REG.f setxy.f intp2d.f
+#
+for run in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16; do
+ /bin/rm fort.11 fort.21
+   ln -s $datadir/z500_5093_jfm.run$run.gr fort.11
+   ln -s $datadir/z500_5093_jfm.run$run.reg.i3e fort.21
+ a.out
+#
+done
+ja -s

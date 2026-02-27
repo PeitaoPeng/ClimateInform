@@ -1,0 +1,38 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/CFSv2_skill/data_proc
+tmp=/export/hobbes/wd52pp/tmp
+datadir=/export-12/cacsrv1/wd52pp/CFSv2_vfc/0data
+#
+ varin=T2m
+ varot=temp
+#var=prec
+nseason=180
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/2_prob_categ.f $tmp/prob.f
+cd $tmp
+#
+cat > parm.h << eof
+      parameter(ltime=$nseason)
+      parameter(imx=180,jmx=91)
+      parameter(imo=36,jmo=19)
+eof
+#
+#
+f77 -o prob.x prob.f
+echo "done compiling"
+
+#
+ ln -s $datadir/${varin}_hcst.jfm1995-djf2009.ind.anom.gr  fort.11
+ ln -s $datadir/$varin.tercile_bnd.gr                      fort.12
+#
+ ln -s $datadir/mask_2x2.data                            fort.13
+#
+ ln -s $datadir/$varot.jfm95-djf09.cfsv2.below.gr        fort.21
+ ln -s $datadir/$varot.jfm95-djf09.cfsv2.above.gr        fort.22
+ ln -s $datadir/$varot.jfm1995-djf2009.cfsv2.us.gr       fort.23
+#
+prob.x > $lcdir/out

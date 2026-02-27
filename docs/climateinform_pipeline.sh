@@ -1,13 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
-#cyr=`date --date='today' '+%Y'`
-#mcur=`date --date='today' '+%m'`  # current month
+cyr=`date --date='today' '+%Y'`
+mcur=`date --date='today' '+%m'`  # current month
 
-cyr=2025
+#cyr=2026
 #for mcur in 01 02 03 04 05 06 07 08 09 10 11 12; do
 #for mcur in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for mcur in 02; do
+#for mcur in 02; do
 #
 if [ $mcur = 01 ]; then icmon=12; icmonc=Dec; fi
 if [ $mcur = 02 ]; then icmon=1;  icmonc=Jan; fi
@@ -89,4 +89,4 @@ git push
 echo "============================================================"
 echo " ClimateInform Pipeline Completed Successfully"
 echo "============================================================"
-done
+#done

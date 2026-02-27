@@ -1,0 +1,72 @@
+120c120
+< INTEGER :: giHIDDDEN      
+---
+> INTEGER :: giHIDDDEN
+123c123
+< INTEGER :: giEPOCHS       
+---
+> INTEGER :: giEPOCHS
+229c229
+<         CALL sDisplay_Errors
+---
+>         CALL sDISPLAY_ERRORS
+290,327d289
+< REAL FUNCTION frCalculate_AC(arINPS,arOUT,arWIHL, arWHOL)
+< ! calculate the overall error
+< 
+<         REAL, DIMENSION(:,:),   INTENT(IN)      :: arINPS
+<         REAL, DIMENSION(:),     INTENT(IN)      :: arOUT
+<         REAL, DIMENSION(:,:),   INTENT(INOUT)   :: arWIHL
+<         REAL, DIMENSION(:),     INTENT(INOUT)   :: arWHOL       
+< 
+<         REAL, DIMENSION(LBOUND(arINPS,2):UBOUND(arINPS,2)) :: arINPUT
+<         REAL :: rOUTPUT, rAC, rSTDO, rSTDP, rOUTPRD
+< 
+<         INTEGER :: I,iLOWER,iUPPER
+< 
+<         iLOWER = LBOUND(arINPS,1)
+<         iUPPER = UBOUND(arINPS,1)
+< 
+<         rAC=0.0            
+<         rSTDP=0.0            
+<         rSTDO=0.0            
+< 
+<         DO I=iLOWER,iUPPER
+<              rOUTPUT = arOUT(I)
+<              arINPUT(:)= arINPS(I,:)
+<              garHVAL=TANH(MATMUL(TRANSPOSE(arWIHL),arINPUT))
+<              garHVAL(UBOUND(garHVAL,1)) = 1
+<              rOUTPRD=SUM(arWHOL*garHVAL)
+<              rAC=rAC+rOUTPUT*rOUTPRD
+<              rSTDO=rSTDO + rOUTPUT**2
+<              rSTDP=rSTDP + rOUTPRD**2
+<         ENDDO
+< 
+<         ! temporal anomaly correlation
+<         rSTDO=SQRT(rSTDO/(iUPPER-iLOWER+1))
+<         rSTDP=SQRT(rSTDP/(iUPPER-iLOWER+1))
+<         rAC=rAC/(iUPPER-iLOWER+1)
+<         frCalculate_AC=rAC/(rSTDO*rSTDP)      
+< 
+< END FUNCTION frCalculate_AC
+344,345d305
+<         write(6,*) 'garWIH_best=',garWIH_Best
+<         write(6,*) 'garWIO_best=',garWHO_Best
+415,431d374
+<         PRINT 101, frCalculate_AC &
+<         (garTrainingInputs,garTrainingOutputs, garWIH, garWHO)
+< 
+<         IF (giTESTPATS > 0) THEN 
+<                 PRINT 111, frCalculate_AC &
+<                 (garTestingInputs,garTestingOutputs,garWIH,garWHO)
+<         ENDIF
+< 
+<         IF (giVALIDPATS > 0) THEN
+<                 PRINT 121, frCalculate_AC &
+<                 (garValidationInputs,garValidationOutputs,garWIH,garWHO)
+<         ENDIF
+< 
+< 101 FORMAT('TRAIN AC =',1X,F10.7)
+< 111 FORMAT('TEST  AC =',1X,F10.7)
+< 121 FORMAT('VAL   AC =',1X,F10.7)
+< 

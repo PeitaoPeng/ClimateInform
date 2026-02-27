@@ -1,0 +1,219 @@
+#!/bin/sh
+
+set -eaux
+#cccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+# have monthly and season ENSMEAN NMME FCST data of curr IC
+# In this data set the first read is 1-mon_lead, because 
+# IC-month run has been throw away
+# update every month around 7th
+#ccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+ 
+lcdir=/cpc/home/wd52pp/project/nn/opr
+tmp=/cpc/consistency/tmp_ann
+if [ ! -d $tmp ] ; then
+  mkdir -p $tmp
+fi
+datadir=/cpc/nmme/CFSv2/hcst_new
+dataout=/cpc/consistency/nn/cfsv2
+#
+cd $tmp
+#
+#curmo=`date --date='today' '+%m'`  # mo of making fcst
+curmo=02
+curyr=20`date --date='today' '+%y'`  # current_yr=20"xx"
+#
+nleadmon=9
+nleadss=7
+clmperiod=1991-2020
+#
+#for var in tmpsfc tmp2m prate; do
+for var in tmpsfc; do
+
+conv=1
+if [ $var = prate ]; then conv=86400; fi
+
+for model in CFSv2; do
+
+#
+if [ $curmo = 01 ]; then icmonw=jan; fi 
+if [ $curmo = 02 ]; then icmonw=feb; fi 
+if [ $curmo = 03 ]; then icmonw=mar; fi 
+if [ $curmo = 04 ]; then icmonw=apr; fi 
+if [ $curmo = 05 ]; then icmonw=may; fi 
+if [ $curmo = 06 ]; then icmonw=jun; fi 
+if [ $curmo = 07 ]; then icmonw=jul; fi 
+if [ $curmo = 08 ]; then icmonw=aug; fi 
+if [ $curmo = 09 ]; then icmonw=sep; fi 
+if [ $curmo = 10 ]; then icmonw=oct; fi 
+if [ $curmo = 11 ]; then icmonw=nov; fi 
+if [ $curmo = 12 ]; then icmonw=dec; fi 
+#
+
+icdir=${curmo}0100
+icym=$curyr$curmo
+
+cat >nmme_data<<EOF
+run read_write.gs
+EOF
+
+cat >read_write.gs<<EOF
+'reinit'
+'sdfopen $datadir/$icdir/$model.$var.$icym.ENSMEAN.fcst.nc'
+'set x 1 360'
+'set y 1 181'
+nte1=1+$nleadmon
+nte2=1+$nleadss
+'set gxout fwrite'
+'set fwrite $var.mon.gr'
+nt=2
+while ( nt <= nte1)
+'set t 'nt
+say 'nt='nt
+'d fcst*$conv'
+nt=nt+1
+endwhile
+'disable fwrite'
+*
+'set gxout fwrite'
+'set fwrite $var.ss.gr'
+nt=2
+while ( nt <= nte2)
+'set t 'nt
+ntend=nt+2
+say 'ntend='ntend
+'define ss=ave(fcst,t='nt',t='ntend')'
+'d ss*$conv'
+nt=nt+1
+endwhile
+EOF
+#
+grads -bl <nmme_data
+#
+cat>$var.mon.ctl<<EOF
+dset ^$var.mon.gr
+undef -9.99e+08
+*
+TITLE fcst
+*
+xdef  360 linear    0.  1.
+ydef  181 linear  -90   1.
+zdef    1 linear 1 1
+tdef    $nleadmon linear feb1982 1mo
+vars 1
+f 1 99 1_mon lead
+ENDVARS
+EOF
+#
+cat>$var.ss.ctl<<EOF
+dset ^$var.ss.gr
+undef -9.99e+08
+*
+TITLE fcst
+*
+xdef  360 linear    0.  1.
+ydef  181 linear  -90   1.
+zdef    1 linear 1 1
+tdef    $nleadss linear feb1982 1mo
+vars 1
+f 1 99 1_mon lead
+ENDVARS
+EOF
+
+for tp in mon ss; do
+
+if [ $tp = 'mon' ]; then nlead=$nleadmon; fi
+if [ $tp = 'ss' ];  then nlead=$nleadss; fi
+ 
+#=======================================
+# regrid to 2.5x2.5
+#=======================================
+ 
+imx=144
+jmx=73
+#
+cat >int<<fEOF
+reinit
+run regrid.gs
+fEOF
+
+cat >regrid.gs<<gsEOF
+'reinit'
+'open $var.$tp.ctl'
+'open /cpc/home/wd52pp/project/nn/nmme/data_proc/land.2.5x2.5.ctl'
+'set gxout fwrite'
+'set fwrite $var.$tp.2.5x2.5.gr'
+nt=1
+while ( nt <= $nlead)
+
+'set t 'nt
+say 'time='nt
+'set lon   0. 357.5'
+'set lat -90.  90.'
+'d lterp(f,land.2(time=feb1982))'
+
+nt=nt+1
+endwhile
+gsEOF
+#
+/usr/local/bin/grads -pb <int
+#
+cat>$var.$tp.2.5x2.5.ctl<<EOF
+dset ^$var.$tp.2.5x2.5.gr
+undef -9.99E+8
+*
+options little_endian
+*
+XDEF 144 LINEAR    0.  2.5
+YDEF  73 LINEAR  -90.  2.5
+zdef  01 levels 1
+tdef   9999 linear feb1982 1mo
+*
+VARS 1
+f    0 99   ss or mon ave
+ENDVARS
+EOF
+#
+# have anomalies
+cat >anom<<EOF
+run anom.gs
+EOF
+cat >anom.gs<<EOF
+'reinit'
+'open $var.$tp.2.5x2.5.ctl'
+'open $dataout/$model.$var.$tp.clim_std.${icmonw}_ic.$clmperiod.ld1-$nlead.esm.ctl'
+'set gxout fwrite'
+'set fwrite $dataout/$model.$var.$tp.${icmonw}_ic.$curyr.ld1-$nlead.esm.anom.gr'
+'set x 1 $imx'
+'set y 1 $jmx'
+nld=$nlead
+ld=1
+while ( ld <= nld)
+'set t 'ld''
+'d f-clm.2(t='ld')'
+ld=ld+1
+endwhile
+EOF
+#
+/usr/local/bin/grads -bl <anom
+#
+cat>$dataout/$model.$var.$tp.${icmonw}_ic.$curyr.ld1-$nlead.esm.anom.ctl<<EOF
+dset ^$model.$var.$tp.${icmonw}_ic.$curyr.ld1-$nlead.esm.anom.gr
+undef -9.99e+8
+*
+TITLE fcst
+*
+XDEF 144 LINEAR    0.  2.5
+YDEF  73 LINEAR  -90.  2.5
+zdef  01 levels 1
+tdef   9999 linear feb1982 1mo
+vars 1
+f 1 99 lead1-$nlead
+ENDVARS
+EOF
+
+done  # tp loop
+
+done  # model loop
+#
+done  # var loop
+

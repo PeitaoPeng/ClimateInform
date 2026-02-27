@@ -1,0 +1,29 @@
+#/bin/csh
+#
+ftp -n -v << --
+  open f.nersc.gov 
+  user u70260 htktkk66
+  ls
+  get /work2/u70260/batchdir1/fort.40 ~peng/data/gcm/avght88amj
+  get /work2/u70260/batchdir1/fort.41 ~peng/data/gcm/avtmp88amj
+  get /work2/u70260/batchdir1/fort.42 ~peng/data/gcm/avstrmf88amj
+  get /work2/u70260/batchdir1/fort.43 ~peng/data/gcm/avptvort88amj
+  get /work2/u70260/batchdir1/fort.44 ~peng/data/gcm/pbhpmrx88amj
+  get /work2/u70260/batchdir1/fort.45 ~peng/data/gcm/pbhpmry88amj
+  get /work2/u70260/batchdir1/fort.46 ~peng/data/gcm/pbhpmrz88amj
+  get /work2/u70260/batchdir1/fort.47 ~peng/data/gcm/pbhpmtx88amj
+  get /work2/u70260/batchdir1/fort.48 ~peng/data/gcm/pbhpmty88amj
+  get /work2/u70260/batchdir1/fort.49 ~peng/data/gcm/pbhpmtz88amj
+  get /work2/u70260/batchdir1/fort.50 ~peng/data/gcm/pbhpuq88amj
+  get /work2/u70260/batchdir1/fort.51 ~peng/data/gcm/pbhpvq88amj
+  get /work2/u70260/batchdir1/fort.52 ~peng/data/gcm/pbhpdivmr88amj
+  get /work2/u70260/batchdir1/fort.53 ~peng/data/gcm/pbhpdivmt88amj
+  get /work2/u70260/batchdir1/fort.54 ~peng/data/gcm/pbhpcpmr88amj
+  get /work2/u70260/batchdir1/fort.55 ~peng/data/gcm/pbhpcpmt88amj
+  get /work2/u70260/batchdir1/fort.56 ~peng/data/gcm/pbhpens88amj
+  binary
+  get /work1/u70260/batchdir1/cola.s063079e093079 ~peng/s796e799
+  ls
+  quit
+--
+#

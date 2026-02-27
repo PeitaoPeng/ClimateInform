@@ -1,0 +1,41 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/utility/filter
+tmp=/tmp/wd52pp
+datadir=/export-6/cacsrv1/wd52pp/obs/sst
+#
+longtime=50
+imax=1
+jmax=1
+lflt=10     #  LCZ point number 2*lflt-1
+ipass=1       #  1 LP; 2 HP
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/compare.f $tmp/.
+cp $lcdir/fltKaylor.s.f $tmp/.
+cp $lcdir/Wang_flt.s.f $tmp/.
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(imax=$imax,jmax=$jmax)
+       parameter(n=$lflt)
+       parameter(ipass=$ipass)
+eof
+#
+#
+cat > parm.s.h << eof
+       parameter(ltime=$longtime)
+eof
+#
+f77 -o compare.x compare.f Wang_flt.s.f fltKaylor.s.f
+echo "done compiling"
+
+#
+ ln -s $datadir/rcoef_cor.glsst.50_99jfm.i3e fort.10
+ ln -s $lcdir/Lcz_flt.data fort.15
+ ln -s $datadir/flt_compare.i3e fort.20
+#
+compare.x

@@ -1,0 +1,38 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/prd_skill
+tmp=/export/hobbes/wd52pp/tmp
+datadir=/export-12/cacsrv1/wd52pp/obs/R2
+#
+cp $lcdir/z200_2_grad.f $tmp
+cd $tmp
+#
+f77 -o test.x z200_2_grad.f
+/bin/rm $tmp/fort.*         
+echo "done compiling"
+
+#
+ ln -s $datadir/z200.eddy.test.gr  fort.10
+#
+ ln -s $datadir/z200.test.gr       fort.20
+
+#
+test.x > $lcdir/out
+#
+
+cat>$datadir/z200.test.ctl<<EOF
+dset $datadir/z200.test.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    100 linear    0.000  2.5
+ydef     25 linear    0.000  2.5
+zdef    1 levels 500
+tdef    1 linear jan1900  1yr
+vars   3
+pt   0 99 Type of Ob
+ex   0 99 Type of Ob
+ey   0 99 Type of Ob
+endvars
+EOF

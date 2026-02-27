@@ -1,0 +1,39 @@
+#!/bin/csh -f
+datadir1=/export/lnx355/wd52mh/verification
+datadir2=/export-12/cacsrv1/wd52pp/cpc_vfc/0data
+tmpdir=/export/hobbes/wd52pp/tmp/mike
+ab=above
+cd tmpdir
+mv $datadir2/temp_forecast_${ab}.bi $datadir2/temp_forecast_{ab}.bi.old
+cp $datadir2/temp_forecast_${ab}.bi.old t_$ab
+cp $datadir1/*${ab}* .
+cat t_$ab jas2007_temp_above_forecast 
+
+set path = ( $path /usr/bin )
+if ($1 == "") then
+set ydate = `date +"%Y-%m-01"`
+else
+set ydate = $1
+endif
+echo $ydate $1
+#
+#  Code to run previous month
+#
+#set ydate = `date -d"-1 month" +"%Y-%m-01"`
+#
+set qyear = `date -d"$ydate +1 month" "+%Y"`
+set qmon = `date -d"$ydate +1 month" "+%m"`
+set yearmo = `echo ${qyear}${qmon}`
+echo $qmon $qyear $yearmo
+set m1 = `date -d"$ydate +1month" "+%b" | cut -c 1-1`
+set m2 = `date -d"$ydate +2month" "+%b" | cut -c 1-1`
+set m3 = `date -d"$ydate +3month" "+%b" | cut -c 1-1`
+set season = `echo ${m1}${m2}{$m3} | tr "[A-Z]" "[a-z]"`
+set recno =  `/export/lnx355/wd52mh/verification/getnummo.ksh 199412 $yearmo`
+echo $recno
+echo $m1 $m2 $m3 $season
+echo "*******************************************************"
+echo "********************************************************"
+   /usr/local/bin/grads -pc "run /export/lnx355/wd52mh/verification/forecast_above_2x2.gs $season $qyear $recno"
+#  /export/lnx355/wd52mh/verification/combine_realtime_forecast.x $season $qyear $recno
+exit

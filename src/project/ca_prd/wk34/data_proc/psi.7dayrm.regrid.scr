@@ -1,0 +1,130 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/ca_prd/wk34/data_proc
+tmp=/cpc/home/wd52pp/tmp
+datadir1=/cpc/analysis/cdas/daily/prs
+datadir2=/cpc/home/wd52pp/data/ca_prd
+#
+outfile=psi.7drm.1979-curr
+#
+dateend=28feb2022  # date end of the file in datadir1
+edate=0228         # current year ending date in number
+edate2=`echo $dateend|cut -c 1-5`
+#totday=15706 # to 31dec2021
+totday=15765  # to 28feb2022
+#======================================
+# read psi200 for each year
+#======================================
+cd $tmp
+
+years=1979
+yeare=2022
+
+iyear=$years
+while [ $iyear -le $yeare ]
+do
+
+yy=`echo $iyear|cut -c 3-4`
+
+emd=1231
+emd2=31dec
+if [ $iyear -eq $yeare ]; then
+emd=$edate
+emd2=$edate2
+fi
+
+cat >psiread<<EOF
+run read.gs
+EOF
+cat >read.gs<<EOF
+'reinit'
+'open $datadir1/y$iyear/STRM.prs.daily.b${yy}0101.e${yy}$emd.ctl'
+'set z 10'
+'set x 1 144'
+'set y 1 73'
+'set gxout fwrite'
+'set fwrite $iyear.gr'
+'set time 01jan$iyear ${emd2}$iyear'
+'d STRMprs'
+'c'
+EOF
+grads -l <psiread
+
+iyear=`expr $iyear + 1`
+done
+
+#======================================
+# cat all year data together
+#======================================
+yearsp=`expr $years + 1`
+cp $years.gr in.gr
+iyear=$yearsp
+while [ $iyear -le $yeare ]
+do
+
+cat in.gr $iyear.gr  > out.gr
+
+mv out.gr in.gr
+iyear=`expr $iyear + 1`
+done
+
+mv in.gr dailypsi200.79-cur.gr
+
+cat>dailypsi200.79-cur.ctl<<EOF
+dset ^dailypsi200.79-cur.gr
+undef -999000000
+*
+TITLE Tsfc
+*
+xdef  144 linear   0 2.5
+ydef   73 linear -90 2.5
+zdef   1 linear 1 1
+tdef 20000 linear 01jan1979 1dy
+vars 1
+psi  1 99 STRM at 200mb
+ENDVARS
+EOF
+
+rmday=`expr $totday - 6`
+rmend=`expr $totday - 3`
+
+cd $tmp
+#\rm *.*
+#======================================
+# 7-day running mean
+#======================================
+cat >runmean<<EOF
+run mean.gs
+EOF
+
+cat >mean.gs<<EOF
+'reinit'
+'open dailypsi200.79-cur.ctl'
+'set x 1 144'
+'set y 1  73'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+'set t 4 $rmend'
+'d ave(psi,t-3,t+3)'
+'c'
+EOF
+grads -l <runmean
+#
+cat>tmp.ctl<<EOF
+dset ^$outfile.gr
+undef -999000000
+*
+TITLE psi200
+*
+xdef  144 linear   0  2.5
+ydef   73 linear -90  2.5
+zdef   1 linear 1 1
+tdef 20000 linear 04jan1979 1dy
+vars 1
+psi  1 99 7-day run_mean psi200
+ENDVARS
+EOF
+cp $outfile.* $datadir2
+

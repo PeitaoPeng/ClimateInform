@@ -1,0 +1,159 @@
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC C
+C     transfer data from spctral form to grid form and vice versa              C
+C     and set field zero somewhere
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+      SUBROUTINE ZERO(WORKIN,WORK15,ZSET)
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+      PARAMETER(NLV=10)
+      PARAMETER(NW=15)
+      PARAMETER(NLEG=NW+1)
+      PARAMETER(NM=NW)
+      PARAMETER(NMP=NW+1)
+      PARAMETER(NLONG=64)
+      PARAMETER(NLATG=40)
+CC
+      PARAMETER(NLONGP=NLONG+1,IMAXT=3*NLONG/2)
+      PARAMETER(KHALF=(NLATG+1)/2)
+      COMMON/GAUSS/RADG(NLATG),GWGT(NLATG)
+      COMMON/POLY1/PLEG(NLEG,NMP,NLATG),DPLEG(NLEG,NMP,NLATG)
+      COMMON/FFTAR1/TRIGS(IMAXT),IFAX(10)
+      COMMON/FFTAR2/ARRAY(NLONGP,NLATG),WORK(NLONGP,NLATG)
+      DIMENSION FIELDG(NLONG,NLATG),out(NLONG,NLATG)
+      DIMENSION FLDSPC(2,NLEG,NMP)
+      real      FLDSIN(2,NLEG,NMP)
+      real      WORKIN(2,NLEG,NMP,NLV,5),WORK15(2,NLEG,NMP,NLV,5)
+      real*8  COLRAD(KHALF),WGT(KHALF),WGTCS(KHALF),RCS2(KHALF)
+      LOGICAL ZSET
+      PI=ACOS(-1.0)
+      CALL GLATS(KHALF,COLRAD,WGT,WGTCS,RCS2)
+      DO 30 K=1,KHALF
+      RADG(K)=PI/2.0 - real(COLRAD(K))
+      RADG(NLATG-K+1)=-RADG(K)
+      GWGT(K)=real(WGT(K))
+      GWGT(NLATG-K+1)=+GWGT(K)
+   30 CONTINUE
+      write(6,*) ' before call GENPNME'
+      DO 40 JG=1,NLATG
+      CALL GENPNME15(RADG(JG),PLEG(1,1,JG),DPLEG(1,1,JG))
+   40 CONTINUE
+C.....from R20 to R15                    
+      do 500 IV = 1,5
+      do 500 LL = 1,NLV
+      do 500 j=1,NLEG
+      do 500 i=1,NMP 
+        WORK15(1,i,j,LL,IV)=WORKIN(1,i,j,LL,IV)
+        WORK15(2,i,j,LL,IV)=WORKIN(2,i,j,LL,IV)
+ 500  continue
+      IF(ZSET) THEN
+C.....transform and set zero            
+      IWRITE=0
+      do 1000 IV = 1,5
+      do 1000 LL = 1,NLV
+        do 50 j=1,NLEG
+        do 50 i=1,NMP 
+        FLDSPC(1,j,i)=WORKIN(1,i,j,LL,IV)
+        FLDSPC(2,j,i)=WORKIN(2,i,j,LL,IV)
+ 50     continue
+CCC Attention!, following two lines are for cads_saved heating
+c     CALL EVLSCA(FLDSPC,out)
+c     call norsou(out,FIELDG,nlong,nlatg)
+      CALL EVLSCA(FLDSPC,FIELDG)
+c
+c.....set ft in polar regions zero
+      if (IV.eq.3) then
+      do i=1,nlong
+      do j=1,nlatg
+c       IF(j.lt.7.or.j.gt.34) FIELDG(i,j)=0.
+      enddo
+      enddo
+      endif
+c
+c.....set other areas zero
+      do 100 i=1,nlong
+      do 100 j=1,nlatg
+c     IF(j.lt.16.or.j.gt.25) FIELDG(i,j)=0.
+      IF(j.lt.17.or.j.gt.24) FIELDG(i,j)=0.
+      IF(i.lt.25) FIELDG(i,j)=0.
+c     IF(i.lt.20) FIELDG(i,j)=0.
+c     IF(i.gt.30) FIELDG(i,j)=0.
+c     IF(fieldg(i,j).lt.0.)  FIELDG(i,j)=0.
+c     IF(fieldg(i,j).gt.0.)  FIELDG(i,j)=0.
+  100 CONTINUE
+c
+      CALL TRNSFM15(FIELDG,FLDSPC)
+        do 60 j=1,NLEG
+        do 60 i=1,NMP 
+        WORK15(1,i,j,LL,IV)=FLDSPC(1,j,i)
+        WORK15(2,i,j,LL,IV)=FLDSPC(2,j,i)
+ 60     continue
+      IWRITE=IWRITE+1
+      write(6,*) 'IWRITE=',IWRITE
+ 1000 CONTINUE
+C
+      END IF
+C
+      RETURN
+      END
+ 
+ 
+      SUBROUTINE EVLSCA(ARRS,ARRP)
+      PARAMETER(NW=15)
+      PARAMETER(NLEG=NW+1,NM=NW,NMP=NM+1)
+      PARAMETER(NLATG=40,NLONG=64,NLONGP=NLONG+1,IMAXT=3*NLONG/2)
+      COMMON/POLY1/PLEG(NLEG,NMP,NLATG),DPLEG(NLEG,NMP,NLATG)
+      COMMON/FFTAR1/TRIGS(IMAXT),IFAX(10)
+      COMMON/FFTAR2/ARRAY(NLONGP,NLATG),WORK(NLONGP,NLATG)
+      DIMENSION ARRS(2,NLEG,NMP),ARRP(NLONG,NLATG)
+      IM1=2*NMP+1
+      IM2=NLONGP
+      DO 200 J=1,NLATG
+      DO 120 IM=1,NMP
+      DO 120 IC=1,2
+      YSUM=0.0
+      DO 100 N=1,NLEG
+      YSUM=YSUM+ARRS(IC,N,IM)*PLEG(N,IM,J)
+  100 CONTINUE
+      ARRAY((IM-1)*2+IC,J)=YSUM
+  120 CONTINUE
+      DO 130 IM=IM1,IM2
+      ARRAY(IM,J)=0.0
+  130 CONTINUE
+  200 CONTINUE
+      INC=1
+      ISIGN=+1
+      JUMP=NLONGP
+      LOT=NLATG
+      CALL FFT991(ARRAY,WORK,TRIGS,IFAX,INC,JUMP,NLONG,LOT,ISIGN)
+      DO 240 J=1,NLATG
+      DO 240 I=1,NLONG
+      ARRP(I,J)=ARRAY(I,J)
+  240 CONTINUE
+      RETURN
+      END
+ 
+      SUBROUTINE FTRANS(GRID,WAVE)
+      PARAMETER(NW=15)
+      PARAMETER(NLEG=NW+1,NM=NW,NMP=NM+1)
+      PARAMETER(NLATG=40,NLONG=64,NLONGP=NLONG+1,IMAXT=3*NLONG/2)
+      COMMON/FFTAR1/TRIGS(IMAXT),IFAX(10)
+      COMMON/FFTAR2/ARRAY(NLONGP,NLATG),WORK(NLONGP,NLATG)
+      DIMENSION GRID(NLONG,NLATG),WAVE(2,NMP,NLATG)
+      DO 60 JG=1,NLATG
+      DO 40 IG=1,NLONG
+      ARRAY(IG,JG)=GRID(IG,JG)
+   40 CONTINUE
+      ARRAY(NLONGP,JG)=0.0
+   60 CONTINUE
+      ISIGN=-1
+      INC=1
+      JUMP=NLONGP
+      LOT=NLATG
+      CALL FFT991(ARRAY,WORK,TRIGS,IFAX,INC,JUMP,NLONG,LOT,ISIGN)
+      DO 200 JG=1,NLATG
+      DO 200 IM=1,NMP
+      WAVE(1,IM,JG)=ARRAY(2*IM-1,JG)
+      WAVE(2,IM,JG)=ARRAY(2*IM  ,JG)
+  200 CONTINUE
+      RETURN
+      END
+ 

@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -eaux
+
+#
+#datadir=/export-6/cacsrv1/wd52pp/obs/R2
+ datadir1=/cpc/home/wd52pp/data/obs/R1
+ datadir2=/cpc/home/wd52pp/data/attr/djf15-16
+#
+ nmonth=70
+ iskip=0
+#
+/bin/rm fort.11 fort.21
+  ln -s $datadir1/v850.djf.1949-cur.gr fort.11
+  ln -s $datadir2/v850.djf.1949-cur.5x5.gr fort.21
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth,iskip=$iskip)
+eof
+#
+ gfortran  REG73_2_REG37.f setxy.f intp2d.f
+ a.out
+#
+ja -s

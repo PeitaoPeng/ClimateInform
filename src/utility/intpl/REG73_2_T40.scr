@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ datadir=/export-12/cacsrv1/wd52pp/bias_skill/data
+#
+ nmonth=49
+ iskip=0
+#
+ /bin/rm fort.11 fort.21
+   ln -s $datadir/obs.z200.tot.jfm.51-99.2x2.gr fort.11
+   ln -s $datadir/obs.z200.tot.jfm.51-99.gr  fort.21
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth,iskip=$iskip)
+eof
+#
+ f77  REG73_2_T40.f setxy.f intp2d.f
+ a.out
+#done
+#
+ja -s

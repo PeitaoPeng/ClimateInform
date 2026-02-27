@@ -1,0 +1,101 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/sst14-15
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/attr/sst14-15
+#=======================================
+# have hgt and psi
+#=======================================
+#
+outfile=slp.R1.1949-cur.mon
+outfile2=slp.R1.1949-cur.3mon
+tmax=800    # jan2015=793
+#
+cd $tmp
+#
+cat >havedata<<EOF
+run data_rewrite.gs
+EOF
+#
+cat >data_rewrite.gs<<EOF
+'reinit'
+'open /cpc/analysis/cdas/month/flux/mean/flx.lola.grib.mean.y1949-cur.ctl'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+'set x 1 144'
+'set y 1 73'
+'set t 1 12'
+'define slpc=ave(PRESmsl,t+384,t=744,1yr)'
+'modify slpc seasonal'
+'set t 1'
+k=1
+while ( k <= $tmax)
+'set t 'k''
+'d PRESmsl-slpc'
+k=k+1
+endwhile
+'c'
+EOF
+#
+#===========================================
+# excute grads data process
+#===========================================
+grads -l <havedata
+#
+cat>$outfile.ctl<<EOF
+dset ^$outfile.gr
+undef -9999.0
+xdef 144 linear 0 2.5
+ydef  73 linear -90 2.5
+tdef 9999 linear jan1949 1mon
+zdef 1 linear 1 1
+vars 1
+slp  0 99 slp
+ENDVARS
+EOF
+#
+#=======================================
+# have 3-mon avg anomalies
+#=======================================
+ts=2
+te=`expr $tmax - 1`
+#
+cat >3mavg<<EOF
+run have3mavg.gs
+EOF
+#
+cat >have3mavg.gs<<EOF
+'reinit'
+'open $outfile.ctl'
+'set x 1 144'
+'set y 1  73'
+'set gxout fwrite'
+'set fwrite $outfile2.gr'
+k=$ts
+while ( k <= $te)
+'set t 'k''
+'d ave(slp,t-1,t+1)'
+k=k+1
+endwhile
+'c'
+EOF
+#
+grads -l <3mavg
+#
+cat>$outfile2.ctl<<EOF
+dset ^$outfile2.gr
+undef -9999.0
+xdef 144 linear 0 2.5
+ydef  73 linear -90 2.5
+tdef 9999 linear feb1949 1mon
+zdef 1 linear 1 1
+vars 1
+slp  0 99 slp
+ENDVARS
+EOF
+#
+mv $outfile.* $datadir
+mv $outfile2.* $datadir
+\rm *gr

@@ -1,0 +1,8 @@
+
+for monthly forecasts,
+capp.mon.scr
+capp.mon.f: Base data are two-month, prd data is treated indepently
+capp.mon.2.f: Both base data and the data used for CA are EOF truncated
+
+for pentad forecast,
+capp.pen.scr

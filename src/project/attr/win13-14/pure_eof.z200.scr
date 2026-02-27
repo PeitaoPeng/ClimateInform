@@ -1,0 +1,69 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/win13-14
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/project/attr/win13-14
+#
+var=z200
+season=ndjfm
+model=R1
+tmax=324  #R1=63,cmip=100,amip=61
+nmod=15
+#
+cp $lcdir/pure_eof.z200.f $tmp/pure_eof.f
+cp $lcdir/reof.s.f  $tmp/.
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$tmax)
+       parameter(imx=144,jmx=73)
+       parameter(nmod=$nmod)
+c      parameter(lons=1,lone=144,lats=45,late=73) !NH
+       parameter(lons=1,lone=144,lats=37,late=73) !NH
+       parameter(id=1)
+eof
+#
+\rm fort.*
+#
+gfortran -o pure_eof.x reof.s.f pure_eof.f
+echo "done compiling"
+
+#
+ ln -s $datadir/z200.ndjfm1949-curr.mon.gr     fort.10
+#
+ ln -s $datadir/reof.$var.$model.$season.mon.gr    fort.51
+ ln -s $datadir/rpc.$var.$model.$season.mon.gr     fort.52
+#
+pure_eof.x > $datadir/reof.$var.$model.$season.mon.out
+#
+
+cat>$datadir/reof.$var.$model.$season.mon.ctl<<EOF
+dset $datadir/reof.$var.$model.$season.mon.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  144 linear 0 2.5
+ydef   73 linear -90 2.5
+zdef    1 levels 200
+tdef 999 linear nov1949 1mo
+vars   2
+eof   0 99 corr of reof mode
+reg   0 99 regr of reof mode
+endvars
+EOF
+
+cat>$datadir/rpc.$var.$model.$season.mon.ctl<<EOF2
+dset $datadir/rpc.$var.$model.$season.mon.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef   $tmax linear 0 1
+ydef    1 linear -90 2.8125
+zdef    1 levels 200
+tdef 999 linear nov1949  1mo
+vars   1
+rpc   0 99 rpc
+endvars
+EOF2
+#
+

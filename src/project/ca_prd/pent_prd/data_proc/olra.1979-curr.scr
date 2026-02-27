@@ -1,0 +1,236 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/ca_prd/pent_prd/data_proc
+tmp=/cpc/home/wd52pp/tmp/test
+datadir1=/cpc/analysis/verif/sat/cld_rad/olr/pent
+datadir2=/cpc/home/wd52pp/data/ca_prd
+#
+years=1979
+yeare=2014
+totyr=`expr $yeare - $years + 1`  # totyear of data available
+intyr=`expr $totyr - 1`  # full year number
+cyrpen=45                 # pent number of current year
+totpen=`expr $intyr \* 73 + $cyrpen`
+outfile=pent.olra.1979-curr
+
+cd $tmp
+\rm *
+#
+#==========================================
+# have ctl for tmp data
+#==========================================
+#
+cat>tmp.ctl<<EOF
+dset ^tmp.gr
+undef -999000000
+*
+TITLE pent olra
+*
+xdef  144 linear   0 2.5
+ydef   73 linear -90 2.5
+zdef   1 linear 1 1
+tdef 9999 linear 03jan1979 5dy
+vars 1
+olr  1 99 anom of pent olr (W/m*m)
+ENDVARS
+EOF
+#
+#======================================
+# read olra data and saved as a tmp.gr 
+#======================================
+cat >havedata<<EOF
+run read.gs
+EOF
+
+cat >read.gs<<EOF
+'reinit'
+'open /cpc/analysis/verif/sat/cld_rad/olr/pent/ctl.pent.olra'
+'set x 1 144'
+'set y 1  73'
+'set gxout fwrite'
+'set fwrite tmp2.gr'
+'set t 1 $totpen'
+'d olra'
+'c'
+EOF
+grads -l <havedata
+
+#======================================
+# fill undef with ave of data in surounding grids
+#======================================
+cat >interpl.f<<EOF
+      parameter(im=144,jm=73)
+      parameter(nt=$totpen)
+      parameter(kundef=-999000000)
+      real fld(im,jm)
+      real f3d(im,jm,nt)
+      real wk(im+2,jm+2)
+      open(10,
+     &file='tmp2.gr',
+     &form='unformatted',access='direct',recl=im*jm*4)
+      open(20,
+     &file='tmp.gr',
+     &form='unformatted',access='direct',recl=im*jm*4)
+c
+      do it=1,nt
+      read(10,rec=it) fld
+c
+c expand fld to wk
+c
+      do i=1,im
+      do j=1,jm
+        wk(i+1,j+1)=fld(i,j)
+      enddo
+      enddo
+      do j=1,jm
+        wk(1,j)=fld(im,j)
+        wk(im+2,j)=fld(1,j)
+      enddo
+      do i=1,im
+        wk(i,1)=fld(i,2)
+        wk(i,jm+2)=fld(i,jm-1)
+      enddo
+c
+c interpolation
+c
+      do i=1,im
+      do j=1,jm
+
+      if(fld(i,j).eq.kundef) then
+
+      fld(i,j)=0.
+      ngrd=0
+      do iw=i,i+2
+      do jw=j,j+2
+
+      ii=i+1
+      jj=j+1
+      if(iw.eq.ii.and.jw.eq.jj) go to 777
+      if(wk(iw,jw).ne.kundef) then
+        ngrd=ngrd+1
+        fld(i,j)=fld(i,j)+wk(iw,jw)
+      endif
+
+  777 continue
+      enddo
+      enddo
+
+      fld(i,j)=fld(i,j)/float(ngrd)
+
+      endif
+
+      enddo
+      enddo
+
+      write(20,rec=it) fld
+
+      enddo !it loop
+c
+      stop
+      END
+EOF
+gfortran interpl.f
+./a.out
+
+#======================================
+# regrid to 5x5 grid 
+#======================================
+cat >regrid<<EOF
+run lterp.gs
+EOF
+
+cat >lterp.gs<<EOF
+'reinit'
+'open $datadir2/grid.5x5.ctl'
+'open tmp.ctl'
+'set x 1 72'
+'set y 1 37'
+'set gxout fwrite'
+'set fwrite tmp3.gr'
+'set t 1 $totpen'
+'d lterp(olr.2,olr.1(t=1))'
+'c'
+EOF
+
+grads -l <regrid
+#
+cat>$outfile.ctl<<EOF
+dset ^$outfile.gr
+undef -999000000
+*
+TITLE pent olra
+*
+xdef  72 linear   0 5
+ydef  37 linear -90 5
+zdef   1 linear 1 1
+tdef 9999 linear 03jan1979 5dy
+vars 1
+olr  1 99 anom of pent olr (W/m*m)
+ENDVARS
+EOF
+#
+cp $outfile.* $datadir2
+
+#======================================
+# temporal interpolate
+#======================================
+cat >fill.f<<EOF
+      parameter(im=72,jm=37)
+      parameter(nt=$totpen)
+      parameter(kundef=-999000000)
+      real fld(im,jm)
+      real f3d(im,jm,nt)
+      open(10,
+     &file='tmp3.gr',
+     &form='unformatted',access='direct',recl=im*jm*4)
+      open(20,
+     &file='$outfile.gr',
+     &form='unformatted',access='direct',recl=im*jm*4)
+c
+      do it=1,nt
+      read(10,rec=it) fld
+      do i=1,im
+      do j=1,jm
+        f3d(i,j,it)=fld(i,j)
+      enddo
+      enddo
+      enddo
+
+      do it=2,nt-1
+      do i=1,im
+      do j=1,jm
+c     do i=10,10
+c     do j=10,10
+        if(f3d(i,j,it).eq.kundef) then
+c       write(6,*) 'undef it=',it
+        f3d(i,j,it)=0.5*(f3d(i,j,it-1)+f3d(i,j,it+1))
+        endif
+      enddo
+      enddo
+      enddo
+
+      do it=1,nt
+
+      do i=1,im
+      do j=1,jm
+      fld(i,j)=f3d(i,j,it)
+      if(abs(fld(i,j)).gt.999) then
+      fld(i,j)=0.
+      endif
+      enddo
+      enddo
+
+      write(20,rec=it) fld
+      enddo
+
+      stop
+      END
+EOF
+#
+#\rm fort.*
+gfortran fill.f
+./a.out
+#
+cp $outfile.* $datadir2

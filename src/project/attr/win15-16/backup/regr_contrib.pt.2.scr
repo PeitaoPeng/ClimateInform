@@ -1,0 +1,81 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/djf15-16
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/attr/djf15-16
+#
+var=prec
+tmax=67 
+nmod=5 
+#
+cp $lcdir/regr_contrib.pt.2.f $tmp/rec.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$tmax)
+       parameter(imx=720,jmx=360)
+       parameter(nmod=$nmod)
+eof
+#
+for season in djf; do
+#
+\rm $tmp/fort.*         
+#
+gfortran -o rec.x rec.f
+echo "done compiling"
+
+#
+#ln -s $datadir/$var.$season.1949-cur.gr        fort.10
+ ln -s $datadir/$var.$season.1949-cur.pk.gr        fort.10
+ ln -s $datadir/idx_pc.z200.R1.$season.NH.gr   fort.11
+#
+ ln -s $datadir/corr.z200pc_vs_$var.$season.pk.gr       fort.50
+#
+ ln -s $datadir/${var}_16.$season.contrib.2.pk.gr       fort.51
+#
+rec.x
+#
+cat > $datadir/corr.z200pc_vs_$var.$season.pk.ctl<<EOF2
+dset ^corr.z200pc_vs_$var.$season.pk.gr
+undef -9.99e+8
+title Realtime Surface Obs
+XDEF 720 LINEAR 0.25 0.5
+YDEF 360  LINEAR -89.75 0.5
+ZDEF 1 LEVELS 1
+tdef 999 linear jan1950 1yr
+vars 10
+cn34 0 99 corr to nino34
+rn34 0 99 regr to nino34
+eof1   0 99 corr of mode 2
+reg1   0 99 regr of mode 2
+eof2   0 99 corr of mode 2
+reg2   0 99 regr of mode 2
+eof3   0 99 corr of mode 2
+reg3   0 99 regr of mode 2
+eof4   0 99 corr of mode 2
+reg4   0 99 regr of mode 2
+endvars
+EOF2
+#
+cat>$datadir/${var}_16.$season.contrib.2.pk.ctl<<EOF
+dset $datadir/${var}_16.$season.contrib.2.pk.gr
+undef -9.99e+8
+title contribution from each mode
+XDEF 720 LINEAR 0.25 0.5
+YDEF 360  LINEAR -89.75 0.5
+zdef    1 levels 200
+tdef 999 linear dec1949  1yr
+vars   6
+obs 0 99 obs temp(0.1mm/day)
+enso 0 99 from ENSO
+c1  0 99 from trd(m)
+c2  0 99 nao
+c3  0 99 nao
+c4  0 99 nao
+endvars
+EOF
+#
+done
+

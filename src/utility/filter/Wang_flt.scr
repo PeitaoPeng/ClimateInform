@@ -1,0 +1,51 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/utility/filter
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/ca_prd
+#
+longtime=2600
+#imax=72
+#jmax=37
+imax=144
+jmax=73
+#
+ph=2                 #for HP or LP: ph=6,pm=7,pl=8
+pm=4
+pl=6
+fhl=0.9
+dt=1
+#
+cp $lcdir/Wang_flt.s.f $tmp/.
+cp $lcdir/Wang_flt.f $tmp/.
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(imax=$imax,jmax=$jmax)
+       parameter(ph=$ph,pl=$pl,pm=$pm,fhl=$fhl,dt=$dt)
+eof
+#
+#
+cat > parm.s.h << eof
+       parameter(ltime=$longtime+4)
+eof
+#
+gfortran -o Wang_flt.x Wang_flt.f Wang_flt.s.f
+echo "done compiling"
+#
+/bin/rm  $tmp/fort.*
+#ln -s $datadir/pent.olra.1979-curr.gr fort.10
+#ln -s $datadir/pent.olra.1979-curr.LP4.gr fort.20
+#ln -s $datadir/pent.olra.1979-curr.HP2.gr fort.30
+#ln -s $datadir/pent.sata.1979-curr.gr fort.10
+#ln -s $datadir/pent.sata.1979-curr.LP6.gr fort.20
+#ln -s $datadir/pent.sata.1979-curr.HP2.gr fort.30
+ ln -s $datadir/pent.psi200a.1979-curr.gr fort.10
+ ln -s $datadir/pent.psi200a.1979-curr.LP6.gr fort.20
+ ln -s $datadir/pent.psi200a.1979-curr.HP2.gr fort.30
+#
+Wang_flt.x
+#

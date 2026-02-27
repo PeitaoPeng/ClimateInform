@@ -1,0 +1,367 @@
+9,10c9,10
+<       PARAMETER (ncv=3,eps=0.1,irhs=0,idelmdl=1)
+<       PARAMETER (nyr=25,mdvs=102,nmodel=3,nyin=nyr-ncv, nfcst=nmodel+2)
+---
+>       PARAMETER (ncv=3,eps=1000.,irhs=1,idelmdl=0)
+>       PARAMETER (mdvs=102,nyr=25,nmodel=3,nyin=nyr-ncv, nfcst=nmodel+2)
+37c37,38
+<       real betaout(nyr,nmodel,mdvs)
+---
+>       real betaout(nyr,nmodel)
+>       real mlrprd(mdvs,nyr),ewmprd(mdvs,nyr)
+40d40
+<       real mlrprd(mdvs,nyr),ewmprd(mdvs,nyr)
+41a42
+>       real tfd(nyr)
+54c55
+<       ianom=0 ! =1: remove time mean; =0: not remove time mean
+---
+>       ianom=1 ! =1: remove time & space mean; =0: not remove time mean
+59d59
+<       ieca=1  ! =0 means not include it
+94c94,96
+< 
+---
+>       
+>       write(6,788)'year','CCA','CFS','SML','CON','ENS',
+>      &'CCA','CFS','SML'
+131c133
+<         IF (ncv.eq.3) then
+---
+>         IF (ncv.eq.3) then 
+136c138
+<           if (iy.gt.nyin) go to 2500
+---
+>           if(iy.gt.nyin) go to 2500
+148d149
+< c     write(6,*) '# of "historical years"=',iy 
+150a152,155
+>       call setzero(clim1,mdvs)
+>       call setzero(clim2,mdvs)
+>       call setzero(clim3,mdvs)
+>       call setzero(clim4,mdvs)
+155a161,167
+> 
+> c     call timespaceanom(obs3d,mdvs,nyin,stclim1)
+> c     call timespaceanom(cca3d,mdvs,nyin,stclim2)
+> c     call timespaceanom(cfs3d,mdvs,nyin,stclim3)
+> c     call timespaceanom(smlr3d,mdvs,nyin,stclim4)
+>       end if
+> 
+157,161c169,182
+<       do i=1,mdvs
+<             obs2d(i)=obs2d(i)-clim1(i)
+<             cca2d(i)=cca2d(i)-clim2(i)
+<             cfs2d(i)=cfs2d(i)-clim3(i)
+<             smlr2d(i)=smlr2d(i)-clim4(i)
+---
+>        do i=1,mdvs
+>          obs2d(i)=obs2d(i)-clim1(i)
+>          cca2d(i)=cca2d(i)-clim2(i)
+>          cfs2d(i)=cfs2d(i)-clim3(i)
+>          smlr2d(i)=smlr2d(i)-clim4(i)
+>        end do
+> c
+>       do k=1,nyin
+>       do i=1,mdvs
+>         obs(  k,i)=obs3d(i,k)
+>         gcm(1,k,i)=icca*cca3d(i,k)
+>         gcm(2,k,i)=icfs*cfs3d(i,k)
+>         gcm(3,k,i)=ismlr*smlr3d(i,k)
+>       end do
+163,171d183
+<       end if
+< C=== regression for each grid
+<       DO id=1,mdvs
+<          do k=1,nyin
+<            obs(  k,id)=obs3d(id,k)
+<            gcm(1,k,id)=icca*cca3d(id,k)
+<            gcm(2,k,id)=icfs*cfs3d(id,k)
+<            gcm(3,k,id)=ismlr*smlr3d(id,k)
+<          end do
+180c192,194
+<            gmgm(im,jm)=gmgm(im,jm)+gcm(im,k,id)*gcm(jm,k,id)
+---
+>          do i=1,mdvs
+>            gmgm(im,jm)=gmgm(im,jm)+gcm(im,k,i)*gcm(jm,k,i)
+>          end do
+187c201
+<          gmgm(im,jm)=gmgm(im,jm)/float(nyin)
+---
+>          gmgm(im,jm)=gmgm(im,jm)/(mdvs*nyin)
+193c207,209
+<          obgm(im)=obgm(im)+obs(k,id)*gcm(im,k,id)/float(nyin)
+---
+>          do i=1,mdvs
+>          obgm(im)=obgm(im)+obs(k,i)*gcm(im,k,i)/float(mdvs*nyin)
+>          end do
+222,223d237
+< c
+<       if(id.eq.92) write(6,*) 'beta=',obgm
+228c242,244
+<             gm(im)=gm(im)+gcm(im,k,id)
+---
+>         do i=1,mdvs
+>           gm(im)=gm(im)+gcm(im,k,i)/float(mdvs*nyin)
+>         end do
+232,235d247
+<         gm(im)=gm(im)/float(nyin)
+<       end do
+< c
+<       do im=1,nmodel
+241c253,255
+<             om=om+obs(k,id)
+---
+>         do i=1,mdvs
+>             om=om+obs(k,i)
+>         end do
+243c257
+<         om=om/float(nyin)
+---
+>         om=om/(mdvs*nyin)
+250a265
+> c       write(6,*) 'xmean=',xmean
+252,253c267,268
+<         do im=1,nmodel
+<           betaout(icase,im,id)=beta(im)
+---
+>         do i=1,nmodel
+>           betaout(icase,i)=beta(i)
+255d269
+<       END DO  ! for index id loop over mdvs
+260,262c274,276
+<          wk1(i)=xmean+betaout(icase,1,i)*cca2d(i)+
+<      &            betaout(icase,2,i)*cfs2d(i)+
+<      &            betaout(icase,3,i)*smlr2d(i)
+---
+>          wk1(i)=xmean+beta(1)*cca2d(i)+
+>      &            beta(2)*cfs2d(i)+
+>      &            beta(3)*smlr2d(i)
+300d313
+< 
+325c338
+<       write(6,*)'         CV=',ncv
+---
+>       write(6,*)'         CV= ',ncv
+328,330c341,359
+< c mean and stdv of beta
+<       write(6,*)'mean and stdv of weights'
+<       DO m=1,nmodel
+---
+> 
+> c     write out weights and skill for each case
+> 
+>       do iy=1,nyr
+>       iiy=1982+iy-1
+>       write(6,777)iiy,'wgts=',betaout(iy,1),betaout(iy,2),betaout(iy,3),
+>      &'acc=',accus(iy,1),accus(iy,2),
+>      &accus(iy,3),accus(iy,4),accus(iy,5)
+>       enddo
+>       write(6,*)
+>       do iy=1,nyr
+>       iiy=1982+iy-1
+>       write(6,777)iiy,'wgts=',betaout(iy,1),betaout(iy,2),betaout(iy,3),
+>      &'rms=',rmsus(iy,1),rmsus(iy,2),
+>      &rmsus(iy,3),rmsus(iy,4),rmsus(iy,5)
+>       enddo
+>       write(6,*)
+> c== std and mean of beta
+>       do m=1,nmodel
+332,334c361
+<         do id=1,mdvs
+<           wk3d(id,it)=betaout(it,m,id)
+<         enddo
+---
+>         tfd(it)=betaout(it,m)
+336,353c363,368
+<       call mean_std(wk3d,clim1,clim2,mdvs,nyr)
+<       do i=1,mdvs
+<         clim3(i)=100*clim2(i)/clim1(i)
+<         if(abs(clim1(i)).lt.0.1) clim3(i)=0
+<       end do
+<       if(m.eq.1) write(6,*) 'CCA'
+<       if(m.eq.2) write(6,*) 'CFS'
+<       if(m.eq.3) write(6,*) 'SMLR'
+<       write(6,989) clim1
+<       write(6,989) clim2
+<       write(6,889) clim3
+<       call cd_avg(clim1,mdvs,avg1)
+<       call cd_avg(clim2,mdvs,avg2)
+<       avg3=avg2/avg1
+<       write(6,*)'mean weight=',avg1,'  std=',avg2,'  s/m=',avg3
+<       
+<       END DO
+< 
+---
+>         call mean_std(tfd,xm,std,nyr)
+>         ratio=std/xm
+>       write(6,*) 'mean and std for model',m,' are',xm,std,ratio
+>       enddo
+> c
+> c
+355c370
+< 888   format(A10,30x,5f6.2)
+---
+> 888   format(A15,10x,5f6.2)
+357c372
+< 788   format(A5,7x,5A7)
+---
+> 788   format(A5,7x,3A7,6x,5A6)
+362,363d376
+< 989   format(10f7.3)
+< 889   format(10f6.1)
+371a385
+>       call avg_skill(wk1,mdvs,accm(1))
+374a389
+>       call avg_skill(wk1,mdvs,accm(2))
+377a393
+>       call avg_skill(wk1,mdvs,accm(3))
+380a397
+>       call avg_skill(wk1,mdvs,accm(4))
+383a401
+>       call avg_skill(wk1,mdvs,accm(5))
+389a408
+>       call avg_skill(wk1,mdvs,rmsm(1))
+392a412
+>       call avg_skill(wk1,mdvs,rmsm(2))
+395a416
+>       call avg_skill(wk1,mdvs,rmsm(3))
+398a420
+>       call avg_skill(wk1,mdvs,rmsm(4))
+401a424
+>       call avg_skill(wk1,mdvs,rmsm(5))
+402a426,427
+>       write(6,888)'avg ACC in t',accm(1),accm(2),accm(3),accm(4),accm(5)
+>       write(6,888)'avg RMS in t',rmsm(1),rmsm(2),rmsm(3),rmsm(4),rmsm(5)
+406d430
+< 
+417,420c441
+<       end
+< 
+<       SUBROUTINE norm_beta(wk1d,nmodel)
+<       dimension wk1d(nmodel)
+---
+>       end 
+422,425c443,458
+<         clim=0.
+<         do im=1,nmodel
+<         clim=clim+wk1d(im)
+<         end do
+---
+>       SUBROUTINE mean_std(fld,xm,std,ltime)
+>       real fld(ltime)
+> c
+>       xm=0.
+>       do it=1,ltime
+>         xm=xm+fld(it)/float(ltime)
+>       enddo
+> c
+>       do it=1,ltime
+>         fld(it)=fld(it)-xm
+>       enddo
+> c
+>       std=0.
+>       do it=1,ltime
+>         std=std+fld(it)* fld(it)/float(ltime)
+>       enddo
+427,433c460
+<         do im=1,nmodel
+<         if (clim.gt.0.1) then
+<           wk1d(im)=wk1d(im)/clim
+<         else 
+<           wk1d(im)=0
+<         end if
+<         end do
+---
+>       std=sqrt(std)
+437a465,472
+>       SUBROUTINE avg_skill(fld,mdvs,ac)
+>       dimension fld(mdvs)
+>       ac=0.
+>       do  i=1,mdvs
+>         ac=ac+fld(i)/float(mdvs)
+>       end do
+>       return
+>       end
+458,474c493,494
+<       SUBROUTINE flt_trd(wk3d,mdvs,ltime)
+<       dimension wk3d(mdvs,ltime)
+<       dimension runm(102,15) !9-point running mean
+<       do id=1,mdvs
+<       do it=5,ltime-4
+< 
+<       runm(id,it-4)=(wk3d(id,it-4)+wk3d(id,it-3)+wk3d(id,it-2)
+<      &+wk3d(id,it-1)+wk3d(id,it)+wk3d(id,it+1)+wk3d(id,it+2)
+<      &+wk3d(id,it+3)+wk3d(id,it+4))/9.
+< 
+<       enddo
+<       enddo
+< 
+<       do id=1,mdvs
+<         do it=1,4
+<         wk3d(id,it)=wk3d(id,it)-runm(id,1)
+<         end do
+---
+>       SUBROUTINE norm_beta(wk1d,nmodel)
+>       dimension wk1d(nmodel)
+476,477c496,498
+<         do it=ltime-3,ltime
+<         wk3d(id,it)=wk3d(id,it)-runm(id,ltime-8)
+---
+>         clim=0.
+>         do it=1,nmodel
+>         clim=clim+wk1d(it)
+480,481c501,502
+<         do it=5,ltime-4
+<         wk3d(id,it)=wk3d(id,it)-runm(id,it-4)
+---
+>         do it=1,nmodel
+>         wk1d(it)=wk1d(it)/clim
+483c504
+<       end do
+---
+> c
+555,583d575
+<       SUBROUTINE mean_std(fld1,fld2,fld3,mdvs,ltime)
+<       real fld1(mdvs,ltime),fld2(mdvs),fld3(mdvs)
+< c
+<       do i=1,mdvs
+<         fld2(i)=0.
+<       do it=1,ltime
+<         fld2(i)=fld2(i)+fld1(i,it)/float(ltime)
+<       enddo
+<       enddo
+< c
+<       do i=1,mdvs
+<       do it=1,ltime
+<         fld1(i,it)=fld1(i,it)-fld2(i)
+<       enddo
+<       enddo
+< c
+<       do i=1,mdvs
+<         fld3(i)=0.
+<       do it=1,ltime
+<         fld3(i)=fld3(i)+fld1(i,it)* fld1(i,it)/float(ltime)
+<       enddo
+<       enddo
+< 
+<       do i=1,mdvs
+<         fld3(i)=sqrt(fld3(i))
+<       enddo
+<       return
+<       end
+< 
+620,628d611
+<       SUBROUTINE cd_avg(fld,n,avg)
+<       DIMENSION fld(n)
+<       avg=0.
+<       do i=1,n
+<          avg=avg+fld(i)/float(n)
+<       enddo
+<       return
+<       end
+< 
+703a687
+>       call setzero_1d(clim,mdvs)
+705d688
+<         clim(i)=0.

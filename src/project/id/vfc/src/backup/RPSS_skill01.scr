@@ -1,0 +1,549 @@
+#-----/u/Zeng-Zhen.Hu/nfs/WorkGroup/CFSV2skill/Prec/RPSS_skill01.scr
+#
+# CRPS of CFSv2 hindcasts
+#
+# (4) RPSS_skill01.scr
+#
+# (3) DATA2_CFSv2_CMAS.scr (just for NH to save space)
+#   the output data in "/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec"
+
+# (2) download data from Wanqiu's tape in "/5year/NCEPDEV/cpc-om/Wanqiu.Wang/cfsrr/CFSv2Hcst4FCST/Prec"
+#   save in "/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec" by conducting following commends
+#   GET_CFSv2_month.scr
+#
+# (1) scp observed data:
+# scp hzz@cpc-ls-work1:/cpc/home/mingyue/PRODUCTS/50YR/gauge/grid10m/precl_mon_v1.0.lnx.* .
+# scp hzz@cpc-ls-work1:/cpc/home/mingyue/PRODUCTS/50YR/gauge/grid10m/precl_mon_v1.0.lnx.1948-curr.gri1.0m.ctl .
+
+rm a.out tmp.f
+set verbose
+cat << EOR > tmp.f
+      parameter(IYR=(2015-1982+1),nn=IYR*12,IYR2=IYR-1)
+      parameter(mon0=0,nn1=nn+mon0,MLD=9,Nens=20)
+c*      parameter(mlo=360,mla=90,nxy=mlo*mla*4)
+      parameter(mlo=121,mla=56,nxy=mlo*mla*4)
+
+      real*4 CRPS(mlo,mla,12,MLD),tmp(mlo,mla)
+     *,OBS(mlo,mla,nn1),x(IYR2),y(IYR2,Nens)
+     *,x1(mlo,mla,nn,MLD),x2(mlo,mla,nn,MLD)
+     *,x3(mlo,mla,nn,MLD),x4(mlo,mla,nn,MLD)
+     *,x5(mlo,mla,nn,MLD),x6(mlo,mla,nn,MLD)
+     *,x7(mlo,mla,nn,MLD),x8(mlo,mla,nn,MLD)
+     *,x9(mlo,mla,nn,MLD),x10(mlo,mla,nn,MLD)
+     *,x11(mlo,mla,nn,MLD),x12(mlo,mla,nn,MLD)
+     *,x13(mlo,mla,nn,MLD),x14(mlo,mla,nn,MLD)
+     *,x15(mlo,mla,nn,MLD),x16(mlo,mla,nn,MLD)
+     *,x17(mlo,mla,nn,MLD),x18(mlo,mla,nn,MLD)
+     *,x19(mlo,mla,nn,MLD),x20(mlo,mla,nn,MLD)
+
+c-------------------------------------------------------------c
+c (1) INPUT data
+c-------------------------------------------------------------c
+c----Hindcasts: input anomaly data
+      Call GetCfsData(11,x1)
+       write(*,*)'Data1 done'
+
+      Call GetCfsData(12,x2)
+       write(*,*)'Data2 done'
+
+      Call GetCfsData(13,x3)
+       write(*,*)'Data3 done'
+
+      Call GetCfsData(14,x4)
+       write(*,*)'Data4 done'
+
+      Call GetCfsData(15,x5)
+       write(*,*)'Data5 done'
+
+      Call GetCfsData(16,x6)
+       write(*,*)'Data6 done'
+
+      Call GetCfsData(17,x7)
+       write(*,*)'Data7 done'
+
+      Call GetCfsData(18,x8)
+       write(*,*)'Data8 done'
+
+      Call GetCfsData(19,x9)
+       write(*,*)'Data9 done'
+
+      Call GetCfsData(20,x10)
+       write(*,*)'Data10 done'
+
+      Call GetCfsData(21,x1)
+       write(*,*)'Data11 done'
+
+      Call GetCfsData(22,x2)
+       write(*,*)'Data12 done'
+
+      Call GetCfsData(23,x3)
+       write(*,*)'Data13 done'
+
+      Call GetCfsData(24,x4)
+       write(*,*)'Data14 done'
+
+      Call GetCfsData(25,x5)
+       write(*,*)'Data15 done'
+
+      Call GetCfsData(26,x6)
+       write(*,*)'Data16 done'
+
+      Call GetCfsData(27,x7)
+       write(*,*)'Data17 done'
+
+      Call GetCfsData(28,x8)
+       write(*,*)'Data18 done'
+
+      Call GetCfsData(29,x9)
+       write(*,*)'Data19 done'
+
+      Call GetCfsData(30,x10)
+       write(*,*)'Data20 done'
+
+c----Observations: input raw data
+      open(35,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &yPrec.CAMS_Jan1982_Dec2015',
+c?     &xPrec.CAMS_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      do 5 k=1,nn1
+      read(35,rec=k)((OBS(i,j,k),i=1,mlo),j=1,mla)
+
+c---check the data
+c?      write (77,29)k
+c?      write (77,*)((OBS(i,j,k),i=1,50),j=1,50)
+c?      write (77,19)((OBS(i,j,k),i=1,50),j=1,50)
+5     continue
+      close(35)
+29    format('k=',I3)
+
+c-------------------------------------------------------------c
+C (2) CALCULATE RPSS
+c-------------------------------------------------------------c
+c--(2.1) Observation: remove the annual cycle
+c-------------------------------------------------------------c
+      Do 35 i=1,mlo
+      DO 35 j=1,mla
+      DO 35 mon=1,12
+
+       a0=0.0
+       b0=0.0
+       Do iy=1,IYR
+        kk=(iy-1)*12+mon
+        If(OBS(i,j,kk).gt.Xmiss)then
+          a0=a0+OBS(i,j,kk)
+          b0=b0+1.0
+        Endif
+       Enddo
+
+       Do iy=1,IYR
+        kk=(iy-1)*12+mon
+        If(b0.gt.0.0)then
+          OBS(i,j,kk)=OBS(i,j,kk)-a0/b0
+        Endif
+       Enddo
+
+cx-----divided by stdv
+c?       a0=0.0
+c?       b0=0.0
+c?       Do iy=1,IYR
+c?        kk=(iy-1)*12+mon
+c?        If(OBS(i,j,kk).gt.Xmiss)then
+c?          a0=a0+OBS(i,j,kk)*OBS(i,j,kk)
+c?          b0=b0+1.0
+c?        Endif
+c?       Enddo
+
+c?       Do iy=1,IYR
+c?        kk=(iy-1)*12+mon
+c?        If(OBS(i,j,kk).gt.Xmiss)then
+c?         OBS(i,j,kk)=OBS(i,j,kk)/(a0/b0)**0.5
+c?        Else
+c?         OBS(i,j,kk)=Xmiss0
+c?        Endif
+c?      Enddo
+35    CONTINUE
+c?        write(77,19)((OBS(i,j,1),i=1,mlo),j=1,mla)
+
+       write(*,*)1
+c-------------------------------------------------------------c
+c--(2.2) RPSS
+c-------------------------------------------------------------c
+      Do 45 i=1,mlo
+      DO 45 j=1,mla
+      DO 45 L=1,MLD
+      DO 45 Mon=1,12
+
+C?      DO 47 k=1,nn-MLD
+c--- Remove last year to avoide data missing due to the lag
+      DO 47 IY=1,IYR2
+
+       k=Mon+(IY-1)*12
+       k0=k+(L-1)
+       x(IY)=OBS(i,j,k0)
+       y(IY,1)=x1(i,j,k,L)
+       y(IY,2)=x2(i,j,k,L)
+       y(IY,3)=x3(i,j,k,L)
+       y(IY,4)=x4(i,j,k,L)
+       y(IY,5)=x5(i,j,k,L)
+       y(IY,6)=x6(i,j,k,L)
+       y(IY,7)=x7(i,j,k,L)
+       y(IY,8)=x8(i,j,k,L)
+       y(IY,9)=x9(i,j,k,L)
+       y(IY,10)=x10(i,j,k,L)
+       y(IY,11)=x11(i,j,k,L)
+       y(IY,12)=x12(i,j,k,L)
+       y(IY,13)=x13(i,j,k,L)
+       y(IY,14)=x14(i,j,k,L)
+       y(IY,15)=x15(i,j,k,L)
+       y(IY,16)=x16(i,j,k,L)
+       y(IY,17)=x17(i,j,k,L)
+       y(IY,18)=x18(i,j,k,L)
+       y(IY,19)=x19(i,j,k,L)
+       y(IY,20)=x20(i,j,k,L)
+47    CONTINUE
+
+       call RPSS0(IYR2,x,y,score)
+
+      CRPS(i,j,Mon,L)=score
+45    CONTINUE
+       write(*,*)2
+c-------------------------------------------------------------c
+C (3) OUTPUT data
+c-------------------------------------------------------------c
+      open(40,file='RPSS_skill01.data'
+     &,form='unformatted',access='direct',recl=nxy)
+      do L=1,MLD
+        write(40,rec=(L-1)*12+1)((CRPS(i,j,1,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+2)((CRPS(i,j,2,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+3)((CRPS(i,j,3,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+4)((CRPS(i,j,4,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+5)((CRPS(i,j,5,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+6)((CRPS(i,j,6,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+7)((CRPS(i,j,7,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+8)((CRPS(i,j,8,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+9)((CRPS(i,j,9,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+10)((CRPS(i,j,10,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+11)((CRPS(i,j,11,L),i=1,mlo),j=1,mla)
+        write(40,rec=(L-1)*12+12)((CRPS(i,j,12,L),i=1,mlo),j=1,mla)
+c?        write(99,19)((CRPS(i,j,L),i=1,mlo),j=1,mla)
+      enddo
+      stop
+      end
+       
+      subroutine GetCFSData(Lun,CfsData)
+      parameter(IYR=(2015-1982+1),nn=IYR*12,MLD=9)
+      parameter(mlo=121,mla=56,nxy=mlo*mla*4)
+c*      parameter(mlo=360,mla=90,nxy=mlo*mla*4)
+
+      real*4 CfsData(mlo,mla,nn,MLD)
+
+c-------------------------------------------------------------c
+c----Hindcasts
+      open(11,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y1_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(12,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y2_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(13,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y3_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(14,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y4_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(15,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y5_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(16,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y6_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(17,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y7_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(18,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y8_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(19,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y9_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(20,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y10_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(21,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y11_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(22,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y12_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(23,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y13_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(24,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y14_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(25,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y15_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(26,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y16_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(27,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y17_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(28,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y18_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(29,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y19_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      open(30,file='/u/Zeng-Zhen.Hu/gpfs/WorkGroup_CFSv2/Prec/
+     &y20_Prec.CFSv2_Jan1982_Dec2015',
+     & form='unformatted',access='direct',recl=nxy)
+
+      do 25 k=1,nn
+      do 25 L=1,MLD
+       KL=L+(k-1)*MLD
+        read(lun,rec=KL)((CfsData(i,j,k,L),i=1,mlo),j=1,mla)
+
+c---check the data: NO DATA for JAN1982!!!!
+c?      write (66,39)k,l
+c?      write (66,19)((CfsData(i,j,k,L),i=1,50),j=1,50)
+25    continue
+      close(lun)
+39    format('k=',I3,'   L=',I3)
+19    format(20f12.3)
+
+c-------------------------------------------------------------c
+c-- normalized/anomalized the data
+      Xmiss0=-9999.0
+      Xmiss=Xmiss0+100.0
+c-------------------------------------------------------------c
+c---CFSv2
+      Do 30 i=1,mlo
+      DO 30 j=1,mla
+      DO 30 L=1,MLD
+      DO 30 mon=1,12
+
+c------remove the annual cycle
+       a0=0.0
+       b0=0.0
+       Do iy=1,IYR
+        kk=(iy-1)*12+mon
+        If(CfsData(i,j,kk,L).gt.Xmiss)then
+          a0=a0+CfsData(i,j,kk,L)
+          b0=b0+1.0
+        Endif
+       Enddo
+
+       Do iy=1,IYR
+        kk=(iy-1)*12+mon
+        If(b0.gt.0.0)then
+         CfsData(i,j,kk,L)=CfsData(i,j,kk,L)-a0/b0
+        Else
+         CfsData(i,j,kk,L)=Xmiss0
+        Endif
+       Enddo
+30    CONTINUE
+      return
+      end
+
+      subroutine RPSS0(n,O0,f0,score)
+      parameter(Nens=20)
+      REAL*4 O0(n),O(n),rdo(n)
+     *,f0(n,Nens),f(n),rdf(n),fMEAN(n)
+     *,Oa(n),Ob(n),On(n),O1(n),O2(n),O3(n)
+     *,fa(n),fb(n),fn(n),f1(n),f2(n),f3(n)
+
+      xMISS=-9999.0
+      xMISS0=-9999.0+100.
+      do k=1,n
+       if (O0(k).lt.xMISS0)then
+        score=xMISS
+        go to 99
+       endif
+      enddo
+
+c---rank the observations
+      do k=1,n
+        O(k)=O0(k)
+        rdo(k)=k
+      enddo
+
+c----Input  "O"=original time series
+c----Output "O"=ranked (from small to large) time series
+      call hpsort(n,n,O,rdo)
+
+c--- 3 Deciles
+       nLOW=int(n/3.+0.5)
+       nUP=int(n*2./3.+0.5)
+
+       oLOW=O(nLOW)
+       oUP=O(nUP)
+
+      do k=1,n
+c-----above-, below-, & normal
+       Oa(k)=0.0
+       Ob(k)=0.0
+       On(k)=0.0
+       if (O0(k).gt.oUP)then
+        Oa(k)=1.0
+       else if (O0(k).lt.oLOW)then
+        Ob(k)=1.0
+       else
+        On(k)=1.0
+       Endif
+      enddo
+
+c------- Forecast probability among 'Nens' Ensemble Memebers---------
+c----calculate the ensemble mean to get the creteria of above/blow normal
+      DO k=1,n
+       fMEAN(k)=0.0
+      DO Nen=1,Nens
+        fMEAN(k)=fMEAN(k)+f0(k,Nen)/float(Nens)
+      enddo
+      enddo
+      call hpsort(n,n,fMEAN,rdf)
+
+c--- 3 Deciles
+       fLOW=fMEAN(nLOW)
+       fUP=f(nUPMEAN)
+
+c------convert the ensemble forecasts into probability
+      do k=1,n
+       fa(k)=0.0
+       fb(k)=0.0
+       fn(k)=0.0
+      enddo
+
+      DO Nen=1,Nens
+      do k=1,n
+c-----above-, below-, & normal probability
+       if (f0(k,Nen).gt.fUP)then
+        fa(k)=fa(k)+1.0/float(Nens)
+c*        fa(k,Nen)=1.0
+
+       else if (f0(k,Nen).lt.fLOW)then
+        fb(k)=fb(k)+1.0/float(Nens)
+c*        fb(k,Nen)=1.0
+
+       else
+        fn(k)=fn(k)+1.0/float(Nens)
+c*        fn(k,Nen)=1.0
+       Endif
+      enddo
+      ENDDO
+
+c-----calculate rps and rpss
+      DO K=1,n
+        O1(k)=Ob(k)
+        O2(k)=Ob(k)+On(k)
+        O3(k)=1.0
+ 
+        f1(k)=fb(k)
+        f2(k)=fb(k)+fn(k)
+        f3(k)=1.0
+
+c*      DO Nen=1,Nens
+c*        f1(k,Nen)=fb(k,Nen)
+c*        f2(k,Nen)=fb(k,Nen)+fn(k,Nen)
+c*        f3(k,Nen)=1.0
+c*      ENDDO
+      ENDDO
+
+      rpsc=0.0
+      rps=0.0
+      DO K=1,n
+       rpsc=rpsc+((O1(k)-1./3.)**2+(O2(k)-2./3.)**2)/float(n)
+       rps=rps+
+     *((O1(k)-f1(k))**2+(O2(k)-f2(k))**2)/float(n)
+
+c*      DO Nen=1,Nens
+c*       rps=rps+
+c*     *((O1(k)-f1(k,Nen))**2+(O2(k)-f2(k,Nen))**2)/float(n*Nens)
+c*      ENDDO
+      ENDDO
+      
+       score=(1.0-rps/rpsc)*100 !RPSS
+99    continue
+      return
+      end
+
+      SUBROUTINE hpsort(n,n2,ra,rb)
+c---ra(n): input/output variable
+c---output ra(n) rank: small -> large
+      INTEGER n,n2
+      REAL ra(n),rb(n)
+      INTEGER i,ir,j,l
+      REAL rra
+
+      if (n2.lt.2) return
+      l=n2/2+1
+      ir=n2
+10    continue
+
+        if(l.gt.1)then
+          l=l-1
+          rra=ra(l)
+          rrb=rb(l)
+        else
+          rra=ra(ir)
+          rrb=rb(ir)
+          ra(ir)=ra(1)
+          rb(ir)=rb(1)
+          ir=ir-1
+          if(ir.eq.1)then
+            ra(1)=rra
+            rb(1)=rrb
+            return
+          endif
+        endif
+
+        i=l
+        j=l+l
+20      if(j.le.ir)then
+          if(j.lt.ir)then
+            if(ra(j).lt.ra(j+1))j=j+1
+          endif
+          if(rra.lt.ra(j))then
+            ra(i)=ra(j)
+            rb(i)=rb(j)
+            i=j
+            j=j+j
+          else
+            j=ir+1
+          endif
+        goto 20
+        endif
+
+        ra(i)=rra
+        rb(i)=rrb
+      goto 10
+      END
+
+EOR
+#/usr/bin/f90 tmp.f
+#/usr/bin/f77 tmp.f
+ifort -assume byterecl tmp.f
+a.out
+
+rm tmp.f a.out 
