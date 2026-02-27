@@ -105,8 +105,31 @@ EOF
         [ "$LABEL" = "ANOM" ] && LABEL="DETERMINISTIC"
 
 cat >> "$OUTFILE" <<EOF
-    <h3>${LABEL} Forecasts</h3>
-    <div class="gallery">
+<h3>${VAR}: Deterministic & Probabilistic Forecasts</h3>
+<div class="forecast-pair-grid">
+EOF
+
+for LEAD in {0..7}; do
+    DET="${VAR}_det.${LEAD}.png"
+    PROB="${VAR}_prob.${LEAD}.png"
+
+    # Only show rows where at least one exists
+    if [ -f "$PNG_DIR/$DET" ] || [ -f "$PNG_DIR/$PROB" ]; then
+cat >> "$OUTFILE" <<EOF
+    <div class="forecast-pair-row">
+        <div class="forecast-cell">
+            $( [ -f "$PNG_DIR/$DET" ] && echo "<a href=\"${GITHUB_BASE}/${DET}\" target=\"_blank\"><img src=\"${GITHUB_BASE}/${DET}\" alt=\"Det Lead ${LEAD}\"></a><p>Det Lead ${LEAD}</p>" )
+        </div>
+        <div class="forecast-cell">
+            $( [ -f "$PNG_DIR/$PROB" ] && echo "<a href=\"${GITHUB_BASE}/${PROB}\" target=\"_blank\"><img src=\"${GITHUB_BASE}/${PROB}\" alt=\"Prob Lead ${LEAD}\"></a><p>Prob Lead ${LEAD}</p>" )
+        </div>
+    </div>
+EOF
+    fi
+done
+
+cat >> "$OUTFILE" <<EOF
+</div>
 EOF
 
         for LEAD in {0..7}; do

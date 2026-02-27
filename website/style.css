@@ -288,4 +288,31 @@ footer {
 .enso-cold { background: #337ab7; }
 .enso-neutral { background: #5cb85c; }
 
+.forecast-pair-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.forecast-pair-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.forecast-cell img {
+    width: 100%;
+    max-width: 350px;   /* controls thumbnail size */
+    height: auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.forecast-cell p {
+    text-align: center;
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
 
