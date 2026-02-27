@@ -73,12 +73,11 @@ awk -v YEAR="$YEAR" '
   /<!-- ARCHIVE-END -->/ {
       in_block = 0;
 
-      # Always insert newest year first
+      # Insert newest year first
       print "    <tr><td><a href=\"pages/forecasts/" YEAR ".html\">" YEAR " Forecasts</a></td></tr>";
 
-      # Insert older years by scanning the filesystem
-      # (sorted newest→oldest)
-      cmd = "ls docs/pages/forecasts/*.html | sed -E \"s/.*\\/([0-9]{4})\\.html/\\1/\" | sort -r";
+      # Insert older years (yearly only, no monthly)
+      cmd = "ls docs/pages/forecasts/[0-9][0-9][0-9][0-9].html 2>/dev/null | sed -E \"s/.*\\/([0-9]{4})\\.html/\\1/\" | sort -r";
       while ((cmd | getline y) > 0) {
           if (y != YEAR) {
               print "    <tr><td><a href=\"pages/forecasts/" y ".html\">" y " Forecasts</a></td></tr>";
