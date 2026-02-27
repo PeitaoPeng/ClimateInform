@@ -2,15 +2,14 @@
 
 set -eaux
 
-lcdir=/cpc/home/wd52pp/project/skill_vfc/cpcop
-tmp=/cpc/home/wd52pp/tmp
-datadir1=/cpc/home/wd52pp/data/cpc_vfc/0data
-datadir2=/cpc/home/wd52pp/data/cpc_vfc/skill
+lcdir=/home/ppeng/ClimateInform/src/project/skill_vfc/cpcop
+tmp=/home/ppeng/data/tmp
+datadir=/home/ppeng/data/cpc_vfc
 #
 var=temp
 #var=prec
-nseason=331
-nyears=27
+nseason=364
+nyears=30
 tool=cpc
 #
 /bin/rm $tmp/fort.*         
@@ -30,21 +29,21 @@ gfortran -o roc.x roc_area.s.f roc.f
 echo "done compiling"
 
 #
- ln -s $datadir1/mask_2x2.data    fort.11
- ln -s $datadir1/${var}01_forecast_below.bi  fort.12
- ln -s $datadir1/${var}01_forecast_above.bi  fort.13
- ln -s $datadir1/${var}_seas_verif.bi        fort.14
- ln -s $datadir1/${var}01_forecast.bi        fort.15
+ ln -s /home/ppeng/ClimateInform/src/utility/intpl/mask_2x2.data    fort.11
+ ln -s $datadir/${var}01_forecast_below.bi  fort.12
+ ln -s $datadir/${var}01_forecast_above.bi  fort.13
+ ln -s $datadir/${var}_seas_verif.bi        fort.14
+ ln -s $datadir/${var}01_forecast.bi        fort.15
 #
  ln -s $lcdir/plot_vfc/roc_a_${var}.95-cur.$tool.txt  fort.61
  ln -s $lcdir/plot_vfc/roc_b_${var}.95-cur.$tool.txt  fort.62
- ln -s $datadir2/rlb_hsg.$var.95-cur.$tool.gr         fort.65
+ ln -s $datadir/rlb_hsg.$var.95-cur.$tool.gr         fort.65
 #
-roc.x > $lcdir/vfc/out
+./roc.x > $lcdir/vfc/out
 #
 
-cat>$datadir2/rlb_hsg.$var.95-cur.$tool.ctl<<EOF
-dset $datadir2/rlb_hsg.$var.95-cur.$tool.gr
+cat>$datadir/rlb_hsg.$var.95-cur.$tool.ctl<<EOF
+dset $datadir/rlb_hsg.$var.95-cur.$tool.gr
 undef -9999.0
 title Realtime Surface Obs
 xdef  20 levels 0.025 0.075 0.125 0.175 0.225 0.292 0.333 0.367 0.425 0.475 0.525 0.575 0.625 0.675 0.725 0.775 0.825 0.875 0.925 0.975

@@ -2,9 +2,8 @@
 
 set -eaux
 
-codedir=/home/ppeng/src/forecast/ca_ss
+codedir=/home/ppeng/ClimateInform/src/opr/src_ca
 #
-#$codedir/realtime.ca_msic.season.sst_tpz.new.sh
 $codedir/realtime.ca_msic.season.sst_tpz.sh
 $codedir/plot.fcst.pz.sh
 $codedir/plot.fcst.t2m.sh

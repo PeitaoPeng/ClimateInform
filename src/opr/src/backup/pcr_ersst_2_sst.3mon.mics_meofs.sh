@@ -29,8 +29,8 @@ id_ceof=1 # =1: eofs of combind ics; =0 not combined
 id_detrd=0 # =1, detrend data first then add trend; =0: no detrend
 
 #for mics in 1 2 3 4; do # season or month numbers used as ICs
-#for mics in 4; do # season or month numbers used as ICs
-for mics in 1 2 3 5; do # season or month numbers used as ICs
+for mics in 1 4; do # season or month numbers used as ICs
+
 for ncut in 3; do # EOF numbers used
 
 mlead=7   # max lead of ensemble fcst
@@ -57,10 +57,11 @@ cd $tmp
 # have SST IC
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
-for curyr in 2021 2022 2023 2024 2025; do
+#for curyr in 2021 2022 2023 2024 2025; do
+for curyr in 2024; do
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
-for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-#for curmo in 11; do
+#for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+for curmo in 05 11; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -100,6 +101,7 @@ icyr=$curyr
 if [ $icmon = 12 ]; then icyr=`expr $curyr - 1`; fi
 
 nyear=`expr $icyr - 1947`  # total full year data used for PCR, 68 for 1948-2015
+
 ny_out=`expr $nyear - $its_clm - $lagmax / 12` # from its_clm to 
 ny_out2=`expr $nyear - $its_clm - $lagmax / 12 + 1` # from its_clm to 
 

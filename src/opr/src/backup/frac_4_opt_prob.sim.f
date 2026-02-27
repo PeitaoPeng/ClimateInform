@@ -6,7 +6,10 @@ C===========================================================
 
       real prd(imx,jmx,mlead,nprd),stdo(imx,jmx,mlead)
       real cor(imx,jmx,mlead,nprd)
+
       real cvcor(imx,jmx,nprd)
+      real cvrms(imx,jmx,nprd)
+
       real clmo(imx,jmx,mlead)
       real rms(imx,jmx,mlead,nprd),hss(imx,jmx,mlead,nprd)
       
@@ -128,12 +131,15 @@ C=== synthesize hcst with avg
         read(ich,rec=ir3) w2d3
         ir4=ir+4
         read(ich,rec=ir4) w2d4
+        ir5=ir+5
+        read(ich,rec=ir5) w2d5
 
         do i=1,imx
         do j=1,jmx
           obs(i,j,it)=w2d(i,j)
           hcst(i,j,ip)=w2d2(i,j)
           cvcor(i,j,ip)=w2d4(i,j)
+          cvrms(i,j,ip)=w2d5(i,j)
         enddo
         enddo
       enddo ! ip loop
@@ -187,7 +193,7 @@ C=== sythsize hcst with wts2
       enddo
       enddo
 
-      ir=ir+4
+      ir=ir+5
       enddo ! it loopo
 
       write(6,*) 'start std of ehcst'

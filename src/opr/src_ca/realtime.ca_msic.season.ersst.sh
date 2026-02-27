@@ -2,12 +2,12 @@
 
 set -eaux
 
-lcdir=/home/ppeng/src/opr/src_ca
+lcdir=/home/ppeng/ClimateInform/src/opr/src_ca
 tmp=/home/ppeng/data/tmp_opr
 if [ ! -d $tmp ] ; then
   mkdir -p $tmp
 fi
-datadir0=/home/ppeng/data/downloads
+datadir0=/home/ppeng/data/sst
 datadir=/home/ppeng/data/ca_prd
 #
 cd $tmp
@@ -17,11 +17,11 @@ cd $tmp
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
-#for curyr in 2025; do
-#for curmo in 01; do
+for curyr in 2024; do
+for curmo in 11; do
 
-for curyr in 2021 2022 2023 2024; do
-for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+#for curyr in 2021 2022 2023 2024; do
+#for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmoe=12; icmon_mid=nov; icssnmb=10; fi #icmon_mid: mid mon of icss
 if [ $curmo = 02 ]; then cmon=2; icmoe=01 ; icmon_mid=dec; icssnmb=11; fi #icssnmb: 1st mon of icss
@@ -43,16 +43,12 @@ icmomidyr=$icmon_mid$yyyy  # the mid-mon of the latest IC season
 #
 if [ $cmon -le 2 ]; then icmomidyr=$icmon_mid$yyym; fi
 #
-yrn1=`expr $curyr - 1854`
-if [ $cmon = 1 ]; then yrn1=`expr $yyym - 1854`; fi
-mmn1=`expr $yrn1 \* 12`
-ttlong=`expr $mmn1 + $icmoe` # total mon of ersst data from jan1854 to latest_mon; dec2015=1944
-#
 yrn2=`expr $curyr - 1948` # total full years,=68 for 1948-2015
 if [ $cmon = 1 ]; then yrn2=`expr $yyym - 1948`; fi
 mmn2=`expr $yrn2 \* 12`
 #
-tmax=`expr $mmn2 + $icmoe` # 816=dec2015
+montot=`expr $mmn2 + $icmoe` # 816=dec2015
+nsstot=`expr $montot - 2` 
 #
 nyear=`expr $curyr - 1948`  # total full year data used for CA, 68 for 1948-2015
 if [ $cmon -le 2 ]; then nyear=`expr $curyr - 1948 - 1`; fi # for having 12 3-mon avg data for past year
@@ -84,78 +80,37 @@ for eof_range in tp_np; do
 if [ $eof_range == tp_ml ]; then eoflats=-45.;  lats=23; late=68;  ngrd=6261; neoflat=`expr $late - $lats + 1`; fi
 if [ $eof_range == tp_np ]; then eoflats=-45.;  lats=23; late=76;  ngrd=6915; neoflat=`expr $late - $lats + 1`; fi
 #
-nts=1129  # jan1948
-nte=`expr $ttlong` # latest mon
-#
-outfilem=${sst_analysis}.mon.jan1948-curr
-cat >sstmon<<EOF
-run mon.gs
+infile=${sst_analysis}.3mon.1948-curr.total
+outfile=${sst_analysis}.3mon.1948-curr.anom
+cat >sstanom<<EOF
+run anom.gs
 EOF
-cat >mon.gs<<EOF
+cat >anom.gs<<EOF
 'reinit'
-'sdfopen $datadir0/sst.mnmean.nc'
-'set x 1 180'
-'set y 1  89'
-'set gxout fwrite'
-'set fwrite $datadir/$outfilem.gr'
-'set t $nts $nte'
-'d sst'
-'c'
-EOF
-#
-/usr/bin/grads -bl <sstmon
-#
-cat>$datadir/$outfilem.ctl<<EOF
-dset ^$outfilem.gr
-undef -999000000
-*
-TITLE SST
-*
-xdef  180 linear   0. 2.
-ydef   89 linear -89. 2.
-zdef   01 levels 1
-tdef   9999 linear jan1948 1mo
-vars 1
-sst  1 99 monthly mean (C)
-ENDVARS
-EOF
-#
-clm_bgn=516  #dec1990
-clm_end=`expr $clm_bgn + 360`
-outfile=${sst_analysis}.3mon.1948-curr
-nts=2
-nte=`expr $tmax - 1`
-cat >sst3monavg<<EOF
-run avg.gs
-EOF
-cat >avg.gs<<EOF
-'reinit'
-'open $datadir/$outfilem.ctl'
+'open $datadir0/$infile.ctl'
 'set x 1 180'
 'set y 1  89'
 'set t 1 12'
-*anom wrt wmo clim 1991-2020
-'define clm=ave(sst,t+$clm_bgn, t=$clm_end,1yr)'
 *anom wrt clim from 1948 to curr
-*'define clm=ave(sst,t+$clm_bgn, t=$ttlong,1yr)'
+'define clm=ave(sst,t+0, t=$nsstot,1yr)'
 'modify clm seasonal'
 'set gxout fwrite'
-'set fwrite $datadir/$outfile.gr'
-'set t $nts $nte'
-'d ave(sst-clm,t-1,t+1)'
+'set fwrite $tmp/$outfile.gr'
+'set t 1 $nsstot'
+'d sst-clm'
 'c'
 EOF
 #
-/usr/bin/grads -bl <sst3monavg
-#
-cat>$datadir/$outfile.ctl<<EOF
+/usr/bin/grads -bl <sstanom
+
+cat>$tmp/$outfile.ctl<<EOF
 dset ^$outfile.gr
 undef -999000000
 *
 TITLE SST
 *
 xdef  180 linear   0. 2.
-ydef   89 linear -89. 2.
+ydef   89 linear -88. 2.
 zdef   01 levels 1
 tdef   9999 linear feb1948 1mo
 vars 1
@@ -169,17 +124,17 @@ outfile2=${sst_analysis}.msic.ic
 cat >haveic<<EOF
 run sstic.gs
 EOF
-ic1=`expr $nte - $nts + 1`
+ic1=`expr $nsstot`
 ic2=`expr $ic1 - 3`
 ic3=`expr $ic1 - 6`
 ic4=`expr $ic1 - 9`
 cat >sstic.gs<<EOF
 'reinit'
-'open $datadir/$outfile.ctl'
+'open $tmp/$outfile.ctl'
 'set x 1 180'
 'set y 1 89'
 'set gxout fwrite'
-'set fwrite $datadir/$outfile2.gr'
+'set fwrite $tmp/$outfile2.gr'
 'set t $ic1'
 'd sst'
 'set t $ic2'
@@ -193,18 +148,18 @@ EOF
 #
 /usr/bin/grads -bl <haveic
 #
-cat>$datadir/$outfile2.ctl<<EOF
+cat>$tmp/$outfile2.ctl<<EOF
 dset ^$outfile2.gr
 undef -999000000
 *
 TITLE Tsfc
 *
 xdef  180 linear   0. 2.
-ydef   89 linear -89. 2.
+ydef   89 linear -88. 2.
 zdef   1 linear 1 1
 tdef   9999 linear jan2015 1mo
 vars 1
-sst 1 99 3-mon mean (C)
+sst 1 99 sst ic (C)
 ENDVARS
 EOF
 #
@@ -220,8 +175,8 @@ mldp=`expr $mlead + 1`
 #
 for msic in 1 2 3 4; do
 #for msic in 4; do
-for modemax in 10 15 25; do
-#for modemax in 10; do
+#for modemax in 10 15 25; do
+for modemax in 40; do
 #
 cp $lcdir/realtime.ca_msic.season.sst.f $tmp/sst_prd.f
 cp $lcdir/eof_4_ca.s.f $tmp/eof_4_ca.s.f
@@ -260,8 +215,8 @@ echo "done compiling"
 /bin/rm $tmp/fort.*
 #fi
 #
-ln -s $datadir/${sst_analysis}.msic.ic.gr fort.10
-ln -s $datadir/${sst_analysis}.3mon.1948-curr.gr fort.11
+ln -s $tmp/$outfile2.gr fort.10
+ln -s $tmp/$outfile.gr  fort.11
 #
 ln -s $outdata/eof.${sst_analysis}.${eof_range}.${msic}ics.3mon.gr fort.70
 #
@@ -289,7 +244,7 @@ dset ^real_ca_prd.sst.${sst_analysis}.${eof_range}.$modemax.${msic}ics.3mon.gr
 undef -9.99E+8
 title EXP1
 xdef  180 linear   0. 2.
-ydef   89 linear -89. 2.
+ydef   89 linear -88. 2.
 zdef  1 linear 1 1
 tdef  $mldp linear $icmomidyr 1mon
 vars  5
@@ -307,7 +262,7 @@ dset ^real_ca_weights.${sst_analysis}.${eof_range}.$modemax.${msic}ics.3mon.gr
 undef -9.99E+8
 title EXP1
 XDEF  $nseason LINEAR   0  2.0
-YDEF  1 LINEAR  -89.  2.0
+YDEF  1 LINEAR  -88.  2.0
 zdef  1 linear 1 1
 tdef  1 linear $icmomidyr 1mon
 vars  1

@@ -35,6 +35,7 @@ C.. IF M>N  COMPUTE THE SPACE-COEFFICIENTS
  110    PC(I,J)=EVCT(J,I)                                               
       CALL SCOEF (PC,A,EVCT,M,N,MN)                                     
       CALL RATE(EVAL,MN)                                                
+
 C.. in order to have dimensional EVCT
       return                                                            
 C                                                                       

@@ -187,7 +187,7 @@ C have tpz anomalies over period 1 -> ny_tpz
             ts2(it)=wtpz(i,j,it)
           enddo
           call clim_tot(ts2,tpzc_tot(i,j,ld),nyr,1,ny_tpz)
-          call clim_anom(ts2,tpzc(i,j),nyr,ny_tpz)
+c         call clim_anom(ts2,tpzc(i,j),nyr,ny_tpz)
         else
           do it=1,ny_tpz
             ts2(it)=undef
@@ -809,8 +809,8 @@ c
       av1=0.
       av2=0.
       do it=1,ltime
-        av1=av1+f1(it)/float(ltime)
-        av2=av2+f2(it)/float(ltime)
+c       av1=av1+f1(it)/float(ltime)
+c       av2=av2+f2(it)/float(ltime)
       enddo
 
       cor=0.

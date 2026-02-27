@@ -15,19 +15,20 @@ fi
 datain=/home/ppeng/data/ss_fcst
 #
 mlead=7
-# nprd: # of input fcst
-if [ $var = t2m ];  then nprd=4; fi
-if [ $var = prec ];  then nprd=5; fi
-
 xnino_crt=3.
-
 version=cvcor
+
+#nprd=5
+for nprd in 4 5; do
 vnmb=v2
+
+for iwts in 2; do # =1 <0 ignored, =2 <0 flipped
 
 if [ $version = cor ];  then ivs=1; fi
 if [ $version = cvcor ];  then ivs=2; fi
 
-for var in prec t2m; do # prec, t2m, hgt
+for var in t2m prec; do # prec, t2m, hgt
+#for var in prec; do # prec, t2m, hgt
 
 if [ $var = t2m ];  then icut1=3; ivar2=1; fi
 if [ $var = prec ]; then icut1=5; ivar2=2; fi
@@ -38,8 +39,12 @@ ite_clm=`expr $its_clm + 39` # have 40 yrs clm for more stable than 30 yrs
 ny_clm=`expr $ite_clm - $its_clm + 1`
 
 undef=-999.0
- #
+#
 cd $tmp
+#
+if [ -f fort.11 ]; then
+/bin/rm $tmp/fort.*
+fi
 #\rm fort.*
 #
 #======================================
@@ -47,10 +52,10 @@ cd $tmp
 #======================================
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
 #for curyr in 2021 2022 2023 2024; do
-for curyr in 2024; do
+for curyr in 2025; do
 #curmt=`date --date='today' '+%m'`  # mo of making fcst
 #for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for curmo in 11; do
+for curmo in 01 02 03 04 05 06; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -111,30 +116,27 @@ c
       parameter(icmon=$icmon)
       parameter(ivar2=$ivar2)
       parameter(ivs=$ivs)
+      parameter(iwts=$iwts)
 
 eof
-#
+
 #gfortran -o pcr.x pcr.f reof.s.f
 #gfortran -mcmodel=large -o opt.x opt.f
 gfortran -mcmodel=medium -g -o opt.x opt.f
 echo "done compiling"
 
-if [ -f fort.11 ] ; then
-/bin/rm $tmp/fort.*
-fi
-#
 if [ $var = prec ]; then
-infile1=efcst.ersst.2.prec.cv1.3mon
-infile2=efcst.prec.2.prec.cv1.3mon
-infile3=fcst.ersst.2.$var.mics4.mlead$mlead.ncut1.nmod1_$icut1.id_ceof1.id_detrd0.cv1.3mon
-infile4=fcst.olr.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3mon
-infile5=fcst.slp.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3mon
+infile4=efcst.ersst.2.prec.cv1.3mon.v2
+infile3=efcst.prec.2.prec.cv1.3mon.v2
+infile1=fcst.ersst.2.$var.mics4.mlead$mlead.ncut1.nmod1_$icut1.id_ceof1.id_detrd0.cv1.3mon
+infile5=fcst.olr.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3mon
+infile2=fcst.slp.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3mon
 
-infile6=ehcst.ersst.2.prec.cv1.3mon
-infile7=ehcst.prec.2.prec.cv1.3mon
-infile8=hcst.ersst.2.$var.mics4.mlead$mlead.ncut1.nmod1_$icut1.id_ceof1.id_detrd0.cv1.3mon
-infile9=hcst.olr.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3mon
-infile10=hcst.slp.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3mon
+infile9=ehcst.ersst.2.prec.cv1.3mon.v2
+infile8=ehcst.prec.2.prec.cv1.3mon.v2
+infile6=hcst.ersst.2.$var.mics4.mlead$mlead.ncut1.nmod1_$icut1.id_ceof1.id_detrd0.cv1.3mon
+infile10=hcst.olr.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3mon
+infile7=hcst.slp.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3mon
 
 ln -s $ind1/$infile1.gr          fort.11
 ln -s $ind1/$infile2.gr          fort.12
@@ -150,30 +152,34 @@ ln -s $ind1/$infile10.gr         fort.20
 fi
 
 if [ $var = t2m ]; then
-infile1=efcst.t2m.2.t2m.cv1.3mon
-infile2=efcst.prec.2.t2m.cv1.3mon
-infile3=efcst.ersst.2.t2m.cv1.3mon
-infile4=fcst.olr.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3mon
+infile4=efcst.t2m.2.t2m.cv1.3mon.v2
+infile3=efcst.glb.prec.2.t2m.cv1.3mon.v2
+infile5=efcst.ersst.2.t2m.cv1.3mon.v2
+infile1=fcst.ersst.2.t2m.mics4.mlead$mlead.ncut1.nmod1_3.id_ceof1.id_detrd0.cv1.3mon
+infile2=fcst.slp.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3mon
 
-infile6=ehcst.t2m.2.t2m.cv1.3mon
-infile7=ehcst.prec.2.t2m.cv1.3mon
-infile8=ehcst.ersst.2.t2m.cv1.3mon
-infile9=fcst.olr.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3mon
+infile9=ehcst.t2m.2.t2m.cv1.3mon.v2
+infile8=ehcst.glb.prec.2.t2m.cv1.3mon.v2
+infile10=ehcst.ersst.2.t2m.cv1.3mon.v2
+infile6=hcst.ersst.2.$var.mics4.mlead$mlead.ncut1.nmod1_3.id_ceof1.id_detrd0.cv1.3mon
+infile7=hcst.slp.2.$var.mics1.mlead$mlead.ncut1.nmod1_5.id_ceof1.id_detrd0.cv1.3mon
 
 ln -s $ind1/$infile1.gr          fort.11
 ln -s $ind1/$infile2.gr          fort.12
 ln -s $ind1/$infile3.gr          fort.13
 ln -s $ind1/$infile4.gr          fort.14
+ln -s $ind1/$infile5.gr          fort.15
 
 ln -s $ind1/$infile6.gr          fort.16
 ln -s $ind1/$infile7.gr          fort.17
 ln -s $ind1/$infile8.gr          fort.18
 ln -s $ind1/$infile9.gr          fort.19
+ln -s $ind1/$infile10.gr         fort.20
 fi
 
-infile12=nino34.prd.mics4.mlead$mlead.ncut3.icut1_15.id_ceof1.id_detrd0.cv1.3mon
+infile12=nino34.prd.mics1.mlead$mlead.ncut3.icut1_15.id_ceof1.cv1.3mon.v2
 #
-outfile=$version.frac_rpss.ensmsynth.$var.mlead$mlead.3mon.$vnm
+outfile=$version.frac_rpss.ensmsynth.$var.mlead$mlead.3mon.nprd$nprd.wts$iwts.$vnmb
 #
 
 ln -s $ind1/$infile12.gr          fort.22
@@ -183,6 +189,9 @@ ln -s $outdata/$outfile.gr          fort.31
 #./syn.x > $outdata/syn_fcst.$var.mlead$mlead.$vnmb.out
 ./opt.x 
 #
+
+\rm fort.*
+
 cat>$outdata/$outfile.ctl<<EOF
 dset ^$outfile.gr
 undef $undef
@@ -200,3 +209,5 @@ EOF
 done # curmo loop
 done # curyr loop
 done # var2 loop
+done # iwts loop
+done # nprd loop

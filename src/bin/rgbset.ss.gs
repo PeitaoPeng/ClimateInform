@@ -1,4 +1,4 @@
-ght yellow to dark red
+*ght yellow to dark red
 'set rgb 21 255 250 170'
 'set rgb 22 255 232 120'
 'set rgb 23 255 192  60'

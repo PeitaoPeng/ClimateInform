@@ -2,16 +2,15 @@
 
 set -eaux
 
-lcdir=/cpc/home/wd52pp/project/skill_vfc/cpcop/vfc
-tmp=/cpc/home/wd52pp/tmp
-datadir1=/cpc/home/wd52pp/data/cpc_vfc/0data
-datadir2=/cpc/home/wd52pp/data/cpc_vfc/skill
+lcdir=/home/ppeng/ClimateInform/src/project/skill_vfc/cpcop/vfc
+tmp=/home/ppeng/data/tmp
+datadir=/home/ppeng/data/cpc_vfc
 #
 for var in temp prec; do
 #var=temp
 #var=prec
-nseason=331
-nyears=27
+nseason=364
+nyears=30
 tool=cpc
 #
 /bin/rm $tmp/fort.*         
@@ -29,12 +28,12 @@ gfortran -o ctgcy_tbl.x ctgcy_tbl.f
 echo "done compiling"
 
 #
- ln -s $datadir1/mask_2x2.data    fort.11
- ln -s $datadir1/${var}01_forecast.bi  fort.12
- ln -s $datadir1/${var}_seas_verif.bi  fort.13
- ln -s $datadir2/ctgcy_table.$var.95-cur.$tool.txt  fort.61
+ ln -s /home/ppeng/ClimateInform/src/utility/intpl/mask_2x2.data   fort.11
+ ln -s $datadir/${var}01_forecast.bi  fort.12
+ ln -s $datadir/${var}_seas_verif.bi  fort.13
+ ln -s $datadir/ctgcy_table.$var.95-cur.$tool.txt  fort.61
 #
-ctgcy_tbl.x > $lcdir/out
+./ctgcy_tbl.x > $lcdir/out
 #
 done
 

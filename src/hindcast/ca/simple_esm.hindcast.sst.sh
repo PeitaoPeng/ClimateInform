@@ -8,7 +8,7 @@ if [ ! -d $tmp ] ; then
   mkdir -p $tmp
 fi
 datadir=/mnt/d/data/ca_hcst
-dataout=$tmp
+dataout=/mnt/d/data/ca_hcst/esm
 #
 #for icss in jfm fma mam amj mjj jja jas aso son ond ndj djf; do
 for icss in  aso fma; do

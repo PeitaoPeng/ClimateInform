@@ -15,6 +15,7 @@ C===========================================================
       real eprd(imx,jmx),ecor(imx,jmx)
       real erms(imx,jmx),ehss(imx,jmx)
       real oclm(imx,jmx),ostd(imx,jmx)
+c     real clm(nwmo),std(nwmo)
 
       real wts(imx,jmx,mlead,nprd),ws1d(nprd)
       real wts2(imx,jmx,nprd)
@@ -71,7 +72,7 @@ C read in nino3.4 index
       do ld=1,mlead
       do it=1,ny_hcst+1
         ir=ir+1
-        read(19,rec=ir) xn34(it,ld)
+        read(22,rec=ir) xn34(it,ld)
       enddo
       enddo
 
@@ -154,7 +155,11 @@ C=== have wts from cvcor for hcst
             endif
           enddo
 
-          call weights(w1d,nprd,ws1d) 
+          if(iwts.eq.1) then
+            call weights(w1d,nprd,ws1d) 
+          else
+            call weights_2(w1d,nprd,ws1d) 
+          endif
 
           do ip=1,nprd
             wts2(i,j,ip)=ws1d(ip)
@@ -217,13 +222,13 @@ C std of ehcst
             ts1(it)=ehcst(i,j,it)
           enddo
 
-          call normal(ts1,ny_hcst,ny_clm,esd)
+c         call normal_0avg(ts1,ny_hcst,ny_clm,esd)
 
           do it=1,ny_hcst
             ehcst(i,j,it)=ts1(it)
           enddo
 c normalize eprd with hcst std
-          eprd(i,j)=eprd(i,j)/esd
+c         eprd(i,j)=eprd(i,j)/esd
 
         endif
       enddo
@@ -269,7 +274,7 @@ C Find the location of the maximum value
       rpss(i,j)=trpss(mloc)
       frac(i,j)=mloc*tdel
 
-      if(i.eq.130.and.j.eq.65) then
+      if(i.eq.260.and.j.eq.130) then
         write(6,*) 'mloc,frac,trpss=',mloc,frac(i,j),trpss
       endif
 
@@ -293,6 +298,61 @@ C Find the location of the maximum value
       stop
       end
 
+      SUBROUTINE wmo_clm_std_anom(ts,std,clm,anom,maxt,nt,nwmo)
+C WMO std, clm, and anom
+
+      DIMENSION ts(maxt),anom(maxt),std(nwmo),clm(nwmo)
+
+C have WMO std and clm
+      do id=1,nwmo ! 51-80,61-90,71-00,81-10,91-20
+
+      its=(id-1)*10+1+1 ! +1 for skiping 1950
+      ite=(id-1)*10+30+1 ! +1 for skip 1950
+
+      cc=0.
+      do i=its,ite
+        cc=cc+ts(i)
+      enddo
+      clm(id)=cc/30.
+c
+      do i=its,ite
+        anom(i)=ts(i)-clm(id)
+      enddo
+
+      sd=0
+      do i=its,ite
+        sd=sd+anom(i)*anom(i)
+      enddo
+      sd=sqrt(sd/30.)
+      if(sd.lt.0.01) sd=0.01
+      std(id)=sd
+
+      enddo !loop id
+
+C have WMO anom
+      do i=1,31 ! i=1 is 1950
+        anom(i)=(ts(i)-clm(1))/std(1)
+      enddo
+
+      do id=1,nwmo-1 ! 81-90,91-00,01-10,11-20,21-cur
+        its=30+(id-1)*10+1+1 ! +1 is for 1950
+        ite=30+id*10+1
+        do i=its,ite
+          anom(i)=(ts(i)-clm(id))/std(id)
+        enddo
+      enddo
+
+      its=30+(nwmo-1)*10+1+1 ! +1 is for 1950
+      ite=nt
+
+      if(ite.ge.its) then
+      do i=its,ite
+        anom(i)=(ts(i)-clm(nwmo))/std(nwmo)
+      enddo
+      endif
+
+      return
+      end
 
       SUBROUTINE rpss_s(vfc,pb,pa,rpss,imx,jmx,is,ie,js,je,coslat)
 
@@ -417,6 +477,39 @@ c     write(6,*) 'n1,n2=',n1,n2
         prbp=pa
       else
         prbp=-pb
+      endif
+
+      return
+      end
+
+      SUBROUTINE weights_2(cor,n,wts)
+      dimension cor(n),wts(n)
+
+C== have denominator of the weights
+      wd=0
+      do i=1,n
+          wd=wd+cor(i)**2
+      enddo
+C
+C== have weights
+      if(wd.gt.0.01) then
+
+        do i=1,n
+         if(cor(i).ge.0.) then
+          wts(i)=cor(i)**2/wd
+        else
+          wts(i)=-cor(i)**2/wd
+        endif
+        enddo
+
+      else
+
+        do i=1,n
+          wts(i)=0.
+        enddo
+        k = maxloc(cor,1)
+        wts(k)=1.
+
       endif
 
       return
@@ -585,6 +678,27 @@ c
       end
 
 c
+      SUBROUTINE normal_0avg(rot,nt,mt,sd)
+      DIMENSION rot(nt)
+      avg=0.
+      do i=1,mt
+c        avg=avg+rot(i)/float(mt)
+      enddo
+      do i=1,nt
+        rot(i)=rot(i)-avg
+      enddo
+c
+      sd=0.
+      do i=1,mt
+        sd=sd+rot(i)*rot(i)/float(mt)
+      enddo
+        sd=sqrt(sd)
+      do i=1,nt
+        rot(i)=rot(i)/sd
+      enddo
+      return
+      end
+
       SUBROUTINE normal(rot,nt,mt,sd)
       DIMENSION rot(nt)
       avg=0.

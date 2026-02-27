@@ -1,50 +1,153 @@
-38,39c38
-<       open(10,form='unformatted',access='direct',recl=4*imx*jmx) !prec
-<       open(11,form='unformatted',access='direct',recl=4*imx*jmx) !t2m
+9,10c9,10
+< curyr=`date --date='today' '+%Y'`
+< curmo=`date --date='today' '+%m'`  # current month
 ---
->       open(10,form='unformatted',access='direct',recl=4*imx*jmx) !sst
-224a224
-> 
-261c261
-<         read(11,rec=it) w2d3
+> cyr=`date --date='today' '+%Y'`
+> mcur=`date --date='today' '+%m'`  # current month
+12,36c12,23
+< if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=jan; tgtss=jfm; fi #tgtmon:1st mon of the lead-0 season
+< if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=feb; tgtss=fma; fi
+< if [ $curmo = 03 ]; then cmon=3; icmon=2 ; icmonc=feb; tgtmon=mar; tgtss=mam; fi
+< if [ $curmo = 04 ]; then cmon=4; icmon=3 ; icmonc=mar; tgtmon=apr; tgtss=amj; fi
+< if [ $curmo = 05 ]; then cmon=5; icmon=4 ; icmonc=apr; tgtmon=may; tgtss=mjj; fi
+< if [ $curmo = 06 ]; then cmon=6; icmon=5 ; icmonc=may; tgtmon=jun; tgtss=jja; fi
+< if [ $curmo = 07 ]; then cmon=7; icmon=6 ; icmonc=jun; tgtmon=jul; tgtss=jas; fi
+< if [ $curmo = 08 ]; then cmon=8; icmon=7 ; icmonc=jul; tgtmon=aug; tgtss=aso; fi
+< if [ $curmo = 09 ]; then cmon=9; icmon=8 ; icmonc=aug; tgtmon=sep; tgtss=son; fi
+< if [ $curmo = 10 ]; then cmon=10; icmon=9; icmonc=sep; tgtmon=oct; tgtss=ond; fi
+< if [ $curmo = 11 ]; then cmon=11; icmon=10; icmonc=oct; tgtmon=nov; tgtss=ndj; fi
+< if [ $curmo = 12 ]; then cmon=12; icmon=11; icmonc=nov; tgtmon=dec; tgtss=djf; fi
+< #
+< yyyy=$curyr
+< yyym=`expr $curyr - 1`
+< yyyp=`expr $curyr + 1`
+< #
+< tgtmoyr=$tgtmon$yyyy  # 1st mon of lead-1 season
+< #
+< if [ $icmon -eq 12 ]; then outyr_s=1952; skill_yr_s=1982; fi
+< #
+< icyr=$curyr
+< if [ $icmon = 12 ]; then icyr=`expr $curyr - 1`; fi
+< #
+< yr_end=`expr $curyr - 1952`
 ---
->         read(10,rec=it) w2d3
-272c272
-<       write(6,*) 'tpz at (90,45)=',wtpz(90,45,ns_tpz),w2d3(90,45)
+> if [ $mcur = 01 ]; then icmon=12; icmonc=Dec; fi
+> if [ $mcur = 02 ]; then icmon=01;  icmonc=Jan; fi
+> if [ $mcur = 03 ]; then icmon=02;  icmonc=Feb; fi
+> if [ $mcur = 04 ]; then icmon=03;  icmonc=Mar; fi
+> if [ $mcur = 05 ]; then icmon=04;  icmonc=Apr; fi
+> if [ $mcur = 06 ]; then icmon=05;  icmonc=May; fi
+> if [ $mcur = 07 ]; then icmon=06;  icmonc=Jun; fi
+> if [ $mcur = 08 ]; then icmon=07;  icmonc=Jul; fi
+> if [ $mcur = 09 ]; then icmon=08;  icmonc=Aug; fi
+> if [ $mcur = 10 ]; then icmon=09;  icmonc=Sep; fi
+> if [ $mcur = 11 ]; then icmon=10; icmonc=Oct; fi
+> if [ $mcur = 12 ]; then icmon=11; icmonc=Nov; fi
+37a25,26
+> icyr=$cyr
+> if [ $icmon = 12 ]; then icyr=`expr $cyr - 1`; fi
+40,41c29
+< nino_prd_ctl=nino34.prd.mics4.mlead8.ncut3.icut1_15.id_ceof1.cv1.3mon.pac.ctl
+< nino_obs_ctl=nino34.obs.icmon_12.3mon.pac.ctl
 ---
->       write(6,*) 'tpz at (260,130)=',wtpz(260,130,ns_tpz),w2d3(260,130)
-297c297
-<       write(6,*) 'tpz anom at (90,45)=',wtpz2(90,45,ns_tpz2)
+> sst_ctl=fcst.ersst.2.sst.mics4.mlead8.ncut3.icut1_15.id_ceof1.cv1.3mon.pac.ctl
+45,88d32
+< cat >nino_skill<<EOF
+< run skill.gs
+< EOF
+< 
+< cat >skill.gs<<EOFgs
+< 'reinit'
+< 'run $bindir/white.gs'
+< 'run $bindir/rgbset.ss.gs'
+< *
+< 'open $datadir/${nino_prd_ctl}'
+< 'open $datadir/${nino_obs_ctl}'
+< *
+< 'set gxout fwrite'
+< 'set fwrite $datadir/skill_nino34.gr'
+< ie=1
+< while(ie<=8)
+< 'set e 'ie''
+< 'define pp=sqrt(ave(x*x,t=30,t=${yr_end}))'
+< 'define oo=sqrt(ave(x.2*x.2,t=30,t=${yr_end}))'
+< 'define cor=ave(x*x.2,t=30,t=${yr_end}))/(oo*pp)'
+< 'define rms=sqrt(ave((x-x.2)*(x-x.2),t=30,t=${yr_end}))'
+< 'd cor'
+< 'd rms'
+< ie=ie+1
+< endwhile
+< 'disable fwrite'
+< EOFgs
+< 
+< /usr/bin/grads -bl <nino_skill
+< 
+< cat>$datadir/skill_nino34.ctl<<EOF
+< dset ^skill_nino34.gr
+< undef -9.99E+33
+< title EXP1
+< XDEF   1 LINEAR    0    1.0
+< YDEF   1 LINEAR  -89.5  1.0
+< zdef   1 linear 1 1
+< tdef   8 linear ${tgtmoyr} 1mon
+< vars  2
+< ac  1 99 corr
+< rms 1 99 rmse
+< endvars
+< #
+< EOF
+90c34
+< # plot nino34 skill
 ---
->       write(6,*) 'tpz anom at (260,130)=',wtpz2(260,130,ns_tpz2)
-388,390c388,390
-<       write(6,*) 'regr2(90,45,1,ns_tpz2)=',regr2(90,45,1,ns_tpz2)
-<       write(6,*) 'hcst(90,45,ns_tpz2,ld)=',hcst(90,45,ns_tpz2,ld)
-<       write(6,*) 'vfld(i,j,ns_tpz2,ld)=',vfld(90,45,ns_tpz2,ld)
+> # plot time series of NINO34 fcst
+92,93c36,37
+< cat >skill_ts<<EOF
+< run skill_plot.gs
 ---
->       write(6,*) 'regr2(260,130,1,ns_tpz2)=',regr2(260,130,1,ns_tpz2)
->       write(6,*) 'hcst(260,130,ns_tpz2,ld)=',hcst(260,130,ns_tpz2,ld)
->       write(6,*) 'vfld(i,j,ns_tpz2,ld)=',vfld(260,130,ns_tpz2,ld)
-423c423
-<       write(6,*) 'regr3(90,45,5)=',regr3(90,45,5)
+> cat >nino34_ts<<EOF
+> run tsplot.gs
+95c39
+< cat >skill_plot.gs<<EOFgs
 ---
->       write(6,*) 'regr3(260,130,5)=',regr3(260,130,5)
-445c445
-<       write(6,*) 'fcst(90,45,ld)=',fcst(90,45,ld)
+> cat >tsplot.gs<<EOFgs
+100c44,49
+< 'open $datadir/${skill_nino34.ctl}'
 ---
->       write(6,*) 'fcst(260,130,ld)=',fcst(260,130,ld)
-488c488
-<       write(6,*) 'stdo(90,45,ld)=',stdo(90,45,ld)
+> icyr=$icyr
+> ic_monyr=${icmonc}$icyr
+> *
+> *'enable print real.nino34.fcst.'ic_mon'ic.gm'
+> *
+> 'open $datadir/${sst_ctl}'
+105c54,56
+< 'draw string 5.5 7.55 AC Skill of Nino3.4 SST Index Hindcast (1991-$yyym)'
 ---
->       write(6,*) 'stdo(260,130,ld)=',stdo(260,130,ld)
-519c519
-<       write(6,*) 'stdf(90,45,ld)=',stdf(90,45,ld)
+> 'draw string 5.5 7.75 Seasonal Forecast of Nino3.4 SST Index, data through 'ic_monyr''
+> 'set strsiz 0.13 0.13'
+> 'draw string 5.5 7.5 Base period 1991-2020'
+148c99,100
+< 'set vrange 0. 1.'
 ---
->       write(6,*) 'stdf(260,130,ld)=',stdf(260,130,ld)
-560,561d559
-<       write(6,*) 'stdzed vfld(90,45,ns_tpz,ld)=',vfld(90,45,ns_tpz2,ld)
-<       write(6,*) 'stdzed hcst(90,45,ns_tpz,ld)=',hcst(90,45,ns_tpz2,ld)
-574c572
-<       write(6,*) 'standardized fcst(90,45,ld)=',fcst(90,45,ld)
+> 'set vrange -2. 3.'
+> *'set vrange -1.5 2.5'
+153,154c105,106
+< 'set cmark 1'
+< 'd ac'
 ---
->       write(6,*) 'standardized fcst(260,130,ld)=',fcst(260,130,ld)
+> 'set cmark 0'
+> 'd tloop(aave(sst*stdo,lon=190,lon=240,lat=-5,lat=5))'
+157c109
+< 'draw ylab AC Skill Score'
+---
+> 'draw ylab NINO3.4 Index Aanomaly (K)'
+168c120,121
+< 'gxprint skill_nino34.png x1600 y1200'
+---
+> *'printim real.nino34.ca_fcst.png gif x800 y600'
+> 'gxprint nino34_fcst.png x1600 y1200'
+175,176c128,129
+< /usr/bin/grads -bl <skill_ts
+< cp skill_nino34.png $datadir
+---
+> /usr/bin/grads -bl <nino34_ts
+> cp nino34_fcst.png $datadir

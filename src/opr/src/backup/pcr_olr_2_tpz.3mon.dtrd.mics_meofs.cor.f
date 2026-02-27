@@ -614,7 +614,7 @@ c     do iy=its_clm,ite_clm
         enddo
 
       call sp_cor_rms(w2d,w2d2,coslat2,imx2,jmx2,
-     &1,360,115,160,xcor,xrms)
+     &1,360,40,165,xcor,xrms)
 
       iw=iw+1
       write(31,rec=iw) xcor
@@ -628,7 +628,7 @@ c     do iy=its_clm,ite_clm
       iw=iw+1
       write(31,rec=iw) xrms
 
-      call hss3c_s(w2d,w2d2,imx2,jmx2,1,360,115,160,coslat2,h1)
+      call hss3c_s(w2d,w2d2,imx2,jmx2,1,360,40,165,coslat2,h1)
       call hss3c_s(w2d,w2d2,imx2,jmx2,230,300,115,140,coslat2,h2)
 
       iw=iw+1
@@ -670,7 +670,8 @@ c
           enddo
 
           nfld=ir
-          call regr_t(ts1,ts2,nyr,nfld,cvcor(i,j,itgt,ld),w2d(i,j))
+          call cor_rms(ts1,ts2,nyr,nfld,cvcor(i,j,itgt,ld),w2d(i,j))
+c         call regr_t(ts1,ts2,nyr,nfld,cvcor(i,j,itgt,ld),w2d(i,j))
 
         ELSE
 
@@ -751,6 +752,20 @@ c write out fcst and skill_t
        enddo
 c
       stop
+      end
+
+      SUBROUTINE have_iwmo(it,nwmo,iwmo)
+
+      do id=1,nwmo-1
+        its=30+(id-1)*10+2 ! +2 is for skip 1949-1950
+        ite=30+id*10+1
+        if(it.ge.its.and.it.le.ite) iwmo=id
+      enddo
+
+      its=30+(nwmo-1)*10+2
+      if(it.ge.its) iwmo=nwmo
+
+      return
       end
 
       SUBROUTINE hss3c_t(obs,prd,ny,nt,h)
@@ -850,8 +865,8 @@ c
       av1=0.
       av2=0.
       do it=1,ltime
-        av1=av1+f1(it)/float(ltime)
-        av2=av2+f2(it)/float(ltime)
+c       av1=av1+f1(it)/float(ltime)
+c       av2=av2+f2(it)/float(ltime)
       enddo
 
       cor=0.

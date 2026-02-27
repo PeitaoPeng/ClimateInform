@@ -1,10 +1,12 @@
       include "parm.h"
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C PCR for forecst TPZ
+C Synthesize fcsts from different models
+C Pattern correction with EOF_obs is applied
 C===========================================================
       parameter(kpdf=1000)
 
-      real prd(imx,jmx,mlead,nprd),stdo(imx,jmx,mlead)
+      real prd(imx,jmx,mlead,nprd)
+      real stdo(imx,jmx,mlead)
       real cor(imx,jmx,mlead,nprd)
       real cvcor(imx,jmx,nprd)
       real clmo(imx,jmx,mlead)
@@ -14,7 +16,11 @@ C===========================================================
 
       real eprd(imx,jmx),ecor(imx,jmx)
       real erms(imx,jmx),ehss(imx,jmx)
-      real oclm(imx,jmx),ostd(imx,jmx)
+      real ostd(imx,jmx,ny_hcst)
+
+      real avg_o(imx,jmx),std_o(imx,jmx)
+      real avg_f(imx,jmx),std_f(imx,jmx)
+      real rpss(imx,jmx)
 
       real wts(imx,jmx,mlead,nprd),ws1d(nprd)
       real wts2(imx,jmx,nprd)
@@ -28,6 +34,7 @@ C===========================================================
 
       real w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx)
       real w2d4(imx,jmx),w2d5(imx,jmx),w2d6(imx,jmx)
+      real w3d(imx,jmx,ny_hcst)
 
       real xlat(jmx),coslat(jmx),cosr(jmx)
 
@@ -37,19 +44,24 @@ C===========================================================
 
       real frac(imx,jmx)
 
+      real fld3d(imx,jmx,ny_hcst+1)
+      real fld3d2(imx,jmx,ny_hcst)
+
 C
-C fcst from sst, olr, slp & ocn
-      open(11,form='unformatted',access='direct',recl=4*imx*jmx) !ersst
-      open(12,form='unformatted',access='direct',recl=4*imx*jmx) !olr
-      open(13,form='unformatted',access='direct',recl=4*imx*jmx) !slp
-      open(14,form='unformatted',access='direct',recl=4*imx*jmx) !ocn
-C hcst from sst, olr, slp & ocn
-      open(15,form='unformatted',access='direct',recl=4*imx*jmx) !ersst
-      open(16,form='unformatted',access='direct',recl=4*imx*jmx) !olr
-      open(17,form='unformatted',access='direct',recl=4*imx*jmx) !slp
-      open(18,form='unformatted',access='direct',recl=4*imx*jmx) !ocn
-      open(19,form='unformatted',access='direct',recl=4) !nino34
-      open(20,form='unformatted',access='direct',recl=4*imx*jmx) !frac
+C fcst from vpz,sst, olr, slp
+      open(11,form='unformatted',access='direct',recl=4*imx*jmx) 
+      open(12,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(13,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(14,form='unformatted',access='direct',recl=4*imx*jmx) 
+      open(15,form='unformatted',access='direct',recl=4*imx*jmx) 
+      open(16,form='unformatted',access='direct',recl=4*imx*jmx) 
+      open(17,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(18,form='unformatted',access='direct',recl=4*imx*jmx) 
+      open(19,form='unformatted',access='direct',recl=4*imx*jmx) 
+      open(20,form='unformatted',access='direct',recl=4*imx*jmx)
+
+      open(22,form='unformatted',access='direct',recl=4) !nino34
+      open(23,form='unformatted',access='direct',recl=4*imx*jmx) !frac
 C synth output
       open(31,form='unformatted',access='direct',recl=4*imx*jmx) !fcst
       open(32,form='unformatted',access='direct',recl=4*imx*jmx) !hcst
@@ -64,17 +76,17 @@ C
         cosr(j)=sqrt(coslat(j))
       enddo
 
-      undef=-999.0
-
       xdel=10./float(kpdf)
-      call pdf_tab(xbin,ypdf,xdel,kpdf)
+
+c     call pdf_tab(xbin,ypdf,xdel,kpdf)
+      call pdf_tab_general(1.,0.,xbin,ypdf,xdel,kpdf)
 C
 C read in nino3.4 index
       ir=0
       do ld=1,mlead
       do it=1,ny_hcst+1
       ir=ir+1
-      read(19,rec=ir) xn34(it,ld)
+      read(22,rec=ir) xn34(it,ld)
       enddo
       enddo
 
@@ -102,16 +114,16 @@ C=== read in fcst and stdo
         do i=1,imx
         do j=1,jmx
           prd(i,j,ld,ip)=w2d(i,j)
-          stdo(i,j,ld)=w2d2(i,j)
+          if(ip.eq.1) stdo(i,j,ld)=w2d2(i,j)
           cor(i,j,ld,ip)=w2d3(i,j)
           rms(i,j,ld,ip)=w2d4(i,j)
           hss(i,j,ld,ip)=w2d5(i,j)
-          clmo(i,j,ld)=w2d6(i,j)
+          if(ip.eq.1) clmo(i,j,ld)=w2d6(i,j)
         enddo
         enddo
 
-        enddo ! ld loop
-        enddo ! ip loop
+      enddo ! ld loop
+      enddo ! ip loop
 c
 C=== have wts prd
       ir=0
@@ -120,9 +132,6 @@ C=== have wts prd
       iw3=0
       iw4=0
       do ld=1,mlead
-
-      ir2=ld*2-1
-      read(20,rec=ir2) frac
 
       do i=1,imx
       do j=1,jmx
@@ -133,7 +142,11 @@ C=== have wts prd
             w1d(ip)=cor(i,j,ld,ip)
           enddo
 
-          call weights(w1d,nprd,ws1d) 
+          if(iwts.eq.1) then
+            call weights(w1d,nprd,ws1d)
+          else
+            call weights_2(w1d,nprd,ws1d)
+          endif
 
           do ip=1,nprd
             wts(i,j,ld,ip)=ws1d(ip)
@@ -163,19 +176,15 @@ C=== have wts prd
           eprd(i,j)=undef
       endif
 
-          ostd(i,j)=stdo(i,j,ld)
-
       enddo
       enddo
 
-c     enddo !ld loop
 
 C=== synthesize hcst with cvcor
 
-c     do ld=1,mlead
       do it=1,ny_hcst
 
-      ich=14
+      ich=15
       do ip=1,nprd 
       ich=ich+1
 
@@ -190,8 +199,9 @@ c     do ld=1,mlead
 
         do i=1,imx
         do j=1,jmx
-          obs(i,j,it)=w2d(i,j)
+          if(ip.eq.1) obs(i,j,it)=w2d(i,j) ! wmo anom
           hcst(i,j,ip)=w2d2(i,j)
+          if(ip.eq.1) ostd(i,j,it)=w2d3(i,j) ! wmo std
           cvcor(i,j,ip)=w2d4(i,j)
         enddo
         enddo
@@ -211,7 +221,11 @@ C=== have wts from cvcor for hcst
             endif
           enddo
 
-          call weights(w1d,nprd,ws1d)
+          if(iwts.eq.1) then
+            call weights(w1d,nprd,ws1d)
+          else
+            call weights_2(w1d,nprd,ws1d)
+          endif
 
           do ip=1,nprd
             wts2(i,j,ip)=ws1d(ip)
@@ -248,13 +262,9 @@ C=== sythsize hcst with wts2
           call wtavg(w1d,ws1d,nprd,avg)      
 
           ehcst(i,j,it)=avg
-          w2d(i,j)=avg
         else
           ehcst(i,j,it)=undef
-          w2d(i,j)=undef
         endif
-
-          w2d2(i,j)=obs(i,j,it)
 
       enddo
       enddo
@@ -262,42 +272,95 @@ C=== sythsize hcst with wts2
       ir=ir+4
       enddo ! it loopo
 
-C std of ehcst
-      do i=1,imx
-      do j=1,jmx
+C
+C pattern correction for hcst
+      do itgt=1,ny_hcst
 
-        if (w2d(i,j).gt.-900.) then
+      ir3=0
+        do iy=1,ny_hcst
 
+        if(iy.eq.itgt) go to 555
+
+        ir3=ir3+1
+
+        do i=1,imx
+        do j=1,jmx
+          fld3d2(i,j,ir3)=obs(i,j,iy)
+        enddo
+        enddo
+
+  555   continue
+
+        enddo ! iy loop
+
+        do i=1,imx
+        do j=1,jmx
+          fld3d2(i,j,ny_hcst)=ehcst(i,j,itgt)
+          w2d(i,j)=ehcst(i,j,itgt)
+        enddo
+        enddo
+
+      call pat_crct(fld3d2,w2d,cosr,nmod,imx,jmx,ny_hcst,ngrd,
+     &2,2,1,imx,40,160,undef)
+
+        do i=1,imx
+        do j=1,jmx
+          ehcst(i,j,itgt)=w2d(i,j)
+        enddo
+        enddo
+
+      enddo ! itgt loop
+
+C pattern correction for eprd
+        do i=1,imx
+        do j=1,jmx
           do it=1,ny_hcst
-            ts1(it)=ehcst(i,j,it)
+            fld3d(i,j,it)=obs(i,j,it)
           enddo
+        enddo
+        enddo
 
-          call normal(ts1,ny_hcst,ny_clm,esd)
+        do i=1,imx
+        do j=1,jmx
+            fld3d(i,j,ny_hcst+1)=eprd(i,j)
+        enddo
+        enddo
 
-          do it=1,ny_hcst
-            ehcst(i,j,it)=ts1(it)
-          enddo
-c normalize eprd with hcst std
-          eprd(i,j)=eprd(i,j)/esd
+      call pat_crct(fld3d,eprd,cosr,nmod,imx,jmx,ny_hcst+1,ngrd,
+     &2,2,1,imx,40,160,undef)
 
-        endif
-      enddo
-      enddo
+C read in frac, std_o, std_f, avgo, avgf, rpss
+      ir2=ld*6-5 
+      read(23,rec=ir2) frac
+      ir2=ld*6-4
+      read(23,rec=ir2) std_o ! of anom w.r.t. WMO clm
+      ir2=ld*6-3
+      read(23,rec=ir2) std_f
+      ir2=ld*6-2
+      read(23,rec=ir2) avg_o ! of anom w.r.t. WMO clm
+      ir2=ld*6-1
+      read(23,rec=ir2) avg_f
+      ir2=ld*6
+      read(23,rec=ir2) rpss
 
 C write out ehcst, prob-hcst and 1-D skill
-      DO it=1,ny_hcst
+c     DO it=1,ny_hcst
+      DO it=its_skill,ny_hcst ! its_skill=31 for from 1981
 
       do i=1,imx
       do j=1,jmx
 
         w2d(i,j)=obs(i,j,it)
         w2d2(i,j)=ehcst(i,j,it)
-
 c prob-hcst
       if (w2d2(i,j).gt.-900.and.w2d(i,j).gt.-900) then
 
-        call prob_3c_prd(w2d2(i,j),prbprd(i,j),pa(i,j,it),pb(i,j,it),
-     &pn(i,j,it),kpdf,xbin,xdel,ypdf,frac(i,j),tesm)   
+        w2d(i,j)=obs(i,j,it) ! already standardized with WMO std
+c       w2d2(i,j)=ehcst(i,j,it)/std_f(i,j)
+        w2d2(i,j)=ehcst(i,j,it)
+
+        call prob_3c_prd(w2d2(i,j),prbprd(i,j),
+     &pa(i,j,it),pb(i,j,it),pn(i,j,it),kpdf,xbin,xdel,ypdf,frac(i,j))   
 
       else
         prbprd(i,j)=undef
@@ -315,6 +378,12 @@ c prob-hcst
       enddo
       enddo
 
+      do i=1,imx
+      do j=1,jmx
+        w2d6(i,j)=ostd(i,j,it)
+      enddo
+      enddo
+
       iw2=iw2+1
       write(32,rec=iw2) w2d ! obs
       iw2=iw2+1
@@ -326,12 +395,12 @@ c prob-hcst
       iw2=iw2+1
       write(32,rec=iw2) w2d4  ! prob_b
       iw2=iw2+1
-      write(32,rec=iw2) ostd
+      write(32,rec=iw2) w2d6
 
 C 1-D skill
 
       call sp_cor_rms(w2d2,w2d,coslat,imx,jmx,
-     &1,360,115,160,xcor,xrms)
+     &1,360,40,165,xcor,xrms)
 
       iw3=iw3+1
       write(33,rec=iw3) xcor
@@ -352,7 +421,7 @@ C 1-D skill
       enddo
       enddo
 
-      call hss3c_prob_s(w2d,w2d3,w2d2,imx,jmx,1,360,115,160,coslat,h1)
+      call hss3c_prob_s(w2d,w2d3,w2d2,imx,jmx,1,360,40,165,coslat,h1)
       call hss3c_prob_s(w2d,w2d3,w2d2,imx,jmx,230,300,115,140,
      &coslat,h2)
 
@@ -361,7 +430,7 @@ C 1-D skill
       iw3=iw3+1
       write(33,rec=iw3) h2
 
-      call rpss_s(w2d,w2d2,w2d3,rpss1,imx,jmx,1,360,115,160,coslat)
+      call rpss_s(w2d,w2d2,w2d3,rpss1,imx,jmx,1,360,40,165,coslat)
       call rpss_s(w2d,w2d2,w2d3,rpss2,imx,jmx,230,300,115,140,coslat)
 
       iw3=iw3+1
@@ -376,29 +445,35 @@ c temporal 2D skill calculation
       do i=1,imx
       do j=1,jmx
 
-      if (w2d(i,j).gt.-900.) then
+      IF (w2d(i,j).gt.-900.) then
 
-        do it=1,ny_hcst
-          ts1(it)=obs(i,j,it)
-          ts2(it)=ehcst(i,j,it)
-          ts3(it)=pa(i,j,it)
-          ts4(it)=pb(i,j,it)
+        nskip_y=its_skill-1
+        do it=its_skill,ny_hcst
+          ts1(it-nskip_y)=obs(i,j,it)
+c         ts2(it-nskip_y)=ehcst(i,j,it)/std_f(i,j)
+          ts2(it-nskip_y)=ehcst(i,j,it)
+          ts3(it-nskip_y)=pa(i,j,it)
+          ts4(it-nskip_y)=pb(i,j,it)
         enddo
 
-        call cor_rms(ts1,ts2,ny_hcst,ny_hcst,ecor(i,j),erms(i,j))
+        call cor_rms(ts1,ts2,ny_hcst,ny_skill,ecor(i,j),erms(i,j))
 
-        call hss3c_prob_t(ts1,ts3,ts4,ny_hcst,ny_hcst,ehss(i,j))
+        if(std_f(i,j).gt.0.1) then
+          call hss3c_prob_t(ts1,ts3,ts4,ny_hcst,ny_skill,ehss(i,j))
+        else
+          call hss3c_t(ts1,ts2,ny_hcst,ny_skill,ehss(i,j))
+        endif
 
-      else
+        ELSE
 
         ecor(i,j)=undef
         erms(i,j)=undef
         ehss(i,j)=undef
 
-      endif
+        ENDIF
 
-      ostd(i,j)=stdo(i,j,ld)
-      oclm(i,j)=clmo(i,j,ld)
+      w2d(i,j)=stdo(i,j,ld)
+      w2d2(i,j)=clmo(i,j,ld)
 
       enddo
       enddo
@@ -406,7 +481,7 @@ c temporal 2D skill calculation
       iw=iw+1
       write(31,rec=iw) eprd
       iw=iw+1
-      write(31,rec=iw) ostd
+      write(31,rec=iw) w2d
       iw=iw+1
       write(31,rec=iw) ecor
       iw=iw+1
@@ -414,24 +489,28 @@ c temporal 2D skill calculation
       iw=iw+1
       write(31,rec=iw) ehss
       iw=iw+1
-      write(31,rec=iw) oclm
+      write(31,rec=iw) w2d2
 
 c have prob forecast
 c
       do i=1,imx
       do j=1,jmx
 
-      if (eprd(i,j).gt.-900.and.ostd(i,j).gt.-900.) then
-        call prob_3c_prd(eprd(i,j),prbprd(i,j),xpa(i,j),xpb(i,j),
-     &xpn(i,j),kpdf,xbin,xdel,ypdf,frac(i,j),tesm)
+      if (eprd(i,j).gt.-900.) then
+
+        call prob_3c_prd(eprd(i,j),prbprd(i,j),
+     &xpa(i,j),xpb(i,j),xpn(i,j),kpdf,xbin,xdel,ypdf,frac(i,j))
+
       else
+
         prbprd(i,j)=undef
         xpa(i,j)=undef
         xpb(i,j)=undef
         xpn(i,j)=undef
+
       endif
 
-      if (abs(prbprd(i,j)).gt.1.) then
+      if (abs(xpa(i,j)).gt.1.or.abs(xpb(i,j)).gt.1) then
         prbprd(i,j)=undef
         xpa(i,j)=undef
         xpb(i,j)=undef
@@ -450,28 +529,93 @@ c
       iw=iw+1
       write(31,rec=iw) xpn
 
-      call rpss_t(obs,pb,pa,w2d,v3c,imx,jmx,ny_hcst,undef)
+      call rpss_t(obs,pb,pa,w2d,v3c,imx,jmx,its_skill,ny_hcst,undef)
 
       iw=iw+1
       write(31,rec=iw) w2d
 
-c     write out obs & v3c
-      do it=1,ny_hcst
+c write out obs & v3c
+      do it=its_skill,ny_hcst
+
         do i=1,imx
         do j=1,jmx
           w2d(i,j)=obs(i,j,it)
           w2d2(i,j)=v3c(i,j,it)
         enddo
         enddo
+
         iw4=iw4+1
         write(34,rec=iw4) w2d
         iw4=iw4+1
         write(34,rec=iw4) w2d2
-      enddo !it loop
 
-      enddo ! ld loopo
+      enddo ! it loop
 
+      enddo ! ld loop
+C
       stop
+      end
+
+      SUBROUTINE pat_crct(fld3d,prd,cosr,nmod,imx,jmx,nt,ngrd,
+     &idx,jdy,is,ie,js,je,undef)
+C
+      real fld3d(imx,jmx,nt)
+      real corr(imx,jmx,nmod),regr(imx,jmx,nmod)
+      real pc(nmod,nt)
+      real prd(imx,jmx),avg(imx,jmx)
+      real w2d(imx,jmx)
+      real ts(nt)
+      real cosr(jmx)
+C
+C EOF filter eprd
+      do i=1,imx
+      do j=1,jmx
+
+        if(prd(i,j).gt.-900) then
+
+        do it=1,nt
+          ts(it)=fld3d(i,j,it)
+        enddo
+
+        call mean_anom(ts,nt,nt,avg(i,j))
+
+        do it=1,nt
+          fld3d(i,j,it)=ts(it)
+        enddo
+
+        endif
+
+      enddo
+      enddo
+
+       call eof_pc(fld3d,cosr,nt,nt,ngrd,nmod,undef,
+     &imx,jmx,idx,jdy,is,ie,js,je,pc,corr,regr,0)
+
+c reconstrct prd
+
+      call setzero(w2d,imx,jmx)
+
+      do i=1,imx
+      do j=1,jmx
+
+        if(prd(i,j).gt.-900.) then
+
+          do m=1,nmod
+            w2d(i,j)=w2d(i,j)+pc(m,nt)*regr(i,j,m)
+          enddo
+
+          w2d(i,j)=w2d(i,j)+avg(i,j)
+
+        else
+          w2d(i,j)=undef
+        endif
+
+        prd(i,j)=w2d(i,j)
+
+      enddo
+      enddo
+
+      return
       end
 
 
@@ -484,6 +628,7 @@ c     write out obs & v3c
       do i=is,ie
       do j=js,je
         IF(vfc(i,j).gt.-900) then
+c       IF(pa(i,j).gt.-900.and.pb(i,j).gt.-900) then
 
           va=0.
           vb=0.
@@ -493,6 +638,13 @@ c     write out obs & v3c
           if(vfc(i,j).ge.-0.43.and.vfc(i,j).le.0.43) vn=1
 c have rps        
           pn=1.- pa(i,j) - pb(i,j)
+
+          if(abs(pn).gt.100) then
+            write(6,*) 'pn i,j=', pn,i,j
+            write(6,*) 'pa i,j=', pa(i,j),i,j
+            write(6,*) 'pb i,j=', pb(i,j),i,j
+          endif
+
           y1=pb(i,j)
           y2=pb(i,j)+pn
           y3=1.
@@ -525,7 +677,7 @@ c area avg
       return
       end
 
-      SUBROUTINE rpss_t(vfc,pb,pa,rpss,v3c,imx,jmx,nt,undef)
+      SUBROUTINE rpss_t(vfc,pb,pa,rpss,v3c,imx,jmx,its,nt,undef)
 
       real pa(imx,jmx,nt),pb(imx,jmx,nt)
       real vfc(imx,jmx,nt),rpss(imx,jmx)
@@ -533,7 +685,7 @@ c area avg
       real v3c(imx,jmx,nt)
 
 c convert vfc to probilistic form
-      do it=1,nt
+      do it=its,nt
         do i=1,imx
         do j=1,jmx
         IF(vfc(i,j,it).gt.-900) then
@@ -584,7 +736,7 @@ c have pattern of rpc_t
         exp=0.
         expc=0.
         grd=0
-        do it=1,nt
+        do it=its,nt
           exp=exp+rps(i,j,it)
           expc=expc+rpsc(i,j,it)
           grd=grd+1
@@ -601,18 +753,14 @@ c have pattern of rpc_t
 
 
       SUBROUTINE prob_3c_prd(detp,prbp,pa,pb,pn,kpdf,xbin,xdel,ypdf,
-     & frac,tesm)
+     & frac)
 
 c detp: deterministic prd              
 c prbp: problistic prd              
 
       real xbin(kpdf),ypdf(kpdf)
 
-      if(abs(detp).gt.tesm) then
-        esm=frac*detp
-      else
-        esm=detp
-      endif
+      esm=frac*detp
 
       b1=-esm-0.43
       b2=-esm+0.43
@@ -630,6 +778,67 @@ c     write(6,*) 'n1,n2=',n1,n2
         prbp=pa
       else
         prbp=-pb
+      endif
+
+      return
+      end
+
+      SUBROUTINE prob_3c_general(sd,detp,prbp,pa,pb,pn,kpdf,xbin,xdel,
+     &ypdf,frac)
+c detp: deterministic prd
+c prbp: problistic prd
+
+      real xbin(kpdf),ypdf(kpdf)
+
+      esm=frac*detp
+
+      call pdf_tab_general(sd,esm,xbin,ypdf,xdel,kpdf)
+
+      b1=-0.43
+      b2= 0.43
+c
+      n1=kpdf/2+int(b1/xdel)
+      n2=kpdf/2+int(b2/xdel)+1
+
+      call prob_3c(kpdf,n1,n2,xbin,xdel,ypdf,pb,pa,pn)
+
+      if(detp.gt.0) then
+        prbp=pa
+      else
+        prbp=-pb
+      endif
+
+      return
+      end
+
+      SUBROUTINE weights_2(cor,n,wts)
+      dimension cor(n),wts(n) 
+
+C== have denominator of the weights
+      wd=0
+      do i=1,n
+          wd=wd+cor(i)**2
+      enddo
+C
+C== have weights
+      if(wd.gt.0.01) then
+
+        do i=1,n
+         if(cor(i).ge.0.) then
+          wts(i)=cor(i)**2/wd
+        else
+          wts(i)=-cor(i)**2/wd
+        endif
+        enddo
+
+      else
+
+        do i=1,n
+          wts(i)=0.
+        enddo
+        k = maxloc(cor,1)
+        wts(k)=1.
+
       endif
 
       return
@@ -769,8 +978,8 @@ C== have weights
       av1=0.
       av2=0.
       do it=1,ltime
-        av1=av1+f1(it)/float(ltime)
-        av2=av2+f2(it)/float(ltime)
+c       av1=av1+f1(it)/float(ltime)
+c       av2=av2+f2(it)/float(ltime)
       enddo
 
       cor=0.
@@ -841,6 +1050,27 @@ c
       end
 
 c
+      SUBROUTINE normal_0avg(rot,nt,mt,sd)
+      DIMENSION rot(nt)
+      avg=0.
+      do i=1,mt
+c        avg=avg+rot(i)/float(mt)
+      enddo
+      do i=1,nt
+        rot(i)=rot(i)-avg
+      enddo
+c
+      sd=0.
+      do i=1,mt
+        sd=sd+rot(i)*rot(i)/float(mt)
+      enddo
+        sd=sqrt(sd)
+      do i=1,nt
+        rot(i)=rot(i)/sd
+      enddo
+      return
+      end
+
       SUBROUTINE normal(rot,nt,mt,sd)
       DIMENSION rot(nt)
       avg=0.
@@ -861,6 +1091,28 @@ c
       enddo
       return
       end
+
+      SUBROUTINE mean_std(s,nt,mt,avg,std)
+      DIMENSION s(nt),w(mt)
+      avg=0
+      do i=1,mt
+         avg=avg+s(i)/float(mt)
+      enddo
+
+      do i=1,mt
+        w(i)=s(i)-avg
+      enddo
+c
+      sd=0.
+      do i=1,mt
+        sd=sd+w(i)*w(i)
+      enddo
+
+      std=sqrt(sd/float(mt))
+
+      return
+      end
+
 
       SUBROUTINE regr_t(f1,f2,ltime,nt,cor,reg)
 
@@ -1080,6 +1332,27 @@ c     xde=0.1
       enddo
       return
       end
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C  calculate normal distribution PDF from -5 to 5 (unit=std)
+C  have it as a table for later integration
+C  sd: std; xm: mean or center value
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+      subroutine pdf_tab_general(sd,xm,xx,yy,xde,n)
+      real xx(n),yy(n)
+      pi=3.14159
+      coef=1./(sd*sqrt(2.*pi))
+      dvar=2.*sd*sd
+      xx(1)=-5.+xde/2.
+      do i=2,n
+      xx(i)= xx(i-1)+xde
+      enddo
+      do i=1,n
+      yy(i)=coef*exp(-(xx(i)-xm)*(xx(i)-xm)/dvar)
+      enddo
+      return
+      end
+
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C  Have 3-category prob by integratinge PDF
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -1087,15 +1360,106 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       real xx(n),yy(n)
       pb=0
       do i=1,n1
+c     do i=1,n1-1
       pb=pb+xdel*yy(i)
       enddo
       pa=0
       do i=n2,n
+c     do i=n2+1,n
       pa=pa+xdel*yy(i)
       enddo
       pn=0
       do i=n1+1,n2-1
+c     do i=n1,n2
       pn=pn+xdel*yy(i)
       enddo
+      return
+      end
+
+      subroutine eof_pc(fin,cosr,ntot,nt,ng,nmod,undef,
+     &im,jm,idx,idy,is,ie,js,je,pc,cor,reg,id)
+c
+      dimension fin(im,jm,ntot),cosr(jm)
+      dimension aaa(ng,nt),wk(nt,ng)
+      dimension eval(nt),evec(ng,nt),coef(nt,nt)
+      dimension pc(nmod,ntot)
+
+      dimension ts1(nt),ts2(nt)
+      dimension cor(im,jm,nmod),reg(im,jm,nmod)
+
+      real weval(nt),wevec(ng,nt),wcoef(nt,nt)
+      real reval(nmod),revec(ng,nmod),rcoef(nmod,nt)
+      real tt(nmod,nmod),rwk(ng),rwk2(ng,nmod)
+c
+c select grid data
+      do it=1,nt
+        ig=0
+        do i=is,ie,idx
+        do j=js,je,idy
+        if(fin(i,j,1).gt.undef) then
+        ig=ig+1
+        aaa(ig,it)=cosr(j)*fin(i,j,it)
+        endif
+        enddo
+        enddo
+      enddo
+c     print *, 'ngrd=',ig
+C EOF analysis
+      call eofs(aaa,ng,nt,nt,eval,evec,coef,wk,id)
+c     do km = 1, 10
+c       write  (6,*)  'km=',km,' eval=',eval(km)
+c     enddo
+c     call REOFS(aaa,ng,nt,nt,wk,id,weval,wevec,wcoef,
+c    &           nmod,reval,revec,rcoef,tt,rwk,rwk2)
+C
+C normalize rpc and have cor&reg patterns
+      do m=1,nmod
+        do it=1,nt
+c         ts1(it)=rcoef(m,it)
+          ts1(it)=coef(m,it)
+        enddo
+
+        call normal(ts1,nt,nt,sd)
+
+        do it=1,nt
+          pc(m,it)=ts1(it)
+        enddo
+c
+        do j=1,jm
+        do i=1,im
+
+        if(fin(i,j,1).gt.undef) then
+
+        do it=1,nt
+          ts2(it)=fin(i,j,it)
+        enddo
+
+        call regr_t(ts1,ts2,nt,nt,cor(i,j,m),reg(i,j,m))
+
+        else
+
+        cor(i,j,m)=undef
+        reg(i,j,m)=undef
+
+        endif
+
+        enddo
+        enddo
+      enddo  ! m loop
+
+      return
+      end
+
+      SUBROUTINE mean_anom(s,nt,mt,avg)
+      DIMENSION s(nt)
+      avg=0
+      do i=1,mt
+         avg=avg+s(i)/float(mt)
+      enddo
+
+      do i=1,mt
+        s(i)=s(i)-avg
+      enddo
+c
       return
       end

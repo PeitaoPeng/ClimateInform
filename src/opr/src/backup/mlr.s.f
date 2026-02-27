@@ -3,6 +3,7 @@ C==========================================
 C n=time, m=number of factors
 C v(n): obs;, f(m,n): matrix of factors
 C wt(m): weights for factors
+C n is max length of time, k is real
 C==========================================
       real*4 v(n),f(m,n),wt(m)
       real*8 ff(m,m),vf(m),ffiv(m,m)

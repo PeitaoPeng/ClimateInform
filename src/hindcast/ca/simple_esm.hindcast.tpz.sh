@@ -8,7 +8,7 @@ if [ ! -d $tmp ] ; then
   mkdir -p $tmp
 fi
 datadir=/mnt/d/data/ca_hcst
-dataout=$tmp
+dataout=/mnt/d/data/ca_hcst/esm
 #
 #for icss in jfm fma mam amj mjj jja jas aso son ond ndj djf; do
 for icss in  aso fma; do
@@ -28,7 +28,7 @@ if [ $icss = djf ]; then cmon=3; icmomid=jan; icssnmb=12; fi
 #
 icmomidyr=${icmomid}1981
 if [ $icss = djf ]; then icmomidyr=${icmomid}1982; fi
-var2=t2m
+var2=prec
 nyear=40  # years of forecast to be checked
 nldin=17
 nldout=7

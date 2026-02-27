@@ -19,7 +19,7 @@ jmx=89
 imx2=360
 jmx2=180
 #
-for var1 in prec t2m; do
+for var1 in t2m prec; do
 #var1=prec
 var2=$var1
 eof_area=glb   #50S-60N
@@ -32,11 +32,6 @@ if [ $var1 = t2m ]; then nmod=1; fi
 if [ $var1 = prec ]; then nmod=6; fi
 
 ncv=1
-
-nclm_start=1981 # to have yrs clm for more stable than 30 yrs 
-its_clm=`expr $nclm_start - 1947 - $lagmax / 4`
-ite_clm=`expr $its_clm + 39` # have 40 yrs clm for more stable than 30 yrs
-ny_clm=`expr $ite_clm - $its_clm + 1`
 
 undef_data=-9.99E+8
 undef=-999.0
@@ -98,6 +93,12 @@ nsslag=`expr $nssuse - $lagmax + 1` #length of lag-arranged data
 #
 icyr=$curyr
 if [ $icmon = 12 ]; then icyr=`expr $curyr - 1`; fi
+
+nclm_start=1981 # to have yrs clm for more stable than 30 yrs
+its_clm=`expr $nclm_start - 1947 - $lagmax / 4`
+if [ "$icmon" = 1 ] || [ "$icmon" = 2 ]; then its_clm=$(($its_clm - 1)); fi
+ite_clm=`expr $its_clm + 39` # have 40 yrs clm for more stable than 30 yrs
+ny_clm=`expr $ite_clm - $its_clm + 1`
 
 #need to reset follwing 3 parameters
 nyear=`expr $icyr - 1948`  # total full year data used for PCR, 68 for 1948-2015

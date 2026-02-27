@@ -13,8 +13,9 @@ C===========================================================
       real hcst(imx,jmx,nprd)
 
       real eprd(imx,jmx),ecor(imx,jmx)
-      real erms(imx,jmx),ehss(imx,jmx)
-      real oclm(imx,jmx),ostd(imx,jmx)
+
+      real avg_o(imx,jmx),std_o(imx,jmx)
+      real avg_f(imx,jmx),std_f(imx,jmx)
 
       real wts(imx,jmx,mlead,nprd),ws1d(nprd)
       real wts2(imx,jmx,nprd)
@@ -35,19 +36,22 @@ C===========================================================
       real frac(imx,jmx),rpss(imx,jmx)
       real trpss(50)
 
+      real fld3d(imx,jmx,ny_hcst)
 C
-C fcst from sst, olr, slp & ocn
-      open(11,form='unformatted',access='direct',recl=4*imx*jmx) !ersst
-      open(12,form='unformatted',access='direct',recl=4*imx*jmx) !olr
-      open(13,form='unformatted',access='direct',recl=4*imx*jmx) !slp
-      open(14,form='unformatted',access='direct',recl=4*imx*jmx) !ocn
-C hcst from sst, olr, slp & ocn
-      open(15,form='unformatted',access='direct',recl=4*imx*jmx) !ersst
-      open(16,form='unformatted',access='direct',recl=4*imx*jmx) !olr
-      open(17,form='unformatted',access='direct',recl=4*imx*jmx) !slp
-      open(18,form='unformatted',access='direct',recl=4*imx*jmx) !ocn
+C fcst from sst, olr, slp et al. 
+      open(11,form='unformatted',access='direct',recl=4*imx*jmx) 
+      open(12,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(13,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(14,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(15,form='unformatted',access='direct',recl=4*imx*jmx)
+C hcst from sst, olr, slp et al. 
+      open(16,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(17,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(18,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(19,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(20,form='unformatted',access='direct',recl=4*imx*jmx)
 
-      open(19,form='unformatted',access='direct',recl=4) !nino34
+      open(22,form='unformatted',access='direct',recl=4) !nino34
 C synth output
       open(31,form='unformatted',access='direct',recl=4*imx*jmx) !frac & rpss
 C
@@ -62,14 +66,15 @@ C
       undef=-999.0
 
       xdel=10./float(kpdf)
-      call pdf_tab(xbin,ypdf,xdel,kpdf)
+      call pdf_tab_general(1.,0.,xbin,ypdf,xdel,kpdf)
+
 C
 C read in nino3.4 index
       ir=0
       do ld=1,mlead
       do it=1,ny_hcst+1
         ir=ir+1
-        read(19,rec=ir) xn34(it,ld)
+        read(22,rec=ir) xn34(it,ld)
       enddo
       enddo
 
@@ -105,8 +110,8 @@ C=== read in fcst and stdo
         enddo
         enddo
 
-        enddo ! ld loop
-        enddo ! ip loop
+      enddo ! ld loop
+      enddo ! ip loop
 c         
 C=== synthesize hcst with cvcor
 
@@ -115,7 +120,7 @@ C=== synthesize hcst with cvcor
       do ld=1,mlead
       do it=1,ny_hcst
 
-      ich=14
+      ich=15
       do ip=1,nprd 
 
         ich=ich+1
@@ -152,7 +157,11 @@ C=== have wts from cvcor for hcst
             endif
           enddo
 
-          call weights(w1d,nprd,ws1d) 
+          if(iwts.eq.1) then
+            call weights(w1d,nprd,ws1d) 
+          else
+            call weights_2(w1d,nprd,ws1d) 
+          endif
 
           do ip=1,nprd
             wts2(i,j,ip)=ws1d(ip)
@@ -195,33 +204,78 @@ C=== sythsize hcst with wts2
           w2d(i,j)=undef
         endif
 
-          w2d2(i,j)=obs(i,j,it)
-
       enddo
       enddo
 
       ir=ir+4
       enddo ! it loopo
 
+C
+C pattern correction for hcst
+      do itgt=1,ny_hcst
+
+      ir3=0
+        do iy=1,ny_hcst
+
+        if(iy.eq.itgt) go to 555
+
+        ir3=ir3+1
+
+        do i=1,imx
+        do j=1,jmx
+          fld3d(i,j,ir3)=obs(i,j,iy)
+        enddo
+        enddo
+
+  555   continue
+
+        enddo ! iy loop
+
+        do i=1,imx
+        do j=1,jmx
+          fld3d(i,j,ny_hcst)=ehcst(i,j,itgt)
+          w2d(i,j)=ehcst(i,j,itgt)
+        enddo
+        enddo
+
+      call pat_crct(fld3d,w2d,cosr,nmod,imx,jmx,ny_hcst,ngrd,
+     &2,2,1,imx,40,160,undef)
+
+        do i=1,imx
+        do j=1,jmx
+          ehcst(i,j,itgt)=w2d(i,j)
+        enddo
+        enddo
+
+      enddo ! itgt loop
+
       write(6,*) 'start std of ehcst'
 
-C std of ehcst
+C avg & std of ehcst & obs
       do i=1,imx
       do j=1,jmx
 
         if (w2d(i,j).gt.-900.) then
 
           do it=1,ny_hcst
-            ts1(it)=ehcst(i,j,it)
+            ts1(it)=obs(i,j,it)
+            ts2(it)=ehcst(i,j,it)
           enddo
 
-          call normal(ts1,ny_hcst,ny_clm,esd)
+          call mean_std(ts1,ny_hcst,ny_hcst,av,sd)
+          call mean_std(ts2,ny_hcst,ny_hcst,av2,sd2)
 
-          do it=1,ny_hcst
-            ehcst(i,j,it)=ts1(it)
-          enddo
-c normalize eprd with hcst std
-          eprd(i,j)=eprd(i,j)/esd
+          avg_o(i,j)=av ! avg of anom w.r.t. WMO clim
+          std_o(i,j)=sd ! std of anom w.r.t. WMO clim 
+          avg_f(i,j)=av2
+          std_f(i,j)=sd2
+
+        else
+
+          avg_o(i,j)=undef
+          std_o(i,j)=undef
+          avg_f(i,j)=undef
+          std_f(i,j)=undef
 
         endif
       enddo
@@ -230,8 +284,8 @@ c normalize eprd with hcst std
 C prob-hcst and rpss_t skill
       write(6,*) 'ld=,start prob-hcst and rpss_t skill',ld
 
-c     tdel=0.025
       tdel=0.02
+c     tdel=1
       ntest=1./tdel
 
       DO i=1,imx
@@ -241,24 +295,25 @@ c     tdel=0.025
 
 C have frac -> max rpss        
 
-      ftest=0.0
-      tesm=0.43
+      ftest=tdel
       do kt=1,ntest
 
 c prob for each it
       do it=1,ny_hcst
 
-        tsobs(it)=obs(i,j,it)
+        tsobs(it)=obs(i,j,it) ! already been stdandardized with WMO std
+c       w2d2(i,j)=ehcst(i,j,it)/std_f(i,j)
         w2d2(i,j)=ehcst(i,j,it)
 
-        call prob_3c_prd(w2d2(i,j),prbprd(i,j),tspa(it),tspb(it),
-     &tspn(it),kpdf,xbin,xdel,ypdf,ftest,tesm)
+c       call prob_3c_general(std_f(i,j),w2d2(i,j),prbprd(i,j),
+        call prob_3c_prd(w2d2(i,j),prbprd(i,j),
+     &tspa(it),tspb(it),tspn(it),kpdf,xbin,xdel,ypdf,ftest)
 
       enddo ! it loopo
 
       call rpss_t_1d(tsobs,tspb,tspa,rps,ny_hcst,undef)
 
-        trpss(kt)=rps
+      trpss(kt)=rps
 
       ftest=ftest+tdel
 
@@ -269,7 +324,7 @@ C Find the location of the maximum value
       rpss(i,j)=trpss(mloc)
       frac(i,j)=mloc*tdel
 
-      if(i.eq.130.and.j.eq.65) then
+      if(i.eq.260.and.j.eq.130) then
         write(6,*) 'mloc,frac,trpss=',mloc,frac(i,j),trpss
       endif
 
@@ -286,13 +341,225 @@ C Find the location of the maximum value
       iw=iw+1
       write(31,rec=iw) frac
       iw=iw+1
+      write(31,rec=iw) std_o ! of anom w.r.t WMO clim
+      iw=iw+1
+      write(31,rec=iw) std_f
+      iw=iw+1
+      write(31,rec=iw) avg_o ! of anom w.r.t WMO clim
+      iw=iw+1
+      write(31,rec=iw) avg_f
+      iw=iw+1
       write(31,rec=iw) rpss
 
       enddo ! ld loopo
 
       stop
       end
+      SUBROUTINE pat_crct(fld3d,prd,cosr,nmod,imx,jmx,nt,ngrd,
+     &idx,jdy,is,ie,js,je,undef)
+C
+      real fld3d(imx,jmx,nt)
+      real corr(imx,jmx,nmod),regr(imx,jmx,nmod)
+      real pc(nmod,nt)
+      real prd(imx,jmx),avg(imx,jmx)
+      real w2d(imx,jmx)
+      real ts(nt)
+      real cosr(jmx)
+C
+C EOF filter eprd
+      do i=1,imx
+      do j=1,jmx
 
+        if(prd(i,j).gt.-900) then
+
+        do it=1,nt
+          ts(it)=fld3d(i,j,it)
+        enddo
+
+        call mean_anom(ts,nt,nt,avg(i,j))
+
+        do it=1,nt
+          fld3d(i,j,it)=ts(it)
+        enddo
+
+        endif
+
+      enddo
+      enddo
+
+       call eof_pc(fld3d,cosr,nt,nt,ngrd,nmod,undef,
+     &imx,jmx,idx,jdy,is,ie,js,je,pc,corr,regr,0)
+
+c reconstrct prd
+
+      call setzero(w2d,imx,jmx)
+
+      do i=1,imx
+      do j=1,jmx
+
+        if(prd(i,j).gt.-900.) then
+
+          do m=1,nmod
+            w2d(i,j)=w2d(i,j)+pc(m,nt)*regr(i,j,m)
+          enddo
+
+          w2d(i,j)=w2d(i,j)+avg(i,j)
+
+        else
+          w2d(i,j)=undef
+        endif
+
+        prd(i,j)=w2d(i,j)
+
+      enddo
+      enddo
+
+      return
+      end
+
+      subroutine eof_pc(fin,cosr,ntot,nt,ng,nmod,undef,
+     &im,jm,idx,idy,is,ie,js,je,pc,cor,reg,id)
+c
+      dimension fin(im,jm,ntot),cosr(jm)
+      dimension aaa(ng,nt),wk(nt,ng)
+      dimension eval(nt),evec(ng,nt),coef(nt,nt)
+      dimension pc(nmod,ntot)
+
+      dimension ts1(nt),ts2(nt)
+      dimension cor(im,jm,nmod),reg(im,jm,nmod)
+
+      real weval(nt),wevec(ng,nt),wcoef(nt,nt)
+      real reval(nmod),revec(ng,nmod),rcoef(nmod,nt)
+      real tt(nmod,nmod),rwk(ng),rwk2(ng,nmod)
+c
+c select grid data
+      do it=1,nt
+        ig=0
+        do i=is,ie,idx
+        do j=js,je,idy
+        if(fin(i,j,1).gt.undef) then
+        ig=ig+1
+        aaa(ig,it)=cosr(j)*fin(i,j,it)
+        endif
+        enddo
+        enddo
+      enddo
+c     print *, 'ngrd=',ig
+C EOF analysis
+      call eofs(aaa,ng,nt,nt,eval,evec,coef,wk,id)
+c     do km = 1, 10
+c       write  (6,*)  'km=',km,' eval=',eval(km)
+c     enddo
+c     call REOFS(aaa,ng,nt,nt,wk,id,weval,wevec,wcoef,
+c    &           nmod,reval,revec,rcoef,tt,rwk,rwk2)
+C
+C normalize rpc and have cor&reg patterns
+      do m=1,nmod
+        do it=1,nt
+c         ts1(it)=rcoef(m,it)
+          ts1(it)=coef(m,it)
+        enddo
+
+        call normal(ts1,nt,nt,sd)
+
+        do it=1,nt
+          pc(m,it)=ts1(it)
+        enddo
+c
+        do j=1,jm
+        do i=1,im
+
+        if(fin(i,j,1).gt.undef) then
+
+        do it=1,nt
+          ts2(it)=fin(i,j,it)
+        enddo
+
+        call regr_t(ts1,ts2,nt,nt,cor(i,j,m),reg(i,j,m))
+
+        else
+
+        cor(i,j,m)=undef
+        reg(i,j,m)=undef
+
+        endif
+
+        enddo
+        enddo
+      enddo  ! m loop
+
+      return
+      end
+
+      SUBROUTINE mean_anom(s,nt,mt,avg)
+      DIMENSION s(nt)
+      avg=0
+      do i=1,mt
+         avg=avg+s(i)/float(mt)
+      enddo
+
+      do i=1,mt
+        s(i)=s(i)-avg
+      enddo
+c
+      return
+      end
+
+      SUBROUTINE wmo_clm_std_anom(ts,std,clm,anom,maxt,nt,nwmo)
+C WMO std, clm, and anom
+
+      DIMENSION ts(maxt),anom(maxt),std(nwmo),clm(nwmo)
+
+C have WMO std and clm
+      do id=1,nwmo ! 51-80,61-90,71-00,81-10,91-20
+
+      its=(id-1)*10+1+1 ! +1 for skiping 1950
+      ite=(id-1)*10+30+1 ! +1 for skip 1950
+
+      cc=0.
+      do i=its,ite
+        cc=cc+ts(i)
+      enddo
+      clm(id)=cc/30.
+c
+      do i=its,ite
+        anom(i)=ts(i)-clm(id)
+      enddo
+
+      sd=0
+      do i=its,ite
+        sd=sd+anom(i)*anom(i)
+      enddo
+      sd=sqrt(sd/30.)
+      if(sd.lt.0.01) sd=0.01
+      std(id)=sd
+
+      enddo !loop id
+
+C have WMO anom
+      do i=1,31 ! i=1 is 1950
+        anom(i)=(ts(i)-clm(1))/std(1)
+      enddo
+
+      do id=1,nwmo-1 ! 81-90,91-00,01-10,11-20,21-cur
+        its=30+(id-1)*10+1+1 ! +1 is for 1950
+        ite=30+id*10+1
+        do i=its,ite
+          anom(i)=(ts(i)-clm(id))/std(id)
+        enddo
+      enddo
+
+      its=30+(nwmo-1)*10+1+1 ! +1 is for 1950
+      ite=nt
+
+      if(ite.ge.its) then
+      do i=its,ite
+        anom(i)=(ts(i)-clm(nwmo))/std(nwmo)
+      enddo
+      endif
+
+      return
+      end
 
       SUBROUTINE rpss_s(vfc,pb,pa,rpss,imx,jmx,is,ie,js,je,coslat)
 
@@ -391,19 +658,15 @@ c have pattern of rpc_t
       end
 
 
-      SUBROUTINE prob_3c_prd(detp,prbp,pa,pb,pn,kpdf,xbin,xdel,ypdf,
-     & frac,tesm)
+      SUBROUTINE prob_3c_prd(detp,prbp,pa,pb,pn,kpdf,xbin,xdel,
+     &ypdf,frac)
 
 c detp: deterministic prd              
 c prbp: problistic prd              
 
       real xbin(kpdf),ypdf(kpdf)
 
-      if(abs(detp).gt.tesm) then
-        esm=frac*detp
-      else
-        esm=detp
-      endif
+      esm=frac*detp
 
       b1=-esm-0.43
       b2=-esm+0.43
@@ -421,6 +684,70 @@ c     write(6,*) 'n1,n2=',n1,n2
         prbp=pa
       else
         prbp=-pb
+      endif
+
+      return
+      end
+
+      SUBROUTINE prob_3c_general(sd,detp,prbp,pa,pb,pn,kpdf,xbin,xdel,
+     &ypdf,frac)
+
+c detp: deterministic prd              
+c prbp: problistic prd              
+
+      real xbin(kpdf),ypdf(kpdf)
+
+      esm=frac*detp
+
+c     call pdf_tab_general(sd,esm,xbin,ypdf,xdel,kpdf)
+
+      b1=-esm-0.43
+      b2=-esm+0.43
+c     b1=-0.43
+c     b2= 0.43
+c          
+      n1=kpdf/2+int(b1/xdel)
+      n2=kpdf/2+int(b2/xdel)+1
+
+      call prob_3c(kpdf,n1,n2,xbin,xdel,ypdf,pb,pa,pn)
+
+      if(detp.gt.0) then
+        prbp=pa
+      else
+        prbp=-pb
+      endif
+
+      return
+      end
+
+      SUBROUTINE weights_2(cor,n,wts)
+      dimension cor(n),wts(n)
+
+C== have denominator of the weights
+      wd=0
+      do i=1,n
+          wd=wd+cor(i)**2
+      enddo
+C
+C== have weights
+      if(wd.gt.0.01) then
+
+        do i=1,n
+         if(cor(i).ge.0.) then
+          wts(i)=cor(i)**2/wd
+        else
+          wts(i)=-cor(i)**2/wd
+        endif
+        enddo
+
+      else
+
+        do i=1,n
+          wts(i)=0.
+        enddo
+        k = maxloc(cor,1)
+        wts(k)=1.
+
       endif
 
       return
@@ -589,6 +916,48 @@ c
       end
 
 c
+      SUBROUTINE normal_0avg(rot,nt,mt,sd)
+      DIMENSION rot(nt)
+      avg=0.
+      do i=1,mt
+c        avg=avg+rot(i)/float(mt)
+      enddo
+      do i=1,nt
+        rot(i)=rot(i)-avg
+      enddo
+c
+      sd=0.
+      do i=1,mt
+        sd=sd+rot(i)*rot(i)/float(mt)
+      enddo
+        sd=sqrt(sd)
+      do i=1,nt
+        rot(i)=rot(i)/sd
+      enddo
+      return
+      end
+
+      SUBROUTINE mean_std(s,nt,mt,avg,std)
+      DIMENSION s(nt),w(mt)
+      avg=0
+      do i=1,mt
+         avg=avg+s(i)/float(mt)
+      enddo
+
+      do i=1,mt
+        w(i)=s(i)-avg
+      enddo
+c
+      sd=0.
+      do i=1,mt
+        sd=sd+w(i)*w(i)
+      enddo
+
+      std=sqrt(sd/float(mt))
+
+      return
+      end
+
       SUBROUTINE normal(rot,nt,mt,sd)
       DIMENSION rot(nt)
       avg=0.
@@ -789,7 +1158,6 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       real xx(n),yy(n)
       pi=3.14159
       coef=1./sqrt(2*pi)
-c     xde=0.1
       xx(1)=-5+xde/2
       do i=2,n
       xx(i)= xx(i-1)+xde
@@ -799,21 +1167,46 @@ c     xde=0.1
       enddo
       return
       end
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C  calculate normal distribution PDF from -5 to 5 (unit=std)
+C  have it as a table for later integration
+C  sd: std; xm: mean or center value
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+      subroutine pdf_tab_general(sd,xm,xx,yy,xde,n)
+      real xx(n),yy(n)
+      pi=3.14159
+      coef=1./(sd*sqrt(2.*pi))
+      dvar=2.*sd*sd
+      xx(1)=-5.+xde/2.
+      do i=2,n
+      xx(i)= xx(i-1)+xde
+      enddo
+      do i=1,n
+      yy(i)=coef*exp(-(xx(i)-xm)*(xx(i)-xm)/dvar)
+      enddo
+      return
+      end
+
+
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C  Have 3-category prob by integratinge PDF
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
       subroutine prob_3c(n,n1,n2,xx,xdel,yy,pb,pa,pn)
       real xx(n),yy(n)
       pb=0
-      do i=1,n1
+c     do i=1,n1
+      do i=1,n1-1
       pb=pb+xdel*yy(i)
       enddo
       pa=0
-      do i=n2,n
+c     do i=n2,n
+      do i=n2+1,n
       pa=pa+xdel*yy(i)
       enddo
       pn=0
-      do i=n1+1,n2-1
+c     do i=n1-1,n2+1
+      do i=n1,n2
       pn=pn+xdel*yy(i)
       enddo
       return

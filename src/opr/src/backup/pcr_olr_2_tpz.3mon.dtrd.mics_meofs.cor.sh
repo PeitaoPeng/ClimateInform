@@ -60,12 +60,12 @@ cd $tmp
 #======================================
 # have VAR1 IC
 #======================================
-#curyr=`date --date='today' '+%Y'`  # yr of making fcst
+curyr=`date --date='today' '+%Y'`  # yr of making fcst
 #for curyr in 2021 2022 2023 2024; do
-for curyr in 2025; do
-#curmo=`date --date='today' '+%m'`  # mo of making fcst
+#for curyr in 2025; do
+curmo=`date --date='today' '+%m'`  # mo of making fcst
 #for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for curmo in 01; do
+#for curmo in 01 02 03 04 05 06; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -131,9 +131,7 @@ var1file=${var1}.3mon.1979-curr.total
 cp $lcdir/pcr_olr_2_tpz.3mon.dtrd.mics_meofs.cor.f $tmp/pcr.f
 cp $lcdir/backup/reof.s.f $tmp/reof.s.f
 
-#for var2 in prec; do # prec, t2m, hgt
- 	
-imx2=360; jmx2=180; xds=0.5; yds=-89.5; xydel=1.
+xds=0.5; yds=-89.5; xydel=1.
 
 tpzfile=$var2.1948_cur.3mon.total.1x1
 
@@ -177,7 +175,7 @@ outfile5=hcst.$var1.2.$var2.mics$mics.mlead$mlead.ncut$ncut.nmod1_$icut1.id_ceof
 outfile8=${var1}_ic_mics.3mon
 outfile9=regr.${var1}.2.${var2}_ic_mics.3mon
 #
-ln -s $datain1/$var1file.gr          fort.10
+ln -s $datain1/$var1file.gr         fort.10
 ln -s $datain2/$tpzfile.gr          fort.11
 
 ln -s $dataot2/$outfile2.gr         fort.21
@@ -268,7 +266,7 @@ xdef $imx2 linear $xds $xydel
 ydef $jmx2 linear $yds $xydel
 zdef  1 linear 1 1
 tdef $ny_out linear ${tgtmon}$outyr_s 1yr
-edef  $mlead names 1 2 3 4 5 6 7
+edef $mlead names 1 2 3 4 5 6 7
 vars  4
 o  1 99 obs
 p  1 99 hcst

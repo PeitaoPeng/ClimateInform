@@ -33,11 +33,6 @@ if [ $var1 = prec ]; then nmod=6; fi
 #nmod=5
 ncv=1
 
-nclm_start=1981 # to have yrs clm for more stable than 30 yrs 
-its_clm=`expr $nclm_start - 1947 - $lagmax / 4`
-ite_clm=`expr $its_clm + 39` # have 40 yrs clm for more stable than 30 yrs
-ny_clm=`expr $ite_clm - $its_clm + 1`
-
 undef_data=-9.99E+8
 undef=-999.0
  #
@@ -46,12 +41,12 @@ cd $tmp
 #======================================
 # have SST IC
 #======================================
-#curyr=`date --date='today' '+%Y'`  # yr of making fcst
-for curyr in 2021 2022 2023 2024 2025; do
+curyr=`date --date='today' '+%Y'`  # yr of making fcst
+#for curyr in 2021 2022 2023 2024 2025; do
 #for curyr in 2024; do
-#curmo=`date --date='today' '+%m'`  # mo of making fcst
-for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-#for curmo in 11; do
+curmo=`date --date='today' '+%m'`  # mo of making fcst
+#for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+#for curmo in 02 03; do
 ##
 if [ $curmo = 01 ]; then cmon=1; icmon=12; icmonc=dec; tgtmon=feb; tgtss=fma; fi #tgtmon:1st mon of the lead-1 season
 if [ $curmo = 02 ]; then cmon=2; icmon=1 ; icmonc=jan; tgtmon=mar; tgtss=mam; fi 
@@ -100,10 +95,16 @@ nsslag=`expr $nssuse - $lagmax + 1` #length of lag-arranged data
 icyr=$curyr
 if [ $icmon = 12 ]; then icyr=`expr $curyr - 1`; fi
 
-#need to reset follwing 3 parameters
+nclm_start=1981 # to have yrs clm for more stable than 30 yrs
+its_clm=`expr $nclm_start - 1947 - $lagmax / 4`
+if [ "$icmon" = 1 ] || [ "$icmon" = 2 ]; then its_clm=$(($its_clm - 1)); fi
+ite_clm=`expr $its_clm + 39` # have 40 yrs clm for more stable than 30 yrs
+ny_clm=`expr $ite_clm - $its_clm + 1`
+
+
+#need to reset follwing parameters
 nyear=`expr $icyr - 1948`  # total full year data used for PCR, 68 for 1948-2015
 ny_out=`expr $nyear - $its_clm - $lagmax / 4 + 1` # from its_clm to 
-ny_out2=`expr $nyear - $its_clm - $lagmax / 4 + 1` # from its_clm to 
 
 outd=/home/ppeng/data/ss_fcst/pcr/$icyr
 outdata=${outd}/$icmon
@@ -279,6 +280,6 @@ endvars
 EOF
 #
 
-done # curmo loop
-done # curyr loop
+#done # curmo loop
+#done # curyr loop
 

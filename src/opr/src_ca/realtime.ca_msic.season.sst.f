@@ -77,7 +77,7 @@ c     undef2=-9.99E+33
       END DO
 c
       do j=1,jms
-      xlat2(j)=-89.+(j-1)*2.0
+      xlat2(j)=-88.+(j-1)*2.0
       enddo
 c
       DO j=1,jms
@@ -610,7 +610,7 @@ c        write(71,rec=iwo) ts3
 c        write(71,rec=iwo) ts4
        end do
 c
-c* process realtime forecast
+c process realtime forecast
 c
 c amplitude adjusted for real fcst
 c     write(6,*) 'amplitude adjustment for real prd'

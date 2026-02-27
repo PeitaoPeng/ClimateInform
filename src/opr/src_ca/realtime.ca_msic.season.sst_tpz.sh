@@ -18,7 +18,7 @@ cd $tmp
 #curyr=`date --date='today' '+%Y'`  # yr of making fcst
 #curmo=`date --date='today' '+%m'`  # mo of making fcst
 for curyr in 2024; do
-for curmo in 01 02 03 04 05 06 07 08; do
+for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
 #
 if [ $curmo = 01 ]; then cmon=1; icmon_end=dec; icmoe=12; icmon_mid=nov; icssnmb=10; fi #icmon_mid: mid mon of icss
 if [ $curmo = 02 ]; then cmon=2; icmon_end=jan; icmoe=01 ; icmon_mid=dec; icssnmb=11; fi #icssnmb: 1st mon of icss

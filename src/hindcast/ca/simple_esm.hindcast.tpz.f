@@ -50,7 +50,7 @@ c== read fcst
 c== read obs
       irec2=irec-1
       read(iu,rec=irec2) f2d2
-
+c== have ld=1->7
       if(ld.le.4.or.ld.gt.11) go to 555
 
       do i=1,imx

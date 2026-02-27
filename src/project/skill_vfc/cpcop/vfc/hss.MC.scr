@@ -2,16 +2,15 @@
 
 set -eaux
 
-lcdir=/cpc/home/wd52pp/project/skill_vfc/cpcop/vfc
-tmp=/cpc/home/wd52pp/tmp
-datadir1=/cpc/home/wd52pp/data/cpc_vfc/0data
-datadir2=/cpc/home/wd52pp/data/cpc_vfc/skill
+lcdir=/home/ppeng/ClimateInform/src/project/skill_vfc/cpcop/vfc
+tmp=/home/ppeng/data/tmp
+datadir=/home/ppeng/data/cpc_vfc
 #
 for var in temp prec; do
 #var=temp
 #var=prec
-nseason=331  #288=djf2018
-nyears=27
+nseason=364  #288=djf2018
+nyears=30
 tool=cpc
 #
 /bin/rm $tmp/fort.*         
@@ -38,21 +37,21 @@ gfortran -o hss.x hss.MC.f hss_t.MC.s.f hss_s.MC.s.f hss_all.MC.s.f hss_stat.s.f
 echo "done compiling"
 
 #
- ln -s $datadir1/mask_2x2.data    fort.11
- ln -s $datadir1/${var}01_forecast.bi  fort.12
- ln -s $datadir1/${var}_seas_verif.bi  fort.13
- ln -s $datadir2/hss_${var}.95-cur.$tool.gr  fort.51
- ln -s $datadir2/hss_${var}_t.95-cur.$tool.gr  fort.52
- ln -s $datadir2/hss_cyc_${var}.95-cur.$tool.gr  fort.53
- ln -s $datadir2/non-EC_hss.vs.non-EC_season.$tool.$var.gr  fort.54
- ln -s $datadir2/hss-pdf.$tool.$var.gr  fort.55
+ ln -s /home/ppeng/ClimateInform/src/utility/intpl/mask_2x2.data    fort.11
+ ln -s $datadir/${var}01_forecast.bi  fort.12
+ ln -s $datadir/${var}_seas_verif.bi  fort.13
+ ln -s $datadir/hss_${var}.95-cur.$tool.gr  fort.51
+ ln -s $datadir/hss_${var}_t.95-cur.$tool.gr  fort.52
+ ln -s $datadir/hss_cyc_${var}.95-cur.$tool.gr  fort.53
+ ln -s $datadir/non-EC_hss.vs.non-EC_season.$tool.$var.gr  fort.54
+ ln -s $datadir/hss-pdf.$tool.$var.gr  fort.55
 #
-hss.x > $lcdir/out.$var
+./hss.x > $lcdir/out.$var
 #hss.x
 #
 
-cat>$datadir2/hss_$var.95-cur.$tool.ctl<<EOF
-dset $datadir2/hss_$var.95-cur.$tool.gr
+cat>$datadir/hss_$var.95-cur.$tool.ctl<<EOF
+dset $datadir/hss_$var.95-cur.$tool.gr
 undef -9999.0
 title Realtime Surface Obs
 xdef    1 linear  -130 2
@@ -72,8 +71,8 @@ rank2 0 99 rank of hs2 in MC
 endvars
 EOF
 
-cat>$datadir2/hss_cyc_$var.95-cur.$tool.ctl<<EOF
-dset $datadir2/hss_cyc_$var.95-cur.$tool.gr
+cat>$datadir/hss_cyc_$var.95-cur.$tool.ctl<<EOF
+dset $datadir/hss_cyc_$var.95-cur.$tool.gr
 undef -9999.0
 title Realtime Surface Obs
 xdef    1 linear   0.000  1
@@ -87,8 +86,8 @@ nec   0 99 percent of nonec grids
 endvars
 EOF
 
-cat>$datadir2/hss_${var}_t.95-cur.$tool.ctl<<EOF
-dset $datadir2/hss_${var}_t.95-cur.$tool.gr
+cat>$datadir/hss_${var}_t.95-cur.$tool.ctl<<EOF
+dset $datadir/hss_${var}_t.95-cur.$tool.gr
 undef -9999.0
 title Realtime Surface Obs
 xdef   36 linear -130 2
@@ -124,8 +123,8 @@ sg2w   0 99 % bigger for winter
 endvars
 EOF
 
-cat>$datadir2/non-EC_hss.vs.non-EC_season.$tool.$var.ctl<<EOF
-dset $datadir2/non-EC_hss.vs.non-EC_season.$tool.$var.gr
+cat>$datadir/non-EC_hss.vs.non-EC_season.$tool.$var.ctl<<EOF
+dset $datadir/non-EC_hss.vs.non-EC_season.$tool.$var.gr
 undef -9999.0
 title Realtime Surface Obs
 xdef    1 linear -130 2
@@ -138,8 +137,8 @@ nec   0 99 percent of nonec grids
 endvars
 EOF
 
-cat>$datadir2/ran-pdf.$tool.$var.ctl<<EOF
-dset $datadir2/ran-pdf.$tool.$var.gr
+cat>$datadir/ran-pdf.$tool.$var.ctl<<EOF
+dset $datadir/ran-pdf.$tool.$var.gr
 undef -9999.0
 title Histgram of MC hs1
 xdef   121 linear 1 1
@@ -151,8 +150,8 @@ ran   0 99 all ss
 endvars
 EOF
 
-cat>$datadir2/hss-pdf.$tool.$var.ctl<<EOF
-dset $datadir2/hss-pdf.$tool.$var.gr
+cat>$datadir/hss-pdf.$tool.$var.ctl<<EOF
+dset $datadir/hss-pdf.$tool.$var.gr
 undef -9999.0
 title Histgram of MC hss
 xdef   121 linear 1 1

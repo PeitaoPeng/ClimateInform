@@ -209,7 +209,7 @@ C have tpz anomalies over period 1 -> ny_tpz
               tpzc_tot(i,j,ii,ld)=w1d(ii)
            enddo
 
-          call clim_anom(ts2,tpzc(i,j),nyr,ny_tpz)
+c         call clim_anom(ts2,tpzc(i,j),nyr,ny_tpz)
 
         else
 
@@ -594,7 +594,7 @@ c     do iy=its_clm,ite_clm
         enddo
 
       call sp_cor_rms(w2d,w2d2,coslat2,imx2,jmx2,
-     &1,360,115,160,xcor,xrms)
+     &1,360,40,165,xcor,xrms)
 
       iw=iw+1
       write(31,rec=iw) xcor
@@ -608,7 +608,7 @@ c     do iy=its_clm,ite_clm
       iw=iw+1
       write(31,rec=iw) xrms
 
-      call hss3c_s(w2d,w2d2,imx2,jmx2,1,360,115,160,coslat2,h1)
+      call hss3c_s(w2d,w2d2,imx2,jmx2,1,360,40,165,coslat2,h1)
       call hss3c_s(w2d,w2d2,imx2,jmx2,230,300,115,140,coslat2,h2)
 
       iw=iw+1
@@ -651,7 +651,8 @@ c
           enddo
 
           nfld=ir
-          call regr_t(ts1,ts2,nyr,nfld,cvcor(i,j,itgt,ld),w2d(i,j))
+          call cor_rms(ts1,ts2,nyr,nfld,cvcor(i,j,itgt,ld),w2d(i,j))
+c         call regr_t(ts1,ts2,nyr,nfld,cvcor(i,j,itgt,ld),w2d(i,j))
 
         ELSE
 
@@ -686,17 +687,12 @@ c write out obs and wthcst
           iw=iw+1
           write(32,rec=iw) w2d
 
-          if(it.gt.31.and.it.le.41) md=1
-          if(it.gt.41.and.it.le.51) md=2
-          if(it.gt.51.and.it.le.61) md=3
-          if(it.gt.61.and.it.le.71) md=4
-          if(it.gt.71.and.it.le.81) md=5
-          if(it.gt.81.and.it.le.91) md=6
-          if(it.gt.91.and.it.le.101) md=7
+          call have_iwmo(it,nwmo,iwmo)
+          write(6,*) 'iwmo=',iwmo
 
           do i=1,imx2
           do j=1,jmx2
-            w2d(i,j)=stdo(i,j,md,ld)
+            w2d(i,j)=stdo(i,j,iwmo,ld)
           enddo
           enddo
           iw=iw+1
@@ -724,16 +720,7 @@ c write out fcst and skill_t
            w2d3(i,j)=cor3d(i,j,ld)
            w2d4(i,j)=rms3d(i,j,ld)
            w2d5(i,j)=hss3d(i,j,ld)
-
-          if(ny_prd.ge.32.and.it.lt.42) md=1 ! 32-42 for skiping 1950
-          if(ny_prd.gt.42.and.it.lt.52) md=2
-          if(ny_prd.gt.52.and.it.lt.62) md=3
-          if(ny_prd.gt.62.and.it.lt.72) md=4
-          if(ny_prd.gt.72.and.it.lt.82) md=5
-          if(ny_prd.gt.82.and.it.lt.92) md=6
-          if(ny_prd.gt.92.and.it.lt.102) md=7
-
-           w2d6(i,j)=tpzc_tot(i,j,md,ld)
+           w2d6(i,j)=tpzc_tot(i,j,nwmo,ld)
          enddo
          enddo
          iw=iw+1
@@ -751,6 +738,20 @@ c write out fcst and skill_t
          enddo ! ld loop
 c
       stop
+      end
+
+      SUBROUTINE have_iwmo(it,nwmo,iwmo)
+
+      do id=1,nwmo-1
+        its=30+(id-1)*10+2 ! +2 is for skip 1949-1950
+        ite=30+id*10+1
+        if(it.ge.its.and.it.le.ite) iwmo=id
+      enddo
+
+      its=30+(nwmo-1)*10+2
+      if(it.ge.its) iwmo=nwmo
+
+      return
       end
 
       SUBROUTINE hss3c_t(obs,prd,ny,nt,h)
@@ -850,8 +851,8 @@ c
       av1=0.
       av2=0.
       do it=1,ltime
-        av1=av1+f1(it)/float(ltime)
-        av2=av2+f2(it)/float(ltime)
+c       av1=av1+f1(it)/float(ltime)
+c       av2=av2+f2(it)/float(ltime)
       enddo
 
       cor=0.
@@ -1113,9 +1114,11 @@ C have WMO anom
       its=30+(nwmo-1)*10+1+1 ! +1 is for 1950
       ite=nt
 
+      if(ite.ge.its) then
       do i=its,ite
         anom(i)=(ts(i)-clm(nwmo))/std(nwmo)
       enddo
+      endif
 
       return
       end

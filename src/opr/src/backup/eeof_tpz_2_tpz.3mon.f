@@ -547,7 +547,7 @@ c standardized fcsts
       enddo ! ld loop
 c
 c== temporal skill
-      ns_skill=ns_tpz-iss_clm+1
+      ns_skill=ns_tpz2-iss_clm+1
       DO ld=1,nlead
 
       DO i=1,imx2
@@ -556,7 +556,7 @@ c
       if(w2d3(i,j).gt.-900.) then
         ir=0
 c       do it=iss_clm,ise_clm
-        do it=iss_clm,ns_tpz
+        do it=iss_clm,ns_tpz2
 
         ir=ir+1
           ts2(ir)=vfld(i,j,it,ld)
