@@ -75,7 +75,7 @@ awk -v new="$ARCHIVE_HTML" '
 sed -i "s|pages/forecasts/[0-9]\{4\}.html|pages/forecasts/${YEAR}.html|" index.html
 
 echo "Updating website repo..."
-cd $HOME/ClimateInform/website
+cd $HOME/ClimateInform
 git add .
 git commit -m "Auto-update website for $YEAR" || echo "No changes to commit."
 git push
