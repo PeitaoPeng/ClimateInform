@@ -40,9 +40,9 @@ echo "============================================================"
 
 trap 'echo "[ERROR] Pipeline failed. See log: $LOG_FILE" >&2' ERR
 
-if [ -f "./upload_pngs.sh" ]; then
+if [ -f "./docs/upload_pngs.sh" ]; then
     echo "Running PNG upload script..."
-    ./upload_pngs.sh "$YEAR" "$MONTH"
+    ./docs/upload_pngs.sh "$YEAR" "$MONTH"
 else
     echo "WARNING: upload_pngs.sh not found — skipping upload step."
 fi
@@ -51,12 +51,12 @@ echo "Generating monthly HTML pages..."
 for MONTH in {1..12}; do
     if [ -d "/home/ppeng/data/ss_fcst/pcr/$YEAR/$MONTH" ]; then
         echo " → Generating page for $YEAR-$MONTH"
-        ./generate_month_html.sh "$YEAR" "$MONTH"
+        ./docs/generate_month_html.sh "$YEAR" "$MONTH"
     fi
 done
 
 echo "Generating yearly overview page..."
-./generate_year_html.sh "$YEAR"
+./docs/generate_year_html.sh "$YEAR"
 
 echo "Rebuilding Forecast Archive in index.html..."
 
