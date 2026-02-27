@@ -17,8 +17,9 @@ if [ ! -d "$PNG_DIR" ]; then
     exit 1
 fi
 
-ENSO_PHASE_FILE="${PNG_DIR}/enso_phase.txt"
+# ENSO phase
 ENSO_PHASE="Neutral ENSO"
+ENSO_PHASE_FILE="${PNG_DIR}/enso_phase.txt"
 if [ -f "$ENSO_PHASE_FILE" ]; then
     RAW=$(tr '[:upper:]' '[:lower:]' < "$ENSO_PHASE_FILE")
     case "$RAW" in
@@ -111,14 +112,9 @@ cat >> "$OUTFILE" <<EOF
 EOF
 
 ###############################################
-# DETECT OTHER VARIABLES (exclude SST & nino34)
+# ONLY t2m and prec are valid variables
 ###############################################
-VARS=$(ls "$PNG_DIR"/*.png \
-    | sed 's#.*/##' \
-    | sed 's/\.[0-7]\.png//' \
-    | sed 's/_[A-Z]*$//' \
-    | grep -Ev '^(sst|nino34)$' \
-    | sort -u)
+VARS="t2m prec"
 
 ###############################################
 # OTHER VARIABLES
