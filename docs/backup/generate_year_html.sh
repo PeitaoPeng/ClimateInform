@@ -3,7 +3,7 @@ set -euo pipefail
 
 YEAR="$1"
 
-OUTFILE="$HOME/ClimateInform/website/pages/forecasts/${YEAR}.html"
+OUTFILE="$HOME/ClimateInform/docs/pages/forecasts/${YEAR}.html"
 DATA_DIR="/home/ppeng/data/ss_fcst/pcr/${YEAR}"
 
 # Ensure data directory exists

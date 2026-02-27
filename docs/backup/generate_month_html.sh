@@ -7,8 +7,10 @@ MONTH_PAD=$(printf "%02d" "$MONTH")
 
 PNG_ROOT="/home/ppeng/data/ss_fcst/pcr"
 PNG_DIR="${PNG_ROOT}/${YEAR}/${MONTH}"
-OUTFILE="$HOME/ClimateInform/website/pages/forecasts/${YEAR}-${MONTH_PAD}.html"
+OUTFILE="$HOME/ClimateInform/docs/pages/forecasts/${YEAR}-${MONTH_PAD}.html"
 GITHUB_BASE="https://raw.githubusercontent.com/PeitaoPeng/pngs/main/${YEAR}/${MONTH}"
+
+mkdir -p /home/ppeng/ClimateInform/docs/pages/forecasts
 
 echo "Generating monthly HTML: $OUTFILE"
 

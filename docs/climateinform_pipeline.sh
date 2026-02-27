@@ -63,18 +63,32 @@ echo "Generating yearly overview page..."
 
 echo "Rebuilding Forecast Archive in index.html..."
 
-ARCHIVE_HTML=""
-for f in $HOME/ClimateInform/docs/pages/forecasts/[0-9][0-9][0-9][0-9].html; do
-    YEAR=$(basename "$f" .html)
-    ARCHIVE_HTML="${ARCHIVE_HTML}    <tr><td><a href=\"pages/forecasts/${YEAR}.html\">${YEAR} Forecasts</a></td></tr>\n"
-done
+awk -v YEAR="$YEAR" '
+  # When we hit ARCHIVE-START, print it and enter skip mode
+  /<!-- ARCHIVE-START -->/ {
+      print;
+      in_block = 1;
+      next;
+  }
 
-awk '
-  /<!-- ARCHIVE-START -->/ { print; print new; skip=1; next }
-  /<!-- ARCHIVE-END -->/   { skip=0 }
-  skip==0 { print }
+  # When we hit ARCHIVE-END, exit skip mode and insert the new year
+  /<!-- ARCHIVE-END -->/ {
+      in_block = 0;
+
+      # Insert the newest year at the top of the archive
+      print "    <tr><td><a href=\"pages/forecasts/" YEAR ".html\">" YEAR " Forecasts</a></td></tr>";
+
+      print;  # print ARCHIVE-END
+      next;
+  }
+
+  # Skip all lines inside the archive block
+  in_block == 1 { next }
+
+  # Print everything else unchanged
+  { print }
 ' "$REPO_ROOT/docs/index.html" > "$REPO_ROOT/docs/index.tmp" \
-    && mv "$REPO_ROOT/docs/index.tmp" "$REPO_ROOT/docs/index.html"
+  && mv "$REPO_ROOT/docs/index.tmp" "$REPO_ROOT/docs/index.html"
 
 sed -i "s|<a href=\"pages/forecasts/[0-9]\{4\}.html\">Latest Forecasts</a>|<a href=\"pages/forecasts/${YEAR}.html\">Latest Forecasts</a>|" "$REPO_ROOT/docs/index.html"
 
