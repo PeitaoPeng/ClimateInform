@@ -80,7 +80,11 @@ git add .
 git commit -m "Auto-update website for $YEAR" || echo "No changes to commit."
 git push
 
-cd ..
+echo "Updating top-level index.html..."
+git add website/index.html
+git commit -m "Update index.html" || echo "No changes to commit."
+git push
+
 echo "Updating top-level index.html..."
 git add index.html
 git commit -m "Update index.html" || echo "No changes to commit."
