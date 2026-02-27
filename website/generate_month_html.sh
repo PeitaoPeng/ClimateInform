@@ -52,31 +52,83 @@ cat > "$OUTFILE" <<EOF
 <section>
 <h2>Niño3.4 Index Forecast and Skill — <span class="enso-phase">${ENSO_PHASE}</span></h2>
 
-<div class="gallery-two">
-    <div class="gallery-item">
-        <a href="${GITHUB_BASE}/nino34_fcst.png" target="_blank">
-            <img src="${GITHUB_BASE}/nino34_fcst.png" alt="Niño3.4 Forecast">
-        </a>
-        <p>Niño3.4 SST Index Forecast</p>
-    </div>
-
-    <div class="gallery-item">
-        <a href="${GITHUB_BASE}/skill_nino34.png" target="_blank">
-            <img src="${GITHUB_BASE}/skill_nino34.png" alt="Niño3.4 Skill">
-        </a>
-        <p>Niño3.4 Forecast Skill (ACC)</p>
+<div class="forecast-pair-grid">
+    <div class="forecast-pair-row">
+        <div class="forecast-cell">
+            <a href="${GITHUB_BASE}/nino34_fcst.png" target="_blank">
+                <img src="${GITHUB_BASE}/nino34_fcst.png" alt="Niño3.4 Forecast">
+            </a>
+            <p>Niño3.4 SST Index Forecast</p>
+        </div>
+        <div class="forecast-cell">
+            <a href="${GITHUB_BASE}/skill_nino34.png" target="_blank">
+                <img src="${GITHUB_BASE}/skill_nino34.png" alt="Niño3.4 Skill">
+            </a>
+            <p>Niño3.4 Forecast Skill (ACC)</p>
+        </div>
     </div>
 </div>
 </section>
 EOF
 
 ###############################################
-# DETECT VARIABLES
+# SST BLOCK (forecast + ACC only, right after Niño3.4)
 ###############################################
-VARS=$(ls "$PNG_DIR"/*.png | sed 's#.*/##' | sed 's/\.[0-7]\.png//' | sed 's/_[A-Z]*$//' | sort -u)
+cat >> "$OUTFILE" <<EOF
+
+<section class="variable-section">
+    <div class="variable-header">
+        <h2>SST</h2>
+        <span class="variable-toggle">Hide</span>
+    </div>
+
+    <div class="variable-body">
+
+    <div class="lead-slider">
+        <label>Lead time: <span class="lead-value">0</span> months</label>
+        <input type="range" min="0" max="7" value="0" data-var="SST">
+    </div>
+
+    <h3>SST: Forecast & ACC Skill</h3>
+    <div class="forecast-pair-grid">
+EOF
+
+for LEAD in {0..7}; do
+    SST_FCST="sst_anom.${LEAD}.png"
+    SST_ACC="sst_ACC.${LEAD}.png"
+
+    if [ -f "$PNG_DIR/$SST_FCST" ] || [ -f "$PNG_DIR/$SST_ACC" ]; then
+cat >> "$OUTFILE" <<EOF
+        <div class="forecast-pair-row">
+            <div class="forecast-cell">
+                $( [ -f "$PNG_DIR/$SST_FCST" ] && echo "<a href=\"${GITHUB_BASE}/${SST_FCST}\" target=\"_blank\"><img src=\"${GITHUB_BASE}/${SST_FCST}\" alt=\"SST Forecast Lead ${LEAD}\"></a><p>Forecast Lead ${LEAD}</p>" )
+            </div>
+            <div class="forecast-cell">
+                $( [ -f "$PNG_DIR/$SST_ACC" ] && echo "<a href=\"${GITHUB_BASE}/${SST_ACC}\" target=\"_blank\"><img src=\"${GITHUB_BASE}/${SST_ACC}\" alt=\"SST ACC Lead ${LEAD}\"></a><p>ACC Lead ${LEAD}</p>" )
+            </div>
+        </div>
+EOF
+    fi
+done
+
+cat >> "$OUTFILE" <<EOF
+    </div> <!-- forecast-pair-grid -->
+    </div> <!-- variable-body -->
+</section>
+EOF
 
 ###############################################
-# VARIABLE SECTIONS
+# DETECT OTHER VARIABLES (exclude SST/Niño3.4)
+###############################################
+VARS=$(ls "$PNG_DIR"/*.png \
+    | sed 's#.*/##' \
+    | sed 's/\.[0-7]\.png//' \
+    | sed 's/_[A-Z]*$//' \
+    | grep -Ev '^(sst|nino34)$' \
+    | sort -u)
+
+###############################################
+# VARIABLE SECTIONS FOR OTHER VARS
 ###############################################
 for VAR in $VARS; do
 
@@ -99,9 +151,7 @@ cat >> "$OUTFILE" <<EOF
     <div class="forecast-pair-grid">
 EOF
 
-    ###########################################
-    # PAIRED DET + PROB FORECASTS
-    ###########################################
+    # Paired det + prob forecasts
     for LEAD in {0..7}; do
         DET="${VAR}_det.${LEAD}.png"
         PROB="${VAR}_prob.${LEAD}.png"
@@ -125,35 +175,52 @@ cat >> "$OUTFILE" <<EOF
 EOF
 
     ###########################################
-    # SKILL MAPS
+    # SKILL MATRIX: rows = leads, cols = ACC/HSS/RPSS
     ###########################################
-    declare -a SKILLS=()
-    [ -f "$PNG_DIR/${VAR}_ACC.0.png" ]  && SKILLS+=("ACC")
-    [ -f "$PNG_DIR/${VAR}_HSS.0.png" ]  && SKILLS+=("HSS")
-    [ -f "$PNG_DIR/${VAR}_RPSS.0.png" ] && SKILLS+=("RPSS")
+    HAS_ACC=false
+    HAS_HSS=false
+    HAS_RPSS=false
+    [ -f "$PNG_DIR/${VAR}_ACC.0.png" ]  && HAS_ACC=true
+    [ -f "$PNG_DIR/${VAR}_HSS.0.png" ]  && HAS_HSS=true
+    [ -f "$PNG_DIR/${VAR}_RPSS.0.png" ] && HAS_RPSS=true
 
-    if [ ${#SKILLS[@]} -gt 0 ]; then
+    if $HAS_ACC || $HAS_HSS || $HAS_RPSS; then
 cat >> "$OUTFILE" <<EOF
     <h3>Skill Maps</h3>
-    <div class="skill-three">
+    <div class="skill-matrix">
+        <div class="skill-matrix-header">
+            <div class="skill-matrix-cell">Lead</div>
+            <div class="skill-matrix-cell">ACC</div>
+            <div class="skill-matrix-cell">HSS</div>
+            <div class="skill-matrix-cell">RPSS</div>
+        </div>
 EOF
 
-        for METRIC in "${SKILLS[@]}"; do
-            for LEAD in {0..7}; do
-                FILE="${VAR}_${METRIC}.${LEAD}.png"
-                if [ -f "$PNG_DIR/$FILE" ]; then
+        for LEAD in {0..7}; do
+            ACC_FILE="${VAR}_ACC.${LEAD}.png"
+            HSS_FILE="${VAR}_HSS.${LEAD}.png"
+            RPSS_FILE="${VAR}_RPSS.${LEAD}.png"
+
+            if [ -f "$PNG_DIR/$ACC_FILE" ] || [ -f "$PNG_DIR/$HSS_FILE" ] || [ -f "$PNG_DIR/$RPSS_FILE" ]; then
 cat >> "$OUTFILE" <<EOF
-        <a class="lead-item" data-var="${VAR}" data-lead="${LEAD}" href="${GITHUB_BASE}/${FILE}" target="_blank">
-            <img src="${GITHUB_BASE}/${FILE}" alt="${METRIC} Lead ${LEAD}">
-            <p>${METRIC} Lead ${LEAD}</p>
-        </a>
+        <div class="skill-matrix-row">
+            <div class="skill-matrix-cell">Lead ${LEAD}</div>
+            <div class="skill-matrix-cell">
+                $( [ -f "$PNG_DIR/$ACC_FILE" ] && echo "<a class=\"lead-item\" data-var=\"${VAR}\" data-lead=\"${LEAD}\" href=\"${GITHUB_BASE}/${ACC_FILE}\" target=\"_blank\"><img src=\"${GITHUB_BASE}/${ACC_FILE}\" alt=\"ACC Lead ${LEAD}\"></a>" )
+            </div>
+            <div class="skill-matrix-cell">
+                $( [ -f "$PNG_DIR/$HSS_FILE" ] && echo "<a class=\"lead-item\" data-var=\"${VAR}\" data-lead=\"${LEAD}\" href=\"${GITHUB_BASE}/${HSS_FILE}\" target=\"_blank\"><img src=\"${GITHUB_BASE}/${HSS_FILE}\" alt=\"HSS Lead ${LEAD}\"></a>" )
+            </div>
+            <div class="skill-matrix-cell">
+                $( [ -f "$PNG_DIR/$RPSS_FILE" ] && echo "<a class=\"lead-item\" data-var=\"${VAR}\" data-lead=\"${LEAD}\" href=\"${GITHUB_BASE}/${RPSS_FILE}\" target=\"_blank\"><img src=\"${GITHUB_BASE}/${RPSS_FILE}\" alt=\"RPSS Lead ${LEAD}\"></a>" )
+            </div>
+        </div>
 EOF
-                fi
-            done
+            fi
         done
 
 cat >> "$OUTFILE" <<EOF
-    </div> <!-- skill-three -->
+    </div> <!-- skill-matrix -->
 EOF
     fi
 
