@@ -66,6 +66,9 @@ for f in $HOME/ClimateInform/docs/pages/forecasts/[0-9][0-9][0-9][0-9].html; do
     ARCHIVE_HTML="${ARCHIVE_HTML}    <tr><td><a href=\"pages/forecasts/${YEAR}.html\">${YEAR} Forecasts</a></td></tr>\n"
 done
 
+pwd
+ls -l
+
 awk -v new="$ARCHIVE_HTML" '
   /<!-- ARCHIVE-START -->/ { print; print new; skip=1; next }
   /<!-- ARCHIVE-END -->/   { skip=0 }
