@@ -316,3 +316,34 @@ footer {
     margin-top: 4px;
 }
 
+.skill-matrix {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.skill-matrix-header,
+.skill-matrix-row {
+    display: grid;
+    grid-template-columns: 0.6fr 1fr 1fr 1fr; /* Lead | ACC | HSS | RPSS */
+    gap: 8px;
+    align-items: center;
+}
+
+.skill-matrix-cell {
+    text-align: center;
+}
+
+.skill-matrix-header .skill-matrix-cell {
+    font-weight: bold;
+}
+
+.skill-matrix img {
+    width: 100%;
+    max-width: 220px;
+    height: auto;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
