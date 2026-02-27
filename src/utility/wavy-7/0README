@@ -1,6 +1,0 @@
-
-0. in dir process to prepare target year and clim data
-1. in dir get_bst to have basic state;
-2. in dir get_frc to have forcing;
-3. execute Runwavy.new.scr;
-4. execute wavypost.scr for post process

@@ -1,1 +1,0 @@
-       parameter(nyear=4)

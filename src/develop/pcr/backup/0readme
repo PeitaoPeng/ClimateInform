@@ -1,5 +1,0 @@
-
-pcr_sst2tpz_mlead.$hcst.sh : forecast for tpz
-pcr_SST2SST_mlead.CV.sh : forecast for sst
-prc_lagged_ensemble.tpz.sh : consolidate for tpz
-prc_lagged_ensemble.SST.sh : consolidate for sst
