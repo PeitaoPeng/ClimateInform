@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ClimateInform</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div id="header">
+        <!-- include header.html manually or via your build process -->
+    </div>
+
+    <main>
+        <h1>Welcome to ClimateInform</h1>
+        <p>Your source for transparent, data‑driven climate forecasts and analysis.</p>
+
+        <section>
+            <h2>Latest Forecasts</h2>
+            <p>Explore the most recent seasonal and subseasonal climate outlooks.</p>
+            <a href="forecasts.html">View Forecasts →</a>
+        </section>
+
+        <section>
+            <h2>About ClimateInform</h2>
+            <p>Learn about the mission, methodology, and scientific foundation behind the forecasts.</p>
+            <a href="about.html">Learn More →</a>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+</body>
+</html>
+
