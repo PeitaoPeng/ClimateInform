@@ -1,6 +1,0 @@
-============================================================
- ClimateInform Pipeline Starting for YEAR = 2024
- Log: logs/pipeline_2024_20260226_191231.log
-============================================================
-Running PNG upload script...
-climateinform_pipeline.sh: line 44: MONTH: unbound variable

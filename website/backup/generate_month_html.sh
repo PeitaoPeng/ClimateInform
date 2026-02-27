@@ -10,7 +10,7 @@ PNG_DIR="${PNG_ROOT}/${YEAR}/${MONTH}"
 OUTFILE="$HOME/ClimateInform/website/pages/forecasts/${YEAR}-${MONTH_PAD}.html"
 GITHUB_BASE="https://raw.githubusercontent.com/PeitaoPeng/pngs/main/$YEAR/$MONTH"
 
-mkdir -p website/pages/forecasts
+mkdir -p pages/forecasts
 
 echo "Generating monthly HTML: $OUTFILE"
 

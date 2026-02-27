@@ -1,210 +1,176 @@
 #!/bin/bash
 set -euo pipefail
 
-YEAR=$1
-MONTH=$2
-MONTH_PAD=$(printf "%02d" $MONTH)
+YEAR="$1"
+MONTH="$2"
+MONTH_PAD=$(printf "%02d" "$MONTH")
 
-PNG_ROOT=${PNG_ROOT:-/home/ppeng/data/ss_fcst/pcr}
+PNG_ROOT="/home/ppeng/data/ss_fcst/pcr"
 PNG_DIR="${PNG_ROOT}/${YEAR}/${MONTH}"
 OUTFILE="$HOME/ClimateInform/website/pages/forecasts/${YEAR}-${MONTH_PAD}.html"
-GITHUB_BASE="https://raw.githubusercontent.com/PeitaoPeng/pngs/main/$YEAR/$MONTH"
-
-mkdir -p pages/forecasts
+GITHUB_BASE="https://raw.githubusercontent.com/PeitaoPeng/pngs/main/${YEAR}/${MONTH}"
 
 echo "Generating monthly HTML: $OUTFILE"
 
-# ENSO phase file: warm / cold / neutral
-ENSO_PHASE_FILE="${PNG_DIR}/enso_phase.txt"
-ENSO_PHASE="neutral"
-if [ -f "$ENSO_PHASE_FILE" ]; then
-    ENSO_PHASE=$(tr '[:upper:]' '[:lower:]' < "$ENSO_PHASE_FILE")
+# Ensure PNG directory exists
+if [ ! -d "$PNG_DIR" ]; then
+    echo "[ERROR] PNG directory not found: $PNG_DIR"
+    exit 1
 fi
 
-cat > $OUTFILE <<EOF
+# ENSO phase
+ENSO_PHASE_FILE="${PNG_DIR}/enso_phase.txt"
+ENSO_PHASE="Neutral ENSO"
+if [ -f "$ENSO_PHASE_FILE" ]; then
+    RAW=$(tr '[:upper:]' '[:lower:]' < "$ENSO_PHASE_FILE")
+    case "$RAW" in
+        warm) ENSO_PHASE="El Niño" ;;
+        cold) ENSO_PHASE="La Niña" ;;
+        *)    ENSO_PHASE="Neutral ENSO" ;;
+    esac
+fi
+
+###############################################
+# START HTML FILE (safe, no stdout captured)
+###############################################
+cat > "$OUTFILE" <<EOF
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>${YEAR}-${MONTH_PAD} Forecast | ClimateInform</title>
-    <link rel="stylesheet" href="../../css/style.css">
+<meta charset="UTF-8">
+<title>${YEAR}-${MONTH_PAD} Forecast | ClimateInform</title>
+<link rel="stylesheet" href="../../css/style.css">
 </head>
 
 <body>
 <div id="header"></div>
 
 <main>
-    <h1>${YEAR}-${MONTH_PAD} Climate Forecast</h1>
-    <p>Forecast maps for ${YEAR}-${MONTH_PAD}, organized by variable, forecast type, and lead time. Skill maps are included for each variable.</p>
+<h1>${YEAR}-${MONTH_PAD} Climate Forecast</h1>
+<p>Forecast maps for ${YEAR}-${MONTH_PAD}, organized by variable, forecast type, and lead time.</p>
+
+<section>
+<h2>Niño3.4 Index Forecast and Skill — <span class="enso-phase">${ENSO_PHASE}</span></h2>
+
+<div class="gallery-two">
+    <div class="gallery-item">
+        <img src="${GITHUB_BASE}/nino34_fcst.png" alt="Niño3.4 Forecast">
+        <p>Niño3.4 SST Index Forecast</p>
+    </div>
+
+    <div class="gallery-item">
+        <img src="${GITHUB_BASE}/skill_nino34.png" alt="Niño3.4 Skill">
+        <p>Niño3.4 Forecast Skill (ACC)</p>
+    </div>
+</div>
+</section>
 EOF
 
-# Niño3.4 block with ENSO badge
-cat >> $OUTFILE <<EOF
+###############################################
+# DETECT VARIABLES (safe: no stdout captured)
+###############################################
+VARS=$(ls "$PNG_DIR"/*.png | sed 's#.*/##' | sed 's/\.[0-7]\.png//' | sed 's/_[A-Z]*$//' | sort -u)
 
-    <section>
-        <h2>Niño3.4 Index Forecast and Skill
-EOF
-
-case "$ENSO_PHASE" in
-    warm)
-        cat >> $OUTFILE <<EOF
-            <span class="enso-phase enso-warm">El Niño</span>
-EOF
-        ;;
-    cold)
-        cat >> $OUTFILE <<EOF
-            <span class="enso-phase enso-cold">La Niña</span>
-EOF
-        ;;
-    *)
-        cat >> $OUTFILE <<EOF
-            <span class="enso-phase enso-neutral">Neutral ENSO</span>
-EOF
-        ;;
-esac
-
-cat >> $OUTFILE <<EOF
-        </h2>
-
-        <div class="gallery-two">
-            <div class="gallery-item">
-                <img src="${GITHUB_BASE}/nino34_fcst.png" alt="Niño3.4 Forecast">
-                <p>Niño3.4 SST Index Forecast</p>
-            </div>
-
-            <div class="gallery-item">
-                <img src="${GITHUB_BASE}/skill_nino34.png" alt="Niño3.4 Skill">
-                <p>Niño3.4 Forecast Skill (ACC)</p>
-            </div>
-        </div>
-    </section>
-
-EOF
-
-# Detect variables
-VARS=$(ls "$PNG_DIR" | sed 's/\.[0-7].png//' | sed 's/_[A-Z]*$//' | sort -u)
-
+###############################################
+# VARIABLE SECTIONS
+###############################################
 for VAR in $VARS; do
-    echo "Processing variable: $VAR"
 
-    cat >> $OUTFILE <<EOF
+cat >> "$OUTFILE" <<EOF
 
-    <section class="variable-section">
-        <div class="variable-header">
-            <h2>${VAR}</h2>
-            <span class="variable-toggle">Hide</span>
-        </div>
-        <div class="variable-body">
+<section class="variable-section">
+    <div class="variable-header">
+        <h2>${VAR}</h2>
+        <span class="variable-toggle">Hide</span>
+    </div>
 
-        <div class="lead-slider">
-            <label>Lead time: <span class="lead-value">0</span> months</label>
-            <input type="range" min="0" max="7" value="0" data-var="${VAR}">
-        </div>
+    <div class="variable-body">
+
+    <div class="lead-slider">
+        <label>Lead time: <span class="lead-value">0</span> months</label>
+        <input type="range" min="0" max="7" value="0" data-var="${VAR}">
+    </div>
 EOF
 
-    TYPES=()
-    if ls "$PNG_DIR"/${VAR}_det.*.png >/dev/null 2>&1; then TYPES+=("${VAR}_det"); fi
-    if ls "$PNG_DIR"/${VAR}_prob.*.png >/dev/null 2>&1; then TYPES+=("${VAR}_prob"); fi
-    if ls "$PNG_DIR"/${VAR}_anom.*.png >/dev/null 2>&1; then TYPES+=("${VAR}_anom"); fi
+    ###########################################
+    # FORECAST TYPES
+    ###########################################
+    declare -a TYPES=()
+    [ -f "$PNG_DIR/${VAR}_det.0.png" ]  && TYPES+=("${VAR}_det")
+    [ -f "$PNG_DIR/${VAR}_prob.0.png" ] && TYPES+=("${VAR}_prob")
+    [ -f "$PNG_DIR/${VAR}_anom.0.png" ] && TYPES+=("${VAR}_anom")
 
-    SKILLS=()
-    if ls "$PNG_DIR"/${VAR}_ACC.*.png >/dev/null 2>&1; then SKILLS+=("${VAR}_ACC"); fi
-    if ls "$PNG_DIR"/${VAR}_HSS.*.png >/dev/null 2>&1; then SKILLS+=("${VAR}_HSS"); fi
-    if ls "$PNG_DIR"/${VAR}_RPSS.*.png >/dev/null 2>&1; then SKILLS+=("${VAR}_RPSS"); fi
-
-    # Forecast maps
     for TYPE in "${TYPES[@]}"; do
         LABEL=$(echo "$TYPE" | sed "s/${VAR}_//" | tr '[:lower:]' '[:upper:]')
         [ "$LABEL" = "ANOM" ] && LABEL="DETERMINISTIC"
 
-        cat >> $OUTFILE <<EOF
-        <h3>${LABEL} Forecasts</h3>
-        <div class="gallery">
+cat >> "$OUTFILE" <<EOF
+    <h3>${LABEL} Forecasts</h3>
+    <div class="gallery">
 EOF
 
         for LEAD in {0..7}; do
             FILE="${TYPE}.${LEAD}.png"
             if [ -f "$PNG_DIR/$FILE" ]; then
-                cat >> $OUTFILE <<EOF
-            <div class="gallery-item lead-item" data-var="${VAR}" data-lead="${LEAD}">
-                <img src="${GITHUB_BASE}/${FILE}" alt="${TYPE} Lead ${LEAD}">
-                <p>Lead ${LEAD}</p>
-            </div>
+cat >> "$OUTFILE" <<EOF
+        <div class="gallery-item">
+            <img src="${GITHUB_BASE}/${FILE}" alt="${LABEL} Lead ${LEAD}">
+            <p>${LABEL} Lead ${LEAD}</p>
+        </div>
 EOF
             fi
         done
 
-        cat >> $OUTFILE <<EOF
-        </div>
+cat >> "$OUTFILE" <<EOF
+    </div>
 EOF
     done
 
-    # Skill maps
+    ###########################################
+    # SKILL MAPS
+    ###########################################
+    declare -a SKILLS=()
+    [ -f "$PNG_DIR/${VAR}_ACC.0.png" ]  && SKILLS+=("ACC")
+    [ -f "$PNG_DIR/${VAR}_HSS.0.png" ]  && SKILLS+=("HSS")
+    [ -f "$PNG_DIR/${VAR}_RPSS.0.png" ] && SKILLS+=("RPSS")
+
     if [ ${#SKILLS[@]} -gt 0 ]; then
-        cat >> $OUTFILE <<EOF
-        <h3>Skill Maps</h3>
-        <div class="skill-three">
+cat >> "$OUTFILE" <<EOF
+    <h3>Skill Maps</h3>
+    <div class="skill-three">
 EOF
 
-        # ACC
-        if ls "$PNG_DIR"/${VAR}_ACC.*.png >/dev/null 2>&1; then
+        for METRIC in "${SKILLS[@]}"; do
             for LEAD in {0..7}; do
-                FILE="${VAR}_ACC.${LEAD}.png"
+                FILE="${VAR}_${METRIC}.${LEAD}.png"
                 if [ -f "$PNG_DIR/$FILE" ]; then
-                    cat >> $OUTFILE <<EOF
-            <a class="lead-item" data-var="${VAR}" data-lead="${LEAD}" href="${GITHUB_BASE}/${FILE}" target="_blank" title="ACC Lead ${LEAD}">
-                <img src="${GITHUB_BASE}/${FILE}" alt="ACC Lead ${LEAD}">
-                <p>ACC Lead ${LEAD}</p>
-            </a>
+cat >> "$OUTFILE" <<EOF
+        <a class="lead-item" data-var="${VAR}" data-lead="${LEAD}" href="${GITHUB_BASE}/${FILE}" target="_blank">
+            <img src="${GITHUB_BASE}/${FILE}" alt="${METRIC} Lead ${LEAD}">
+            <p>${METRIC} Lead ${LEAD}</p>
+        </a>
 EOF
                 fi
             done
-        fi
+        done
 
-        # HSS
-        if ls "$PNG_DIR"/${VAR}_HSS.*.png >/dev/null 2>&1; then
-            for LEAD in {0..7}; do
-                FILE="${VAR}_HSS.${LEAD}.png"
-                if [ -f "$PNG_DIR/$FILE" ]; then
-                    cat >> $OUTFILE <<EOF
-            <a class="lead-item" data-var="${VAR}" data-lead="${LEAD}" href="${GITHUB_BASE}/${FILE}" target="_blank" title="HSS Lead ${LEAD}">
-                <img src="${GITHUB_BASE}/${FILE}" alt="HSS Lead ${LEAD}">
-                <p>HSS Lead ${LEAD}</p>
-            </a>
-EOF
-                fi
-            done
-        fi
-
-        # RPSS
-        if ls "$PNG_DIR"/${VAR}_RPSS.*.png >/dev/null 2>&1; then
-            for LEAD in {0..7}; do
-                FILE="${VAR}_RPSS.${LEAD}.png"
-                if [ -f "$PNG_DIR/$FILE" ]; then
-                    cat >> $OUTFILE <<EOF
-            <a class="lead-item" data-var="${VAR}" data-lead="${LEAD}" href="${GITHUB_BASE}/${FILE}" target="_blank" title="RPSS Lead ${LEAD}">
-                <img src="${GITHUB_BASE}/${FILE}" alt="RPSS Lead ${LEAD}">
-                <p>RPSS Lead ${LEAD}</p>
-            </a>
-EOF
-                fi
-            done
-        fi
-
-        cat >> $OUTFILE <<EOF
-        </div>
+cat >> "$OUTFILE" <<EOF
+    </div>
 EOF
     fi
 
-    cat >> $OUTFILE <<EOF
-        </div> <!-- variable-body -->
-    </section>
+cat >> "$OUTFILE" <<EOF
+    </div> <!-- variable-body -->
+</section>
 
 EOF
 
 done
 
-cat >> $OUTFILE <<EOF
+###############################################
+# CLOSE HTML
+###############################################
+cat >> "$OUTFILE" <<EOF
 </main>
 
 <script>
@@ -242,4 +208,3 @@ document.addEventListener('DOMContentLoaded', function () {
 </html>
 EOF
 
-echo "Done: $OUTFILE"

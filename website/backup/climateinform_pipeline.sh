@@ -61,7 +61,7 @@ echo "Generating yearly overview page..."
 echo "Rebuilding Forecast Archive in index.html..."
 
 ARCHIVE_HTML=""
-for f in website/pages/forecasts/[0-9][0-9][0-9][0-9].html; do
+for f in $HOME/ClimateInform/website/pages/forecasts/[0-9][0-9][0-9][0-9].html; do
     YEAR=$(basename "$f" .html)
     ARCHIVE_HTML="${ARCHIVE_HTML}    <tr><td><a href=\"pages/forecasts/${YEAR}.html\">${YEAR} Forecasts</a></td></tr>\n"
 done
@@ -75,14 +75,14 @@ awk -v new="$ARCHIVE_HTML" '
 sed -i "s|pages/forecasts/[0-9]\{4\}.html|pages/forecasts/${YEAR}.html|" index.html
 
 echo "Updating website repo..."
-cd website
+cd $HOME/ClimateInform
 git add .
 git commit -m "Auto-update website for $YEAR" || echo "No changes to commit."
 git push
 
-cd ..
 echo "Updating top-level index.html..."
-git add index.html
+cd $HOME/ClimateInform
+git add website/index.html
 git commit -m "Update index.html" || echo "No changes to commit."
 git push
 

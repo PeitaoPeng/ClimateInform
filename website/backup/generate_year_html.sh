@@ -4,7 +4,7 @@ set -euo pipefail
 YEAR=$1
 OUTFILE="$HOME/ClimateInform/website/pages/forecasts/${YEAR}.html"
 
-mkdir -p website/pages/forecasts
+mkdir -p pages/forecasts
 
 MONTHS=$(ls /home/ppeng/data/ss_fcst/pcr/$YEAR | sort -n)
 
@@ -22,7 +22,7 @@ cat > $OUTFILE <<EOF
 
 <main>
     <h1>${YEAR} Climate Forecast Overview</h1>
-    <p>Select a month below to view detailed forecast maps.</p>
+    <p>Select a initial month below to view detailed forecast maps.</p>
 
     <section>
         <h2>Monthly Forecasts</h2>
