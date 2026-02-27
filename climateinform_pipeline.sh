@@ -31,6 +31,8 @@ LOG_DIR="logs"
 mkdir -p "$LOG_DIR"
 LOG_FILE="${LOG_DIR}/pipeline_${YEAR}_$(date +%Y%m%d_%H%M%S).log"
 
+REPO_ROOT="/home/ppeng/ClimateInform"
+
 exec > >(tee -a "$LOG_FILE") 2>&1
 
 echo "============================================================"
@@ -75,7 +77,7 @@ awk -v new="$ARCHIVE_HTML" '
   skip==0 { print }
 ' docs/index.html > index.tmp && mv index.tmp docs/index.html
 
-sed -i "s|<a href=\"pages/forecasts/[0-9]\{4\}.html\">View Forecasts</a>|<a href=\"pages/forecasts/${YEAR}.html\">View Forecasts</a>|" docs/index.html
+sed -i "s|<a href=\"pages/forecasts/[0-9]\{4\}.html\">Latest Forecasts</a>|<a href=\"pages/forecasts/${YEAR}.html\">Latest Forecasts</a>|" "$REPO_ROOT/docs/index.html"
 
 echo "Updating website repo..."
 cd $HOME/ClimateInform

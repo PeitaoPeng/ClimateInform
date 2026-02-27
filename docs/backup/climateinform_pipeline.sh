@@ -1,13 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
-#cyr=`date --date='today' '+%Y'`
-#mcur=`date --date='today' '+%m'`  # current month
+cyr=`date --date='today' '+%Y'`
+mcur=`date --date='today' '+%m'`  # current month
 
-cyr=2025
+#cyr=2026
 #for mcur in 01 02 03 04 05 06 07 08 09 10 11 12; do
 #for mcur in 01 02 03 04 05 06 07 08 09 10 11 12; do
-for mcur in 02; do
+#for mcur in 02; do
 #
 if [ $mcur = 01 ]; then icmon=12; icmonc=Dec; fi
 if [ $mcur = 02 ]; then icmon=1;  icmonc=Jan; fi
@@ -61,18 +61,21 @@ echo "Generating yearly overview page..."
 echo "Rebuilding Forecast Archive in index.html..."
 
 ARCHIVE_HTML=""
-for f in $HOME/ClimateInform/website/pages/forecasts/[0-9][0-9][0-9][0-9].html; do
+for f in $HOME/ClimateInform/docs/pages/forecasts/[0-9][0-9][0-9][0-9].html; do
     YEAR=$(basename "$f" .html)
     ARCHIVE_HTML="${ARCHIVE_HTML}    <tr><td><a href=\"pages/forecasts/${YEAR}.html\">${YEAR} Forecasts</a></td></tr>\n"
 done
+
+pwd
+ls -l
 
 awk -v new="$ARCHIVE_HTML" '
   /<!-- ARCHIVE-START -->/ { print; print new; skip=1; next }
   /<!-- ARCHIVE-END -->/   { skip=0 }
   skip==0 { print }
-' index.html > index.tmp && mv index.tmp index.html
+' docs/index.html > index.tmp && mv index.tmp docs/index.html
 
-sed -i "s|pages/forecasts/[0-9]\{4\}.html|pages/forecasts/${YEAR}.html|" index.html
+sed -i "s|<a href=\"pages/forecasts/[0-9]\{4\}.html\">View Forecasts</a>|<a href=\"pages/forecasts/${YEAR}.html\">View Forecasts</a>|" docs/index.html
 
 echo "Updating website repo..."
 cd $HOME/ClimateInform
@@ -82,11 +85,11 @@ git push
 
 echo "Updating top-level index.html..."
 cd $HOME/ClimateInform
-git add website/index.html
+git add docs/index.html
 git commit -m "Update index.html" || echo "No changes to commit."
 git push
 
 echo "============================================================"
 echo " ClimateInform Pipeline Completed Successfully"
 echo "============================================================"
-done
+#done
