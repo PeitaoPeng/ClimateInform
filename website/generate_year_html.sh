@@ -1,14 +1,26 @@
 #!/bin/bash
 set -euo pipefail
 
-YEAR=$1
+YEAR="$1"
+
 OUTFILE="$HOME/ClimateInform/website/pages/forecasts/${YEAR}.html"
+DATA_DIR="/home/ppeng/data/ss_fcst/pcr/${YEAR}"
 
-mkdir -p pages/forecasts
+# Ensure data directory exists
+if [ ! -d "$DATA_DIR" ]; then
+    echo "[ERROR] Data directory not found: $DATA_DIR"
+    exit 1
+fi
 
-MONTHS=$(ls /home/ppeng/data/ss_fcst/pcr/$YEAR | sort -n)
+# Detect available months (numeric only)
+MONTHS=$(ls "$DATA_DIR" | grep -E '^[0-9]+$' | sort -n)
 
-cat > $OUTFILE <<EOF
+echo "Generating yearly overview: $OUTFILE"
+
+###############################################
+# START HTML FILE (safe, no stdout captured)
+###############################################
+cat > "$OUTFILE" <<EOF
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,21 +34,27 @@ cat > $OUTFILE <<EOF
 
 <main>
     <h1>${YEAR} Climate Forecast Overview</h1>
-    <p>Select a initial month below to view detailed forecast maps.</p>
+    <p>Select an initial month below to view detailed forecast maps.</p>
 
     <section>
         <h2>Monthly Forecasts</h2>
         <ul>
 EOF
 
+###############################################
+# MONTH LINKS (safe, no stdout captured)
+###############################################
 for M in $MONTHS; do
-    MONTH_PAD=$(printf "%02d" $M)
-    cat >> $OUTFILE <<EOF
+    MONTH_PAD=$(printf "%02d" "$M")
+cat >> "$OUTFILE" <<EOF
             <li><a href="${YEAR}-${MONTH_PAD}.html">${YEAR}-${MONTH_PAD}</a></li>
 EOF
 done
 
-cat >> $OUTFILE <<EOF
+###############################################
+# CLOSE HTML
+###############################################
+cat >> "$OUTFILE" <<EOF
         </ul>
     </section>
 </main>
