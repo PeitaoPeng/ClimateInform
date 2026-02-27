@@ -64,26 +64,34 @@ echo "Generating yearly overview page..."
 echo "Rebuilding Forecast Archive in index.html..."
 
 awk -v YEAR="$YEAR" '
-  # When we hit ARCHIVE-START, print it and enter skip mode
   /<!-- ARCHIVE-START -->/ {
       print;
       in_block = 1;
       next;
   }
 
-  # When we hit ARCHIVE-END, exit skip mode and insert the new year
   /<!-- ARCHIVE-END -->/ {
       in_block = 0;
 
-      # Insert the newest year at the top of the archive
+      # Insert newest year first
       print "    <tr><td><a href=\"pages/forecasts/" YEAR ".html\">" YEAR " Forecasts</a></td></tr>";
 
-      print;  # print ARCHIVE-END
+      # Print all previously captured years
+      for (i = 0; i < count; i++) {
+          print years[i];
+      }
+
+      print;  # ARCHIVE-END
       next;
   }
 
-  # Skip all lines inside the archive block
-  in_block == 1 { next }
+  # Capture existing archive rows
+  in_block == 1 {
+      if ($0 ~ /<a href=/) {
+          years[count++] = $0;
+      }
+      next;
+  }
 
   # Print everything else unchanged
   { print }
