@@ -86,7 +86,8 @@ git commit -m "Update index.html" || echo "No changes to commit."
 git push
 
 echo "Updating top-level index.html..."
-git add index.html
+cd $HOME/ClimateInform
+git add website/index.html
 git commit -m "Update index.html" || echo "No changes to commit."
 git push
 
