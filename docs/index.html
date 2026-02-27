@@ -131,37 +131,6 @@
   }
 </style>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const folder = "pages/forecasts/";
-    const linkId = "latest-forecast-link";
-
-    fetch(folder)
-        .then(response => response.text())
-        .then(text => {
-            const parser = new DOMParser();
-            const html = parser.parseFromString(text, "text/html");
-
-            // Extract all filenames in the folder
-            const links = [...html.querySelectorAll("a")].map(a => a.getAttribute("href"));
-
-            // Match YYYY-MM.html or YYYY.html
-            const forecastFiles = links.filter(name =>
-                /^\d{4}(-\d{2})?\.html$/.test(name)
-            );
-
-            if (forecastFiles.length === 0) return;
-
-            // Sort descending (latest first)
-            forecastFiles.sort().reverse();
-
-            // Set the link target
-            const latest = forecastFiles[0];
-            document.getElementById(linkId).href = folder + latest;
-        });
-});
-</script>
-
 </head>
 
 <body>
@@ -182,8 +151,9 @@ document.addEventListener("DOMContentLoaded", function () {
       <tr><td><strong>Archive</strong></td></tr> 
 
       <!-- ARCHIVE-START -->
+
     <tr><td><a href="pages/forecasts/2025.html">2025 Forecasts</a></td></tr>
-    <tr><td><a href="pages/forecasts/2026.html">2026 Forecasts</a></td></tr>
+    <tr><td><a href="pages/forecasts/2026.html">View Forecasts</a></td></tr>
 
       <!-- ARCHIVE-END -->
 
