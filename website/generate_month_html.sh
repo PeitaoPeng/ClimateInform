@@ -31,7 +31,7 @@ if [ -f "$ENSO_PHASE_FILE" ]; then
 fi
 
 ###############################################
-# START HTML FILE (safe, no stdout captured)
+# START HTML FILE
 ###############################################
 cat > "$OUTFILE" <<EOF
 <!DOCTYPE html>
@@ -54,12 +54,16 @@ cat > "$OUTFILE" <<EOF
 
 <div class="gallery-two">
     <div class="gallery-item">
-        <img src="${GITHUB_BASE}/nino34_fcst.png" alt="Niño3.4 Forecast">
+        <a href="${GITHUB_BASE}/nino34_fcst.png" target="_blank">
+            <img src="${GITHUB_BASE}/nino34_fcst.png" alt="Niño3.4 Forecast">
+        </a>
         <p>Niño3.4 SST Index Forecast</p>
     </div>
 
     <div class="gallery-item">
-        <img src="${GITHUB_BASE}/skill_nino34.png" alt="Niño3.4 Skill">
+        <a href="${GITHUB_BASE}/skill_nino34.png" target="_blank">
+            <img src="${GITHUB_BASE}/skill_nino34.png" alt="Niño3.4 Skill">
+        </a>
         <p>Niño3.4 Forecast Skill (ACC)</p>
     </div>
 </div>
@@ -67,7 +71,7 @@ cat > "$OUTFILE" <<EOF
 EOF
 
 ###############################################
-# DETECT VARIABLES (safe: no stdout captured)
+# DETECT VARIABLES
 ###############################################
 VARS=$(ls "$PNG_DIR"/*.png | sed 's#.*/##' | sed 's/\.[0-7]\.png//' | sed 's/_[A-Z]*$//' | sort -u)
 
@@ -90,64 +94,35 @@ cat >> "$OUTFILE" <<EOF
         <label>Lead time: <span class="lead-value">0</span> months</label>
         <input type="range" min="0" max="7" value="0" data-var="${VAR}">
     </div>
+
+    <h3>${VAR}: Deterministic & Probabilistic Forecasts</h3>
+    <div class="forecast-pair-grid">
 EOF
 
     ###########################################
-    # FORECAST TYPES
+    # PAIRED DET + PROB FORECASTS
     ###########################################
-    declare -a TYPES=()
-    [ -f "$PNG_DIR/${VAR}_det.0.png" ]  && TYPES+=("${VAR}_det")
-    [ -f "$PNG_DIR/${VAR}_prob.0.png" ] && TYPES+=("${VAR}_prob")
-    [ -f "$PNG_DIR/${VAR}_anom.0.png" ] && TYPES+=("${VAR}_anom")
+    for LEAD in {0..7}; do
+        DET="${VAR}_det.${LEAD}.png"
+        PROB="${VAR}_prob.${LEAD}.png"
 
-    for TYPE in "${TYPES[@]}"; do
-        LABEL=$(echo "$TYPE" | sed "s/${VAR}_//" | tr '[:lower:]' '[:upper:]')
-        [ "$LABEL" = "ANOM" ] && LABEL="DETERMINISTIC"
-
+        if [ -f "$PNG_DIR/$DET" ] || [ -f "$PNG_DIR/$PROB" ]; then
 cat >> "$OUTFILE" <<EOF
-<h3>${VAR}: Deterministic & Probabilistic Forecasts</h3>
-<div class="forecast-pair-grid">
-EOF
-
-for LEAD in {0..7}; do
-    DET="${VAR}_det.${LEAD}.png"
-    PROB="${VAR}_prob.${LEAD}.png"
-
-    # Only show rows where at least one exists
-    if [ -f "$PNG_DIR/$DET" ] || [ -f "$PNG_DIR/$PROB" ]; then
-cat >> "$OUTFILE" <<EOF
-    <div class="forecast-pair-row">
-        <div class="forecast-cell">
-            $( [ -f "$PNG_DIR/$DET" ] && echo "<a href=\"${GITHUB_BASE}/${DET}\" target=\"_blank\"><img src=\"${GITHUB_BASE}/${DET}\" alt=\"Det Lead ${LEAD}\"></a><p>Det Lead ${LEAD}</p>" )
-        </div>
-        <div class="forecast-cell">
-            $( [ -f "$PNG_DIR/$PROB" ] && echo "<a href=\"${GITHUB_BASE}/${PROB}\" target=\"_blank\"><img src=\"${GITHUB_BASE}/${PROB}\" alt=\"Prob Lead ${LEAD}\"></a><p>Prob Lead ${LEAD}</p>" )
-        </div>
-    </div>
-EOF
-    fi
-done
-
-cat >> "$OUTFILE" <<EOF
-</div>
-EOF
-
-        for LEAD in {0..7}; do
-            FILE="${TYPE}.${LEAD}.png"
-            if [ -f "$PNG_DIR/$FILE" ]; then
-cat >> "$OUTFILE" <<EOF
-        <div class="gallery-item">
-            <img src="${GITHUB_BASE}/${FILE}" alt="${LABEL} Lead ${LEAD}">
-            <p>${LABEL} Lead ${LEAD}</p>
+        <div class="forecast-pair-row">
+            <div class="forecast-cell">
+                $( [ -f "$PNG_DIR/$DET" ] && echo "<a href=\"${GITHUB_BASE}/${DET}\" target=\"_blank\"><img src=\"${GITHUB_BASE}/${DET}\" alt=\"Det Lead ${LEAD}\"></a><p>Det Lead ${LEAD}</p>" )
+            </div>
+            <div class="forecast-cell">
+                $( [ -f "$PNG_DIR/$PROB" ] && echo "<a href=\"${GITHUB_BASE}/${PROB}\" target=\"_blank\"><img src=\"${GITHUB_BASE}/${PROB}\" alt=\"Prob Lead ${LEAD}\"></a><p>Prob Lead ${LEAD}</p>" )
+            </div>
         </div>
 EOF
-            fi
-        done
-
-cat >> "$OUTFILE" <<EOF
-    </div>
-EOF
+        fi
     done
+
+cat >> "$OUTFILE" <<EOF
+    </div> <!-- forecast-pair-grid -->
+EOF
 
     ###########################################
     # SKILL MAPS
@@ -178,7 +153,7 @@ EOF
         done
 
 cat >> "$OUTFILE" <<EOF
-    </div>
+    </div> <!-- skill-three -->
 EOF
     fi
 
