@@ -32,6 +32,7 @@ mkdir -p "$LOG_DIR"
 LOG_FILE="${LOG_DIR}/pipeline_${YEAR}_$(date +%Y%m%d_%H%M%S).log"
 
 REPO_ROOT="/home/ppeng/ClimateInform"
+cd "$REPO_ROOT"
 
 exec > >(tee -a "$LOG_FILE") 2>&1
 
@@ -68,14 +69,12 @@ for f in $HOME/ClimateInform/docs/pages/forecasts/[0-9][0-9][0-9][0-9].html; do
     ARCHIVE_HTML="${ARCHIVE_HTML}    <tr><td><a href=\"pages/forecasts/${YEAR}.html\">${YEAR} Forecasts</a></td></tr>\n"
 done
 
-pwd
-ls -l
-
-awk -v new="$ARCHIVE_HTML" '
+awk '
   /<!-- ARCHIVE-START -->/ { print; print new; skip=1; next }
   /<!-- ARCHIVE-END -->/   { skip=0 }
   skip==0 { print }
-' docs/index.html > index.tmp && mv index.tmp docs/index.html
+' "$REPO_ROOT/docs/index.html" > "$REPO_ROOT/docs/index.tmp" \
+    && mv "$REPO_ROOT/docs/index.tmp" "$REPO_ROOT/docs/index.html"
 
 sed -i "s|<a href=\"pages/forecasts/[0-9]\{4\}.html\">Latest Forecasts</a>|<a href=\"pages/forecasts/${YEAR}.html\">Latest Forecasts</a>|" "$REPO_ROOT/docs/index.html"
 
