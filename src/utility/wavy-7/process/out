@@ -1,0 +1,101 @@
+2,3c2,4
+< C   input :  topog and z, div, vor on p-sfc
+< C   output:  lnp, div, vor, t on sig-sfc
+---
+> C
+> C     
+> C
+5,6c6,9
+<       PARAMETER (KMAX=18,KMXI=14 ,MAND=14,
+<      *LONG=128,LATG=102,
+---
+> CX    PARAMETER (KMAX=18,KMXI=12,MAND=15,
+>       PARAMETER (KMAX=18,KMXI=7 ,MAND=7,
+> CX   *LONG=128,LAG=102,
+>      *LONG=48, LATG=40,
+14c17
+<       DIMENSION TMPP2(LONG,LATG,KMXI),TMPS2(LONG,LATG,KMAX)
+---
+>       DIMENSION NUM(28)     
+27,29c30,32
+< c     OPEN(10 ,FILE='ztopr15sm.grads',
+< c    ' FORM='UNFORMATTED',ACCESS='DIRECT',recl=LONG*LATG)
+<       OPEN(20 ,FILE='/data/tmp/peng/zdivvor.ec9293djf',
+---
+>       OPEN(10 ,FILE='ztopr15sm.grads',
+>      ' FORM='UNFORMATTED',ACCESS='DIRECT',recl=LONG*LATG)
+>       OPEN(20 ,FILE='/data/pool/peng/ecclim.uvz',
+31c34
+<       OPEN(60,FILE='/data/gcmprd/peng/obs/sghgrd.ec9293djf',
+---
+>       OPEN(60,FILE='/data/pool/peng/ptosig.grads',
+34,35c37,39
+<       DATA PMAND  /1000.,  850., 700., 500., 400., 300., 250.,          
+<      1              200., 150., 100.,  70.,  50., 30., 10./   
+---
+> C     DATA PMAND  /1000.,  850., 700., 500., 400., 300., 250.,          
+> C    1                200., 150., 100.,  70.,  50./   
+>       DATA PMAND  /1000., 850., 700., 500., 300., 200., 100./          
+41,47c45
+<       irec=0
+<       irec=irec+1
+<       READ(20,rec=1) TOPOG                                                  
+<       do 11 j=1,latg
+<       do 11 i=1,long
+<         TOPOG(i,j)=TOPOG(i,j)/9.8
+<    11 CONTINUE
+---
+>       READ(10,rec=1) TOPOG                                                  
+49,58c47,48
+< CX....READ GEOPOTENTIAL HEIGHT
+<       DO K=1,KMXI
+<       irec=irec+1
+<       READ(20,rec=irec) FIELD        
+<       DO 376 I=1,LONG                                                 
+<       DO 376 J=1,LATG                                                 
+<       GEOPP(I,J,K)=FIELD(I,J)/9.8                                          
+<  376  CONTINUE                                                          
+<       END DO
+< C.....READ DIV
+---
+>       irec=0
+> C.....READ U-VELOCITY
+67c57
+< C.....READ VOR
+---
+> C.....READ V-VELOCITY
+76c66
+< C.....READ TMP
+---
+> CX....READ GEOPOTENTIAL HEIGHT
+80,83c70,73
+<       DO 375 I=1,LONG                                                 
+<       DO 375 J=1,LATG                                                 
+<       TMPP2(I,J,K)=FIELD(I,J)                                              
+<  375  CONTINUE                                                          
+---
+>       DO 376 I=1,LONG                                                 
+>       DO 376 J=1,LATG                                                 
+>       GEOPP(I,J,K)=FIELD(I,J)                                              
+>  376  CONTINUE                                                          
+85c75
+<       write(6,*) 'have read top,z,div and vor'
+---
+>       write(6,*) 'have read u,v & z'
+95,96c85
+< 40       TMPP(LO,LAT,K)=TC(K)                           
+< C40       TMPP(LO,LAT,K)=TMPP2(LO,LAT,K)                                                  
+---
+> 40       TMPP(LO,LAT,K)=TC(K)                                                  
+134c123
+< C..... write out DIV
+---
+> C..... write out U
+143c132
+< C..... write out VOR
+---
+> C..... write out V
+152c141
+< C..... write out diagnostic TMP
+---
+> C..... write out TMP

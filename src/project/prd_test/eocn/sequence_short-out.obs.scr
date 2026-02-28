@@ -1,0 +1,51 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/prd_test/eocn
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/prd_test
+#
+ var=temp
+#var=prec
+nyear=26
+eyear=2016
+#
+model=wmo
+#
+ncd=102
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/sequence_short-out.f $tmp/sequence.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nyr=$nyear,ncd=$ncd)
+eof
+#
+#
+gfortran -o sequence.x sequence.f
+echo "done compiling"
+#
+ ln -s $datadir/${model}obs_${var}.jfm.1991-$eyear.i3e  fort.11
+ ln -s $datadir/${model}obs_${var}.fma.1991-$eyear.i3e  fort.12
+ ln -s $datadir/${model}obs_${var}.mam.1991-$eyear.i3e  fort.13
+ ln -s $datadir/${model}obs_${var}.amj.1991-$eyear.i3e  fort.14
+ ln -s $datadir/${model}obs_${var}.mjj.1991-$eyear.i3e  fort.15
+ ln -s $datadir/${model}obs_${var}.jja.1991-$eyear.i3e  fort.16
+ ln -s $datadir/${model}obs_${var}.jas.1991-$eyear.i3e  fort.17
+ ln -s $datadir/${model}obs_${var}.aso.1991-$eyear.i3e  fort.18
+ ln -s $datadir/${model}obs_${var}.son.1991-$eyear.i3e  fort.19
+ ln -s $datadir/${model}obs_${var}.ond.1991-$eyear.i3e  fort.20
+ ln -s $datadir/${model}obs_${var}.ndj.1991-$eyear.i3e  fort.21
+ ln -s $datadir/${model}obs_${var}.djf.1991-$eyear.i3e  fort.22
+#
+ ln -s $datadir/${model}obs_${var}_102CD.jfm1995-djf$eyear.i3e  fort.30
+ ln -s $datadir/${model}obs_${var}_102CD.jfm1995-djf$eyear.txt  fort.40
+#
+ ln -s $datadir/${model}obs_${var}_102CD.1995-$eyear.winter.i3e  fort.41
+ ln -s $datadir/${model}obs_${var}_102CD.1995-$eyear.summer.i3e  fort.42
+#
+sequence.x
+#
+

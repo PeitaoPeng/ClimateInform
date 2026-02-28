@@ -1,0 +1,64 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ lcdir=/cpc/home/wd52pp/project/attr/telcon
+ datadir=/cpc/home/wd52pp/data/attr/telcon
+ tmp=/cpc/home/wd52pp/tmp
+#
+var=cmap
+ts=rsd_rpc
+mtx=var
+tmax=42 
+nmod=7
+#
+cp corr.cmap_pc2cmap.f $tmp/corr.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(imx=144,jmx=72)
+       parameter(ltime=$tmax)
+       parameter(nmod=$nmod)
+       parameter(iskip_idx=0)
+       parameter(iskip_fld=0)
+eof
+#
+
+for season in djf; do
+\rm fort.*
+
+   ln -s $datadir/$ts.cmap.djf.tp.$mtx.wtd.gr fort.10
+   ln -s $datadir/$var.djf.80-cur.gr fort.11
+   ln -s $datadir/corr.cmap${ts}_vs_$var.djf.wtd.gr fort.50
+#
+gfortran corr.f
+a.out
+#
+cat > $datadir/corr.cmap${ts}_vs_$var.djf.wtd.ctl<<EOF2
+dset ^corr.cmap${ts}_vs_$var.djf.wtd.gr
+undef -999.0
+title Realtime Surface Obs
+xdef  144 linear 1.25 2.5
+ydef   72 linear -88.75 2.5
+zdef    1 levels 1
+tdef 999 linear jan1980  1yr
+vars   14
+cor1   0 99 corr of mode 2
+reg1   0 99 regr of mode 2
+cor2   0 99 corr of mode 2
+reg2   0 99 regr of mode 2
+cor3   0 99 corr of mode 3
+reg3   0 99 regr of mode 3
+cor4   0 99 corr of mode 4
+reg4   0 99 regr of mode 4
+cor5   0 99 corr of mode 5
+reg5   0 99 regr of mode 5
+cor6   0 99 corr of mode 6
+reg6   0 99 regr of mode 6
+cor7   0 99 corr of mode 6
+reg7   0 99 regr of mode 6
+endvars
+EOF2
+#
+done

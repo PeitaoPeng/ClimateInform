@@ -1,0 +1,44 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ lcdir=/export/hobbes/wd52pp/project/modes/src
+ datadir=/export-12/cacsrv1/wd52pp/modes/data
+ datadir2=/export-12/cacsrv1/wd52pp/modes
+ tmp=/export/hobbes/wd52pp/tmp
+#
+ amo=us
+ cp corr_reof_vs_sst.f $tmp/.
+ cd $tmp
+ \rm fort.*
+#
+cat > parm.h << eof
+       parameter(imx=128,jmx=64,mode=19)
+       parameter(ltime=49)
+eof
+#
+   ln -s $datadir2/idx_rcoef.z200.jfm.51-99.4idx_$amo.gr fort.11
+   ln -s $datadir/mask.gr                      fort.12
+   ln -s $datadir/obs.sst.jfm.51-99.gr         fort.13
+ 
+   ln -s $datadir2/corr.idx_rcoef.vs.sst.51-99jfm.4idx_$amo.gr  fort.50
+#
+#
+ f77  corr_reof_vs_sst.f
+ a.out > $lcdir/out
+#
+cat>$datadir2/corr.idx_rcoef.vs.sst.51-99jfm.4idx_$amo.ctl<<EOF
+dset ^corr.idx_rcoef.vs.sst.51-99jfm.4idx_$amo.gr
+undef -999.0
+title Realtime Surface Obs
+xdef  128 linear    0.000  2.8125
+ydef   64 linear    -87.88 2.79
+zdef   01 LEVELS 1
+tdef 999 linear jan1951  1yr
+vars   2
+cor   0 99 corr
+reg   0 99 regr
+endvars
+EOF 
+

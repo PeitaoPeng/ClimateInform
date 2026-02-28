@@ -1,0 +1,30 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ lcdir=/export/hobbes/wd52pp/utility/intpl
+ tmp=/export/hobbes/wd52pp/tmp
+ datadir1=/export-6/cacsrv1/wd52pp/CFS
+ datadir2=/export-6/cacsrv1/wd52pp/CFS
+#
+ nmonth=28
+#
+  /bin/rm $tmp/*.*
+cp $lcdir/REG73_2_CD102.f $tmp/.
+cp $lcdir/setxy.f       $tmp/.
+cd $tmp
+#
+   ln -s $lcdir/us.cd102.latlon.dat  fort.10
+#
+   ln -s $datadir1/t2m_esm_2003_2006_DJF.dat   fort.11
+   ln -s $datadir2/t2m_esm_2003_2006_DJF.102cd.txt  fort.61
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth)
+eof
+#
+ f77  REG73_2_CD102.f setxy.f
+ a.out
+#
+ja -s

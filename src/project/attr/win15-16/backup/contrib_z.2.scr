@@ -1,0 +1,60 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/djf15-16
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/attr/djf15-16
+#
+var=z200
+model=R1 
+tmax=67 
+tmaxsst=67 
+nmod=5 
+hs=NH    # hemisphere 
+#
+cp $lcdir/contrib_z.2.f $tmp/rec.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$tmax)
+       parameter(imx=144,jmx=73)
+       parameter(nmod=$nmod)
+eof
+#
+for season in djf; do
+#
+\rm $tmp/fort.*         
+#
+gfortran -o rec.x rec.f
+echo "done compiling"
+
+#
+ ln -s $datadir/$var.$season.1949-cur.gr                 fort.10
+ ln -s $datadir/rsd_eof.$var.$model.$season.$hs.gr  fort.11
+ ln -s $datadir/idx_pc.$var.$model.$season.$hs.gr   fort.12
+
+ ln -s $datadir/${var}_16.$model.$season.contrib.2.gr       fort.50
+#
+rec.x
+#
+cat>$datadir/${var}_16.$model.$season.contrib.2.ctl<<EOF
+dset $datadir/${var}_16.$model.$season.contrib.2.gr
+undef -9999.0
+title contribution from each mode
+xdef  144 linear 0 2.5
+ydef   73 linear -90 2.5
+zdef    1 levels 200
+tdef 999 linear jan1949  1yr
+vars   6
+obs 0 99 obs z200(m)
+n34 0 99 from ENSO(m)
+c1  0 99 from ao
+c2  0 99 trd
+c3  0 99 trd
+c4  0 99 trd
+endvars
+EOF
+#
+done
+

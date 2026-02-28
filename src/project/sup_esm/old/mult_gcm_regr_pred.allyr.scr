@@ -1,0 +1,47 @@
+#!/bin/sh
+
+set -eaux
+
+filedir=/export-6/sgi9/wd52pp/project/sup_esm
+datadir=/export-6/cacsrv1/wd52pp
+TMPDIR=/export-6/sgi9/wd52pp/tmp/test
+
+cp $filedir/mult_gcm_regr_pred.allyr.tst.f $TMPDIR/regr.f
+cp $filedir/mul_regr.s.f               $TMPDIR/regr.s.f
+cd $TMPDIR
+
+#
+f77 -o regr.x regr.f regr.s.f
+echo "done compiling"
+
+/bin/rm $TMPDIR/fort.*
+#
+#ln -s $datadir/obs/reanl/z500_5099jfm.reg.i3e         fort.10
+#ln -s $datadir/obs/reanl/z500_5094jfm_tpfrcd.reg.i3e  fort.11
+#ln -s $datadir/b9x/z500_5094jfm.esm.reg.obsc.i3e      fort.20
+#ln -s $datadir/echam/z500_5094jfm.esm.reg.obsc.i3e    fort.30
+#ln -s $datadir/ccm3/z500_5094jfm.esm.reg.obsc.i3e     fort.40
+#ln -s $datadir/gfdl/z500_5094jfm.esm.reg.obsc.i3e     fort.50
+#
+ ln -s $datadir/obs/reanl/z500_5099jfm.reg.i3e          fort.10
+ ln -s $datadir/obs/reanl/z500_5094jfm_tpfrcd.reg.i3e   fort.11
+ ln -s $datadir/b9x/z500_5094jfm.esm.dtd.reg.i3e        fort.20
+ ln -s $datadir/echam/z500_5094jfm.esm.reg.i3e          fort.30
+ ln -s $datadir/ccm3/z500_5094jfm.esm.reg.i3e           fort.40
+ ln -s $datadir/gfdl/z500_5094jfm.esm.reg.i3e           fort.50
+
+#ln -s $datadir/obs/reanl/z500_5194.nocycle.gr            fort.10
+#ln -s $datadir/obs/reanl/z500_5194.reg.gr              fort.11
+#ln -s $datadir/b9x/z500_5194.esm.nocycle.gr              fort.20
+#ln -s $datadir/echam/z500_5194.esm.nocycle.gr            fort.30
+#ln -s $datadir/ccm3/z500_5194.esm.nocycle.gr             fort.40
+#ln -s $datadir/gfdl/z500_5194.esm.nocycle.gr             fort.50
+
+ln -s $datadir/sup_esm/z500jfm.i3e             fort.60
+ln -s $datadir/sup_esm/acc_in_t.i3e             fort.70
+ln -s $datadir/sup_esm/out                             fort.15
+ 
+unlimit
+regr.x
+cp $datadir/sup_esm/out $filedir/out
+ja -s

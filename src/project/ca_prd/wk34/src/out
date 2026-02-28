@@ -1,0 +1,134 @@
+53c53
+<       dimension    obssat(imt,jmt),obssatw34(imt,jmt,npp,nseason)
+---
+>       dimension    obssat(imt,jmt)
+59,62d58
+<       dimension w34avg(imt,jmt),w34std(imt,jmt)
+<       dimension obsavg(imt,jmt),obsstd(imt,jmt)
+<       dimension satclm(imt,jmt),satocn(imt,jmt)
+<       dimension stdrat(imt,jmt)
+93d88
+<       open(unit=87,form='unformatted',access='direct',recl=4*imt*jmt) !real forecast
+608d602
+< c     write(6,*) 'for sat data'
+617d610
+< c          obssatw34(i,j,ip,is)=obssat(i,j)
+622d614
+< 
+624d615
+< c     write(6,*) 'write out prd'
+633d623
+< c     write(6,*) 'after call rmsd1'
+718,818d707
+< c
+< cc statistics(mena and stdv) of wk34 prd & OBS 
+< c
+<       write(6,*) 'statistics(mena and stdv) of wk34 prd & OBS'
+<       do i=1,imt
+<       do j=1,jmt
+<         w34avg(i,j)=0.
+<         obsavg(i,j)=0.
+<         do is=1,30
+<         do iw=1,npp
+<         w34avg(i,j)=w34avg(i,j)+prdsatw34(i,j,iw,is)
+<         obsavg(i,j)=obsavg(i,j)+obssatw34(i,j,iw,is)
+<         enddo
+<         enddo
+<         w34avg(i,j)=w34avg(i,j)/float(npp*30)
+<         obsavg(i,j)=obsavg(i,j)/float(npp*30)
+<       enddo
+<       enddo
+< c
+<       do i=1,imt
+<       do j=1,jmt
+<         if(abs(t2d(i,j)).lt.999) then
+<         w34std(i,j)=0.
+<         obsstd(i,j)=0.
+<         do is=1,30
+<         do iw=1,npp
+<         w34std(i,j)=w34std(i,j)+(prdsatw34(i,j,iw,is)-w34avg(i,j))*
+<      &(prdsatw34(i,j,iw,is)-w34avg(i,j))
+<         obsstd(i,j)=obsstd(i,j)+(obssatw34(i,j,iw,is)-obsavg(i,j))*
+<      &(obssatw34(i,j,iw,is)-obsavg(i,j))
+<         enddo
+<         enddo
+<         w34std(i,j)=sqrt(w34std(i,j)/float(npp*30))
+<         obsstd(i,j)=sqrt(obsstd(i,j)/float(npp*30))
+<         else
+<         w34std(i,j)=t2d(i,j)
+<         obsstd(i,j)=t2d(i,j)
+<         endif
+<       enddo
+<       enddo
+< c
+< cc OCN of sat
+< c
+< c 30-yr clim
+<       write(6,*) 'OCN'
+<       do i=1,imt
+<       do j=1,jmt
+<         satclm(i,j)=0.
+<         do is=1,30
+<         do iw=1,npp
+<         satclm(i,j)=satclm(i,j)+t4d(i,j,iw,is)
+<         enddo
+<         enddo
+<         satclm(i,j)=satclm(i,j)/float(npp*30)
+<       enddo
+<       enddo
+< c past 8 year avg
+<       do i=1,imt
+<       do j=1,jmt
+<         satocn(i,j)=0.
+<         do is=1,kocn
+<         do iw=iws,iwe-4
+<         satocn(i,j)=satocn(i,j)+allsat(i,j,iw,nyear-is+1)
+<         enddo
+<         enddo
+<         satocn(i,j)=satocn(i,j)/float(npp*kocn)
+<       enddo
+<       enddo
+< c ocn prd(past 8-yr avg minus WMO 30-yr clim)
+<       do i=1,imt
+<       do j=1,jmt
+<         if(abs(t2d(i,j)).lt.999) then
+<         satocn(i,j)=satocn(i,j)-satclm(i,j)
+<         else
+<         satocn(i,j)=t2d(i,j)
+<         endif
+<       enddo
+<       enddo
+< c amplitude adjusted prd
+<       write(6,*) 'amplitude adjusted prd'
+<       do i=1,imt
+<       do j=1,jmt
+<         if(abs(t2d(i,j)).lt.999) then
+<         prdsat(i,j)=prd2dsatw34(i,j)*obsstd(i,j)/w34std(i,j)
+<         else
+<         prdsat(i,j)=t2d(i,j)
+<         endif
+<       enddo
+<       enddo
+< c combine psi-based prd with ocn
+<       write(6,*) 'combine psi-based prd with ocn'
+<       do i=1,imt
+<       do j=1,jmt
+<         twk2d(i,j)=prdsat(i,j)+satocn(i,j)
+<       enddo
+<       enddo
+<       write(87,rec=1) prdsat
+<       write(87,rec=2) satocn
+<       write(87,rec=3) twk2d
+<       write(87,rec=4) obsstd
+<       
+1076,1085d964
+<       subroutine pass_2d_2_4d(w2d,w4d,n1,n2,n3,n4,ip,is)
+<       dimension w2d(n1,n2),w4d(n1,n2,n3,n4)
+<       do j=1,n2
+<       do i=1,n1
+<       w4d(i,j,ip,is)=w2d(i,j)
+<       enddo
+<       enddo
+<       return
+<       end
+< 

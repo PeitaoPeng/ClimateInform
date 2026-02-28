@@ -1,0 +1,40 @@
+#!/bin/sh
+
+set -eaux
+
+# comp based on silimar SST
+
+lcdir=/cpc/home/wd52pp/project/attr/win13-14
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/para
+#
+var=z200
+nyr=65
+nmon=5 # mon# of each season
+area=NH
+#
+cp $lcdir/comp.z200_sst.obs.f $tmp/proj.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nyr=$nyr,nmon=$nmon)
+       parameter(imx=144,jmx=73)
+       parameter(imx2=180,jmx2=89)
+       parameter(lons=60,lone=130,lats=40,late=50) !trop Pacific (10S-10N)
+eof
+#
+\rm $tmp/fort.*         
+#
+gfortran -o proj.x proj.f 
+echo "done compiling"
+
+#
+ln -s $lcdir/z200.ndjfm1949-curr.mon.gr  fort.11
+ln -s $lcdir/ersst.ndjfm1949-2013.mon.gr  fort.12
+ln -s $lcdir/z200.comp.obs.2.gr  fort.50
+ln -s $lcdir/sst.comp.obs.2.gr  fort.60
+ln -s $lcdir/cor_sst.obs.gr  fort.70
+#
+proj.x > $lcdir/comp_z200_sst.obs.$area.out
+#
+

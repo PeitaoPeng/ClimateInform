@@ -1,0 +1,21 @@
+
+1. have hcst ind data from Wang's archive
+   hcst_season.jfm1982-djf2009.ind.sh
+   
+2. convert ind data to 2x2 for reducing size
+   regrid.jfm1982-djf2009.ind.gs
+
+3. have hcst ensemble mean from 2x2 ind data
+   hcst_season.jfm1982-djf2009.esm.sh
+
+4. have hcst clim (for each ensm), anom and tercil boundaries from above obtained 2x2 ind and esm data
+   tercile_boundary.sh
+
+5. have prob and ctg forecast
+   2_prob_categ.scr
+c
+c============================================================
+c
+Note: The above is based on 1982-2009 climatology. 
+For using 1982-2004 climatology, use tercile_boundary.sh2 in step 4 
+and 2_prob_categ.scr2 in step 5.

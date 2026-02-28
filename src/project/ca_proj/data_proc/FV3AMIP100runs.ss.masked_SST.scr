@@ -1,0 +1,98 @@
+#!/bin/sh
+
+set -eaux
+#cccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+# mask out SST
+#ccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+ 
+lcdir=/cpc/home/wd52pp/project/ca_proj/data_proc
+tmp=/cpc/home/wd52pp/tmp
+if [ ! -d $tmp ] ; then
+  mkdir -p $tmp
+fi
+
+datadir=/cpc/home/wd52pp/data/ca_proj
+#
+cd $tmp
+#
+
+ybgn=1979
+yend=2022
+totyr=`expr $yend - 1979 `
+
+#
+#for ss in djf jja; do
+for ss in djf mam jja son; do
+#
+# data starting from dec1947
+if [ $ss = djf ]; then its=385; mons=dec; fi
+if [ $ss = mam ]; then its=376;  mons=mar; fi 
+if [ $ss = jja ]; then its=379;  mons=jun; fi 
+if [ $ss = son ]; then its=382;  mons=sep; fi 
+#
+filein=FV3AMIP_$ss.sst_anom.yb1979
+fileout=FV3AMIP_$ss.sst_anom.yb1979.masked
+#
+cat >mask.sst.f<<EOF
+      parameter(ltime=$totyr)
+      parameter(imx=360,jmx=180)
+      dimension mask(imx,jmx)
+      dimension fin(imx,jmx),out(imx,jmx)
+
+      open(unit=10,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(unit=11,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(unit=20,form='unformatted',access='direct',recl=4*imx*jmx)
+c
+      read(10,rec=1) mask
+
+      do it=1,ltime
+
+      read(11,rec=it) fin
+
+      do i=1,imx
+      do j=1,jmx
+
+        if(mask(i,j).lt.-90) then 
+          out(i,j)=-999.0
+        else
+          out(i,j)=fin(i,j)
+        endif
+
+      enddo
+      enddo
+
+      write(20,rec=it) out
+
+      enddo
+
+      stop
+      end
+EOF
+#
+\rm fort.*
+
+   ln -s /cpc/home/wd52pp/utility/mask/landsea.mask.360x180.dat fort.10
+   ln -s $datadir/$filein.gr   fort.11
+   ln -s $datadir/$fileout.gr  fort.20
+#
+gfortran mask.sst.f
+#f77 mask.sst.f
+a.out
+#
+cat>$fileout.ctl<<EOF
+dset ^$fileout.gr
+UNDEF -999.0
+TITLE AMIP
+TITLE GFSFV3amip 2D data
+XDEF 360 LINEAR 0.5 1.
+YDEF 180 LINEAR -89.5 1.
+ZDEF   1 levels 1
+TDEF $totyr  LINEAR ${mons}1979  1yr
+VARS 1
+sst 0 99  masked sst
+ENDVARS
+EOF
+
+mv $fileout.* $datadir
+#
+done  # ss loop

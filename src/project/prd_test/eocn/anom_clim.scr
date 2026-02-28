@@ -1,0 +1,94 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/prd_test/eocn
+tmp=/cpc/home/wd52pp/tmp
+datadir1=/cpc/home/wd52pp/data/LF_prd
+datadir2=/cpc/home/wd52pp/data/prd_test
+#
+eyear=2012
+nyear=83
+ var=temp
+#var=prcp
+#
+#
+cp $lcdir/anom_clim.f $tmp/.
+cd $tmp
+
+#for season in jfm fma mam amj mjj jja jas aso son ond ndj djf; do
+for season in  mam jja son djf; do
+
+/bin/rm $tmp/fort.*         
+
+#
+if [ "$season" = jfm ]; then mons=1; fi
+if [ "$season" = fma ]; then mons=2; fi
+if [ "$season" = mam ]; then mons=3; fi
+if [ "$season" = amj ]; then mons=4; fi
+if [ "$season" = mjj ]; then mons=5; fi
+if [ "$season" = jja ]; then mons=6; fi
+if [ "$season" = jas ]; then mons=7; fi
+if [ "$season" = aso ]; then mons=8; fi
+if [ "$season" = son ]; then mons=9; fi
+if [ "$season" = ond ]; then mons=10; fi
+if [ "$season" = ndj ]; then mons=11; fi
+if [ "$season" = djf ]; then mons=12; fi
+#
+cat > parm.h << eof
+       parameter(mons=$mons)
+       parameter(nyear=$nyear)
+eof
+#
+gfortran -o anom_clim.x anom_clim.f
+echo "done compiling"
+#
+ ln -s $datadir1/${var}_102.txt                         fort.10
+ ln -s $datadir2/${var}_102_anom_1931-$eyear.$season.txt  fort.40
+ ln -s $datadir2/${var}_102_anom_1931-$eyear.$season.gr   fort.45
+ ln -s $datadir2/${var}_usavg_1931-$eyear.mon.gr  fort.50
+ ln -s $datadir2/${var}_usavg_1931-$eyear.ann.gr  fort.51
+ ln -s $datadir2/${var}_usavg_1931-$eyear.$season.gr  fort.60
+#
+anom_clim.x > $lcdir/out
+#
+cat>$datadir2/${var}_usavg_1931-$eyear.$season.ctl<<EOF
+dset ^${var}_usavg_1931-$eyear.$season.gr
+undef 999.0
+title Realtime Surface Obs
+xdef    1 linear    0.000  1
+ydef    1 linear    0.000  1
+zdef    1 levels 500
+tdef 999 linear jan1931  1yr
+vars   1
+t    0 99 102 cd avg ${var}
+endvars
+EOF
+#
+done
+#
+cat>$datadir2/${var}_usavg_1931-$eyear.mon.ctl<<EOF
+dset ^${var}_usavg_1931-$eyear.mon.gr
+undef 999.0
+title Realtime Surface Obs
+xdef    1 linear    0.000  1
+ydef    1 linear    0.000  1
+zdef    1 levels 500
+tdef 999 linear jan1931  1mon
+vars   1
+t    0 99 102 cd avg ${var}
+endvars
+EOF
+#
+cat>$datadir2/${var}_usavg_1931-$eyear.ann.ctl<<EOF
+dset ^${var}_usavg_1931-$eyear.ann.gr
+undef 999.0
+title Realtime Surface Obs
+xdef    1 linear    0.000  1
+ydef    1 linear    0.000  1
+zdef    1 levels 500
+tdef 999 linear jan1931  1yr
+vars   1
+t    0 99 102 cd avg ${var}
+endvars
+EOF

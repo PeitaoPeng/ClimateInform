@@ -1,0 +1,28 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ datadir=/export-6/cacsrv1/wd52pp/LF_prd
+ lcdir=/export-6/sgi9/wd52pp/project/LF_prd
+ tmp=/export-6/sgi9/wd52pp/tmp
+#
+ cp skill_2D_2_1D.f $tmp
+ cd $tmp
+#
+cat > parm.h << eof
+       parameter(imax=102)
+       parameter(iskip=0)
+eof
+#
+ f77  skill_2D_2_1D.f
+#
+#
+ \rm fort.*
+#  ln -s $datadir/skill_cd_grid_ocn_prd_temp_1931-2001.son.i3e   fort.10
+   ln -s $datadir/ocn_pc_prd_temp.djf.1931-2001.i3e   fort.10
+#
+#
+ a.out 
+#
+ja -s

@@ -1,0 +1,14 @@
+#!/bin/bash
+HOST='ftp.example.com'
+USER='yourusername'
+PASSWD='yourpassword'
+FILE_TO_DOWNLOAD='/path/to/remote/file'
+LOCAL_FILE_NAME='local_file_name'
+ftp -n $HOST <<END_SCRIPT
+quote USER $USER
+quote PASS $PASSWD
+get $FILE_TO_DOWNLOAD $LOCAL_FILE_NAME
+quit
+END_SCRIPT
+exit 0
+

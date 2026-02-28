@@ -1,0 +1,150 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/cpc_skill/vfc
+tmp=/export/hobbes/wd52pp/tmp
+datadir1=/export-12/cacsrv1/wd52pp/cpc_vfc/0data
+datadir2=/export-12/cacsrv1/wd52pp/cpc_vfc/skill
+#
+var=temp
+nseason=147
+nyears=12
+tool=offi
+#
+/bin/rm $tmp/fort.*         
+cp $lcdir/heidke.MC.old.f $tmp/heidke.MC.f
+cp $lcdir/hss_t.MC.s.f $tmp/.
+cp $lcdir/hss_s.MC.s.f $tmp/.
+cp $lcdir/hss_stat.s.f $tmp/.
+cp $lcdir/lag_corr.s.f $tmp/.
+cp $lcdir/hss_all.MC.s.f $tmp/.
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nss=$nseason)
+       parameter(nyr=$nyears)
+       parameter(imx=36,jmx=19)
+       parameter(nsp=50000)
+c      parameter(nsp=1000)
+eof
+#
+#
+f77 -o heidke.x heidke.MC.f hss_t.MC.s.f hss_s.MC.s.f hss_all.MC.s.f hss_stat.s.f lag_corr.s.f
+echo "done compiling"
+
+#
+ ln -s $datadir1/mask_2x2.data    fort.11
+ ln -s $datadir1/temp_forecast.bi  fort.12
+#ln -s $datadir1/tempprd_cons.95-07.gr   fort.12
+ ln -s $datadir1/temp_seasonal_verif_1961.bi  fort.13
+ ln -s $datadir1/temp_seasonal_verif.bi  fort.14
+ ln -s $datadir2/heidke_t2m.95-07.$tool.gr  fort.51
+ ln -s $datadir2/heidke_t2m_t.95-07.$tool.gr  fort.52
+ ln -s $datadir2/heidke_cyc_t2m.95-07.$tool.gr  fort.53
+ ln -s $datadir2/non-EC_heidke.vs.non-EC_season.$tool.gr  fort.54
+ ln -s $datadir2/hss-pdf.gr  fort.55
+#
+heidke.x > $lcdir/out
+#
+
+cat>$datadir2/heidke_t2m.95-07.$tool.ctl<<EOF
+dset $datadir2/heidke_t2m.95-07.$tool.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    1 linear    0.000  1
+ydef    1 linear    0.000  5
+zdef    1 levels 500
+tdef 999 linear feb1995  1mon
+vars   9
+hs1   0 99 hss of all grid points
+hs2   0 99 hss of non-EC
+nec   0 99 percent of nonec grids
+mhs1  0 99 mean hs1 in MC
+mhs2  0 99 mean hs2 in MC
+sdv1  0 99 stdv of hs1 in MC
+sdv2  0 99 stdv of hs2 in MC
+rank1 0 99 rank of hs1 in MC
+rank2 0 99 rank of hs2 in MC
+endvars
+EOF
+
+cat>$datadir2/heidke_cyc_t2m.95-07.$tool.ctl<<EOF
+dset $datadir2/heidke_cyc_t2m.95-07.$tool.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    1 linear    0.000  1
+ydef    1 linear    0.000  5
+zdef    1 levels 500
+tdef 999 linear jan1996  1mon
+vars   3
+hs1   0 99 Type of Ob
+hs2   0 99 Type of Ob
+nec   0 99 percent of nonec grids
+endvars
+EOF
+
+cat>$datadir2/heidke_t2m_t.95-07.$tool.ctl<<EOF
+dset $datadir2/heidke_t2m_t.95-07.$tool.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef   36 linear -130 2
+ydef   19 LINEAR   20 2
+zdef    1 levels 500
+tdef 999 linear feb1995  1mon
+vars   25
+hs1   0 99 all ss
+hs2   0 99 all ss
+nec   0 99 all ss
+mhs1  0 99 mean MC HSS1
+mhs2  0 99 mean MC HSS1
+sdv1  0 99 stdv of MC HSS1
+sdv2  0 99 stdv of MC HSS2
+sg1   0 99 % bigger
+sg2   0 99 % bigger
+hs1s  0 99 summer
+hs2s  0 99 summer
+mhs1s  0 99 mean MC HSS1
+mhs2s  0 99 mean MC HSS1
+sdv1s  0 99 stdv of MC HSS1
+sdv2s  0 99 stdv of MC HSS2
+sg1s   0 99 % bigger for summer
+sg2s   0 99 % bigger for summer
+hs1w  0 99 winter
+hs2w  0 99 winter
+mhs1w  0 99 mean MC HSS1
+mhs2w  0 99 mean MC HSS1
+sdv1w  0 99 stdv of MC HSS1
+sdv2w  0 99 stdv of MC HSS2
+sg1w   0 99 % bigger for winter
+sg2w   0 99 % bigger for winter
+endvars
+EOF
+
+cat>$datadir2/non-EC_heidke.vs.non-EC_season.$tool.ctl<<EOF
+dset $datadir2/non-EC_heidke.vs.non-EC_season.$tool.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    232 linear    0.000  1
+ydef    1 linear    0.000  5
+zdef    1 levels 500
+tdef 999 linear jan1996  1mon
+vars   2
+hs2   0 99 Type of Ob
+nec   0 99 percent of nonec grids
+endvars
+EOF
+
+cat>$datadir2/ran-pdf.ctl<<EOF
+dset $datadir2/ran-pdf.gr
+undef -9999.0
+title Histgram of MC hs1
+xdef   121 linear 1 1
+ydef   1 LINEAR   20 2
+zdef   1 levels 500
+tdef 2 linear feb1995  1mon
+vars   1
+ran   0 99 all ss
+endvars
+EOF
+

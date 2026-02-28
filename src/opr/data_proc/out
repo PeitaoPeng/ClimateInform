@@ -1,0 +1,44 @@
+5c5
+< lcdir=/home/ppeng/ClimateInform/develop/data_proc
+---
+> lcdir=/home/ppeng/ClimateInform/src/develop/data_proc
+241,242c241,242
+< nts=2  # feb1948
+< nte=`expr $tmax - 1` # mid-mon of the latest season
+---
+> nts=1  # feb1948
+> nte=`expr $tmax` # mid-mon of the latest season
+244c244
+< outfile=${sst_analysis}.3mon.1948-curr.total.1x1
+---
+> outfile=${sst_analysis}.mon.1948-curr.total.1x1
+262,263c262,263
+< *'d ave(sst-clm,t-1,t+1)'
+< 'd ave(sst,t-1,t+1)'
+---
+> *'d sst-clm'
+> 'd sst'
+278c278
+< tdef   9999 linear feb1948 1mo
+---
+> tdef   9999 linear jan1948 1mo
+287,289c287,289
+< outfile2=${sst_analysis}.3mon.1948-curr.total
+< nts=1  
+< nte=`expr $tmax - 2` # 3mon avgs 
+---
+> outfile2=${sst_analysis}.mon.1948-curr.total
+> nts=1
+> nte=$tmax
+298c298
+< 'open /home/ppeng/ClimateInform/src/utility/intpl/grid.180x89.ctl'
+---
+> 'open /home/ppeng/ClimateInform/src/utility/intpl/grid.180x89.sst.ctl'
+319c319
+< tdef   9999 linear feb1948 1mo
+---
+> tdef   9999 linear Jan1948 1mo
+321c321
+< sst  1 99 3-mon mean (C)
+---
+> sst  1 99 mon mean (C)

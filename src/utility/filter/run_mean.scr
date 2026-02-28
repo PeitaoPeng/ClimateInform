@@ -1,0 +1,34 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/utility/filter
+tmp=/export-6/sgi9/wd52pp/tmp
+datadir=/export-6/cacsrv1/wd52pp/LF_prd
+#
+longtime=53
+imax=128
+jmax=64
+np=1   #3-points runing mean
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/run_mean.f $tmp/.
+cd $tmp
+unlimit
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(imax=$imax,jmax=$jmax)
+       parameter(np=$np)
+eof
+#
+#
+f77 -o run_mean.x run_mean.f
+echo "done compiling"
+
+#
+ ln -s $datadir/sst_5002jfm.ntd.i3e   fort.10
+ ln -s $datadir/sst_5002jfm.3y_rm_LP.ntd.i3e     fort.20
+ ln -s $datadir/sst_5002jfm.3y_rm_HP.ntd.i3e     fort.30
+#
+run_mean.x

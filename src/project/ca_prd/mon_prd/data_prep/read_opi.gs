@@ -1,0 +1,7 @@
+'open complete_camsopi.ctl'
+'set gxout fwrite'
+'set fwrite /export-6/cacsrv1/wd52pp/obs/prcp/opi_7901-cur.i3e'
+'set x 1 144'
+'set y 1 72'
+'set t 1 310'
+'d opi'

@@ -1,0 +1,5 @@
+
+downloading data from
+http://www.cpc.ncep.noaa.gov/products/predictions/long_range/tools/briefing/seas_veri.grid.php
+1.on web: right click for "copy link address"
+2.in datadir: wget "link address"

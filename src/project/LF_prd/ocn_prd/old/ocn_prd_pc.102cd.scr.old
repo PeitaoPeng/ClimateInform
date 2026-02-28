@@ -1,0 +1,69 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/LF_prd/ocn_prd
+tmp=/export/hobbes/wd52pp/tmp
+datadir=/export-12/cacsrv1/wd52pp/LF_prd
+#
+longtime=75
+ntprd=44
+mode=6
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/ocn_prd_pc.102cd.f $tmp/.
+cd $tmp
+#
+#for season in djf jfm fma mam amj; do
+for season in fma; do
+#
+if [ "$season" = jfm ]; then mons=1; fi
+if [ "$season" = fma ]; then mons=2; fi
+if [ "$season" = mam ]; then mons=3; fi
+if [ "$season" = amj ]; then mons=4; fi
+if [ "$season" = mjj ]; then mons=5; fi
+if [ "$season" = jja ]; then mons=6; fi
+if [ "$season" = jas ]; then mons=7; fi
+if [ "$season" = aso ]; then mons=8; fi
+if [ "$season" = son ]; then mons=9; fi
+if [ "$season" = ond ]; then mons=10; fi
+if [ "$season" = ndj ]; then mons=11; fi
+if [ "$season" = djf ]; then mons=12; fi
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(imax=102)
+       parameter(mmax=$mode)
+       parameter(ntprd=$ntprd)
+       parameter(iseason=$mons)
+eof
+#
+#
+f77 -o ocn_prd_pc.x ocn_prd_pc.102cd.f
+echo "done compiling"
+
+#
+ ln -s $datadir/temp_102_anom_1931-2005.$season.txt        fort.30
+ ln -s $datadir/coef.temp_102_anom_1931-2005.$season.i3e  fort.10
+ ln -s $datadir/regr.temp_102_anom_1931-2005.$season.i3e   fort.15
+ ln -s $datadir/ocn_pc_prd_temp.$season.1931-2005.i3e     fort.20
+ ln -s $datadir/ocn_prd_and_vrfy_tcoef.1961-2005.$season.i3e     fort.25
+ ln -s $datadir/test.txt                               fort.40
+#
+ocn_prd_pc.x
+#
+/bin/rm $tmp/fort.*         
+done
+
+cat>$lcdir/plot/ocn_pc_prd_temp.$season.1931-2005.ctl<<EOF
+dset /export-12/cacsrv1/wd52pp/LF_prd/ocn_pc_prd_temp.$season.1931-2005.gr
+dtype station
+options sequential
+stnmap /export-12/cacsrv1/wd52pp/LF_prd/ocn_pc_prd_temp.$season.1931-2005.map
+undef 10e10
+title Realtime Surface Obs
+tdef 4 linear 00z01jan1998  1hr
+vars   1
+z   0 0 Type of Ob
+endvars
+EOF

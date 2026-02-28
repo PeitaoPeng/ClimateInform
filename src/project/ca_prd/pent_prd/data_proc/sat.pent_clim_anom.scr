@@ -1,0 +1,228 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/ca_prd/pent_prd/data_proc
+tmp=/cpc/home/wd52pp/tmp/test
+datadir1=/cpc/sfc_temp/ARCHIVE/GRID
+datadir2=/cpc/home/wd52pp/data/ca_prd
+#
+years=1979
+yeare=2014
+totyr=`expr $yeare - $years + 1`  # totyear of data available
+intyr=`expr $totyr - 1`  # full year number
+cyrpen=45                 # pent number of current year
+totpen=`expr $intyr \* 73 + $cyrpen`
+infile=sat.5drm.1979-curr
+outfile=pent.sat.1979-curr
+
+cd $tmp
+#
+#==========================================
+# have pent from 5-day running mean data
+#==========================================
+xdim=144
+ydim=73
+undef=-999000000
+cat>have_pent.f<<EOF
+      parameter(im=$xdim,jm=$ydim)
+      parameter(undef=$undef)
+      real*4 wk(im,jm)
+c
+      open(10,
+     &file='$infile.gr',
+     &access='direct',form='unformatted',recl=im*jm*4)
+c
+      open(50,
+     &file='$outfile.gr',
+     &form='unformatted',access='direct',recl=im*jm*4)
+c
+      ndel=5
+      ir=1
+      iw=0
+      do iy=$years,$yeare
+
+      m004=mod(iy,4)
+      m100=mod(iy,100)
+      m400=mod(iy,400)
+      kleap=0
+      if(m004.eq.0) then
+       kleap=1
+       if(m100.eq.0) then
+        kleap=0
+        if(m400.eq.0) then
+         kleap=1
+        end if
+       end if
+      end if
+
+      if(kleap.eq.1) then
+      write(6,*) 'leep year=',iy
+      endif
+
+      npen=73
+      if(iy.eq.$yeare) npen=$cyrpen
+      do ip=1,npen
+      read(10,rec=ir) wk
+      iw=iw+1
+      write(50,rec=iw) wk
+      ir=ir+ndel
+      if(kleap.eq.1.and.ip.eq.11) ir=ir+1
+
+      enddo
+      enddo
+
+      stop
+      end
+ccccccccccccccccccccccc
+EOF
+gfortran have_pent.f
+./a.out
+#==========================================
+# have clim and anom
+#==========================================
+infile=pent.sat.1979-curr
+outfile1=pent.sat_clim.1981-2010
+outfile2=pent.sata.1979-curr
+cat>clim_anom.f<<EOF
+      parameter(im=$xdim,jm=$ydim)
+      parameter(nyr=$totyr)
+      parameter(undef=$undef)
+      real*4 wk(im,jm)
+      real*4 wk4d(im,jm,73,nyr)
+      real*4 clim(im,jm,73)
+c
+      open(10,
+     &file='$infile.gr',
+     &access='direct',form='unformatted',recl=im*jm*4)
+c
+      open(50,
+     &file='$outfile1.gr',
+     &form='unformatted',access='direct',recl=im*jm*4)
+      open(60,
+     &file='$outfile2.gr',
+     &form='unformatted',access='direct',recl=im*jm*4)
+c
+c read in pent data
+c
+      ir=0
+      do iy=1,nyr
+      npen=73
+      if(iy.eq.nyr) npen=$cyrpen
+      do ip=1,npen
+
+      ir=ir+1
+      read(10,rec=ir) wk
+      do i=1,im
+      do j=1,jm
+        wk4d(i,j,ip,iy)=wk(i,j)
+      enddo
+      enddo
+
+      enddo
+      enddo
+c
+c fill missing data
+c
+      do i=1,im
+      do j=1,jm
+        wk4d(i,j,24,5)=0.5*(wk4d(i,j,23,5)+wk4d(i,j,25,5))
+      enddo
+      enddo
+c
+c have clim
+c
+      do ip=1,73
+      do i=1,im
+      do j=1,jm
+        clim(i,j,ip)=0.
+      enddo
+      enddo
+      enddo
+
+      iw=0
+      do ip=1,73
+      do i=1,im
+      do j=1,jm
+        do iy=1,30
+        clim(i,j,ip)=clim(i,j,ip)+wk4d(i,j,ip,iy+2)/30.
+        enddo
+      enddo
+      enddo
+
+      do i=1,im
+      do j=1,jm
+        wk(i,j)=clim(i,j,ip)
+        if(abs(clim(i,j,ip)).gt.100) wk(i,j)=undef
+      enddo
+      enddo
+      iw=iw+1
+      write(50,rec=iw) wk
+      enddo
+c
+c have anom
+c
+      iw=0
+      npen=73
+      do iy=1,nyr
+      if(iy.eq.nyr) npen=$cyrpen
+      do ip=1,npen
+      
+      do i=1,im
+      do j=1,jm
+        wk(i,j)=wk4d(i,j,ip,iy)-clim(i,j,ip)
+        if(abs(wk4d(i,j,ip,iy)).gt.100.or.abs(clim(i,j,ip)).gt.100)
+     & wk(i,j)=undef
+      enddo
+      enddo
+
+      iw=iw+1
+      write(60,rec=iw) wk
+      enddo
+      enddo
+      write(6,*) 'tot_peng=',iw
+
+      stop
+      end
+ccccccccccccccccccccccc
+EOF
+gfortran clim_anom.f
+./a.out
+#==========================================
+# have ctl for tmp data
+#==========================================
+#
+cat>$outfile1.ctl<<EOF
+dset ^$outfile1.gr
+undef -999000000
+*
+TITLE pent Tsfc
+*
+xdef 144 linear    0.  2.5
+ydef  73 linear  -90.  2.5
+zdef 1 linear 1 1
+tdef 9999 linear 03jan1979 5dy
+vars 1
+t  1 99  pent Tsfc (C)
+ENDVARS
+EOF
+#
+cat>$outfile2.ctl<<EOF
+dset ^$outfile2.gr
+undef -999000000
+*
+TITLE pent Tsfc
+*
+xdef 144 linear    0.  2.5
+ydef  73 linear  -90.  2.5
+zdef 1 linear 1 1
+tdef 9999 linear 03jan1979 5dy
+vars 1
+t  1 99  pent Tsfc (C)
+ENDVARS
+EOF
+#
+cp $outfile1.* $datadir2
+cp $outfile2.* $datadir2
+\rm $tmp/*
+

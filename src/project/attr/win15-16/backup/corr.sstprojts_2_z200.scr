@@ -1,0 +1,63 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ lcdir=/cpc/home/wd52pp/project/attr/trend
+ datadir0=/cpc/home/wd52pp/data/attr/djf15-16
+ datadir=/cpc/home/wd52pp/data/attr/trend
+ tmp=/cpc/home/wd52pp/tmp
+#
+var=z200
+mtx=var
+tmax=67 
+nmod=6
+#
+cp corr.sstpc2z200.f $tmp/corr.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(imx=144,jmx=73)
+       parameter(ltime=$tmax)
+       parameter(nmod=$nmod)
+       parameter(iskip_idx=0)
+       parameter(iskip_fld=0)
+eof
+#
+
+for season in djf; do
+\rm fort.*
+
+   ln -s $datadir/proj.sst2trendp.djf.$mtx.gr fort.10
+#  ln -s $datadir/$var.djf.1949-cur.rsd.gr fort.11
+   ln -s $datadir/$var.djf.1949-cur.gr fort.11
+   ln -s $datadir/corr.sstprojts_vs_$var.djf.$mtx.gr fort.50
+#
+gfortran corr.f
+a.out
+#
+cat > $datadir/corr.sstprojts_vs_$var.djf.$mtx.ctl<<EOF2
+dset ^corr.sstprojts_vs_$var.djf.$mtx.gr
+undef -999.0
+title Realtime Surface Obs
+xdef  144 linear 0 2.5
+ydef   73 linear -90 2.5
+zdef    1 levels 200
+tdef 999 linear jan1950  1yr
+vars   12
+cor1   0 99 corr of mode 2
+reg1   0 99 regr of mode 2
+cor2   0 99 corr of mode 2
+reg2   0 99 regr of mode 2
+cor3   0 99 corr of mode 3
+reg3   0 99 regr of mode 3
+cor4   0 99 corr of mode 4
+reg4   0 99 regr of mode 4
+cor5   0 99 corr of mode 5
+reg5   0 99 regr of mode 5
+cor6   0 99 corr of mode 6
+reg6   0 99 regr of mode 6
+endvars
+EOF2
+#
+done

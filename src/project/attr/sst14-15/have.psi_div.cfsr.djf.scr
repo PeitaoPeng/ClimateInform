@@ -1,0 +1,104 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/djf14-15
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/attr/djf2014-15
+#=======================================
+# have hgt and psi
+#=======================================
+#
+outfile1=uv.200mb.1979-2015.cfsr.djf
+outfile2=psi_div.200mb.1979-2015.cfsr.djf
+tmax=434
+mseason=37  #36 seasons + clim
+#
+cd $tmp
+#
+cat >havedata<<EOF
+run data_rewrite.gs
+EOF
+#
+cat >data_rewrite.gs<<EOF
+'reinit'
+'open /cpc/cfsr/archive/month_l/pgb/pgbl06.gdas.ctl'
+'set gxout fwrite'
+'set fwrite $datadir/$outfile1.gr'
+'set x 1 144'
+'set y 1 73'
+'set z 23'
+'set t 1 12'
+'define u200c=ave(UGRDprs,t+0,t=$tmax,1yr)'
+'define v200c=ave(VGRDprs,t+0,t=$tmax,1yr)'
+'modify u200c seasonal'
+'modify v200c seasonal'
+'set t 1'
+k=11
+while ( k <= $tmax)
+ks=k+1
+ke=k+3
+'d ave(UGRDprs-u200c,t='ks',t='ke')'
+'d ave(VGRDprs-v200c,t='ks',t='ke')'
+k=k+12
+endwhile
+'d ave(u200c,t=12,t=14)'
+'d ave(v200c,t=12,t=14)'
+'c'
+EOF
+#
+#===========================================
+# excute grads data process
+#===========================================
+grads -l <havedata
+#
+cat>$datadir/$outfile1.ctl<<EOF
+dset $datadir/$outfile1.gr
+undef -9999.0
+xdef 144 linear 0 2.5
+ydef  73 linear -90 2.5
+tdef 9999 linear dec1979 1yr
+zdef 1 linear 1 1
+vars 2
+u  0 99 psi
+v  0 99 vpot
+ENDVARS
+EOF
+#===========================================
+# have div from u&v
+#===========================================
+#
+\rm fort.10 fort.50
+cp $lcdir/*.f $tmp/.
+     ln -s $datadir/$outfile1.gr       fort.10
+     ln -s $datadir/$outfile2.R15.gr       fort.50
+cat > parm.h << eof
+      parameter(ltime=$mseason)
+eof
+
+gfortran -o uv2stfdiv.x uv2stfdiv.f rvdvvpst15.s.f setxy.f intp2d.f \
+            norsou.f glats.f genpnme15.f evlsca15.f fftgcm.f ftrans15.f
+uv2stfdiv.x
+#
+cat>$datadir/$outfile2.R15.ctl<<EOF
+dset $datadir/$outfile2.R15.gr
+*
+options little_endian
+*
+UNDEF  -9999.0
+*
+TITLE  R15 prate
+*
+XDEF  64 LINEAR 0 5.625
+*
+YDEF  40 GAUSR15 1
+*
+ZDEF  1 linear 1 1
+*
+TDEF   $mseason LINEAR dec1979 1yr
+*
+VARS 2
+s  0 99  psi200
+d  0 99  div200
+ENDVARS
+EOF

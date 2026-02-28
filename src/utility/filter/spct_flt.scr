@@ -1,0 +1,42 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/utility/filter
+tmp=/export-6/sgi9/wd52pp/tmp
+datadir=/export-6/cacsrv1/wd52pp/obs/olr
+#
+longtime=1752
+imax=72
+jmax=37
+ ph=2                #for HP or LP: ph=6,pm=7,pl=8
+ pm=4
+ pl=6
+#
+cp $lcdir/spct_flt.f    $tmp/.
+cp $lcdir/spct_flt.s.f  $tmp/.
+cp $lcdir/fft.f         $tmp/.
+cd $tmp
+unlimit
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(imax=$imax,jmax=$jmax)
+       parameter(ph=$ph,pl=$pl,pm=$pm)
+eof
+#
+#
+cat > parm.s.h << eof
+       parameter(ltime=$longtime+4)
+eof
+#
+f77 -o spct_flt.x spct_flt.f spct_flt.s.f fft.f
+echo "done compiling"
+#
+/bin/rm  $tmp/fort.*
+ ln -s $datadir/olr_pent.7901-0212.72x37.sm.anom.i3e fort.10
+ ln -s $datadir/olr_pent.7901-0212.72x37.sm.anom.20-90d_BP.i3e fort.20
+#
+spct_flt.x > $lcdir/out
+#
+ja -s

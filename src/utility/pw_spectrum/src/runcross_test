@@ -1,0 +1,38 @@
+#
+#QSUB-Gc 1
+#QSUB-Gf 1
+#QSUB-Gp ia1
+#
+#QSUB -lM 1.5mW     # Memory limit
+#QSUB -lT 15:00  # Time limit
+#QSUB -eo         # Combine stdout and stderr and send to following
+#
+wipeftmp
+cd $FTMPDIR
+set echo
+#
+# EOF data
+#
+\cp $WHOME/100K_pjan/cross_spectral_analysis/spectrum_longpjan.F job.F
+  if($status != 0) exit 1
+cf77 -Wf"-Rcb" job.F
+  if($status != 0) exit 1
+
+declare coeff 11 direct
+\cp /net/mjn/data/z500_daily.pc.longpjan.2.coeff coeff
+a.out 
+  if($status != 0) exit 1
+\mv fort.21 /net/mjn/data/spectra/z500_daily.pc.longpjan.2.spectra.eof1
+\mv fort.22 /net/mjn/data/spectra/z500_daily.pc.longpjan.2.spectra.eof2
+\mv fort.23 /net/mjn/data/spectra/z500_daily.pc.longpjan.2.spectra.eof3
+\mv fort.24 /net/mjn/data/spectra/z500_daily.pc.longpjan.2.spectra.eof4
+\mv fort.25 /net/mjn/data/spectra/z500_daily.pc.longpjan.2.spectra.eof5
+#
+\cp /net/mjn/data/z500_daily.rpc.longpjan.2.coeff coeff
+a.out
+  if($status != 0) exit 1
+\mv fort.21 /net/mjn/data/spectra/z500_daily.rpc.longpjan.2.spectra.eof1
+\mv fort.22 /net/mjn/data/spectra/z500_daily.rpc.longpjan.2.spectra.eof2
+\mv fort.23 /net/mjn/data/spectra/z500_daily.rpc.longpjan.2.spectra.eof3
+\mv fort.24 /net/mjn/data/spectra/z500_daily.rpc.longpjan.2.spectra.eof4
+\mv fort.25 /net/mjn/data/spectra/z500_daily.rpc.longpjan.2.spectra.eof5

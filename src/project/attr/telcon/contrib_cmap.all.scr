@@ -1,0 +1,153 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/telcon
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/attr/telcon
+#
+var=cmap
+tmax=42 
+nmod=7 
+ts=rpc
+season=djf
+#
+cp $lcdir/contrib_cmap.all.f $tmp/rec.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$tmax)
+       parameter(imx=144,jmx=72)
+       parameter(nmod=$nmod)
+eof
+#
+#
+\rm $tmp/fort.*         
+#
+gfortran -o rec.x rec.f
+echo "done compiling"
+
+#
+ ln -s $datadir/$var.$season.80-cur.gr                fort.10
+ ln -s $datadir/corr.cmaprsd_${ts}_vs_$var.djf.wtd.gr   fort.11 
+ ln -s $datadir/rsd_${ts}.cmap.djf.tp.var.wtd.gr        fort.12 
+ ln -s $datadir/trd_rsd_${ts}.$var.djf.wtd.gr           fort.13 
+
+ ln -s $datadir/${var}_contrib_all.rsd_${ts}.$season.gr       fort.50
+ ln -s $datadir/cor_rms_ts.${var}_contrib_all.rsd_${ts}.$season.gr  fort.60
+ ln -s $datadir/cor_t.${var}_contrib_all.rsd_${ts}.$season.gr  fort.70
+#
+rec.x
+#
+cat>$datadir/${var}_contrib_all.rsd_${ts}.$season.ctl<<EOF
+dset $datadir/${var}_contrib_all.rsd_${ts}.$season.gr
+undef -9999.0
+title contribution from each mode
+xdef  144 linear 1.25 2.5
+ydef   72 linear -88.75 2.5
+zdef    1 levels 200
+tdef 999 linear jan1980  1yr
+vars  15
+obs 0 99 obs z200(m)
+n34 0 99 from enso
+c1  0 99 rpc1
+c2  0 99 rpc2
+c3  0 99 rpc3
+c4  0 99 rpc4
+c5  0 99 rpc5
+c6  0 99 rpc6
+trd 0 99 trend
+c12 0 99 rpc1-2
+c13 0 99 rpc1-3
+c14 0 99 rpc1-4
+c15 0 99 rpc1-5
+c16 0 99 rpc1-6
+all 0 99 n34+rpc1-4+trd
+endvars
+EOF
+#
+cat>$datadir/cor_rms_ts.${var}_contrib_all.rsd_${ts}.$season.ctl<<EOF
+dset $datadir/cor_rms_ts.${var}_contrib_all.rsd_${ts}.$season.gr
+undef -9999.0
+title contribution from each mode
+xdef  1 linear 0 2.5
+ydef  1 linear -90 2.5
+zdef  1 levels 200
+tdef 999 linear jan1980  1yr
+vars  42
+nc 0 99 from nino34
+nr 0 99 from nino34
+nv 0 99 from nino34
+c1  0 99 rpc1
+r1  0 99 rpc1
+v1  0 99 rpc1
+c2  0 99 rpc2
+r2  0 99 rpc2
+v2  0 99 rpc2
+c3  0 99 rpc3
+r3  0 99 rpc3
+v3  0 99 rpc3
+c4  0 99 rpc4
+r4  0 99 rpc4
+v4  0 99 rpc4
+c5  0 99 rpc5
+r5  0 99 rpc5
+v5  0 99 rpc5
+c6  0 99 rpc6
+r6  0 99 rpc6
+v6  0 99 rpc6
+tc  0 99 reo7
+tr  0 99 reo7
+tv  0 99 reo7
+c12 0 99 of rpc1-4
+r12 0 99 of rpc1-4
+v12 0 99 of rpc1-4
+c13 0 99 of rpc1-4
+r13 0 99 of rpc1-4
+v13 0 99 of rpc1-4
+c14 0 99 of rpc1-4
+r14 0 99 of rpc1-4
+v14 0 99 of rpc1-4
+c15 0 99 of rpc1-4
+r15 0 99 of rpc1-4
+v15 0 99 of rpc1-4
+c16 0 99 of rpc1-6
+r16 0 99 of rpc1-6
+v16 0 99 of rpc1-6
+allc  0 99 n34+c1-4+trd
+allr  0 99 n34+c1-4+trd
+allv  0 99 n34+c1-4+trd
+endvars
+EOF
+#
+cat>$datadir/cor_t.${var}_contrib_all.rsd_${ts}.$season.ctl<<EOF
+dset $datadir/cor_t.${var}_contrib_all.rsd_${ts}.$season.gr
+undef -9999.0
+title contribution from each mode
+xdef  144 linear 0 2.5
+ydef   72 linear -88.75 2.5
+zdef    1 levels 200
+tdef 999 linear jan1980  1yr
+vars  20
+cn 0 99 from enso
+rn 0 99 from enso
+c1 0 99 rpc1
+r1 0 99 rpc1
+c2 0 99 rpc2
+r2 0 99 rpc2
+c3 0 99 rpc3
+r3 0 99 rpc3
+c4 0 99 rpc4
+r4 0 99 rpc4
+c5 0 99 rpc5
+r5 0 99 rpc5
+c6 0 99 rpc6
+r6 0 99 rpc6
+ct 0 99 trd
+rt 0 99 trd
+c14 0 99 rpc1-4
+r14 0 99 rpc1-4
+ca 0 99 rpc1-4 + enso + trd
+ra 0 99 rpc1-4 + enso + trd
+endvars
+EOF

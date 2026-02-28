@@ -1,0 +1,60 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ lcdir=/cpc/home/wd52pp/project/attr/djf14-15
+ datadir=/cpc/home/wd52pp/data/attr/djf14-15
+ datadir2=/cpc/home/wd52pp/data/attr/sst14-15
+ tmp=/cpc/home/wd52pp/tmp
+#
+ cp corr_pc_vs_sz.f $tmp/.
+#
+ cd $tmp
+ \rm fort.*
+#
+nmod=10
+tmax=795
+#
+cat > parm.h << eof
+       parameter(imx=144,jmx=73)
+       parameter(ltime=$tmax,ltw=ltime-12)
+       parameter(nmod=$nmod)
+eof
+#
+   ln -s $datadir2/pc.sst.had-oi.jan1949-cur.mon.tnp.gr fort.10
+   ln -s $datadir/psi_hgt.200mb.R1.jan1949-cur.mon.gr fort.11
+#
+   ln -s $datadir/corr.sstpc.vs.sz.1949-cur.gr  fort.50
+#
+#
+ gfortran -o corr.x corr_pc_vs_sz.f
+ corr.x > $lcdir/out
+#
+cat>$datadir/corr.sstpc.vs.sz.1949-cur.ctl<<EOF
+dset $datadir/corr.sstpc.vs.sz.1949-cur.gr
+*
+undef -9999.0
+*
+TITLE  2.5x2.5 grid
+*
+XDEF  144 LINEAR 0 2.5
+*
+YDEF   73 LINEAR -90 2.5
+*
+ZDEF  1 linear 1 1
+*
+TDEF 999 LINEAR dec2014 1mon
+*
+vars   8
+scor  0 99 corr of z200
+sreg  0 99 regr of z200
+rscor  0 99 corr of z200
+rsreg  0 99 regr of z200
+zcor  0 99 corr of z200
+zreg  0 99 regr of z200
+rzcor  0 99 corr of z200
+rzreg  0 99 regr of z200
+ENDVARS
+EOF
+

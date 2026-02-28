@@ -51,7 +51,7 @@ cat > "$OUTFILE" <<EOF
 <p>Forecast maps for ${YEAR}-${MONTH_PAD}, organized by variable and lead time.</p>
 
 <section>
-<h2>Niño3.4 Index Forecast and Skill — <span class="enso-phase">${ENSO_PHASE}</span></h2>
+<h2>Niño3.4 Index Forecast and Skill<span class="enso-phase">${ENSO_PHASE}</span></h2>
 
 <div class="forecast-pair-grid">
     <div class="forecast-pair-row">
@@ -79,7 +79,7 @@ cat >> "$OUTFILE" <<EOF
 
 <section class="variable-section">
     <div class="variable-header">
-        <h2>SST</h2>
+	<h2>Sea Surface Temperature (SST)</h2>
         <span class="variable-toggle">Hide</span>
     </div>
 
@@ -133,7 +133,7 @@ cat >> "$OUTFILE" <<EOF
 
     <div class="variable-body">
 
-    <h3>${VAR}: Deterministic & Probabilistic Forecasts</h3>
+    <h3>${VAR}: Deterministic(Det) & Probabilistic(Prob) Forecasts</h3>
     <div class="forecast-pair-grid">
 EOF
 

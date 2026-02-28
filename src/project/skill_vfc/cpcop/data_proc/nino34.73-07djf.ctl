@@ -1,0 +1,11 @@
+DSET ^nino34.73-07djf.gr 
+options little_endian
+UNDEF  -999.0
+TITLE nino34 of 73-07djf
+XDEF 1  LINEAR 0 2.8125
+YDEF 1 LINEAR -87.88 2.79
+ZDEF 01 LEVELS 1 
+TDEF 999 LINEAR Jan1973 1yr
+VARS 1
+z  01   99   nino34
+ENDVARS

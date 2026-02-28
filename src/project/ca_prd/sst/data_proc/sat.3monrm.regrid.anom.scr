@@ -1,0 +1,122 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/ca_prd/sst/data_proc
+tmp=/cpc/home/wd52pp/tmp/test
+datadir1=/cpc/home/ebecker/ghcn_cams
+datadir2=/cpc/home/wd52pp/data/ca_prd
+#
+outfile=sat.3mon.1948-curr
+mon_beg=jan1948
+ss_beg=feb1948
+mon_end=feb2021
+ss_end=jan2021
+totmon=876
+
+cd $tmp
+#\rm *.*
+#======================================
+# read sat data and calculate anom wrt all year clim 
+#======================================
+cat >haveanom<<EOF
+run anom.gs
+EOF
+cat >anom.gs<<EOF
+'reinit'
+'open $datadir1/ghcn_cams_0.5_grb.ctl'
+'set x 1 720'
+'set y 1 360'
+'set t 1 12'
+'define clm=ave(TMP2m,t+1, t=$totmon,1yr)'
+'modify clm seasonal'
+'set gxout fwrite'
+'set fwrite tmp.gr'
+'set time $mon_beg $mon_end'
+'d TMP2m-clm'
+'c'
+EOF
+grads -l <haveanom
+cat>tmp.ctl<<EOF
+dset ^tmp.gr
+undef -999000000
+*
+TITLE Tsfc
+*
+xdef  720 linear   0.25 0.5
+ydef  360 linear -89.75 0.5
+zdef   1 linear 1 1
+tdef 2000 linear jan1948 1mo
+vars 1
+t  1 99 3-mon run_mean (C)
+ENDVARS
+EOF
+#======================================
+# have 3-mon mean 
+#======================================
+cat >runmean<<EOF
+run mean.gs
+EOF
+cat >mean.gs<<EOF
+'reinit'
+'open tmp.ctl'
+'set x 1 720'
+'set y 1 360'
+'set gxout fwrite'
+'set fwrite tmp2.gr'
+'set time $ss_beg $ss_end'
+'d ave(t,t-1,t+1)'
+'c'
+EOF
+grads -l <runmean
+#
+cat>tmp2.ctl<<EOF
+dset ^tmp2.gr
+undef -999000000
+*
+TITLE Tsfc
+*
+xdef  720 linear   0.25 0.5
+ydef  360 linear -89.75 0.5
+zdef   1 linear 1 1
+tdef 2000 linear feb1948 1mo
+vars 1
+t  1 99 3-mon run_mean (C)
+ENDVARS
+EOF
+#======================================
+# regrid to 2.5x2.5 grid
+#======================================
+cat >regrid<<EOF
+run lterp.gs
+EOF
+cat >lterp.gs<<EOF
+'reinit'
+'open $datadir2/grid.2.5x2.5.mon.ctl'
+'open tmp2.ctl'
+'set x 1 144'
+'set y 1  73'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+'set time $ss_beg $ss_end'
+'d lterp(t.2,grd.1(t=1))'
+'c'
+EOF
+
+grads -l <regrid
+#
+cat>$outfile.ctl<<EOF
+dset ^$outfile.gr
+undef -999000000
+*
+TITLE Tsfc
+*
+xdef  144 linear 0 2.5
+ydef   73 linear -90 2.5
+zdef    1 linear 1 1
+tdef 2000 linear feb1948 1mon
+vars 1
+t  1 99 Tsfc (C)
+ENDVARS
+EOF
+cp $outfile* $datadir2

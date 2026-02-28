@@ -1,0 +1,139 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/sst14-15
+tmp=/cpc/home/wd52pp/tmp
+sstdir=/cpc/home/wd52pp/data/obs/sst
+cd $tmp
+tlatest=may2015
+#
+#=======================================
+# have ER sst jan1979-cur
+#=======================================
+outfile=ersst.jan1979-cur.mon
+times=jan1979
+timee=$tlatest
+#
+cat >ersst<<EOF
+run haveersst.gs
+EOF
+#
+cat >haveersst.gs<<EOF
+'reinit'
+'open  /export/cpc-lw-mlheureux/wd52ml/enso/oni.v3b/data/errsst.v3b/ersst.v3b.1854.2010.ctl'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+'set x 1 180'
+'set y 1  89'
+'set time '$times' '$timee''
+'d sst'
+'c'
+EOF
+#
+#===========================================
+# excute grads data process
+#===========================================
+grads -l <ersst
+#
+cat>$outfile.ctl<<EOF
+dset $outfile.gr
+undef -99.99
+TITLE  ersst
+XDEF 180 LINEAR  0.  2.0
+*
+YDEF 89 LINEAR  -88.  2.0
+*
+ZDEF  1 LINEAR 1 1.
+tdef 9999 linear jan1979 1mo
+VARS 1
+sst  0 99     anom
+ENDVARS
+EOF
+#
+#=======================================
+# have monthly anomalies
+#=======================================
+outfile2=$outfile.anom
+ts=1
+te=437  #432=dec2014
+#
+cat >anom<<EOF
+run haveanom.gs
+EOF
+#
+cat >haveanom.gs<<EOF
+'reinit'
+'open $outfile.ctl'
+'set gxout fwrite'
+'set fwrite $outfile2.gr'
+'set x 1 180'
+'set y 1  89'
+'set t 1 12'
+'define sstc=ave(sst,t+0,t='$te',1yr)'
+'modify sstc seasonal'
+'set t 1 '$te''
+'d sst-sstc'
+'c'
+EOF
+#
+grads -l <anom
+#
+cat>$outfile2.ctl<<EOF
+dset $outfile2.gr
+undef -99.99
+TITLE  ersst
+XDEF 180 LINEAR  0.  2.0
+*
+YDEF 89 LINEAR  -88.  2.0
+*
+ZDEF  1 LINEAR 1 1.
+tdef 9999 linear jan1979 1mo
+VARS 1
+sst  0 99     anom
+ENDVARS
+EOF
+#
+#
+#=======================================
+# have 3-mon avg anomalies
+#=======================================
+outfile3=ersst.jan1979-cur.3mon.anom
+ts=2
+te=436  #434=feb2015
+#
+cat >3mavg<<EOF
+run have3mavg.gs
+EOF
+#
+cat >have3mavg.gs<<EOF
+'reinit'
+'open $outfile2.ctl'
+'set x 1 180'
+'set y 1  89'
+'set gxout fwrite'
+'set fwrite $outfile3.gr'
+'set t '$ts' '$te''
+'d ave(sst,t-1,t+1)'
+'c'
+EOF
+#
+grads -l <3mavg
+#
+cat>$outfile3.ctl<<EOF
+dset $outfile3.gr
+undef -99.99
+TITLE  3mon avg
+XDEF 180 LINEAR  0.  2.0
+*
+YDEF 89 LINEAR  -88.  2.0
+*
+ZDEF  1 LINEAR 1 1.
+tdef 9999 linear feb1979 1mo
+VARS 1
+sst  0 99     anom
+ENDVARS
+EOF
+#
+mv $outfile* $sstdir
+

@@ -1,0 +1,85 @@
+#!/bin/sh
+
+set -eaux
+#cccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+# have seasonal clim and anom of AMIP esm
+#ccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+ 
+lcdir=/cpc/home/wd52pp/project/ca_proj/data_proc
+tmp=/cpc/home/wd52pp/tmp
+if [ ! -d $tmp ] ; then
+  mkdir -p $tmp
+fi
+
+datain=/cpc/home/tzhang/FY23proj/FV3AMIP1979_ensmean_360X180
+dataout=/cpc/home/wd52pp/data/ca_proj
+#
+cd $tmp
+#
+for var in z200 precip t2m; do
+
+filein=GFSFV3amip.$var.ens_mean_100runs.monthly.1979.01-2022.10.360X180
+ybgn=1979
+yend=2022
+totyr=`expr $yend - $ybgn`
+totmo=`expr $totyr \* 12 + 10`
+
+#
+for ss in djf jja; do
+#for ss in djf mam jja son; do
+#
+if [ $ss = djf ]; then its=12; mons=dec; fi
+if [ $ss = mam ]; then its=3;  mons=mar; fi 
+if [ $ss = jja ]; then its=6;  mons=jun; fi 
+if [ $ss = son ]; then its=9;  mons=sep; fi 
+#
+fileout=FV3amip100runs.$var.$ss.ensm_anom
+#
+cat >anom<<EOF
+run read_write.gs
+EOF
+#
+cat >read_write.gs<<EOF
+'reinit'
+'open $datain/$filein.ctl'
+'set gxout fwrite'
+'set fwrite $fileout.gr'
+'set x 1 360'
+'set y 1 180'
+*
+*have climate
+'set t 1 12'
+'define clm=ave($var,t+0,t=$totmo,1yr)'
+'modify clm seasonal'
+'set t 1'
+*
+k=$its
+while (k <= $totmo)
+* 
+ks=k
+ke=k+2
+'d ave($var-clm,t='ks',t='ke')'
+k=k+12
+endwhile
+EOF
+#
+grads -bl <anom
+#
+cat>$fileout.ctl<<EOF
+dset ^$fileout.gr
+UNDEF 9.999e+20
+TITLE AMIP
+TITLE GFSFV3amip 2D data
+XDEF 360 LINEAR 0.5 1.
+YDEF 180 LINEAR -89.5 1.
+ZDEF   1 levels 1
+TDEF $totyr  LINEAR ${mons}1979  1yr
+VARS 1
+$var 0 99  $var
+ENDVARS
+EOF
+
+mv $fileout.* $dataout
+#
+done  # ss loop
+done  # var loop

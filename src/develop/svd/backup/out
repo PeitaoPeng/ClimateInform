@@ -1,0 +1,641 @@
+3c3
+< C PCR for forecst TPZ
+---
+> C pc_svd for forecst TPZ
+7,9d6
+<       real fld3(imx,jmx),fld4(imx,jmx),fld5(imx,jmx)
+<       real corr(imx,jmx,nmod),regr(imx,jmx,nmod)
+<       real corr2(imx,jmx,nmod),regr2(imx,jmx,nmod)
+11c8
+<       real ts1(nyr),ts2(nyr)
+---
+>       real ts1(nyr),ts2(nyr),ts3(nyr)
+14,15c11,13
+<       real tcof(nmod,nyr)
+<       real pj(nmod),proj(nmod,nyr)
+---
+>       real w2d3(imx,jmx),w2d4(imx,jmx)
+>       real w2d5(imx,jmx),w2d6(imx,jmx)
+>       real w2d7(imx,jmx),w2d8(imx,jmx)
+18a17
+>       real cof1(msvd,nyr),cof2(msvd,nyr)
+21c20,35
+<       real xn34(nyr)
+---
+>       real fsst(imx,jmx,nyr),ftpz(imx,jmx,nyr)
+>       real cic(msvd),sdc1(msvd),sdc2(msvd)
+> 
+>       real corr(imx,jmx),regr(imx,jmx)
+>       real pcv1(mv1,nyr),pcv2(mv2,nyr)
+> 
+>       real corv1(imx,jmx,mv1),regv1(imx,jmx,mv1)
+>       real corv2(imx,jmx,mv2),regv2(imx,jmx,mv2)
+> 
+>       real corr11(mv1,msvd),regr11(mv1,msvd)
+>       real corr12(mv2,msvd),regr12(mv2,msvd)
+>       real corr21(mv1,msvd),regr21(mv1,msvd)
+>       real corr22(mv2,msvd),regr22(mv2,msvd)
+> 
+>       real prdpcv2(mv2,nyr),w1d(mv2)
+> 
+41d54
+<       undef=-999.0
+90c103
+<         if(fld(i,j).gt.-900.) then
+---
+>         if(fld(i,j).gt.undef) then
+107,108d119
+<       call havenino34(wsst,xn34,imx,jmx,nyr)
+< c
+113c124
+<         if(fld2(i,j).gt.-900.) then
+---
+>         if(fld2(i,j).gt.undef) then
+129,139d139
+< 
+< c SST EOF analysis for nclm years
+< c
+<       do m=1,nmod
+<       do it=1,nyr
+<         tcof(m,it)=undef
+<       enddo
+<       enddo
+< C
+<       call pc_eof(wsst,imx,jmx,lons,lone,lats,late,nyr,nclm,cosr,
+<      &ngrd,nmod,tcof,corr,regr,undef,id)
+141,169c141
+< C write out PC and EOF for last forecast
+<       if(iyr.eq.nyr) then
+<       iw=0
+<       iw2=0
+<       do m=1,nmod
+< 
+< c write out PC
+<       do it=1,nyr
+<       iw=iw+1
+<       write(20,rec=iw) tcof(m,it)
+<       enddo
+< 
+< c write out sst corr&regr patterns
+<       do i=1,imx
+<       do j=1,jmx
+<         w2d(i,j)=corr(i,j,m)
+<         w2d2(i,j)=regr(i,j,m)
+<       enddo
+<       enddo
+<       iw2=iw2+1
+<       write(21,rec=iw2) w2d
+<       iw2=iw2+1
+<       write(21,rec=iw2) w2d2
+< 
+<       enddo ! m loop
+<       endif
+< C 
+< C regression of tpz to sst PC
+< 
+---
+> c prepare data for svd
+193,215c165,174
+<       nfld=ite_sst - its_sst + 1
+<       do m=1,nmod
+<             ir=0
+<             do it=its_sst,ite_sst
+<             ir=ir+1
+<             ts1(ir)=tcof(m,it)
+<             enddo
+<         do i=1,imx
+<         do j=1,jmx
+<           if(fld2(i,j).gt.-900.) then
+<             ir=0
+<             do it=its_tpz,ite_tpz
+<             ir=ir+1
+<             ts2(ir)=wtpz(i,j,it)
+<             enddo
+< 
+<             call regr_t(ts1,ts2,nyr,nfld,corr2(i,j,m),regr2(i,j,m))
+< 
+<           else
+<             corr2(i,j,m)=undef
+<             regr2(i,j,m)=undef
+<           endif
+<         enddo
+---
+>       nfld=ite_sst - its_sst + 1  ! length of data for svd
+>       write(6,*) 'nfld=',nfld
+> 
+> c have fsst & ftpz used as input of svd      
+>       do i=1,imx
+>       do j=1,jmx
+>         ir=0
+>         do it=its_sst,ite_sst+1  ! +1 is for the use as IC in forecast
+>         ir=ir+1
+>         fsst(i,j,ir)=wsst(i,j,it)
+217,221c176,177
+<       enddo ! m loop
+<   777 format(10f7.2)
+< c
+< c write out tpz regr & corr
+<         if(iyr.eq.nyr) then
+---
+>       enddo
+>       enddo
+223,224c179,190
+<         iw5=0
+<         do m=1,nmod
+---
+>       if(iyr.eq.nfys) then
+>       iw5=0
+>       do it=1,nfld
+>       do i=1,imx
+>       do j=1,jmx
+>       w2d(i,j)=fsst(i,j,it)
+>       enddo
+>       enddo
+>       iw5=iw5+1
+>       write(31,rec=iw5) w2d
+>       enddo
+>       endif
+226,230c192,197
+<         do i=1,imx
+<         do j=1,jmx
+<           w2d(i,j)=corr2(i,j,m)
+<           w2d2(i,j)=regr2(i,j,m)
+<         enddo
+---
+>       do i=1,imx
+>       do j=1,jmx
+>         ir=0
+>         do it=its_tpz,ite_tpz
+>         ir=ir+1
+>         ftpz(i,j,ir)=wtpz(i,j,it)
+232,235c199,200
+<         iw5=iw5+1
+<         write(30,rec=iw5) w2d
+<         iw5=iw5+1
+<         write(30,rec=iw5) w2d2
+---
+>       enddo
+>       enddo
+237c202,208
+<         enddo ! m loop
+---
+>       idx=1
+>       idy=1
+>       do m=1,mv1
+>       do it=1,nyr
+>         pcv1(m,it)=undef
+>       enddo
+>       enddo
+239c210,235
+<         endif
+---
+> c     write(6,*) 'fsst=',fsst(180,90,1),fsst(180,90,nfld),fsst(180,90,nfld+1)
+> 
+>       nfldp=nfld+1
+> c     call eof_s(fsst,cosr,nyr,nfldp,ng1,mv1,undef,
+>       call eof_s(wsst,cosr,nyr,nclm,ng1,mv1,undef,
+>      &imx,jmx,idx,idy,isv1,iev1,jsv1,jev1,pcv1,corv1,regv1,id)
+> c
+>       idx=1
+>       idy=1
+>       do m=1,mv2
+>       do it=1,nyr
+>         pcv2(m,it)=undef
+>       enddo
+>       enddo
+>       call eof_s(ftpz,cosr,nyr,nfld,ng2,mv2,undef,
+>      &imx,jmx,idx,idy,isv2,iev2,jsv2,jev2,pcv2,corv2,regv2,id)
+> c
+> c SVD bwtween pcv1 & pcv2
+>       do m=1,msvd ! < min(mv1,mv2)
+>       do it=1,nyr
+>         cof1(m,it)=undef
+>         cof2(m,it)=undef
+>       enddo
+>       enddo
+> C
+> c     call pc_svd(pcv1,pcv2,nyr,nfld,mv1,mv2,msvd,cof1,cof2,cic)
+241c237,285
+< c have tpz 'fcst' for itgt year with sst tcof and tpz regr
+---
+> c normalize cof & cic
+>       do m=1,msvd !loop over mode
+> c
+>       do it=1,nfld
+>         ts1(it)=cof1(m,it)
+>         ts2(it)=cof2(m,it)
+>       enddo
+> 
+>       call normal_sd(ts1,nyr,nfld,sdc1(m))
+>       call normal_sd(ts2,nyr,nfld,sdc2(m))
+> 
+>       do jt=1,nfld
+>         cof1(m,jt)=ts1(jt)
+>         cof2(m,jt)=ts2(jt)
+>       enddo
+> 
+>       cic(m)=cic(m)/sdc1(m) ! normalize cic
+> 
+>       enddo ! loop m
+> 
+> c regression of cof1 to pcv2
+>       do m=1,msvd
+> 
+>       do it=1,nfld
+>         ts1(it)=cof1(m,it)
+>       enddo
+> 
+>       do i=1,mv2
+> 
+>       do it=1,nfld
+>         ts3(it)=pcv2(i,it)
+>       enddo
+> 
+>       call regr_t(ts1,ts3,nyr,nfld,corr12(i,m),regr12(i,m))
+> 
+>       enddo ! loop i
+> 
+>       enddo ! loop m
+> 
+> c forecast var2 on spectral
+>       do i=1,mv2
+>         w1d(i)=0.
+>         do m=1,msvd
+>           w1d(i)=w1d(i)+cic(m)*regr12(i,m)
+>         enddo
+>           prdpcv2(i,iyr-nfys+1)=w1d(i)
+>       enddo ! loop i
+>  
+> c forecast var2 on grid
+245,253d288
+<         if(fld2(i,j).gt.-900.) then
+<           do m=1,nmod
+<             w2d(i,j)=w2d(i,j)+tcof(m,ite_sst+1)*regr2(i,j,m)
+<           enddo
+<             w2d2(i,j)=tpz(i,j,iyr)-tpzc(i,j)
+<         else
+<             w2d(i,j)=undef
+<             w2d2(i,j)=undef
+<         endif
+255,256c290,301
+<         fcst(i,j,iyr-nfys+1)=w2d(i,j)
+<         vfld(i,j,iyr-nfys+1)=w2d2(i,j)
+---
+>       if(fld2(i,j).gt.undef) then
+>         do m=1,mv2
+>           w2d(i,j)=w2d(i,j)+prdpcv2(m,iyr-nfys+1)*regv2(i,j,m)
+>         enddo
+>           w2d2(i,j)=tpz(i,j,iyr)-tpzc(i,j)
+>       else
+>           w2d(i,j)=undef
+>           w2d2(i,j)=undef
+>       endif
+> 
+>       fcst(i,j,iyr-nfys+1)=w2d(i,j)
+>       vfld(i,j,iyr-nfys+1)=w2d2(i,j)
+260,261c305
+<       write(6,*) 'ite_sst=',ite_sst,'tcof=',tcof(1,ite_sst+1)
+< 
+---
+> c 
+263,266c307,317
+<       iw3=iw3+1
+<       write(31,rec=iw3) w2d2
+<       iw3=iw3+1
+<       write(31,rec=iw3) w2d
+---
+> c     iw3=iw3+1
+> c     write(31,rec=iw3) w2d2
+> c     iw3=iw3+1
+> c     write(31,rec=iw3) w2d
+> 
+> c
+> C write out coef and patterns for the end of the iyr loop
+>       if(iyr.eq.nyr) then
+>       iw=0
+>       iw2=0
+>       do m=1,msvd
+267a319,347
+> c write out PC
+>       do it=1,nyr
+>       iw=iw+1
+>       write(20,rec=iw) cof1(m,it)
+>       iw=iw+1
+>       write(20,rec=iw) cof2(m,it)
+>       enddo
+> 
+> c write out eof corr&regr patterns
+>       do i=1,imx
+>       do j=1,jmx
+>         w2d(i,j)= corv1(i,j,m)
+>         w2d2(i,j)=regv1(i,j,m)
+>         w2d3(i,j)=corv2(i,j,m)
+>         w2d4(i,j)=regv2(i,j,m)
+>       enddo
+>       enddo
+> c
+>       iw2=iw2+1
+>       write(21,rec=iw2) w2d
+>       iw2=iw2+1
+>       write(21,rec=iw2) w2d2
+>       iw2=iw2+1
+>       write(21,rec=iw2) w2d3
+>       iw2=iw2+1
+>       write(21,rec=iw2) w2d4
+>       enddo ! m loop
+>       endif
+> C 
+276c356
+<       if(fld2(i,j).gt.-900.) then
+---
+>       if(fld2(i,j).gt.undef) then
+296a377,442
+>       subroutine eof_s(fin,cosr,ntot,nt,ng,nmod,undef,
+>      &im,jm,idx,idy,is,ie,js,je,rpc,cor,reg,id)
+> c
+>       dimension fin(im,jm,ntot),cosr(jm)
+>       dimension aaa(ng,nt),wk(nt,ng)
+>       dimension weval(nt),wevec(ng,nt),wcoef(nt,nt)
+>       dimension reval(nmod),revec(ng,nmod)
+>       dimension rcoef(nmod,nt),rpc(nmod,ntot)
+>       dimension tt(nmod,nmod),rwk(ng),rwk2(ng,nmod)
+> 
+>       dimension ts1(nt),ts2(nt)
+>       dimension cor(im,jm,nmod),reg(im,jm,nmod)
+> c
+> c select grid data
+>       do it=1,nt
+>         ig=0
+>         do i=is,ie,idx
+>         do j=js,je,idy
+>         if(fin(i,j,1).gt.undef) then
+>         ig=ig+1
+>         aaa(ig,it)=cosr(j)*fin(i,j,it)
+>         endif
+>         enddo
+>         enddo
+>       enddo
+>       print *, 'ngrd=',ig
+> C EOF analysis
+>       call REOFS(aaa,ng,nt,nt,wk,id,weval,wevec,wcoef,
+>      &           nmod,reval,revec,rcoef,tt,rwk,rwk2)
+> C
+> C normalize rpc and have cor&reg patterns
+>       do m=1,nmod
+>         do it=1,nt
+>           ts1(it)=rcoef(m,it)
+>         enddo
+>         call normal(ts1,nt,nt)
+> 
+>         do it=1,nt
+>           rpc(m,it)=ts1(it)
+>         enddo
+> c
+>         do j=1,jm
+>         do i=1,im
+> 
+>         if(fin(i,j,1).gt.undef) then
+> 
+>         do it=1,nt
+>           ts2(it)=fin(i,j,it)
+>         enddo
+> 
+>         call regr_t(ts1,ts2,nt,nt,cor(i,j,m),reg(i,j,m))
+> 
+>         else
+> 
+>         cor(i,j,m)=undef
+>         reg(i,j,m)=undef
+> 
+>         endif
+> 
+>         enddo
+>         enddo
+>       enddo  ! m loop
+> 
+>       return
+>       end
+> 
+318a465
+> 
+380,381c527,528
+<       SUBROUTINE pc_eof(wf3d,imx,jmx,is,ie,ls,le,ltime,nfld,cosr,
+<      &ngrd,nmod,tcof,corr,regr,undef,id)
+---
+>       SUBROUTINE pc_svd(pcv1,pcv2,nt,mt,mv1,mv2,msvd,
+>      &cof1,cof2,cic)
+383,388c530,536
+<       real wf3d(imx,jmx,ltime),tcof(nmod,ltime)
+<       real f3d(imx,jmx,nfld),cosr(jmx)
+<       real regr(imx,jmx,nmod),corr(imx,jmx,nmod),pc(nmod,nfld)
+<       real aaa(ngrd,nfld),wk(nfld,ngrd)
+<       real eval(nfld),evec(ngrd,nfld),coef(nfld,nfld)
+<       real ts1(nfld),ts2(nfld)
+---
+>       real pcv1(mv1,nyr),pcv2(mv2,nyr)
+>       real aleft(mv1,nt),aright(mv2,nt)
+>       real a(mv1,mv2),w(mv2),u(mv1,mv2),v(mv2,mv2),rv1(mv2)
+>       real wic(mv1),aic(mv1),cic(msvd)
+> c
+>       real cof1(msvd,nt),cof2(msvd,nt)
+>       real ts1(nt),ts2(nt),ts3(nt)
+390,394c538,550
+<       do i=1,imx
+<       do j=1,jmx
+<       do it=1,nfld
+<         f3d(i,j,it)=wf3d(i,j,it)
+<       enddo
+---
+> c feed matrix a
+>       do it=1,mt
+>         do m=1,mv1
+>           aleft(m,it)=pcv1(m,it)
+>         enddo
+>         do m=1,mv2
+>           aright(m,it)=pcv2(m,it)
+>         enddo
+>       enddo  ! it loop
+> c
+> c var1 IC data (pcv1 in mtp)
+>       do m=1,mv1
+>         aic(m)=pcv1(m,mt+1)
+395a552,558
+>  
+>       do i=1,mv1
+>       do j=1,mv2
+> 
+>       a(i,j)=0.
+>       do k=1,mt
+>       a(i,j)=a(i,j)+aleft(i,k)*aright(j,k)/float(mt)
+397,414d559
+< c
+<       do it=1,nfld
+<         ng=0
+<         do j=ls,le
+<         do i=is,ie
+<         if(f3d(i,j,1).gt.undef) then
+<           ng=ng+1
+<           aaa(ng,it)=f3d(i,j,it)*cosr(j)
+<         endif
+<         end do
+<         end do
+<       enddo ! it loop
+<       write(6,*) 'ngrd= ',ng
+< c
+<       call eofs(aaa,ngrd,nfld,nfld,eval,evec,coef,wk,id)
+< c
+< c normalize coef
+<       do m=1, nmod
+416,417c561
+<       do it=1,nfld
+<         ts1(it)=coef(m,it)
+---
+>       enddo
+420,424c564,570
+<       call normal(ts1,ts2,nfld)
+< c
+<       do it=1,nfld
+<         pc(m,it)=ts2(it)
+<         tcof(m,it)=ts2(it)
+---
+> cc... SVD analysis
+>       print *, 'before svdcmp'
+>       call svdcmp(a,mv1,mv2,mv1,mv2,w,v)
+>       do i=1,mv1
+>       do j=1,mv2
+>         u(i,j)=a(i,j)
+>       enddo
+426d571
+<       enddo ! m loop
+428,434c573,580
+< cc... write out eval
+<       totv=0
+<       do m=1,nmod
+<       write(6,*)'eval= ',i,eval(m)
+<       totv=totv+eval(m)
+<       end do
+<       write(6,*)'totv= ',totv
+---
+> cc... write out singular value in w
+>       do i=1,msvd
+> c       write(6,*)'singular value=',i,w(i)
+>       enddo
+>       write(6,*)'singular value=',w
+> 
+> c== have svd coef
+>       do m=1,msvd
+436,437c582,591
+< cc have regr patterns
+<       do m=1,nmod
+---
+>       do it=1,mt
+>         cof1(m,it)=0.
+>         cof2(m,it)=0.
+>         do n=1,mv1
+>           cof1(m,it)=cof1(m,it)+aleft(n,it)*u(n,m)
+>         enddo
+>         do n=1,mv2
+>           cof2(m,it)=cof2(m,it)+aright(n,it)*v(m,n)
+>         enddo
+>       enddo
+439,440d592
+<       do it=1,nfld
+<         ts1(it)=pc(m,it)
+443,449c595,597
+<       do j=1,jmx
+<       do i=1,imx
+< 
+<       if(f3d(i,j,1).gt.undef) then
+< 
+<       do it=1,nfld
+<         ts2(it)=f3d(i,j,it)
+---
+> c have cic, the projection of var1_ic to u
+>       do m=1,mv1
+>         wic(m)=pcv1(m,mt+1)
+452,458c600,604
+<       call regr_t(ts1,ts2,nfld,nfld,corr(i,j,m),regr(i,j,m))
+<       else
+<       corr(i,j,m)=undef
+<       regr(i,j,m)=undef
+<       endif
+< 
+<       enddo
+---
+>       do m=1,msvd
+>         cic(m)=0.
+>         do n=1,mv1
+>         cic(m)=cic(m)+wic(n)*u(n,m)
+>         enddo
+460,462c606
+< 
+<       enddo !m loop
+< 
+---
+> c
+487,502d630
+< 
+< 
+<       SUBROUTINE havenino34(sst,xn34,imx,jmx,nt)
+<       DIMENSION sst(imx,jmx,nt),xn34(nt)
+<       do it=1,nt
+<         xn34(it)=0
+<         ngrd=50*10
+<         do i=190,240
+<         do j=86,95
+<           xn34(it)=xn34(it)+sst(i,j,it)
+<         enddo
+<         enddo
+<         xn34(it)=xn34(it)/float(ngrd)
+<       enddo
+<       return
+<       end
+519,535c647,676
+<       SUBROUTINE normal(rot,rot2,ltime)
+<       DIMENSION rot(ltime),rot2(ltime)
+<       avg=0.
+<       do i=1,ltime
+<          avg=avg+rot(i)/float(ltime)
+<       enddo
+<       do i=1,ltime
+<         rot2(i)=rot(i)-avg
+<       enddo
+< c
+<       sd=0.
+<       do i=1,ltime
+<         sd=sd+rot2(i)*rot2(i)/float(ltime)
+<       enddo
+<         sd=sqrt(sd)
+<       do i=1,ltime
+<         rot2(i)=rot2(i)/sd
+---
+>       subroutine normal(x,n,m)
+>       dimension x(n)
+>       avg=0
+>       do i=1,m
+>       avg=avg+x(i)/float(m)
+>       enddo
+>       var=0
+>       do i=1,m
+>       var=var+(x(i)-avg)*(x(i)-avg)/float(m)
+>       enddo
+>       std=sqrt(var)
+>       do i=1,m
+>         x(i)=(x(i)-avg)/std
+>       enddo
+>       return
+>       end
+> 
+>       subroutine normal_sd(x,n,m,std)
+>       dimension x(n)
+>       avg=0
+>       do i=1,m
+>       avg=avg+x(i)/float(m)
+>       enddo
+>       var=0
+>       do i=1,m
+>       var=var+(x(i)-avg)*(x(i)-avg)/float(m)
+>       enddo
+>       std=sqrt(var)
+>       do i=1,m
+>         x(i)=(x(i)-avg)/std

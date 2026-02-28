@@ -1,0 +1,179 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/ca_prd/pent_prd/data_proc
+tmp=/cpc/home/wd52pp/tmp/test
+ctldir=/cpc/home/wd52pp/project/ca_prd/pent_prd/data_proc
+datadir2=/cpc/home/wd52pp/data/ca_prd
+#
+years=1979
+yeare=2014
+totyr=`expr $yeare - $years + 1`  # totyear of data available
+intyr=`expr $totyr - 1`  # full year number
+cyrpen=45                 # pent number of current year
+totpen=`expr 1533 + $intyr \* 73 + $cyrpen`
+infile=psi200
+outfile=pent.psi200
+
+cd $tmp
+#
+#======================================
+# have z200 pent data
+#======================================
+cat >havedata<<EOF
+run havepsi200.gs
+EOF
+
+cat >havepsi200.gs<<EOF
+'reinit'
+'open $ctldir/$infile.ctl'
+'set x 1 144'
+'set y 1  73'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+'set t 1534 $totpen'
+'d z'
+'c'
+EOF
+
+grads -l <havedata
+
+xdim=144
+ydim=73
+#==========================================
+# have clim and anom
+#==========================================
+infile=pent.psi200
+outfile1=pent.psi200_clim.1981-2010
+outfile2=pent.psi200a.1979-curr
+cat>clim_anom.f<<EOF
+      parameter(im=$xdim,jm=$ydim)
+      parameter(nyr=$totyr)
+      real*4 wk(im,jm)
+      real*4 wk4d(im,jm,73,nyr)
+      real*4 clim(im,jm,73)
+c
+      open(10,
+     &file='$infile.gr',
+     &access='direct',form='unformatted',recl=im*jm*4)
+c
+      open(50,
+     &file='$outfile1.gr',
+     &form='unformatted',access='direct',recl=im*jm*4)
+      open(60,
+     &file='$outfile2.gr',
+     &form='unformatted',access='direct',recl=im*jm*4)
+c
+c read in pent data
+c
+      ir=0
+      do iy=1,nyr
+      npen=73
+      if(iy.eq.nyr) npen=$cyrpen
+      do ip=1,npen
+
+      ir=ir+1
+      read(10,rec=ir) wk
+      do i=1,im
+      do j=1,jm
+        wk4d(i,j,ip,iy)=wk(i,j)/1000000.
+      enddo
+      enddo
+
+      enddo
+      enddo
+c
+c have clim
+c
+      do ip=1,73
+      do i=1,im
+      do j=1,jm
+        clim(i,j,ip)=0.
+      enddo
+      enddo
+      enddo
+
+      iw=0
+      do ip=1,73
+      do i=1,im
+      do j=1,jm
+        do iy=1,30
+        clim(i,j,ip)=clim(i,j,ip)+wk4d(i,j,ip,iy+2)/30.
+        enddo
+      enddo
+      enddo
+
+      do i=1,im
+      do j=1,jm
+        wk(i,j)=clim(i,j,ip)
+      enddo
+      enddo
+      iw=iw+1
+      write(50,rec=iw) wk
+      enddo
+c
+c have anom
+c
+      iw=0
+      npen=73
+      do iy=1,nyr
+      if(iy.eq.nyr) npen=$cyrpen
+      do ip=1,npen
+      
+      do i=1,im
+      do j=1,jm
+        wk(i,j)=wk4d(i,j,ip,iy)-clim(i,j,ip)
+      enddo
+      enddo
+
+      iw=iw+1
+      write(60,rec=iw) wk
+      enddo
+      enddo
+      write(6,*) 'tot_peng=',iw
+
+      stop
+      end
+ccccccccccccccccccccccc
+EOF
+gfortran clim_anom.f
+./a.out
+#==========================================
+# have ctl for tmp data
+#==========================================
+#
+cat>$outfile1.ctl<<EOF
+dset ^$outfile1.gr
+undef -999000000
+*
+TITLE pent psi200
+*
+xdef 144 linear    0.  2.5
+ydef  73 linear  -90.  2.5
+zdef 1 linear 1 1
+tdef 9999 linear 03jan1979 5dy
+vars 1
+z  1 99  pent PSI at 200mb (10**6 mm/s)
+ENDVARS
+EOF
+#
+cat>$outfile2.ctl<<EOF
+dset ^$outfile2.gr
+undef -999000000
+*
+TITLE pent psi200
+*
+xdef 144 linear    0.  2.5
+ydef  73 linear  -90.  2.5
+zdef 1 linear 1 1
+tdef 9999 linear 03jan1979 5dy
+vars 1
+z  1 99  pent PSI at 200mb (10**6 mm/s)
+ENDVARS
+EOF
+#
+cp $outfile1.* $datadir2
+cp $outfile2.* $datadir2
+\rm $tmp/*
+

@@ -1,0 +1,129 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/ca_prd/wk34/data_proc
+tmp=/cpc/home/wd52pp/tmp/test
+datadir1=/cpc/analysis/cdas/daily/prs
+datadir2=/cpc/home/wd52pp/data/ca_prd
+#
+outfile=z500.7drm.1979-curr
+edate=0228         # current year ending date in number
+date_end=28feb2022
+totday=15765
+#======================================
+# read z500
+#======================================
+iyears=1979
+iyeare=2022
+cd $tmp
+
+cat >z500read<<EOF
+run read.gs
+EOF
+cat >read.gs<<EOF
+'reinit'
+'open $datadir1/y1979_cur/HGT.daily.79_cur.ctl'
+'set z 6'
+'set x 1 144'
+'set y 1 73'
+'set gxout fwrite'
+'set fwrite dailyz500.79-cur.gr'
+'set time 01jan$iyears $date_end'
+'d HGTprs'
+'c'
+EOF
+grads -l <z500read
+
+cat>dailyz500.79-cur.ctl<<EOF
+dset ^dailyz500.79-cur.gr
+undef -999000000
+*
+TITLE Tsfc
+*
+xdef  144 linear   0 2.5
+ydef   73 linear -90 2.5
+zdef   1 linear 1 1
+tdef 20000 linear 01jan1979 1dy
+vars 1
+z  1 99 HGT at 200mb
+ENDVARS
+EOF
+
+rmday=`expr $totday - 6`
+rmend=`expr $totday - 3`
+
+cd $tmp
+#\rm *.*
+#======================================
+# 7-day running mean
+#======================================
+cat >runmean<<EOF
+run mean.gs
+EOF
+
+cat >mean.gs<<EOF
+'reinit'
+'open dailyz500.79-cur.ctl'
+'set x 1 144'
+'set y 1  73'
+'set gxout fwrite'
+'set fwrite tmp.gr'
+'set t 4 $rmend'
+'d ave(z,t-3,t+3)'
+'c'
+EOF
+grads -l <runmean
+#
+cat>tmp.ctl<<EOF
+dset ^tmp.gr
+undef -999000000
+*
+TITLE z500
+*
+xdef  144 linear   0  2.5
+ydef   73 linear -90  2.5
+zdef   1 linear 1 1
+tdef 20000 linear 04jan1979 1dy
+vars 1
+z  1 99 7-day run_mean z500
+ENDVARS
+EOF
+#======================================
+# regrid to 1x1 grid
+#======================================
+cat >regrid<<EOF
+run lterp.gs
+EOF
+cat >lterp.gs<<EOF
+'reinit'
+'open $datadir2/mask.1x1.prate.ctl'
+'open tmp.ctl'
+'set x 1 360'
+'set y 1 181'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+'set t 1 $rmday'
+'d lterp(z.2,mask.1(t=1))'
+'c'
+EOF
+
+grads -l <regrid
+#
+cat>$outfile.ctl<<EOF
+dset ^$outfile.gr
+undef -999000000
+*
+TITLE z500
+*
+xdef  360 linear 0 1.
+ydef  181 linear -90 1.
+zdef   1 linear 1 1
+tdef 20000 linear 04jan1979 1dy
+vars 1
+z  1 99 z500 (C)
+ENDVARS
+EOF
+#
+cp $outfile.* $datadir2
+

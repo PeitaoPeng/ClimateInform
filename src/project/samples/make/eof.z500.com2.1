@@ -1,0 +1,80 @@
+open /export-1/sgi59/wd52pp/data/obs/reanl/reof.z500.58_94jfm.ctl
+*open /export-1/sgi59/wd52pp/data/obs/reanl/regr_rcoef.vs.z500.58_94jfm.ctl
+ reset
+ enable print  meta.eof
+*===========================
+run /export/sgi57/wd52pp/bin/rgbset.gs
+set csmooth on
+set grid on
+*----------
+set mproj nps
+set frame off
+set lat 10 90
+set lon 0 360
+*********
+set string 1 tc 8
+set strsiz 0.2 0.2
+draw string 4.0 10.8 reof obs NH Z500 jfm 58-94 
+set t 1
+set vpage 0.7 4.2 5.5 9  
+set grads off
+set gxout shaded
+set clevs  -0.325 0.325
+set ccols  33 0 37 
+d reof
+set gxout contour
+set clevs   -0.8 -0.6 -0.4 -0.2 0.2 0.4 0.6 0.8  
+*set cint 10
+*d z.2
+d reof
+draw title REOF 1 (24%) 
+*----------
+set vpage 3.8 7.3 5.5 9 
+set grads off
+set gxout shaded
+set clevs  -0.325 0.325
+set ccols  33 0 37 
+set t 2
+d reof
+set gxout contour
+set clevs   -0.8 -0.6 -0.4 -0.2 0.2 0.4 0.6 0.8  
+*set cint 10
+*d z.2
+d reof
+draw title REOF 2 (18%)
+*----------
+set vpage 0.7 4.2  2.2 5.7
+set grads off
+set gxout shaded
+set clevs  -0.325 0.325
+set ccols  33 0 37 
+set t 3
+d reof
+set gxout contour
+set clevs   -0.8 -0.6 -0.4 -0.2 0.2 0.4 0.6 0.8  
+*set cint 10
+*d z.2
+d reof  
+draw title REOF 3 (7%)
+*----------
+set vpage 3.8 7.3  2.2 5.7
+set grads off
+set gxout shaded
+set clevs  -0.325 0.325
+set ccols  33 0 37 
+set t 4
+d reof
+set gxout contour
+set clevs   -0.8 -0.6 -0.4 -0.2 0.2 0.4 0.6 0.8  
+*set cint 10 
+*d z.2
+d reof
+draw title REOF 4 (6%)
+*----------
+run cbarn.gs 1 0 4.3 
+run /export/sgi57/wd52pp/bin/cbarn.gs
+c
+*----------
+reset
+*----------
+disable print

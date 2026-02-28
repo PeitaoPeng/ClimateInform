@@ -1,0 +1,8 @@
+'open /export-12/cacsrv1/wd52pp/cpc_vfc/0ctl/temp_seasonal_archive.ctl'
+'set t 1 12'
+'define clm=ave(t,t+0,t=147,1yr)'
+'modify clm seasonal'
+'set gxout fwrite'
+'set fwrite sfcT_anom.9501-0703.gr'
+'set t 1 147'
+'d t-clm'

@@ -1,0 +1,50 @@
+#!/bin/sh
+
+set -eaux
+
+#
+lcdir=/export-6/sgi9/wd52pp/project/ca_prd/data_prep
+srcdir=/export-6/sgi9/wd52pp/utility/intpl
+datadir=/export-6/cacsrv1/wd52pp/obs/prcp
+#
+ nmonth=310
+ iskip=0
+#
+cd /export-6/sgi9/wd52pp/tmp/test
+cp $srcdir/REG72_2_REG72x72.f .
+cp $srcdir/setxy.f .
+cp $srcdir/intp2d.f .
+#
+/bin/rm fort.*
+   ln -s $datadir/opi_7901-cur.i3e fort.11
+   ln -s $datadir/opi_7901-cur.72x72.i3e fort.21
+#
+cat > parm.h << eof
+      parameter(ltime=$nmonth,iskip=$iskip)
+eof
+#
+ f77  REG72_2_REG72x72.f setxy.f intp2d.f
+ a.out
+#
+cat>$datadir/opi_7901-cur.72x72.ctl<<EOF
+DSET  ^opi_7901-cur.72x72.i3e
+*
+UNDEF  -999.0
+*
+options big_endian
+*
+TITLE  Monthly CPC Merged Analysis of Precipitation (CMAP,Xie and Arkin 1997)
+*
+XDEF  72 LINEAR 0.  5
+*
+YDEF  72 LINEAR -88.75 2.5
+*
+ZDEF  02 LEVELS 1 2
+*
+TDEF 999 LINEAR JAN1979 1mon
+*
+VARS 1
+opi     1 99 opi prcp (mm/day)
+ENDVARS
+EOF
+ja -s

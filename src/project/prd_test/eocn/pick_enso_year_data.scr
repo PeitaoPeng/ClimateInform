@@ -1,0 +1,50 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/prd_skill
+tmp=/export/hobbes/wd52pp/tmp
+datadir=/export-12/cacsrv1/wd52pp/prd_skill
+#
+#var=temp
+ var=prec
+#
+crtsst=0.51
+nseasons=180   #JFM1995-
+ model=gocnv1
+#model=gocn
+#model=eocn
+#model=nino34
+#model=nino34_noflt
+#model=ensocmp_3ctg
+#model=ensocmp_5ctg
+#model=ensocmp_noflt
+#
+/bin/rm $tmp/fort.*         
+cp $lcdir/pick_enso_year_data.f $tmp/pick.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nss=$nseasons)
+       parameter(ncd=102)
+       parameter(crtsst=$crtsst)
+eof
+#
+#
+f77 -o pick.x pick.f
+echo "done compiling"
+
+#
+ ln -s $datadir/${model}prd_${var}_102CD.jfm1995-djf2009.i3e   fort.10
+ ln -s $datadir/wmoobs_${var}_102CD.jfm1995-djf2009.i3e        fort.11
+#
+ ln -s /export-12/cacsrv1/wd52pp/obs/sst/nino34.3mon_mean.jfm95-fma10.gr  fort.20
+#
+ ln -s $datadir/${model}prd_${var}_102CD.jfm1995-djf2009.enso.i3e   fort.30
+ ln -s $datadir/wmoobs_${var}_102CD.jfm1995-djf2009.enso.i3e        fort.31
+#
+ ln -s $datadir/${model}prd_${var}_102CD.jfm1995-djf2009.no-enso.i3e   fort.40
+ ln -s $datadir/wmoobs_${var}_102CD.jfm1995-djf2009.no-enso.i3e        fort.41
+#
+pick.x > $lcdir/pick_enso.out
+#

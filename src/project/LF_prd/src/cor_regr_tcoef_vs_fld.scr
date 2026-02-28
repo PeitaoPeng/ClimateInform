@@ -1,0 +1,33 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/project/LF_prd/src
+tmp=/export-6/sgi9/wd52pp/tmp
+datadir=/export-6/cacsrv1/wd52pp/LF_prd
+#
+longtime=71
+mode=1
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/cor_regr_tcoef_vs_fld.f $tmp/.
+cd $tmp
+unlimit
+#
+cat > parm.h << eof
+       parameter(imax=128,jmax=64)
+       parameter(ltime=$longtime)
+       parameter(icdmax=102)
+       parameter(mmax=$mode)
+eof
+#
+#
+f77 -o cor_regr_tcoef_vs_fld.x cor_regr_tcoef_vs_fld.f
+echo "done compiling"
+
+#
+ ln -s $datadir/temp_102_anom_1931-2001.djf.txt           fort.10
+ ln -s $datadir/ocn_prd_and_vrfy_tcoef.1961-2001.djf.i3e  fort.20
+ ln -s $datadir/cor_regr.ocn_tcoef.vs_temp_1961_2001.djf.i3e        fort.50
+#
+cor_regr_tcoef_vs_fld.x

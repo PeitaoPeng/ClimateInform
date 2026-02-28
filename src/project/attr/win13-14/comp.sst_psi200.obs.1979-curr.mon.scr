@@ -1,0 +1,39 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/win13-14
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/para
+#
+var=psi200
+nyr=35
+nmon=5 # mon# of each season
+area=NPNA
+#
+cp $lcdir/comp.sst_psi200.obs.1979-curr.mon.f $tmp/proj.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nyr=$nyr,nmon=$nmon)
+       parameter(imx=144,jmx=73)
+       parameter(imx2=180,jmx2=89)
+c      parameter(lons=81,lone=125,lats=47,late=73) !NA(200E-310E;25N-90N)
+       parameter(lons=41,lone=125,lats=38,late=73) !NPNA(100E-310E;0N-90N)
+eof
+#
+\rm $tmp/fort.*         
+#
+gfortran -o proj.x proj.f 
+echo "done compiling"
+
+#
+ln -s $lcdir/psi200.ndjfm1949-curr.mon.gr  fort.11
+ln -s $lcdir/ersst.ndjfm1949-2013.mon.gr  fort.12
+ln -s $lcdir/psi200.comp.obs.79-13.mon.gr  fort.50
+ln -s $lcdir/sst.comp.obs.79-13.mon.gr  fort.60
+ln -s $lcdir/cor_psi200.obs.79-13.mon.gr  fort.70
+#
+proj.x > $lcdir/comp_sst_psi200.obs.79-13.mon.$area.out
+#
+

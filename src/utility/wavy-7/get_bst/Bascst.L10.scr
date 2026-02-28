@@ -1,0 +1,40 @@
+#!/bin/sh
+
+set -eaux
+
+season=ndj
+
+datadir=/cpc/home/wd52pp/data/wavy
+tgtdir=/cpc/home/wd52pp/utility/wavy-7/e001
+locdir=/cpc/home/wd52pp/utility/wavy-7/get_bst
+tmpdir=/cpc/home/wd52pp/tmp
+#
+cd $tmpdir
+/bin/rm $tmpdir/*.*
+cp $locdir/bascst.L10.f   bs.f
+cp $locdir/intbst.f      intb.f
+#
+cat > ptrunk.h << eof
+c     PARAMETER ( NXOUT=11,NYOUT=16)
+      PARAMETER ( NXOUT=7,NYOUT=16)
+c     PARAMETER ( NXOUT=16,NYOUT=16)
+eof
+#
+ gfortran  bs.f intb.f
+#
+ ln -s $datadir/cdas.hdvt.$season.R15SPC.gr    fort.10
+ ln -s $datadir/cdas.hdvt.clim_$season.R15SPC.gr   fort.20
+#ln -s $datadir/cdas.hdvt.djfm2014.R15SPC.gr    fort.10
+#ln -s $datadir/cdas.hdvt.clim_djfm.R15SPC.gr   fort.20
+#ln -s $datadir/cdas.hdvt.dec2013.R15SPC.gr    fort.10
+#ln -s $datadir/cdas.hdvt.clim_dec.R15SPC.gr   fort.20
+#ln -s $datadir/cdas.hdvt.mam.R15SPC.gr    fort.10
+#ln -s $datadir/cdas.hdvt.clim_mam.R15SPC.gr   fort.20
+ln -s $tgtdir/basic.i3e          fort.30
+ln -s $tgtdir/basic.view.i3e     fort.35
+ln -s $tgtdir/verify.i3e         fort.40
+ln -s $tgtdir/top_cdas_R15.i3e   fort.50
+#
+#a.out > output 
+a.out 
+#mv output   $locdir/out

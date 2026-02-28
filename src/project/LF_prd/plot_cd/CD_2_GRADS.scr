@@ -1,0 +1,78 @@
+#!/bin/sh
+#
+
+datadir=/export-6/cacsrv1/wd52pp/LF_prd
+source=/export-6/sgi9/wd52pp/project/LF_prd/plot_cd
+ 
+cd $source/convert
+
+#
+cat > parm.h << eof
+       parameter(nyear=26)
+eof
+#
+
+f77 -o cd_2_grads.x cd_2_grads.f 
+
+#  ln -s      $datadir/var.temp_102_anom_1931-2001.djf.i3e          fort.11
+#  ln -s      $datadir/eof.temp_102_anom_1931-2001.djf.i3e          fort.11
+#  ln -s      $datadir/eof.temp_102_1931-2001.djf.wang_LP.i3e       fort.11
+#  ln -s      $datadir/regr.temp_102_anom_1931-2001.djf.i3e          fort.11
+#  ln -s      $datadir/regr.temp_102_1931-2001.djf.wang_LP.i3e          fort.11
+#  ln -s      $datadir/regr.temp_102_anom_1931-1980.djf.i3e          fort.11
+#  ln -s      $datadir/rregr.temp_102_1931-2001.jfm.wang_LP.i3e          fort.11
+#  ln -s      $datadir/reof.temp_102_anom_1931-2002.jfm.i3e          fort.11
+#  ln -s      $datadir/K_AC_temp_102_anom_1931-2001.djf.i3e          fort.11
+#  ln -s      $datadir/ocn_pc_prd_temp.djf.1931-2002.i3e          fort.11
+#  ln -s      $datadir/LP_persistent_pc_prd_temp.djf.1961-2001.i3e         fort.11
+#  ln -s      $datadir/COR_SESAT_vs_temp_1931_2002.jfm.i3e             fort.11
+#  ln -s      $datadir/skill_cd_grid_ocn_prd_temp_1931-2001.djf.i3e             fort.11
+#  ln -s      $datadir/temp_SESAT_comp_102cd_1961-2001.jfm.i3e             fort.11
+#  ln -s      $datadir/temp_enso_select_102cd_jfm.i3e             fort.11
+   ln -s      $datadir/temp_+SESAT_select_102cd_jfm.31-02.i3e             fort.11
+#  ln -s      $datadir/cor_regr.ocn_tcoef.vs_temp_1961_2001.djf.i3e             fort.11
+#
+   ln -s      $source/convert/data_102/lalo102       fort.12
+#
+#  ln -s      $datadir/var.temp_102_anom_1931-2001.djf.gr    fort.55
+#  ln -s      $datadir/eof.temp_102_anom_1931-2001.djf.gr    fort.55
+#  ln -s      $datadir/eof.temp_102_1931-2001.djf.wang_LP.gr    fort.55
+#  ln -s      $datadir/regr.temp_102_1931-2001.djf.wang_LP.gr    fort.55
+#  ln -s      $datadir/regr.temp_102_anom_1931-2001.djf.gr    fort.55
+#  ln -s      $datadir/regr.temp_102_anom_1931-1980.djf.gr    fort.55
+#  ln -s      $datadir/rregr.temp_102_1931-2001.jfm.wang_LP.gr    fort.55
+#  ln -s      $datadir/reof.temp_102_anom_1931-2002.jfm.gr    fort.55
+#  ln -s      $datadir/K_AC_temp_102_anom_1931-2001.djf.gr    fort.55
+#  ln -s      $datadir/ocn_pc_prd_temp.djf.1931-2002.gr    fort.55
+#  ln -s      $datadir/LP_persistent_pc_prd_temp.djf.1961-2001.gr    fort.55
+#  ln -s      $datadir/COR_SESAT_vs_temp_1931_2002.jfm.gr    fort.55
+#  ln -s      $datadir/skill_cd_grid_ocn_prd_temp_1931-2001.djf.gr   fort.55
+#  ln -s      $datadir/temp_SESAT_comp_102cd_1961-2001.jfm.gr   fort.55
+#  ln -s      $datadir/temp_enso_select_102cd_jfm.gr   fort.55
+   ln -s      $datadir/temp_+SESAT_select_102cd_jfm.31-02.gr   fort.55
+#  ln -s      $datadir/cor_regr.ocn_tcoef.vs_temp_1961_2001.djf.gr   fort.55
+
+   cd_2_grads.x 
+   rm fort.*
+
+#stnmap -i $source/var.temp_102_anom_1931-2001.djf.ctl         #create map file
+#stnmap -i $source/eof.temp_102_anom_1931-2001.djf.ctl         #create map file
+#stnmap -i $source/eof.temp_102_1931-2001.djf.wang_LP.ctl         #create map file
+#stnmap -i $source/regr.temp_102_anom_1931-2001.djf.ctl         #create map file
+#stnmap -i $source/regr.temp_102_1931-2001.djf.wang_LP.ctl         #create map file
+#stnmap -i $source/regr.temp_102_anom_1931-1980.djf.ctl         #create map file
+#stnmap -i $source/rregr.temp_102_1931-2001.jfm.wang_LP.ctl         #create map file
+#stnmap -i $source/reof.temp_102_anom_1931-2002.jfm.ctl         #create map file
+#stnmap -i $source/K_AC_temp_102_anom_1931-2001.djf.ctl         #create map file
+#stnmap -i $source/ocn_pc_prd_temp.djf.1931-2002.ctl         #create map file
+#stnmap -i $source/LP_persistent_pc_prd_temp.djf.1961-2001.ctl         #create map file
+#stnmap -i $source/COR_SESAT_vs_temp_1931_2002.jfm.ctl        #create map file
+#stnmap -i $source/skill_cd_grid_ocn_prd_temp_1931-2001.djf.ctl   #create map file
+#stnmap -i $source/temp_SESAT_comp_102cd_1961-2001.jfm.ctl   #create map file
+#stnmap -i $source/temp_enso_select_102cd_jfm.ctl   #create map file
+ stnmap -i $source/temp_+SESAT_select_102cd_jfm.31-02.ctl   #create map file
+#stnmap -i $source/cor_regr.ocn_tcoef.vs_temp_1961_2001.djf.ctl   #create map file
+
+rm *.x
+
+exit

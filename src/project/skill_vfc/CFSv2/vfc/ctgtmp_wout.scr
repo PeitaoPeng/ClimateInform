@@ -1,0 +1,61 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/CFSv2_skill/vfc
+tmp=/cpc/home/wd52pp/tmp
+datadir1=/cpc/home/wd52pp/data/cpc_vfc/0data
+datadir2=/cpc/home/wd52pp/data/CFSv2_vfc/0data
+datadir3=/cpc/home/wd52pp/data/CFS_vfc/0data
+datadir4=/cpc/home/wd52pp/data/CFSv2_vfc/skill
+#
+ var=temp
+#var=prec
+nseason=180
+nyears=15
+#
+/bin/rm $tmp/fort.*         
+cp $lcdir/ctgtmp_wout.f $tmp/.
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nss=$nseason)
+       parameter(nyr=$nyears)
+       parameter(imx=36,jmx=19)
+eof
+#
+#
+gfortran -o ctgtmp.x ctgtmp_wout.f
+echo "done compiling"
+
+#
+ ln -s $datadir1/mask_2x2.data    fort.11
+ ln -s $datadir3/${var}.jfm1995-jfm2011.cfs.us.gr    fort.12
+ ln -s $datadir2/${var}.jfm1995-djf2009.cfsv2.us.gr  fort.13
+ ln -s $datadir1/${var}01_forecast.bi  fort.14
+ ln -s $datadir1/${var}_seas_verif.bi  fort.15
+ ln -s $datadir4/ctg${var}.jfm1995-djf2009.prd.vs.obs.gr  fort.51
+#
+ctgtmp.x > $lcdir/out.$var
+#
+
+cat>$datadir4/ctg${var}.jfm1995-djf2009.prd.vs.obs.ctl<<EOF
+dset $datadir4/ctg${var}.jfm1995-djf2009.prd.vs.obs.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    1 linear    0.000  1
+ydef    1 linear    0.000  5
+zdef    1 levels 500
+tdef 999 linear jan1995  1mon
+vars   8
+v1a 0 99 % above normal for CFSv1
+v1b 0 99 % below normal for CFSv1
+v2a 0 99 % above normal for CFSv2
+v2b 0 99 % below normal for CFSv2
+opa 0 99 % above normal for CPC op
+opb 0 99 % below normal for CPC op
+obsa   0 99 % above normal for obs
+obsb   0 99 % below normal for obs
+endvars
+EOF
+

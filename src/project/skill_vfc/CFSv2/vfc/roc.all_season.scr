@@ -1,0 +1,63 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/CFSv2_skill
+tmp=/cpc/home/wd52pp/tmp
+datadir1=/cpc/home/wd52pp/data/CFSv2_vfc/0data
+datadir2=/cpc/home/wd52pp/data/CFSv2_vfc/skill
+datadir3=/cpc/home/wd52pp/project/CFSv2_skill/plot
+datadir4=/cpc/home/wd52pp/data/cpc_vfc/0data
+#
+#var=temp
+ var=prec
+nseason=180
+nyears=15
+#
+/bin/rm $tmp/fort.*         
+cp $lcdir/vfc/roc.all_season.f $tmp/roc.f
+cp $lcdir/vfc/roc_area.s.f $tmp/.
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nss=$nseason)
+       parameter(nyr=$nyears)
+       parameter(imx=36,jmx=19)
+eof
+#
+#
+gfortran -o roc.x roc_area.s.f roc.f
+echo "done compiling"
+
+#
+ ln -s $datadir1/mask_2x2.data    fort.11
+ ln -s $datadir1/$var.jfm95-djf09.cfsv2.below.gr  fort.12
+ ln -s $datadir1/$var.jfm95-djf09.cfsv2.above.gr  fort.13
+ ln -s $datadir4/${var}_seas_verif.bi             fort.14
+#
+ ln -s $datadir3/roc_a_${var}.95-cur.txt  fort.61
+ ln -s $datadir3/roc_b_${var}.95-cur.txt  fort.62
+ ln -s $datadir2/rlb_hsg.$var.95-cur.gr         fort.65
+#
+roc.x > $lcdir/vfc/out
+#
+
+cat>$datadir2/rlb_hsg.$var.95-cur.ctl<<EOF
+dset $datadir2/rlb_hsg.$var.95-cur.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  10 linear    0.000  1
+ydef   1 linear    0.000  5
+zdef   1 levels 500
+tdef   1 linear feb1995  1mon
+vars   8
+hoa    0 99 reliability of above normal
+hob    0 99 reliability of below normal
+hon    0 99 reliability of normal
+foa    0 99 freg of above normal
+fob    0 99 freg of below normal
+fon    0 99 freq of normal
+rga    0 99 weithed regr of above
+rgb    0 99 weithed regr of above
+endvars
+EOF

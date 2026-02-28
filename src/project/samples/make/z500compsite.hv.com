@@ -1,0 +1,85 @@
+set display color white
+open /export-6/cacsrv1/wd52pp/obs/reanl/z500composite_cold.ctl
+open /export-6/cacsrv1/wd52pp/amip/z500.12season.cold.composite.ctl
+ reset
+ enable print  meta.comp
+*===========================
+run /export/sgi57/wd52pp/bin/rgbset.gs
+set csmooth on
+set grid on
+*----------
+*********
+set string 1 tc 8
+set strsiz 0.2 0.2
+draw string 5.5 8.0 Z500 cold composite 40N-60N
+set vpage 0 5.5 0 7.5 
+set grads off
+set gxout shaded
+set clevs -50 -40 -30 -20 -10 0 10 20 30 40 50 
+set ccols 49 47 46 45 43 41 21 23 25 26 27 29
+set t 1 12
+set lat 50
+set lon 150 300
+set ylab off
+set xlab off
+d ave(z,lat=40,lat=60)
+set strsiz 0.15 0.15
+draw string 1.0 1.1 JFM
+draw string 1.0 1.736 FMA
+draw string 1.0 2.372 MAM
+draw string 1.0 3.008 AMJ
+draw string 1.0 3.644 MJJ
+draw string 1.0 4.280 JJA
+draw string 1.0 4.916 JAS
+draw string 1.0 5.552 ASO
+draw string 1.0 6.188 SON
+draw string 1.0 6.824 OND
+draw string 1.0 7.460 NDJ
+draw string 1.0 8.1 DJF
+*
+draw string 1.5 0.9 150E
+draw string 2.34 0.9 180
+draw string 3.18 0.9 150W
+draw string 4.02 0.9 120W
+draw string 4.86 0.9 90W
+draw string 5.7 0.9 60W
+draw title reanalyses
+run /export/sgi57/wd52pp/bin/cbarn.gs 1.0 0 3.5 0.3
+*********
+set string 1 tc 8
+set vpage 5.5 11 0 7.5 
+set grads off
+set gxout shaded
+set clevs -50 -40 -30 -20 -10 0 10 20 30 40 50 
+set ccols 49 47 46 45 43 41 21 23 25 26 27 29
+set t 1 12
+set lat 50
+set lon 150 300
+set ylab off
+set xlab off
+d ave(z.2,lat=40,lat=60)
+set strsiz 0.15 0.15
+draw string 1.0 1.1 JFM
+draw string 1.0 1.736 FMA
+draw string 1.0 2.372 MAM
+draw string 1.0 3.008 AMJ
+draw string 1.0 3.644 MJJ
+draw string 1.0 4.280 JJA
+draw string 1.0 4.916 JAS
+draw string 1.0 5.552 ASO
+draw string 1.0 6.188 SON
+draw string 1.0 6.824 OND
+draw string 1.0 7.460 NDJ
+draw string 1.0 8.1 DJF
+*
+draw string 1.5 0.9 150E
+draw string 2.34 0.9 180
+draw string 3.18 0.9 150W
+draw string 4.02 0.9 120W
+draw string 4.86 0.9 90W
+draw string 5.7 0.9 60W
+draw title NCEP LRFM
+run /export/sgi57/wd52pp/bin/cbarn.gs 1.0 0 3.5 0.3
+print
+
+*===========================

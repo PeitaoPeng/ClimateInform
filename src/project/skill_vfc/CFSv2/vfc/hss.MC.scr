@@ -1,0 +1,167 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export/hobbes/wd52pp/project/CFSv2_skill/vfc
+tmp=/export/hobbes/wd52pp/tmp
+datadir1=/export-12/cacsrv1/wd52pp/cpc_vfc/0data
+datadir2=/export-12/cacsrv1/wd52pp/CFSv2_vfc/0data
+datadir3=/export-12/cacsrv1/wd52pp/CFSv2_vfc/skill
+#
+#var=temp
+ var=prec
+nseason=180
+nyears=15
+tool=cfsv2
+#
+#/bin/rm $tmp/fort.*         
+cp $lcdir/hss.MC.f $tmp/.
+cp $lcdir/hss_t.MC.s.f $tmp/.
+cp $lcdir/hss_s.MC.s.f $tmp/.
+cp $lcdir/hss_stat.s.f $tmp/.
+cp $lcdir/lag_corr.s.f $tmp/.
+cp $lcdir/hss_all.MC.s.f $tmp/.
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nss=$nseason)
+       parameter(nyr=$nyears)
+       parameter(imx=36,jmx=19)
+c      parameter(nsp=50000)
+       parameter(nsp=100)
+eof
+#
+#
+f77 -o hss.x hss.MC.f hss_t.MC.s.f hss_s.MC.s.f hss_all.MC.s.f hss_stat.s.f lag_corr.s.f
+echo "done compiling"
+
+#
+ ln -s $datadir1/mask_2x2.data    fort.11
+ ln -s $datadir2/${var}.jfm1995-djf2009.cfsv2.us.gr  fort.12
+ ln -s $datadir1/${var}_seas_verif.bi  fort.13
+ ln -s $datadir3/hss_${var}.95-cur.$tool.gr  fort.51
+ ln -s $datadir3/hss_${var}_t.95-cur.$tool.gr  fort.52
+ ln -s $datadir3/hss_cyc_${var}.95-cur.$tool.gr  fort.53
+ ln -s $datadir3/non-EC_hss.vs.non-EC_season.$tool.$var.gr  fort.54
+ ln -s $datadir3/hss-pdf.$tool.$var.gr  fort.55
+#
+hss.x > $lcdir/out.$var
+#
+
+cat>$datadir3/hss_$var.95-cur.$tool.ctl<<EOF
+dset $datadir3/hss_$var.95-cur.$tool.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    1 linear    0.000  1
+ydef    1 linear    0.000  5
+zdef    1 levels 500
+tdef 999 linear jan1995  1mon
+vars   9
+hs1   0 99 hss of all grid points
+hs2   0 99 hss of non-EC
+nec   0 99 percent of nonec grids
+mhs1  0 99 mean hs1 in MC
+mhs2  0 99 mean hs2 in MC
+sdv1  0 99 stdv of hs1 in MC
+sdv2  0 99 stdv of hs2 in MC
+rank1 0 99 rank of hs1 in MC
+rank2 0 99 rank of hs2 in MC
+endvars
+EOF
+
+cat>$datadir3/hss_cyc_$var.95-cur.$tool.ctl<<EOF
+dset $datadir3/hss_cyc_$var.95-cur.$tool.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    1 linear    0.000  1
+ydef    1 linear    0.000  5
+zdef    1 levels 500
+tdef 999 linear jan1995 1mon
+vars   3
+hs1   0 99 Type of Ob
+hs2   0 99 Type of Ob
+nec   0 99 percent of nonec grids
+endvars
+EOF
+
+cat>$datadir3/hss_${var}_t.95-cur.$tool.ctl<<EOF
+dset $datadir3/hss_${var}_t.95-cur.$tool.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef   36 linear -130 2
+ydef   19 LINEAR   20 2
+zdef    1 levels 500
+tdef 999 linear jan1995  1mon
+vars   25
+hs1   0 99 all ss
+hs2   0 99 all ss
+nec   0 99 all ss
+mhs1  0 99 mean MC HSS1
+mhs2  0 99 mean MC HSS1
+sdv1  0 99 stdv of MC HSS1
+sdv2  0 99 stdv of MC HSS2
+sg1   0 99 % bigger
+sg2   0 99 % bigger
+hs1s  0 99 summer
+hs2s  0 99 summer
+mhs1s  0 99 mean MC HSS1
+mhs2s  0 99 mean MC HSS1
+sdv1s  0 99 stdv of MC HSS1
+sdv2s  0 99 stdv of MC HSS2
+sg1s   0 99 % bigger for summer
+sg2s   0 99 % bigger for summer
+hs1w  0 99 winter
+hs2w  0 99 winter
+mhs1w  0 99 mean MC HSS1
+mhs2w  0 99 mean MC HSS1
+sdv1w  0 99 stdv of MC HSS1
+sdv2w  0 99 stdv of MC HSS2
+sg1w   0 99 % bigger for winter
+sg2w   0 99 % bigger for winter
+endvars
+EOF
+
+cat>$datadir3/non-EC_hss.vs.non-EC_season.$tool.$var.ctl<<EOF
+dset $datadir3/non-EC_hss.vs.non-EC_season.$tool.$var.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    232 linear    0.000  1
+ydef    1 linear    0.000  5
+zdef    1 levels 500
+tdef 999 linear jan1995  1mon
+vars   2
+hs2   0 99 Type of Ob
+nec   0 99 percent of nonec grids
+endvars
+EOF
+
+cat>$datadir3/ran-pdf.$tool.$var.ctl<<EOF
+dset $datadir3/ran-pdf.$tool.$var.gr
+undef -9999.0
+title Histgram of MC hs1
+xdef   121 linear 1 1
+ydef   1 LINEAR   20 2
+zdef   1 levels 500
+tdef 2 linear jan1995  1mon
+vars   1
+ran   0 99 all ss
+endvars
+EOF
+
+cat>$datadir3/hss-pdf.$tool.$var.ctl<<EOF
+dset $datadir3/hss-pdf.$tool.$var.gr
+undef -9999.0
+title Histgram of MC hss
+xdef   121 linear 1 1
+ydef   1 LINEAR   20 2
+zdef   1 levels 500
+tdef 1 linear jan1995  1mon
+vars   6
+hss1_all   0 99 all ss
+hss2_all   0 99 all ss
+hss1_sw   0 99 all ss
+hss2_sw   0 99 all ss
+hss1_md   0 99 all ss
+hss2_md   0 99 all ss
+endvars
+EOF

@@ -1,0 +1,33 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/project/LF_prd/src
+tmp=/export-6/sgi9/wd52pp/tmp
+datadir=/export-6/cacsrv1/wd52pp/LF_prd
+#
+longtime=71
+ntprd=25
+mode=6
+#
+cp $lcdir/ocn_pc_test_K.31-85.f $tmp/.
+cd $tmp
+/bin/rm fort.*
+unlimit
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(mmax=$mode)
+       parameter(ntprd=$ntprd)
+eof
+#
+#
+f77 -o ocn_pc_test_K.31-85.x ocn_pc_test_K.31-85.f
+echo "done compiling"
+
+#
+ ln -s $datadir/coef.temp_102_anom_1931-2001.djf.i3e        fort.10
+ ln -s /export-6/sgi9/wd52pp/project/LF_prd/src/out         fort.20
+ ln -s $datadir/cor_vs_K.temp_102_1961-1985.djf.i3e         fort.30
+#
+ocn_pc_test_K.31-85.x

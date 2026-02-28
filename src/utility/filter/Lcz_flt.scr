@@ -1,0 +1,34 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/utility/filter
+tmp=/tmp/wd52pp
+datadir=/cmb/d12/wd52pp/data/trs/uwind
+#
+longtime=120
+imax=144
+jmax=73
+n=10          #  LCZ point number 2*n-1
+ipass=2       #  1 LP; 2 HP
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/Lcz_flt.f $tmp/.
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(imax=$imax,jmax=$jmax)
+       parameter(n=$n)
+       parameter(ipass=$ipass)
+eof
+#
+f77 -o Lcz_flt.x Lcz_flt.f
+echo "done compiling"
+
+#
+ ln -s $datadir/UGRD200_5657_djfm_daily.ieee fort.10
+ ln -s $lcdir/Lcz_flt.data fort.15
+ ln -s $datadir/UGRD200_5657_djfm_daily.HP.i3e fort.20
+#
+Lcz_flt.x

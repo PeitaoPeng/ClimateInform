@@ -1,0 +1,157 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/trend
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/attr/trend
+#
+var=z200
+mtx=var
+model=R1 #R1, amip or cmip
+tmax=67 #R1=63, amip=61, cmip=100
+nmod=7 
+hs=tp   #hemisphere
+sst=hadoisst
+#
+cp $lcdir/rsd_eof.z200.f $tmp/eof.f
+cp $lcdir/reof.s.f  $tmp/.
+cd $tmp
+#
+if [ "$mtx" = cor ]; then id=1; fi
+if [ "$mtx" = var ]; then id=0; fi
+cat > parm.h << eof
+       parameter(ltime=$tmax)
+       parameter(imx=144,jmx=73)
+       parameter(nmod=$nmod)
+c      parameter(lons=1,lone=144,lats=1,late=73)! gl
+       parameter(lons=1,lone=144,lats=25,late=49)! tp 30S-30N
+c      parameter(lons=1,lone=144,lats=49,late=73)! nh 30N-90N
+c      parameter(lons=1,lone=144,lats=25,late=73)! tpnh 30S-90N
+c      parameter(lons=1,lone=144,lats=37,late=73)! NH 0-90N
+       parameter(iskip_idx=0)  !R1=0,amip=1,cmip=0)
+       parameter(iskip_fld=0)
+       parameter(id=$id)
+eof
+#
+#for season in djf mam jja son; do
+for season in djf; do
+#
+\rm $tmp/fort.*         
+#
+gfortran -o eof.x reof.s.f eof.f
+echo "done compiling"
+
+#
+ ln -s $datadir/$var.$season.1949-cur.gr         fort.10
+#
+ ln -s $datadir/nino34.$sst.$season.49-cur.gr  fort.21
+#
+ ln -s $datadir/$var.$season.1949-cur.rsd.gr   fort.31
+#
+ ln -s $datadir/rsd_eof.$var.$model.$season.$hs.$mtx.gr       fort.41
+ ln -s $datadir/rsd_pc.$var.$model.$season.$hs.$mtx.gr        fort.42
+#
+ ln -s $datadir/rsd_reof.$var.$model.$season.$hs.$mtx.gr       fort.51
+ ln -s $datadir/rsd_rpc.$var.$model.$season.$hs.$mtx.gr        fort.52
+#
+eof.x > $datadir/rsd_eof.$var.$model.$season.$hs.$mtx.out
+#
+cat>$datadir/rsd_eof.$var.$model.$season.$hs.$mtx.ctl<<EOF
+dset $datadir/rsd_eof.$var.$model.$season.$hs.$mtx.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  144 linear 0 2.5
+ydef   73 linear -90 2.5
+zdef    1 levels 200
+tdef 999 linear jan1950  1yr
+vars   16
+censo  0 99 corr to nino34
+renso  0 99 regr to nino34
+eof1  0 99 corr to PC2
+reg1  0 99 regr to PC2
+eof2  0 99 corr of mode 1
+reg2  0 99 regr of mode 1
+eof3  0 99 corr of mode 1
+reg3  0 99 regr of mode 1
+eof4  0 99 corr of mode 1
+reg4  0 99 regr of mode 1
+eof5  0 99 corr of mode 1
+reg5  0 99 regr of mode 1
+eof6  0 99 corr of mode 1
+reg6  0 99 regr of mode 1
+eof7  0 99 corr of mode 1
+reg7  0 99 regr of mode 1
+endvars
+EOF
+#
+cat>$datadir/rsd_pc.$var.$model.$season.$hs.$mtx.ctl<<EOF
+dset $datadir/rsd_pc.$var.$model.$season.$hs.$mtx.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    1 linear 0 2.8125
+ydef    1 linear -90 2.8125
+zdef    1 levels 200
+tdef 999 linear jan1950  1yr
+vars   8
+cf1   0 99 n34
+cf2   0 99 PC1
+cf3   0 99 PC2
+cf4   0 99 PC3
+cf5   0 99 PC4
+cf6   0 99 PC4
+cf7   0 99 PC4
+cf8   0 99 PC4
+endvars
+EOF
+#
+cat>$datadir/rsd_reof.$var.$model.$season.$hs.$mtx.ctl<<EOF
+dset $datadir/rsd_reof.$var.$model.$season.$hs.$mtx.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  144 linear 0 2.5
+ydef   73 linear -90 2.5
+zdef    1 levels 200
+tdef 999 linear jan1950  1yr
+vars   16
+censo  0 99 corr to nino34
+renso  0 99 regr to nino34
+eof1   0 99 corr to pc1
+reg1   0 99 regr to pc1
+eof2   0 99 corr of pc2
+reg2   0 99 regr of pc2
+eof3   0 99 corr of mode 1
+reg3   0 99 regr of mode 1
+eof4   0 99 corr of mode 1
+reg4   0 99 regr of mode 1
+eof5   0 99 corr of mode 1
+reg5   0 99 regr of mode 1
+eof6   0 99 corr of mode 1
+reg6   0 99 regr of mode 1
+eof7   0 99 corr of mode 1
+reg7   0 99 regr of mode 1
+endvars
+EOF
+
+cat>$datadir/rsd_rpc.$var.$model.$season.$hs.$mtx.ctl<<EOF2
+dset $datadir/rsd_rpc.$var.$model.$season.$hs.$mtx.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    1 linear 0 2.8125
+ydef    1 linear -90 2.8125
+zdef    1 levels 200
+tdef 999 linear jan1950  1yr
+vars  8
+cf1   0 99 n34
+cf2   0 99 PC1
+cf3   0 99 PC2
+cf4   0 99 PC3
+cf5   0 99 PC4
+cf6   0 99 PC4
+cf7   0 99 PC4
+cf8   0 99 PC4
+endvars
+EOF2
+#
+done
+

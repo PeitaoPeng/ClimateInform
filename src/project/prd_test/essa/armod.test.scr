@@ -1,0 +1,35 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/prd_test/essa
+datadir=/cpc/home/wd52pp/data/prd_test
+tmp=/cpc/home/wd52pp/tmp
+
+cp $lcdir/armod.test.f $tmp/armod.f
+cd $tmp
+\rm fort.*
+
+gfortran -o armod.x armod.f
+
+echo "done compiling"
+
+ ln -s $datadir/ar_input.gr     fort.7
+
+armod.x 
+
+cat>$datadir/ar_input.ctl<<EOF
+dset $datadir/ar_input.gr
+undef 999.0
+title 1-d ac skill
+xdef   1 linear  1  1
+ydef   1 linear  1  1
+zdef   1 linear 1  1
+tdef   999 linear jan1931 1mo
+vars   1
+ts 0 99 input AR(2)
+endvars
+EOF
+
+
+

@@ -1,0 +1,52 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/skill_vfc/cpcop/data_proc
+tmp=/cpc/home/wd52pp/tmp
+datadir=$lcdir
+#
+var=temp
+tmax=21
+season=djf
+#
+cp $lcdir/2prob_2_1number.f $tmp/prob.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$tmax)
+       parameter(imx=36,jmx=19)
+eof
+#
+\rm $tmp/fort.*         
+#
+gfortran -o prob.x prob.f
+echo "done compiling"
+
+#
+ ln -s $datadir/${var}_forecast.above.$season.gr       fort.10
+ ln -s $datadir/${var}_forecast.below.$season.gr       fort.11
+ ln -s $datadir/$var.prob_fcst.$season.gr   fort.30
+
+prob.x
+#
+cat>$datadir/$var.prob_fcst.$season.ctl<<EOF
+dset $datadir/$var.prob_fcst.$season.gr
+undef -9.99e+8
+*
+TITLE 2x2  prob fcst
+*
+XDEF 36 LINEAR -130 2
+*
+YDEF 19 LINEAR   20 2
+*
+ZDEF 1 LEVELS  1  1
+*
+TDEF 999 LINEAR dec1995 1yr
+*
+VARS 1
+p 1 00 fcst prob
+ENDVARS
+EOF
+#
+

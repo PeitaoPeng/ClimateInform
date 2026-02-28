@@ -1,0 +1,7 @@
+
+rsd_eof.3idx.scr: use nino34, ipcc_glmsst and amo indices to have residual Z200,
+                  then REOF the residual Z200
+pure_eof.ipcc_z500.scr: show the mixing modes in pure EOF for Z200
+corr_reof_vs_sst.3idx.scr: idx & rcoef corr to SST
+corr_reof_vs_ghcn.3idx.scr: idx & rcoef corr to ghcn_cams
+

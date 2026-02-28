@@ -1,0 +1,33 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/project/LF_prd/src
+tmp=/export-6/sgi9/wd52pp/tmp
+datadir=/export-6/cacsrv1/wd52pp/LF_prd
+#
+longtime=53
+ntprd=22
+mode=10
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/ocn_pc_test_K.f $tmp/.
+cd $tmp
+unlimit
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(mmax=$mode)
+       parameter(ntprd=$ntprd)
+eof
+#
+#
+f77 -o ocn_pc_test_K.x ocn_pc_test_K.f
+echo "done compiling"
+
+#
+ ln -s $datadir/rcoef.temp_cams_NA.jfm.50-02.i3e  fort.10
+#ln -s $datadir/rcoef.temp_cams_NA.jfm.50-02.ntd.i3e  fort.10
+ ln -s /export-6/sgi9/wd52pp/project/LF_prd/src/out   fort.20
+#
+ocn_pc_test_K.x

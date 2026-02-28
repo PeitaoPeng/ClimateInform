@@ -1,0 +1,11 @@
+#crontab on cpcwork2 is UTC time
+MAILTO=peitao.peng@noaa.gov
+
+# CA week3-4 forecst
+58 12 * * * /cpc/home/wd52pp/project/ca_prd/wk34/opr/realtime.run.ca_wk34.sh > /cpc/home/wd52pp/data/wk34_fcst/ca/0log1 2>&1
+20 13 * * * /cpc/home/wd52pp/project/ca_prd/wk34/opr/realtime.run.ca_wk34.mwic.sh > /cpc/home/wd52pp/data/wk34_fcst/ca/0log1 2>&1
+# CA seasonal forecst
+25 8 6 * * /cpc/home/wd52pp/project/ca_prd/sst/opr/realtime.run.ca_season.sst.sh> /cpc/home/wd52pp/data/season_fcst/ca/0log1 2>&1 
+25 8 8 * * /cpc/home/wd52pp/project/ca_prd/sst/opr/realtime.run.ca_season.tpz.sh> /cpc/home/wd52pp/data/season_fcst/ca/0log1 2>&1 
+15 14 16 * * /cpc/home/wd52pp/project/ca_prd/sst/opr/final.run.mon_sst.sh> /cpc/home/wd52pp/data/season_fcst/ca/0log1 2>&1 
+00 14 25 * * /cpc/home/wd52pp/project/ca_prd/sst/opr/prelim.run.mon_sst.sh> /cpc/home/wd52pp/data/season_fcst/ca/0log1 2>&1 

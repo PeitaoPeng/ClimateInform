@@ -1,0 +1,95 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/ca_proj/src
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/ca_proj
+#
+var=sst
+tmax=42   
+ss=djf
+eof_area=tp
+ngrd=11768 # for tp
+#ngrd=44219 # for gl
+#ngrd=19568 # for tp_nml
+model=had-oi
+nmod=7
+nskip=0
+#
+cp $lcdir/eof.sst.f $tmp/eof.f
+cp $lcdir/reof.s.f $tmp/reof.s.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$tmax,nskip=$nskip)
+       parameter(imx=360,jmx=180)
+       parameter(nmod=$nmod)
+       parameter(ngrd=$ngrd)
+       parameter(lons=1,lone=360,lats=70,late=111) !eof_area=tp
+c      parameter(lons=1,lone=360,lats=1,late=180) !eof_area=gl
+c      parameter(lons=1,lone=360,lats=70,late=150) !eof_area=tp_nml
+       parameter(id=0)
+eof
+#
+infile=FV3AMIP_djf.sst_anom.yb1979.masked
+outfile=$var.$model.79-21.$ss.$eof_area
+#
+\rm $tmp/fort.*         
+#
+gfortran -o eof.x reof.s.f eof.f
+echo "done compiling"
+
+#
+ ln -s $datadir/$infile.gr            fort.10
+ ln -s $datadir/eof.$outfile.gr       fort.51
+ ln -s $datadir/pc.$outfile.gr        fort.52
+ ln -s $datadir/rpc.$outfile.gr        fort.53
+#
+ eof.x > $datadir/out.$outfile
+#
+
+cat>$datadir/eof.$outfile.ctl<<EOF
+dset $datadir/eof.$outfile.gr
+undef -999.0
+title Realtime Surface Obs
+XDEF 360 LINEAR    0.5  1.0
+YDEF 180 LINEAR  -89.5  1.0
+ZDEF 01 LEVELS 1
+tdef 999 linear jan1980  1yr
+vars   4
+eof   0 99 corr of mode 1
+reg   0 99 regr of mode 1
+reof   0 99 corr of mode 1
+rreg   0 99 regr of mode 1
+endvars
+EOF
+
+cat>$datadir/pc.$outfile.ctl<<EOF
+dset $datadir/pc.$outfile.gr
+undef -999.0
+title Realtime Surface Obs
+XDEF 1 LINEAR    0.5  1.0
+YDEF 1 LINEAR  -89.5  1.0
+ZDEF 01 LEVELS 1
+tdef 999 linear jan1980 1yr
+edef 8 names 1 2 3 4 5 6 7 8
+vars  1
+cf   0 99 coef of mode 1
+endvars
+EOF
+
+cat>$datadir/rpc.$outfile.ctl<<EOF
+dset $datadir/rpc.$outfile.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  1 linear   0.5 1.
+ydef  1 linear -89.5 1.
+zdef  1 levels 200
+tdef $tmax linear jan1980 1yr
+edef 8 names 1 2 3 4 5 6 7 8
+vars  1
+cf   0 99 PC
+endvars
+EOF
+#

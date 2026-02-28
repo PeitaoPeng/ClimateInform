@@ -1,0 +1,50 @@
+#!/bin/sh
+
+set -eaux
+
+# for data jfm1982-djf2009
+
+lcdir=/cpc/home/wd52pp/project/CFSv2_skill/data_proc
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/CFSv2_vfc/0data
+#
+ varin=T2m
+ varot=temp
+#var=prec
+nseason=336
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/temp_esm_anom.us.2.f $tmp/temp_esm.f
+cd $tmp
+#
+cat > parm.h << eof
+      parameter(ltime=$nseason)
+      parameter(imx=180,jmx=91)
+      parameter(imo=36,jmo=19)
+eof
+#
+#
+gfortran -o temp_esm.x temp_esm.f
+echo "done compiling"
+
+#
+ ln -s $datadir/${varin}_hcst.jfm1982-djf2009.ind.anom.gr  fort.11
+#
+ ln -s $datadir/mask_2x2.data                            fort.12
+#
+ ln -s $datadir/$varot.jfm82-djf09.cfsv2.esm_anom.us.gr        fort.21
+#
+temp_esm.x > $lcdir/out
+#
+cat>$datadir/$varot.jfm82-djf09.cfsv2.esm_anom.us.ctl<<EOF
+dset $datadir/$varot.jfm82-djf09.cfsv2.esm_anom.us.gr
+undef -999.0
+title Realtime Surface Obs
+xdef   36 linear -130 2
+ydef   19 LINEAR   20 2
+zdef    1 levels 500
+tdef 999 linear jan1982  1mon
+vars   1
+t  0 99 T2m
+endvars
+EOF

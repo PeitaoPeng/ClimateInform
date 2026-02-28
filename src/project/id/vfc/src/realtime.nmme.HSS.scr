@@ -1,0 +1,432 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/ca_prd/sst/opr
+tmp=/cpc/home/wd52pp/tmp
+if [ ! -d $tmp ] ; then
+  mkdir -p $tmp
+fi
+#
+cd $tmp
+#
+for var in tmp2m prate; do
+#for var in tmp2m; do
+
+for tmean in mon ss; do
+#
+if [ $tmean = mon ]
+then
+yyic=`date --date='2 month ago' '+%Y'`  # ic year of the forecast
+mmic=`date --date='2 month ago' '+%m'`  # ic month of the forecast
+yys=`date --date='1 month ago' '+%Y'`  # year of the starting month of the target mon
+yye=`date --date='1 month ago' '+%Y'`  # year of the ending month of the target mon
+yyv=`date --date='1 month ago' '+%Y'`  # year of the ending month of the target mon
+echo $yye
+#
+if [ $mmic = 01 ]; then icmon=jan; mms=feb; mme=feb; mmv=feb; fi
+if [ $mmic = 02 ]; then icmon=feb; mms=mar; mme=mar; mmv=mar; fi
+if [ $mmic = 03 ]; then icmon=mar; mms=apr; mme=apr; mmv=apr; fi
+if [ $mmic = 04 ]; then icmon=apr; mms=may; mme=may; mmv=may; fi
+if [ $mmic = 05 ]; then icmon=may; mms=jun; mme=jun; mmv=jun; fi
+if [ $mmic = 06 ]; then icmon=jun; mms=jul; mme=jul; mmv=jul; fi
+if [ $mmic = 07 ]; then icmon=jul; mms=aug; mme=aug; mmv=aug; fi
+if [ $mmic = 08 ]; then icmon=aug; mms=sep; mme=sep; mmv=sep; fi
+if [ $mmic = 09 ]; then icmon=sep; mms=oct; mme=oct; mmv=oct; fi
+if [ $mmic = 10 ]; then icmon=oct; mms=nov; mme=nov; mmv=nov; fi
+if [ $mmic = 11 ]; then icmon=nov; mms=dec; mme=dec; mmv=dec; fi
+if [ $mmic = 12 ]; then icmon=dec; mms=jan; mme=jan; mmv=jan; fi
+ssv=$mmv
+else
+yyic=`date --date='4 month ago' '+%Y'`  # ic year of the forecast
+mmic=`date --date='4 month ago' '+%m'`  # ic month of the forecast
+yys=`date --date='3 month ago' '+%Y'`  # year of the starting month of the target SS
+yye=`date --date='1 month ago' '+%Y'`  # year of the ending month of the target SS
+yyv=`date --date='2 month ago' '+%Y'`  # year of the ending month of the target SS
+echo $yye
+#
+if [ $mmic = 01 ]; then icmon=jan; mms=feb; mme=apr; mmv=feb; ssv=fma; fi
+if [ $mmic = 02 ]; then icmon=feb; mms=mar; mme=may; mmv=mar; ssv=mam; fi
+if [ $mmic = 03 ]; then icmon=mar; mms=apr; mme=jun; mmv=apr; ssv=amj; fi
+if [ $mmic = 04 ]; then icmon=apr; mms=may; mme=jul; mmv=may; ssv=mjj; fi
+if [ $mmic = 05 ]; then icmon=may; mms=jun; mme=aug; mmv=jun; ssv=jja; fi
+if [ $mmic = 06 ]; then icmon=jun; mms=jul; mme=sep; mmv=jul; ssv=jas; fi
+if [ $mmic = 07 ]; then icmon=jul; mms=aug; mme=oct; mmv=aug; ssv=aso; fi
+if [ $mmic = 08 ]; then icmon=aug; mms=sep; mme=nov; mmv=sep; ssv=son; fi
+if [ $mmic = 09 ]; then icmon=sep; mms=oct; mme=dec; mmv=oct; ssv=ond; fi
+if [ $mmic = 10 ]; then icmon=oct; mms=nov; mme=jan; mmv=nov; ssv=ndj; fi
+if [ $mmic = 11 ]; then icmon=nov; mms=dec; mme=feb; mmv=dec; ssv=djf; fi
+if [ $mmic = 12 ]; then icmon=dec; mms=jan; mme=mar; mmv=jan; ssv=jfm; fi
+fi
+#==========================================
+# have forecast of last month or season
+#==========================================
+lastyr=`expr $yye - 1`
+
+conv=1
+if [ $var = prate ]; then conv=86400; fi
+mons=1
+mone=3
+if [ $tmean = mon ]; then mone=1; fi
+
+msv=$ssv
+if [ $tmean = mon ]; then msv=$mmv; fi
+
+undef=-9.99E+8
+
+cat >havedata<<EOF
+run data_rewrite.gs
+EOF
+#=======================================
+# for NMME data
+#=======================================
+for model in CFSv2 CanCM4i NCAR_CCSM4 GEM_NEMO NASA_GEOS5v2; do
+#for model in CFSv2; do
+#
+cat >nmme_data<<EOF
+run read_write.gs
+EOF
+#
+cat >read_write.gs<<EOF
+'reinit'
+'sdfopen /cpc/nmme/$model/fcst_new/$yyic${mmic}0800/$model.$var.$yyic$mmic.ENSMEAN.fcst.nc'
+'set x 1 360'
+'set y 1 181'
+'set gxout fwrite'
+'set fwrite $model.$var.gr'
+'define fc=ave(fcst,t=$mons,t=$mone)'
+'d fc*$conv'
+EOF
+#
+/usr/local/bin/grads -bl <nmme_data
+#
+cat>$model.$var.ctl<<EOF
+dset ^$model.$var.gr
+undef -9.99e+08
+*
+TITLE fcst
+*
+xdef  360 linear    0.  1.
+ydef  181 linear  -90   1.
+zdef    1 linear 1 1
+tdef    1 linear mar1982 1mo
+vars 1
+f 1 99 1_mon lead monthly data
+ENDVARS
+EOF
+#
+done
+#---------------------------------------
+# NMME mean
+#---------------------------------------
+cat >nmme<<EOF
+run nmme_mean.gs
+EOF
+#
+cat >nmme_mean.gs<<EOF
+'reinit'
+'open CFSv2.$var.ctl'
+'open CanCM4i.$var.ctl'
+'open GEM_NEMO.$var.ctl'
+'open NCAR_CCSM4.$var.ctl'
+'open NASA_GEOS5v2.$var.ctl'
+'set x 1 360'
+'set y 1 181'
+'set gxout fwrite'
+'set fwrite nmme.$var.gr'
+'d (f+f.2+f.3+f.4+f.5)/5.'
+EOF
+#
+/usr/local/bin/grads -bl <nmme
+#
+#
+cat>nmme.$var.ctl<<EOF
+dset ^nmme.$var.gr
+undef -9.99e+08
+*
+TITLE fcst
+*
+xdef  360 linear    0.  1.
+ydef  181 linear  -90   1.
+zdef    1 linear 1 1
+tdef    1 linear mar1982 1mo
+vars 1
+f 1 99 1_mon lead monthly data
+ENDVARS
+EOF
+#
+#=======================================
+# for OBS data
+#=======================================
+outfile=obs.$var
+#--------------------------------------
+# rewrite t2m data from grib to grads
+#--------------------------------------
+cat >havedata<<EOF
+run data_rewrite.gs
+EOF
+#
+if [ $var = 'tmp2m' ]; then
+cat >data_rewrite.gs<<EOF
+    'reinit'
+'open /cpc/home/mingyue/PRODUCTS/TempSfcGlbMerg/TempSfcGlbMerg.MonTot.ctl'
+'set x 1 144'
+'set y 1 73'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+'d ave(tmpsfc, time=$mms$yys,time=$mme$yye)'
+'c'
+EOF
+cat>$outfile.ctl<<EOF
+dset $outfile.gr
+undef $undef
+ydef  73 linear  -90. 2.5
+xdef 144 linear    0. 2.5
+tdef 9999 linear jan1981 1mo
+zdef   1 linear 1 1
+vars 1
+$var  0 99 obs
+ENDVARS
+EOF
+fi
+#
+#---------------------------------------
+# rewrite prec data
+#---------------------------------------
+#
+if [ $var = 'prate' ]; then
+cat >data_rewrite.gs<<EOF3
+    'reinit'
+'open /cpc/prcp/PRODUCTS/CMAP/monthly/current/cmap_mon.lnx.ctl'
+'set x 1 144'
+'set y 1  72'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+'d ave(cmap, time=$mms$yys,time=$mme$yye)'
+'c'
+EOF3
+cat>$outfile.ctl<<EOF
+dset $outfile.gr
+undef $undef
+ydef  72 linear -88.75 2.5
+xdef 144 linear   1.25 2.5
+zdef   1 linear 1 1
+tdef 9999 linear jan1981 1mo
+vars 1
+$var  0 99 obs
+ENDVARS
+EOF
+fi
+#
+/usr/local/bin/grads -bl <havedata
+#
+#---------------------------------------
+# regrid to 1x1
+#---------------------------------------
+cat >int<<fEOF
+reinit
+run regrid.gs
+fEOF
+
+cat >regrid.gs<<gsEOF
+'reinit'
+'open $outfile.ctl'
+'open /cpc/consistency/id/nmme/hcst/NMME.tmp2m.ss.jan_ic.1982-$lastyr.ld1-5.esm.ctl'
+'set gxout fwrite'
+'set fwrite $outfile.1x1.gr'
+nt=1
+while ( nt <= 1)
+
+'set t 'nt
+say 'time='nt
+'set lon   0 359'
+'set lat -90.  90.'
+'d lterp($var,f.2(time=mar1982))'
+
+nt=nt+1
+endwhile
+gsEOF
+
+/usr/local/bin/grads -pb <int
+
+cat>$outfile.1x1.ctl<<EOF
+dset ^$outfile.1x1.gr
+undef -9.99E+8
+*
+options little_endian
+*
+XDEF 360 LINEAR    0.  1.0
+YDEF 181 LINEAR  -90.0  1.0
+zdef   1 linear 1 1
+tdef   9999 linear jan1981 1mo
+*
+VARS 1
+o 1  99   1mon ave
+ENDVARS
+EOF
+#
+#=======================================
+# Skill calculation (hit or not)
+#=======================================
+#
+datadir1=/cpc/consistency/id/nmme/hcst
+datadir2=/cpc/consistency/id/obs
+dataout=/cpc/consistency/id/nmme/skill
+
+infile1=nmme.$var
+infile2=obs.$var.1x1
+infile3=NMME.$var.$tmean.clim_std.${icmon}_ic.1982-2010.ld1-5.esm
+infile4=obs.$var.$tmean.clim_std.${icmon}_ic.1981-2010
+
+outfile1=skill.NMME.$var.$msv$yyv
+
+cp $datadir1/$infile3.gr .
+cp $datadir2/$infile4.gr .
+#
+imx=360
+jmx=181
+undef=-9.99e+8
+#
+cat >vfc.f<<EOF
+      parameter(im=$imx,jm=$jmx)
+      parameter(undef=$undef)
+c
+      real*4 wo(im,jm),wf(im,jm)
+      real*4 clmo(im,jm),clmf(im,jm)
+      real*4 stdo(im,jm),stdf(im,jm)
+      real*4 hit(im,jm)
+      real*4 nwo(im,jm),nwf(im,jm)
+c
+      open(11,
+     &file='$infile1.gr',
+     &access='direct',form='unformatted',recl=im*jm*4)
+      open(12,
+     &file='$infile2.gr',
+     &access='direct',form='unformatted',recl=im*jm*4)
+      open(13,
+     &file='$infile3.gr',
+     &access='direct',form='unformatted',recl=im*jm*4)
+      open(14,
+     &file='$infile4.gr',
+     &access='direct',form='unformatted',recl=im*jm*4)
+C
+      open(20,
+     &file='$outfile1.gr',
+     &access='direct',form='unformatted',recl=im*jm*4)
+
+c read in f&o data
+
+      read(11,rec=1) wf
+      read(12,rec=1) wo
+
+c read in clm and std data
+      read(13,rec=1) clmf
+      read(13,rec=2) stdf
+
+      read(14,rec=1) clmo
+      read(14,rec=2) stdo
+
+c normalizing anomalies
+
+      do i=1,im
+      do j=1,jm
+      if(abs(stdo(i,j)).lt.999) then
+        wf(i,j)=(wf(i,j)-clmf(i,j))/stdf(i,j)
+        wo(i,j)=(wo(i,j)-clmo(i,j))/stdo(i,j)
+        if(abs(wo(i,j)).gt.10.) wo(i,j)=undef
+      else
+        wf(i,j)=undef
+        wo(i,j)=undef
+      endif
+      enddo
+      enddo
+
+c convert to categorical numbe -1 0 -1
+      aa=0.43
+      bb=-0.43
+
+      do i=1,im
+      do j=1,jm
+
+      if(abs(clmo(i,j)).lt.999) then
+
+       if (wf(i,j).lt.bb) nwf(i,j)=-1
+       if (wf(i,j).gt.aa) nwf(i,j)= 1
+       if (wf(i,j).le.aa.and.wf(i,j).ge.bb) nwf(i,j)=0
+
+       if (wo(i,j).lt.bb) nwo(i,j)=-1
+       if (wo(i,j).gt.aa) nwo(i,j)= 1
+       if (wo(i,j).le.aa.and.wo(i,j).ge.bb) nwo(i,j)=0
+
+      else
+
+       nwf(i,j)=undef
+       nwo(i,j)=undef
+
+      endif
+
+      enddo
+      enddo
+
+c have hit skill
+
+      do i=1,im
+      do j=1,jm
+      if(abs(clmo(i,j)).lt.999.or.abs(nwo(i,j)).lt.999) then
+
+       if (nwf(i,j).eq.nwo(i,j)) then
+       hit(i,j)= 1
+       else
+       hit(i,j)=0
+       endif
+
+      else
+        hit(i,j)=undef
+      endif
+
+      enddo ! i loop
+      enddo ! j loop
+
+c
+      write(20,rec=1) nwf
+      write(20,rec=2) nwo
+      write(20,rec=3) hit
+
+      STOP
+      END
+c====================================
+      subroutine hss_t(mw1,mw2,hs,n)
+      dimension mw1(n),mw2(n)
+
+      h=0.
+      do i=1,n
+        if (mw1(i).eq.mw2(i)) h=h+1
+      enddo
+      tot=float(n)
+      hs=100.*(h-tot/3.)/(tot-tot/3.)
+      return
+      end
+EOF
+#
+gfortran -o hss.x vfc.f
+echo "done compiling"
+./hss.x
+#
+mv $outfile1.gr $dataout
+cat>$dataout/$outfile1.ctl<<EOF
+dset ^$outfile1.gr
+undef $undef
+title EXP1
+XDEF 360 LINEAR    0.  1.0
+YDEF 181 LINEAR  -90.  1.0
+zdef  1 linear 1 1
+tdef  1 linear jan2012 1mon
+vars  3
+nwf  1 99 3-categories of fcst
+nwo  1 99 3-categories of OBS
+hit  1 99 =1 hit; =0 missing
+endvars
+EOF
+#
+done  # for tmean
+done  # for var

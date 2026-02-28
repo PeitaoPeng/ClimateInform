@@ -1,0 +1,39 @@
+5,6c5,6
+< 'open /cpc/home/wd52pp/data/ca_proj/reof.CFSamip30runs.z200.djf.ensm_anom.ctl'
+< 'open /cpc/home/wd52pp/data/ca_proj/rpc.CFSamip30runs.z200.djf.ensm_anom.ctl'
+---
+> 'open /cpc/home/wd52pp/data/ca_proj/reof.FV3amip30runs.z200.djf.ensm_anom.ctl'
+> 'open /cpc/home/wd52pp/data/ca_proj/rpc.FV3amip30runs.z200.djf.ensm_anom.ctl'
+22,23c22,23
+< ieof=1
+< ipc=1
+---
+> ieof=4
+> ipc=4
+34c34
+<   titlx=xmin+0.5
+---
+>   titlx=xmin+1.5
+79c79
+< 'set xaxis 1957 2023 10'
+---
+> 'set xaxis 1957 2022 10'
+91,96c91,93
+< if(iframe = 4); 'draw string 'titlx' 'titly' RPC1 59.3%'; endif
+< if(iframe = 5); 'draw string 'titlx' 'titly' RPC2 16.8%'; endif
+< if(iframe = 6); 'draw string 'titlx' 'titly' RPC3  9.6%'; endif
+< *if(iframe = 4); 'draw string 'titlx' 'titly' EOF4  7.2%'; endif
+< *if(iframe = 5); 'draw string 'titlx' 'titly' EOF5  1.8%'; endif
+< *if(iframe = 6); 'draw string 'titlx' 'titly' EOF6  1.7%'; endif
+---
+> if(iframe = 4); 'draw string 'titlx' 'titly' RPC4 7.2%'; endif
+> if(iframe = 5); 'draw string 'titlx' 'titly' RPC5 1.8%'; endif
+> if(iframe = 6); 'draw string 'titlx' 'titly' RPC6 1.7%'; endif
+103c100
+< ipc=iframe-3
+---
+> ipc=iframe
+107c104
+< 'printim reof_rpc.z200.CFSamip30runs.djf.m1-3.png gif x1600 y1200'
+---
+> 'printim reof_rpc.z200.CFSamip30runs.djf.m4-6.png gif x1600 y1200'

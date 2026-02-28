@@ -1,0 +1,49 @@
+#!/bin/sh
+set -eaux
+
+datadir=/cpc/home/wd52pp/utility/wavy-7/e001
+locdir=/cpc/home/wd52pp/utility/wavy-7/get_bst
+tmpdir=/cpc/home/wd52pp/tmp
+#
+cd $tmpdir
+/bin/rm $tmpdir/*.*
+cp $locdir/spctogrd15.f sp.f
+cp $locdir/glats.f gl.f
+cp $locdir/genpnme15.f ge.f
+cp $locdir/fftgcm.f fftgcm.f
+#
+cat > parm.h << eof
+       parameter(NFLD=43)
+c      parameter(NFLD=10)
+eof
+#
+gfortran sp.f gl.f ge.f fftgcm.f 
+#
+ ln -s $datadir/basic.view.i3e          fort.10
+ ln -s $locdir/basic.grd.i3e            fort.80
+#ln -s $datadir/top_cdas_R15.i3e    fort.10
+#ln -s $locdir/top_cdas_R15.gr      fort.80
+#
+a.out 
+#
+cat>$locdir/basic.grd.ctl<<EOF
+dset ^basic.grd.i3e
+*options little_endian
+undef -9.99E+33
+title EXP1
+xdef  64 linear  0.0  5.625
+ydef  40 GAUSR15 1
+zdef  10 levels 1 2 3 4 5 6 7 8 9 10
+tdef 99 linear  jan50     1mon
+vars  7
+lnp    1 99 eof
+div   10 99 eof
+vor   10 99 eof
+moi   10 99 moisture
+tmp   10 99 virture temp
+tsfc   1 99 eof
+topo   1 99 eof
+endvars
+EOF
+#
+   

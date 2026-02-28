@@ -1,0 +1,42 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/win13-14
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/project/attr/win13-14
+#
+var=z200
+model=R1 #R1 or amip
+nyr=65
+nmon=5 # mon# of each season
+ct=0.5 #criterion of patt corr
+area=na
+#
+cp $lcdir/patt_persist.obs.f $tmp/proj.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nyr=$nyr,nmon=$nmon,ct=$ct)
+       parameter(imx=144,jmx=73)
+c      parameter(lons=1,lone=144,lats=45,late=73) !NH
+c      parameter(lons=63,lone=121,lats=37,late=73) !PNA
+c      parameter(lons=84,lone=125,lats=43,late=73) !NA(210E-310E;15N-90N)
+c      parameter(lons=81,lone=125,lats=43,late=73) !NA(200E-310E;15N-90N)
+       parameter(lons=81,lone=125,lats=47,late=73) !NA(200E-310E;25N-90N)
+eof
+#
+\rm $tmp/fort.*         
+#
+gfortran -o proj.x proj.f
+echo "done compiling"
+
+#
+ln -s $datadir/z200.1949-curr.mon.gr  fort.11
+ln -s $lcdir/nino34.ndjfm.oisst.1949-2013.gr  fort.20
+ln -s $datadir/pcor_hstg.z200.ndjfm1949-2014.gr  fort.50
+ln -s $lcdir/pers_vs_yr.obs.1949-2013.gr  fort.60
+#
+proj.x > $datadir/ptcor.obs.$area.out
+#
+

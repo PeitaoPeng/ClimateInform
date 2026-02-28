@@ -1,0 +1,442 @@
+1,62c1,378
+<       PROGRAM   for wvflx 
+<       PARAMETER (IX=64, IY=40)                                          ZON00020
+< C     ----------------------------------------------------------------- ZON00040
+< C                                                                       ZON00120
+<       REAL  CPSI(IX,IY), TPSI(IX,IY), APSI(IX,IY)                       ZON00130
+<       REAL  CDIV(IX,IY), TDIV(IX,IY)                                    ZON00130
+<       REAL  XFS(IX,IY), YFS(IX,IY)                                      ZON00340
+<       REAL  XFS2(IX,IY), YFS2(IX,IY)                                    ZON00340
+<       REAL  AXFS(IX,IY), AYFS(IX,IY)                                    ZON00340
+<       REAL  WK(IX,IY)                                                   ZON00340
+< C                                                                       ZON00190
+< C-----------------------------------------------------
+<       open(unit=20,form='unformatted',access='direct',recl=4*ix*iy)
+<       open(unit=80,form='unformatted',access='direct',recl=4*ix*iy)
+< C 
+< C====read in clim and anomaly (clim+anom) psi and div
+<       irec=1
+<       read(20,rec=irec)WK
+<       call norsou(WK,CPSI,IX,IY)
+<       irec=irec+1
+<       read(20,rec=irec)CDIV
+<       irec=irec+1
+<       read(20,rec=irec)WK
+<       call norsou(WK,TPSI,IX,IY)
+<       irec=irec+1
+<       read(20,rec=irec)TDIV
+< C----------------------------------------------
+<       do j =1,IY
+<       do i =1,IX
+<       APSI(i,j)=TPSI(i,j)-CPSI(i,j)
+<       end do
+<       end do
+< C=======================================================
+<       iwrt=0
+< C---write out psi
+<       iwrt=iwrt+1
+<       write(80,rec=iwrt) APSI
+< C---wvflx of anom psi
+<       call wvflxnd(APSI,XFS,YFS)
+<       iwrt=iwrt+1
+<       write(80,rec=iwrt) XFS
+<       iwrt=iwrt+1
+<       write(80,rec=iwrt) YFS
+< C---wvflx of CPSI
+<       call wvflxnd(CPSI,XFS,YFS)
+< C---wvflx of TPSI
+<       call wvflxnd(TPSI,XFS2,YFS2)
+< c
+< C---Differences
+<       do I=1,IX
+<       do J=1,IY
+<         AXFS(I,J)=XFS2(I,J)-XFS(I,J)
+<         AYFS(I,J)=YFS2(I,J)-YFS(I,J)
+<       ENDDO
+<       ENDDO
+< 
+<       iwrt=iwrt+1
+<       write(80,rec=iwrt) AXFS
+<       iwrt=iwrt+1
+<       write(80,rec=iwrt) AYFS
+< C-------------------------------------------------------------------
+<       STOP
+---
+> CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+>       subroutine wvflxnd(WORKIN,XOUT,YOUT)
+> CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+> C   sub for computing Takaya (JAS 2001) nondivergent 2-d stwvflx
+> C       WORKIN: input north-to-south stream function
+> C       XFS & YFS: x & y components of wvflx
+> C   more subroutings needed are:
+> C           fftgcm.f  evlsca15.f  genpnme15.f   glats.f  norsou.f
+> C
+> CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+>       PARAMETER(NW=15)
+>       PARAMETER(NLEG=NW+1)
+>       PARAMETER(NM=NW)
+>       PARAMETER(NMP=NW+1)
+>       PARAMETER(NLONG=64)
+>       PARAMETER(NLATG=40)
+>       PARAMETER(NLEGP=NLEG+1)
+>       PARAMETER(NLONGP=NLONG+1,IMAXT=3*NLONG/2)
+>       PARAMETER(KHALF=(NLATG+1)/2)
+>       COMMON/GAUSS/RADG(NLATG),GWGT(NLATG)
+>       COMMON/POLY1/PLEG(NLEG,NMP,NLATG),DPLEG(NLEG,NMP,NLATG)
+>       COMMON/FFTAR1/TRIGS(IMAXT),IFAX(10)
+>       COMMON/FFTAR2/ARRAY(NLONGP,NLATG),WORK(NLONGP,NLATG)
+>       COMMON/EPSLON/EPS(NLEG,NMP),XXN(NLEG,NMP),XXM(NMP)
+>       COMMON/CORCOS/CORIOLIS(NLATG)  
+>       REAL*8    COLRAD(KHALF),WGT(KHALF),WGTCS(KHALF),RCS2(KHALF)
+>       COMMON/STWV/AVGGDU(NLONG,NLATG),AVGGDV(NLONG,NLATG),
+>      1            AVGSTF(NLONG,NLATG),
+>      2            XFS(NLONG,NLATG),YFS(NLONG,NLATG),
+>      4            EDGDH(NLONG,NLATG),EDGDU(NLONG,NLATG),
+>      5            EDGDV(NLONG,NLATG),
+>      6            ZMH(NLATG),
+>      7            ZMU(NLATG),ZMV(NLATG)
+>       DIMENSION WORKIN(NLONG,NLATG),QZER(2,NLEG,NMP)      
+>       DIMENSION STMFSP(2,NLEG,NMP)                     
+>       DIMENSION COSLAT(NLATG)
+>       DIMENSION XOUT(NLONG,NLATG),YOUT(NLONG,NLATG)     
+>       PI=ACOS(-1.0)
+>       LENS=2*NLEG*NMP
+>       LENG=NLONG*NLATG
+>       R = 6.371E+06
+>       RR=R**2
+>       UNDEF=-9.99E+33
+>       CALL GLATS(KHALF,COLRAD,WGT,WGTCS,RCS2)
+>       DO 30 K=1,KHALF
+>       RADG(K)=PI/2.0 - COLRAD(K)
+>       RADG(NLATG-K+1)=-RADG(K)
+>       GWGT(K)=WGT(K)
+>       GWGT(NLATG-K+1)=+GWGT(K)
+>    30 CONTINUE
+>       DO 40 JG=1,NLATG
+>       CALL GENPNME15(RADG(JG),PLEG(1,1,JG),DPLEG(1,1,JG))
+>    40 CONTINUE
+> C.....CALCULATE the CORIOLIS and COSLAT
+>       OMEGA=2*PI/(24.*3600.)
+>       DO 35 K=1,NLATG
+>          CORIOLIS(K)=2*OMEGA*SIN(RADG(K))
+>          COSLAT(K)=COS(RADG(K))
+>       WRITE(6,*) 'COSLAT=',K,COSLAT(K)          
+>    35 CONTINUE
+> C-----------------------------------------------------------------
+> C   CALCULATE ROTATIONAL WINDS (NO DIVERGENCE)
+> C
+>       do 60 i=1,NLONG
+>       do 60 j=1,NLATG
+>          AVGSTF(i,j)=WORKIN(i,j)
+> 60    CONTINUE
+>       CALL transform15(AVGSTF,STMFSP)
+>       do 65 j=1,NLEG
+>          STMFSP(1,j,1)=0.
+>          STMFSP(2,j,1)=0.
+> 65    CONTINUE
+>       write(6,*) 'before EVLUV'
+>       CALL FILLAR(QZER,0.,LENS)
+>       CALL EVLU15(QZER,STMFSP,AVGGDU)
+>       CALL EVLV15(QZER,STMFSP,AVGGDV)
+> C---CALCULATE WVFLX                              
+>       PRINT 103
+>   103 FORMAT(' befor STWVFLX ')
+>       CALL STWVFLX           
+> c     CALL norsou(XFS,XOUT,NLONG,NLATG)
+> c     CALL norsou(YFS,YOUT,NLONG,NLATG)
+>       do 70 i=1,NLONG
+>       do 70 j=1,NLATG
+>          XOUT(i,j)=XFS(i,j)
+>          YOUT(i,j)=YFS(i,j)
+> 70    CONTINUE
+>       RETURN
+>       END
+>  
+>       SUBROUTINE EVLU15(VELP,STRM,ARRP)
+>       PARAMETER(NW=15)
+>       PARAMETER(NLEG=NW+1,NMP=NW+1)
+>       PARAMETER(NLATG=40,NLONG=64,NLONGP=NLONG+1,IMAXT=3*NLONG/2)
+>       PARAMETER(EA=6.371E+06)
+>       COMMON/GAUSS/RADG(NLATG),GWGT(NLATG)
+>       COMMON/POLY1/PLEG(NLEG,NMP,NLATG),DPLEG(NLEG,NMP,NLATG)
+>       COMMON/FFTAR1/TRIGS(IMAXT),IFAX(10)
+>       COMMON/FFTAR2/ARRAY(NLONGP,NLATG),WORK(NLONGP,NLATG)
+>       DIMENSION VELP(2,NLEG,NMP),STRM(2,NLEG,NMP)
+>       DIMENSION ARRP(NLONG,NLATG)
+>       IM1=2*NMP+1
+>       IM2=NLONGP
+>       DO 200 J=1,NLATG
+>       CONST=EA*COS(RADG(J))
+>       DO 120 IM=1,NMP
+>       XM=IM-1
+>       YSUMR=0.0
+>       YSUMI=0.0
+>       IF(IM .GT. 1) THEN
+>          NLOW=1
+>       ELSE
+>          NLOW=2
+>       END IF
+>       DO 100 N=NLOW,NLEG
+>       XN=XM+N-1
+>       YSUMR=YSUMR+(-XM*VELP(2,N,IM)* PLEG(N,IM,J)
+>      1             -   STRM(1,N,IM)*DPLEG(N,IM,J))
+>       YSUMI=YSUMI+( XM*VELP(1,N,IM)* PLEG(N,IM,J)
+>      1             -   STRM(2,N,IM)*DPLEG(N,IM,J))
+>   100 CONTINUE
+>       ARRAY((IM-1)*2+1,J)=YSUMR/CONST
+>       ARRAY((IM-1)*2+2,J)=YSUMI/CONST
+>   120 CONTINUE
+>       DO 130 IM=IM1,IM2
+>       ARRAY(IM,J)=0.0
+>   130 CONTINUE
+>   200 CONTINUE
+>       INC=1
+>       ISIGN=+1
+>       JUMP=NLONGP
+>       LOT=NLATG
+>       CALL FFT991(ARRAY,WORK,TRIGS,IFAX,INC,JUMP,NLONG,LOT,ISIGN)
+>       DO 240 J=1,NLATG
+>       DO 240 I=1,NLONG
+>       ARRP(I,J)=ARRAY(I,J)
+>   240 CONTINUE
+> CC    CALL WNDWR(FIELDG)
+>       RETURN
+>       END
+> 
+> 
+> 
+>       SUBROUTINE EVLV15(VELP,STRM,ARRP)
+>       PARAMETER(NW=15)
+>       PARAMETER(NLEG=NW+1,NMP=NW+1)
+>       PARAMETER(NLATG=40,NLONG=64,NLONGP=NLONG+1,IMAXT=3*NLONG/2)
+>       PARAMETER(EA=6.371E+06)
+>       COMMON/GAUSS/RADG(NLATG),GWGT(NLATG)
+>       COMMON/POLY1/PLEG(NLEG,NMP,NLATG),DPLEG(NLEG,NMP,NLATG)
+>       COMMON/FFTAR1/TRIGS(IMAXT),IFAX(10)
+>       COMMON/FFTAR2/ARRAY(NLONGP,NLATG),WORK(NLONGP,NLATG)
+>       DIMENSION VELP(2,NLEG,NMP),STRM(2,NLEG,NMP)
+>       DIMENSION ARRP(NLONG,NLATG)
+>       IM1=2*NMP+1
+>       IM2=NLONGP
+>       DO 200 J=1,NLATG
+>       CONST=EA*COS(RADG(J))
+>       DO 120 IM=1,NMP
+>       XM=IM-1
+>       YSUMR=0.0
+>       YSUMI=0.0
+>       IF(IM .GT. 1) THEN
+>          NLOW=1
+>       ELSE
+>          NLOW=2
+>       END IF
+>       DO 100 N=NLOW,NLEG
+>       XN=XM+N-1
+>       YSUMR=YSUMR+(-XM*STRM(2,N,IM)* PLEG(N,IM,J)
+>      1             +   VELP(1,N,IM)*DPLEG(N,IM,J))
+>       YSUMI=YSUMI+( XM*STRM(1,N,IM)* PLEG(N,IM,J)
+>      1             +   VELP(2,N,IM)*DPLEG(N,IM,J))
+>   100 CONTINUE
+>       ARRAY((IM-1)*2+1,J)=YSUMR/CONST
+>       ARRAY((IM-1)*2+2,J)=YSUMI/CONST
+>   120 CONTINUE
+>       DO 130 IM=IM1,IM2
+>       ARRAY(IM,J)=0.0
+>   130 CONTINUE
+>   200 CONTINUE
+>       INC=1
+>       ISIGN=+1
+>       JUMP=NLONGP
+>       LOT=NLATG
+>       CALL FFT991(ARRAY,WORK,TRIGS,IFAX,INC,JUMP,NLONG,LOT,ISIGN)
+>       DO 240 J=1,NLATG
+>       DO 240 I=1,NLONG
+>       ARRP(I,J)=ARRAY(I,J)
+>   240 CONTINUE
+>       RETURN
+>       END
+> 
+> 
+> 
+>       SUBROUTINE DEL2(ARRAYI,ARRAYO)
+>       PARAMETER(NW=15)
+>       PARAMETER(NLEG=NW+1,NM=NW,NMP=NM+1)
+>       PARAMETER(EA=6.371E+06)
+>       DIMENSION ARRAYI(2,NLEG,NMP),ARRAYO(2,NLEG,NMP)
+>       DO 100 IM=1,NMP
+>       XM=IM-1
+>       DO 80 N=1,NLEG
+>       XN=N+XM-1.0
+>       IF(XN .LT. .001) THEN
+>          ARRAYO(1,N,IM)=0.0
+>          ARRAYO(2,N,IM)=0.0
+>       ELSE
+>          DELSQI=-(XN*(XN+1.0))/(EA*EA)
+>          ARRAYO(1,N,IM)=ARRAYI(1,N,IM)*DELSQI
+>          ARRAYO(2,N,IM)=ARRAYI(2,N,IM)*DELSQI
+>       END IF
+>    80 CONTINUE
+>   100 CONTINUE
+>       RETURN
+>       END
+> 
+> 
+>       SUBROUTINE transform15(FIELDG,FLDSPC)
+>       PARAMETER(NW=15)
+>       PARAMETER(NLEG=NW+1)
+>       PARAMETER(NM=NW)
+>       PARAMETER(NMP=NW+1)
+>       PARAMETER(NLONG=64)
+>       PARAMETER(NLATG=40)
+>       PARAMETER(NLONGP=NLONG+1,IMAXT=3*NLONG/2)
+>       PARAMETER(KHALF=(NLATG+1)/2)
+>       COMMON/GAUSS/RADG(NLATG),GWGT(NLATG)
+>       COMMON/POLY1/PLEG(NLEG,NMP,NLATG),DPLEG(NLEG,NMP,NLATG)
+>       COMMON/FFTAR1/TRIGS(IMAXT),IFAX(10)
+>       COMMON/FFTAR2/ARRAY(NLONGP,NLATG),WORK(NLONGP,NLATG)
+>       DIMENSION FIELDG(NLONG,NLATG)
+>       DIMENSION FLDSPC(2,NLEG,NMP)
+>       DO 20 IM=1,NMP
+>       DO 20 IN=1,NLEG
+>       DO 20 IC=1,2
+>       FLDSPC(IC,IN,IM)=0.0
+>    20 CONTINUE
+>       DO 60 JG=1,NLATG
+>       DO 40 IG=1,NLONG
+>       ARRAY(IG,JG)=FIELDG(IG,JG)
+>    40 CONTINUE
+>       ARRAY(NLONGP,JG)=0.0
+>    60 CONTINUE
+>       ISIGN=-1
+>       INC=1
+>       JUMP=NLONGP
+>       LOT=NLATG
+>       CALL FFT991(ARRAY,WORK,TRIGS,IFAX,INC,JUMP,NLONG,LOT,ISIGN)
+>       DO 200 JG=1,NLATG
+>       DO 180 IM=1,NMP
+>       DO 180 IN=1,NLEG
+>       FLDSPC(1,IN,IM)=FLDSPC(1,IN,IM)+ARRAY(2*IM-1,JG)*PLEG(IN,IM,JG)*
+>      1 GWGT(JG)
+>       FLDSPC(2,IN,IM)=FLDSPC(2,IN,IM)+ARRAY(2*IM  ,JG)*PLEG(IN,IM,JG)*
+>      1 GWGT(JG)
+>   180 CONTINUE
+>   200 CONTINUE
+>       RETURN
+>       END
+> 
+> 
+>  
+>       SUBROUTINE FILLAR(ARRAYS,VALUE,N)
+>       DIMENSION ARRAYS(N)
+>       DO 20 I=1,N
+>       ARRAYS(I)=VALUE
+>    20 CONTINUE
+>       RETURN
+>       END
+> 
+> 
+>       SUBROUTINE STWVFLX           
+> CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+> C    PROGRAM TO compute the Plumb stationary wave activity flux using  C
+> C    PRESSURE HISTORY FIELDS.                                          C
+> CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+>       PARAMETER(NW=15)
+>       PARAMETER(NLEG=NW+1)
+>       PARAMETER(NM=NW)
+>       PARAMETER(NMP=NW+1)
+>       PARAMETER(NLONG=64)
+>       PARAMETER(NLATG=40)
+>       COMMON/GAUSS/RADG(NLATG),GWGT(NLATG)
+>       COMMON/EPSLON/EPS(NLEG,NMP),XXN(NLEG,NMP),XXM(NMP)
+>       COMMON/CORCOS/CORIOLIS(NLATG)  
+>       COMMON/STWV/AVGGDU(NLONG,NLATG),AVGGDV(NLONG,NLATG),
+>      1            AVGSTF(NLONG,NLATG),
+>      2            XFS(NLONG,NLATG),YFS(NLONG,NLATG),
+>      4            EDGDH(NLONG,NLATG),EDGDU(NLONG,NLATG),
+>      5            EDGDV(NLONG,NLATG),
+>      6            ZMH(NLATG),
+>      7            ZMU(NLATG),ZMV(NLATG)
+>       DIMENSION EDGDS(NLONG,NLATG)
+>       DIMENSION EDSPS(2,NLEG,NMP),EDSPU(2,NLEG,NMP)
+>       DIMENSION EDSPV(2,NLEG,NMP)
+>       DIMENSION EDGDUH(NLONG,NLATG),EDSPUH(2,NLEG,NMP)
+>       DIMENSION EDGDVH(NLONG,NLATG),EDSPVH(2,NLEG,NMP)
+>       DIMENSION GRGDUH(NLONG,NLATG),GRSPUH(2,NLEG,NMP)
+>       DIMENSION GRGDVH(NLONG,NLATG),GRSPVH(2,NLEG,NMP)
+>       R=6.371E+06
+> C.....compute zonal mean fild                 
+>       CALL ZMEAN(AVGSTF,ZMH)
+>       CALL ZMEAN(AVGGDU,ZMU)
+>       CALL ZMEAN(AVGGDV,ZMV)
+> C.....compute eddy field  
+>       DO 120 J=1,NLATG
+>       DO 120 I=1,NLONG
+>          EDGDH(I,J)=AVGSTF(I,J)-ZMH(J)
+> C=====compute u' & v'                  
+>          EDGDU(I,J)=AVGGDU(I,J)-ZMU(J)
+>          EDGDV(I,J)=AVGGDV(I,J)-ZMV(J)
+>   120 CONTINUE
+> C.....compute u'h' and v'h' and T'h'
+>       DO 240 J=1,NLATG
+>       DO 240 I=1,NLONG
+>          EDGDUH(I,J)=EDGDU(I,J)*EDGDH(I,J)
+>          EDGDVH(I,J)=EDGDV(I,J)*EDGDH(I,J)
+>   240 CONTINUE
+>          CALL transform15(EDGDUH,EDSPUH)
+>          CALL transform15(EDGDVH,EDSPVH)
+> C.....compute  zonal gradient of u'h', v'h'        
+>       CALL ZNGRSP(EDSPUH,GRSPUH)
+>       CALL ZNGRSP(EDSPVH,GRSPVH)
+> CC....transform gradients to gaussian grids
+>          CALL EVLSCA(GRSPUH,GRGDUH)
+>          CALL EVLSCA(GRSPVH,GRGDVH)
+>       DO 270 J=1,NLATG
+>       DO 270 I=1,NLONG
+>          GRGDUH(I,J)=GRGDUH(I,J)/COS(RADG(J))   
+>          GRGDVH(I,J)=GRGDVH(I,J)/COS(RADG(J))   
+>   270 CONTINUE
+> C.....compute  components of wvflx                       
+>       DO 280 J=1,NLATG
+>       DO 280 I=1,NLONG
+>       F1=COS(RADG(J))
+>       F2=2               
+>       XFS(I,J)=F1*(EDGDV(I,J)**2-GRGDVH(I,J)/F2)
+>       YFS(I,J)=F1*(-EDGDU(I,J)*EDGDV(I,J)+
+>      1           GRGDUH(I,J)/F2)
+>   280 CONTINUE
+>       RETURN
+>       END
+>  
+> 
+> CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+> C   zonal mean 2-D field                 
+> CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+>       SUBROUTINE ZMEAN(FLDIN,FLDOT)
+>       PARAMETER(NLONG=64,NLATG=40)
+>       DIMENSION FLDIN(NLONG,NLATG),FLDOT(NLATG)
+>       XX=FLOAT(NLONG)
+>       DO 10 J=1,NLATG
+>          FLDOT(J)=0.
+>    10 CONTINUE
+>       DO 100 J=1,NLATG
+>       DO 100 I=1,NLONG
+>          FLDOT(J)=FLDOT(J)+FLDIN(I,J)/XX      
+>   100 CONTINUE
+>       RETURN
+>       END
+>       
+> CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+> C  1-D zonal gradient in spectral space
+> CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+>       SUBROUTINE ZNGRSP(FILDIN,OUTX)
+>       PARAMETER(NW=15,NLEG=NW+1,NMP=NW+1)
+>       COMMON/EPSLON/EPS(NLEG,NMP),XXN(NLEG,NMP),XXM(NMP)
+>       DIMENSION FILDIN(2,NLEG,NMP)                   
+>       DIMENSION OUTX(2,NLEG,NMP),OUTY(2,NLEG,NMP)
+>       R=6.371E+06
+> CC....x component of the gradient
+>       DO 100 K=1,NMP
+>       DO 100 J=1,NLEG 
+>          OUTX(1,J,K)=-XXM(K)*FILDIN(2,J,K)/R
+>          OUTX(2,J,K)=XXM(K)*FILDIN(1,J,K)/R
+>   100 CONTINUE
+>       RETURN

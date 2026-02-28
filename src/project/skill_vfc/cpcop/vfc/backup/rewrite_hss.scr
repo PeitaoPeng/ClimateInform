@@ -1,0 +1,51 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/cpc_skill
+tmp=/cpc/home/wd52pp/tmp
+datadir1=/export-12/cacsrv1/wd52pp/obs/sst
+datadir2=/export-12/cacsrv1/wd52pp/cpc_vfc/skill
+#
+nseason=181
+tool=cpc
+#
+/bin/rm $tmp/fort.*         
+cp $lcdir/vfc/rewrite_hss.f $tmp/rwt.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(nss=$nseason)
+eof
+#
+#
+gfortran -o rwt.x rwt.f
+echo "done compiling"
+
+#
+ ln -s $datadir1/nino34.3mon_mean.jfm95-fma10.gr   fort.11
+ ln -s $datadir2/hss_temp.95-cur.cpc.gr            fort.12
+ ln -s $datadir2/hss_prec.95-cur.cpc.gr            fort.13
+#
+ ln -s $datadir2/hss.with.nino34.95-cur.$tool.gr   fort.60
+#
+rwt.x > $lcdir/vfc/out
+#
+
+cat>$datadir2/hss.with.nino34.95-cur.$tool.ctl<<EOF
+dset $datadir2/hss.with.nino34.95-cur.$tool.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    1 linear  -130 2
+ydef    1 linear    20 2
+zdef    1 levels 500
+tdef 999 linear jan1995  1mon
+vars   6
+tw   0 99 hss1 of temp with warm nino34 (>0.5)
+tn   0 99 hss1 of temp with normal nino34 (<0.5 & >-0.5)
+tc   0 99 hss1 of temp with warm nino34 (<-0.5)
+pw   0 99 hss1 of prec with warm nino34 (>0.5)
+pn   0 99 hss1 of prec with normal nino34 (<0.5 & >-0.5)
+pc   0 99 hss1 of prec with warm nino34 (<-0.5)
+endvars
+EOF

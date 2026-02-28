@@ -1,0 +1,163 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/ca_prd/sst/src
+tmp=/cpc/home/wd52pp/tmp/test
+if [ ! -d $tmp ] ; then
+  mkdir -p $tmp
+fi
+datadir0=/export/cpc-lw-mlheureux/wd52ml/enso/oni.v3b/data/errsst.v3b
+datadir=/cpc/home/wd52pp/data/ca_prd
+outdata=/cpc/home/wd52pp/data/casst
+#
+cd $tmp
+#
+#======================================
+# have SST IC
+#======================================
+icmon_beg=jul2015
+icmon_mid=aug2015
+icmon_end=sep2015
+icseason=7
+#
+ndec=4   #decade # 51-80, 61-90, 71-00, 81-10 
+kocn=15
+#
+clm_add=1524  #dec1980
+clm_end=`expr $clm_add + 360`
+#
+outfile=sst.3mon.ic
+cat >havesstic<<EOF
+run sstic.gs
+EOF
+cat >sstic.gs<<EOF
+'reinit'
+'open $datadir0/ersst.v3b.1854.2010.ctl'
+'set x 1 180'
+'set y 1  89'
+'set t 1 12'
+'define clm=ave(sst,t+$clm_add, t=$clm_end,1yr)'
+'modify clm seasonal'
+'set gxout fwrite'
+'set fwrite $outfile.gr'
+'d ave(sst-clm,time=$icmon_beg,time=$icmon_end)'
+'c'
+EOF
+grads -l <havesstic
+cat>$outfile.ctl<<EOF
+dset ^$outfile.gr
+undef -999000000
+*
+TITLE Tsfc
+*
+xdef  180 linear   0. 2.
+ydef   89 linear -89. 2.
+zdef   1 linear 1 1
+tdef   9999 linear jan2015 1mo
+vars 1
+t  1 99 3-mon mean (C)
+ENDVARS
+EOF
+#
+nps=11     #width of data window in season
+nwextb=10  # 3mon season number to be extended at begining of a row of the array
+nwexte=10  # 3mon season number to be extended at the end of a row of the array
+runeof=1 # 0: read in ; 1: run eof
+nyear=67 # 1948-2014
+nseason=`expr $nyear - 2` #for eof and ca analysis
+#
+mlead=10  #laximum lead
+npp=`expr $nps - $mlead`
+mldp=`expr $mlead + 1` 
+#
+for modemax in 25; do
+cp $lcdir/realtime.ca_season.sst.f $tmp/sst_prd.f
+cp $lcdir/eof_4_ca.s.f $tmp/eof_4_ca.s.f
+
+#
+cat > parm.h << eof
+      parameter(nruneof=$runeof)
+c
+      parameter(ims=180,jms=89)   !input sst dimension
+c
+      parameter(lons=1,lone=180)   !lon range for EOFs analysis (0-360)
+      parameter(eoflats=-29,lats=31,late=77)  !lat range for EOFs analysis (25S-65N)
+      parameter(imp=lone-lons+1,jmp=late-lats+1)
+c
+      parameter(modemax=$modemax)
+      parameter(nyear=$nyear)
+      parameter(nseason=$nseason)
+      parameter(nps=$nps)
+      parameter(nwextb=$nwextb)
+      parameter(nwexte=$nwexte)
+c
+      parameter(kocn=$kocn)
+      parameter(ndec=$ndec)
+      parameter(itgtm=$icseason)
+      parameter(npp=$npp)
+      parameter(mlead=$mlead)
+      parameter(mldp=$mldp)
+eof
+#
+gfortran -o ca.x sst_prd.f eof_4_ca.s.f
+echo "done compiling"
+
+/bin/rm $tmp/fort.*
+#
+ln -s $tmp/sst.3mon.ic.gr fort.10
+ln -s $datadir/sst.3mon.1948-curr.gr fort.11
+#
+ln -s $outdata/eof.sst_3mon.gr fort.70
+#
+ln -s $outdata/real_ca_prd.sst_3mon.gr fort.85
+ln -s $outdata/test.gr fort.86
+#
+ca.x > $lcdir/realtime.sst.ca.out
+#ca.x 
+#
+cat>$outdata/eof.sst_3mon.ctl<<EOF
+dset ^eof.sst_3mon.gr
+undef -9.99E+33
+title EXP1
+xdef  180 linear   0. 2.
+ydef   47 linear -29. 2.
+zdef  1 linear 1 1
+tdef  99 linear jan94 1mon
+vars  1
+eof   1 99 constructed
+endvars
+EOF
+#
+cat>$outdata/real_ca_prd.sst_3mon.ctl<<EOF
+dset ^real_ca_prd.sst_3mon.gr
+undef -9.99E+33
+title EXP1
+xdef  180 linear   0. 2.
+ydef   47 linear -29. 2.
+zdef  1 linear 1 1
+tdef  $mldp linear $icmon_mid 1mon
+vars  5
+sst   1 99 sst(C)
+sdo  1 99 std of obs
+sdf  1 99 std of fcst
+ac    1 99 ac skill
+rms   1 99 rms skill
+endvars
+EOF
+cat>$outdata/test.ctl<<EOF
+dset ^test.gr
+undef -9.99E+33
+title EXP1
+xdef  180 linear   0. 2.
+ydef   47 linear -29. 2.
+zdef  1 linear 1 1
+tdef  999 linear $icmon_mid 1mon
+vars  1
+sst   1 99 sst(C)
+endvars
+EOF
+#
+#
+done
+#

@@ -1,0 +1,4 @@
+51c51
+< c     print *,cd,rlat,rlon,rt,nl,nflag,fom
+---
+>       print *,cd,rlat,rlon,rt,nl,nflag,fom

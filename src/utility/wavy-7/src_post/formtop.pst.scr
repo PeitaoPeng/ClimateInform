@@ -1,0 +1,52 @@
+set -x
+#
+# create topography dataset
+#
+TMPDIR=/export-6/sgi9/wd52pp/tmp
+
+cd $TMPDIR
+ 
+cat << "EOF1" > crttop.f
+      program crttop
+C     parameter(mend=6,mend1=mend+1,nw1=41,nwo1=16)
+      parameter(mend=6,mend1=mend+1,nw1=16,nwo1=16)
+      parameter(nend=15,nend1=nend+1)
+      dimension topout(2,nwo1,nwo1),topin(2,nw1,nw1)
+      logical intop
+      data intop/.true./
+      do 10 k=1,2
+      do 10 i=1,nwo1 
+      do 10 j=1,nwo1 
+      topout(k,j,i) = 0.
+  10  continue
+      if(.not.intop) then
+      write(6,*) ' flat earth topography written for R',mend
+      endif
+      if(intop) then
+      read(10) topin
+      do 20 i=1,nend1
+      do 20 j=1,mend1
+      topout(1,i,j) = topin(1,i,j)
+      topout(2,i,j) = topin(2,i,j)
+ 20   continue
+      write(6,*) ' earth topography truncated to R',mend
+      write(6,*) ' some values :'
+      do 30 i=1,5
+      do 30 j=1,5
+      write(6,*) topout(1,i,j),topout(2,i,j)
+  30  continue
+      endif
+c
+      write(20) topout
+c
+      stop
+      end
+"EOF1"
+ 
+f77 crttop.f
+#cp /u1/kinter/topog/r40.zhou fort.10
+ cp /wd5/wd52/wd52pp/wavy/e001/top.cdas.data fort.10
+assign -Fnull -N ieee fort.10
+a.out
+ 
+#cp fort.20 /wd5/wd52/wd52pp/wavy/e001/topz6.cdas.data

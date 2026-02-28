@@ -1,0 +1,118 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/ca_proj/src
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/ca_proj
+#
+var=z200
+mtx=var
+#ybgn=1957
+#tmax=64 #CFS30runs=64
+ybgn=1981
+tmax=40 #CFS100runs=40
+hs=gl   #hemisphere
+#
+
+cp $lcdir/eof.z200.CFSamip.f $tmp/eof.f
+cp $lcdir/reof.s.f  $tmp/.
+cd $tmp
+#
+if [ "$mtx" = cor ]; then id=1; fi
+if [ "$mtx" = var ]; then id=0; fi
+#
+#for ss in djf mam jja son; do
+for ss in djf; do
+
+nmod=6 #djf=6; jja=5
+
+if [ "$ss" = djf ]; then ybgn=`expr $ybgn + 1`; fi
+
+#infile=CFSamip30runs.$var.$ss.ensm_anom
+infile=CFSamip100runs.$var.$ss.ensm_anom
+#
+\rm $tmp/fort.*         
+#
+cat > parm.h << eof
+       parameter(ltime=$tmax)
+       parameter(imx=360,jmx=181)
+       parameter(nmod=$nmod)
+       parameter(lons=1,lone=360,lats=1,late=181)! glb
+       parameter(iskip_idx=0)
+       parameter(iskip_fld=0)
+       parameter(id=$id)
+eof
+
+gfortran -o eof.x reof.s.f eof.f
+echo "done compiling"
+
+#
+ ln -s $datadir/$infile.gr         fort.10
+#
+ ln -s $datadir/eof.$infile.gr       fort.41
+ ln -s $datadir/pc.$infile.gr        fort.42
+#
+ ln -s $datadir/reof.$infile.gr       fort.51
+ ln -s $datadir/rpc.$infile.gr        fort.52
+#
+eof.x > $datadir/out.$infile
+#
+cat>$datadir/eof.$infile.ctl<<EOF
+dset $datadir/eof.$infile.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  360 linear   0. 1.
+ydef  181 linear -90. 1.
+zdef    1 levels 200
+tdef $nmod linear jan$ybgn 1yr
+vars   2
+eof  0 99 corr to mode 1
+reg  0 99 regr to mode 1
+endvars
+EOF
+#
+cat>$datadir/pc.$infile.ctl<<EOF
+dset $datadir/pc.$infile.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  1 linear    0. 1.
+ydef  1 linear  -90. 1.
+zdef  1 levels 200
+tdef $tmax linear jan$ybgn 1yr
+edef 6 names 1 2 3 4 5 6
+vars 1
+cf   0 99 PC
+endvars
+EOF
+#
+cat>$datadir/reof.$infile.ctl<<EOF
+dset $datadir/reof.$infile.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  360 linear   0. 1.
+ydef  181 linear -90. 1.
+zdef    1 levels 200
+tdef $nmod linear jan$ybgn 1yr
+vars   2
+eof   0 99 corr to pc
+reg   0 99 regr to pc
+endvars
+EOF
+
+cat>$datadir/rpc.$infile.ctl<<EOF2
+dset $datadir/rpc.$infile.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  1 linear   0. 1.
+ydef  1 linear -90. 1.
+zdef  1 levels 200
+tdef $tmax linear jan$ybgn 1yr
+edef 6 names 1 2 3 4 5 6
+vars  1
+cf   0 99 PC
+endvars
+EOF2
+#
+done
+

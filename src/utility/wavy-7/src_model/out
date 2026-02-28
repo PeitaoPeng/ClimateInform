@@ -1,0 +1,90 @@
+1c1
+<       SUBROUTINE DIFFUS(TG,TSFC,VDTEM,DEL,SI,SL,NLOGG,NLV,IT,val)
+---
+>       SUBROUTINE DIFFUS(TG,TSFC,VDTEM,DEL,SI,SL,NLOGG,NLV,IT)
+7c7
+<       include "pkmax"
+---
+> C#include "pkmax"
+9c9
+<       PARAMETER(KMAXM=KMAX-1,KMAXP=KMAX+1)
+---
+>       PARAMETER(KMAX=10,KMAXM=KMAX-1,KMAXP=KMAX+1)
+14,15c14,19
+< C       UNITS OF VKDIFF ARE M**2/SEC
+< c     DATA VKDIFF / 22., 9., 3.0, 0.9, 0.6, 0.8, 1.2, 1.5, 1.2/
+---
+> C     UNITS OF VKDIFF ARE M**2/SEC
+> c     DATA VKDIFF / 21.1, 14.7, 7.1,  4.5,  2.0,  1.0,   .8,
+> c    *               .6,   .7,   .8,  1.1,  1.2,  1.4,  1.8,
+> c    *              1.4,   .7,   .6 /
+> c
+> c     DATA VKDIFF / 17*20./
+19c23
+< C     UNITS OF SURFACE DRAG COEFF 1/SEC
+---
+> C       UNITS OF SURFACE DRAG COEFF 1/SEC
+21c25
+<       DATA BETA / 0.0 /
+---
+>       DATA BETA / 0.    /
+24c28
+<        IFIRST = 0
+---
+>       IFIRST = 0
+32,35d35
+<       do k=1,kmaxm
+< c       VKDIFF(k)=0.6/SL(k)**2
+<       end do
+<       write(6,*) 'VKDIFF= ',VKDIFF
+56c56,57
+< c     write(6,*)'TSFC= ', TSFC 
+---
+> c     write(6,*)'ifirst', ifirst
+> c     write(6,*)'delta=', DELTA
+58d58
+< c     write(6,*)'tglobm=', TGLOB
+63c63
+<       VDTEM(I,1) = vdtem(i,1)+val*(DELTA(1)*VKDIFF(1)
+---
+>       VDTEM(I,1) = vdtem(i,1)-DELTA(1)*VKDIFF(1)
+65c65
+<      *             - BETA * (TG(I,1)*SLKAP(1)-0*TSFC(I)))
+---
+>      *             + BETA * (TG(I,1)*SLKAP(1)-0.*TSFC(I))
+67,69c67,68
+<       VDTEM(I,1) = vdtem(i,1) + val*
+<      *              (DELTA(1)*VKDIFF(1)*(TG(I,2)-TG(I,1))
+<      *             - BETA * TG(I,1))
+---
+>       VDTEM(I,1) = vdtem(i,1)-DELTA(1)*VKDIFF(1)*(TG(I,2)-TG(I,1))
+>      *             + BETA * TG(I,1)
+74c73
+<       VDTEM(I,K) = vdtem(i,k)+val*(DELTA(K)*VKDIFF(K)
+---
+>       VDTEM(I,K) = vdtem(i,k)-DELTA(K)*VKDIFF(K)
+76,77c75,76
+<      *             -GAMMA(K-1)*VKDIFF(K-1)
+<      *             *(TG(I,K)*SLKAP(K)-TG(I,K-1)*SLKAP(K-1)))
+---
+>      *             +GAMMA(K-1)*VKDIFF(K-1)
+>      *             *(TG(I,K)*SLKAP(K)-TG(I,K-1)*SLKAP(K-1))
+79,81c78,79
+<       VDTEM(I,K) = vdtem(i,k)+ val*
+<      *             (+DELTA(K)*VKDIFF(K)*(TG(I,K+1)-TG(I,K))
+<      *             -GAMMA(K-1)*VKDIFF(K-1)*(TG(I,K)-TG(I,K-1)))
+---
+>       VDTEM(I,K) = vdtem(i,k)-DELTA(K)*VKDIFF(K)*(TG(I,K+1)-TG(I,K))
+>      *             +GAMMA(K-1)*VKDIFF(K-1)*(TG(I,K)-TG(I,K-1))
+87,88c85,86
+<      *    val*(-GAMMA(NLV-1)*VKDIFF(NLV-1)
+<      *    *(TG(I,NLV)*SLKAP(NLV)-TG(I,NLV-1)*SLKAP(NLV-1)))
+---
+>      *    GAMMA(NLV-1)*VKDIFF(NLV-1)
+>      *    *(TG(I,NLV)*SLKAP(NLV)-TG(I,NLV-1)*SLKAP(NLV-1))
+90,91c88,89
+<       VDTEM(I,NLV) = vdtem(i,nlv) + val*
+<      *    (-GAMMA(NLV-1)*VKDIFF(NLV-1)*(TG(I,NLV)-TG(I,NLV-1)))
+---
+>       VDTEM(I,NLV) = vdtem(i,nlv) +
+>      *    GAMMA(NLV-1)*VKDIFF(NLV-1)*(TG(I,NLV)-TG(I,NLV-1))

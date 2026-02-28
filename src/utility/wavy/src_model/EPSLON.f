@@ -1,0 +1,22 @@
+      SUBROUTINE EPSLON(EPS,MEND1,NEND2,JEND2,MNWV1)
+      DIMENSION EPS(MNWV1)
+C
+      DO 10 L=1, MEND1
+      EPS(L) = 0.0E0
+10    CONTINUE
+      L=MEND1
+      DO 20 NN=2,NEND2
+      IF(NN.LE.JEND2-MEND1+1) THEN
+      MMAX=MEND1
+      ELSE
+      MMAX=JEND2-NN+1
+      END IF
+      DO 20 MM=1,MMAX
+      L=L+1
+      AM=MM-1
+      AN=MM+NN-2
+      EPS(L)= SQRT((AN*AN-AM*AM)/(4.0E0*AN*AN-1.0E0))
+20    CONTINUE
+C
+      RETURN
+      END

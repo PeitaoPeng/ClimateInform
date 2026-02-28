@@ -1,0 +1,71 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/sst14-15
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/attr/sst14-15
+#
+#tmax=793   
+tmax=66   
+nmod=10
+#
+cp $lcdir/constrct.psi.f $tmp/cons.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$tmax)
+       parameter(imx=144,jmx=73)
+       parameter(nmod=$nmod)
+eof
+#
+#infile1=psi_hgt.200mb.R1.feb1949-cur.3mon
+#infile2=corr.sstpc.vs.sz.1949-cur
+#infile2=corr.sstpc.vs.sz.1949-2014
+#infile3=pc.sst.had-oi.feb1949-cur.3mon.tnp
+#outfile=psi.constrct.feb1949-cur.3mon
+#
+infile1=psi_hgt.200mb.R1.dec1949-dec2014.djf
+infile2=corr.sstpc.vs.sz.1949-cur.djf
+infile3=pc.sst.had-oi.dec1949-dec2014.djf.tnp
+outfile=psi.constrct.dec1949-dec2014.djf
+#
+\rm $tmp/fort.*         
+#
+gfortran -o cons.x cons.f
+echo "done compiling"
+
+#
+ ln -s $datadir/$infile1.gr           fort.10
+ ln -s $datadir/$infile2.gr           fort.11
+ ln -s $datadir/$infile3.gr           fort.12
+ ln -s $datadir/$outfile.gr           fort.50
+#
+ cons.x
+#
+
+cat>$datadir/$outfile.ctl<<EOF
+dset $datadir/$outfile.gr
+undef -9999.0
+title Realtime Surface Obs
+XDEF 144 LINEAR    0. 2.5
+YDEF  73 LINEAR  -90  2.5
+ZDEF 01 LEVELS 1
+*tdef 9999 linear feb1949  1mon
+tdef 9999 linear dec1949  1yr
+vars   13
+obs   0 99 obs sst anom
+con1   0 99 with 2 eof cnst sst
+rcon1  0 99 with 2 reof cnst sst
+con2   0 99 with 2 eof cnst sst
+rcon2  0 99 with 2 reof cnst sst
+con3   0 99 with 3 eof cnst sst
+rcon3  0 99 with 3 reof cnst sst
+con4   0 99 4 eof cnst sst
+rcon4  0 99 4 reof cnst sst
+con5   0 99 5 eof cnst sst
+rcon5  0 99 5 reof cnst sst
+con6   0 99 6 eof cnst sst
+rcon6  0 99 6 reof cnst sst
+endvars
+EOF

@@ -1,0 +1,20 @@
+DSET    frc_view.gr2  
+UNDEF   -4095.0
+*options sequential
+TITLE frc from afrc  
+*
+XDEF 64 LINEAR  0.0  5.625
+*
+YDEF 40 GAUSR15 1            
+*
+ZDEF 10 LEVELS 1 2 3 4 5 6 7 8 9 10
+*
+TDEF 1 LINEAR  JAN1992 1MO
+*
+VARS 5
+fv     10    99     vort                    
+fd     10    99     div         
+ft     10    99     temp         
+fc     10    99     continuity         
+dh     10    99     dibatic heating         
+ENDVARS

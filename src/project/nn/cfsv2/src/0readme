@@ -1,0 +1,26 @@
+1. have Nino34 form obs.sst.ss.${icmon}_ic.1982-cur.ld1-7.anom.ctl
+   obs.sst.ninos.djf.sh
+   obs.sst.ninos.jja.sh
+
+2. input: 
+     grid data:input_grdsst_2_n34.grd.djf.sh
+               input_grdsst_2_n34.grd.jja.sh
+               input_grdsst_2_n34.grd-rsd.djf.sh
+     EOF-PCs: input_grdsst_2_n34.eof.djf.sh
+              input_grdsst_2_n34.eof-rsd.djf.sh
+              input_grdsst_2_n34.eof-rsd-aavg.djf.sh
+3. run ann:
+   mlp_bp.CV.grdsst_2_n34.grd.sh
+   mlp_bp.CV.grdsst_2_n34.grd-rsd.sh
+   mlp_bp.CV.grdsst_2_n34.eof.sh
+
+4. skill for plot
+   skill_4_plot.djf.sh
+   skill_4_plot.jja.sh
+
+5. diagnostics:
+ac.nino.vs.sst.sh
+ac_rsd.nino.vs.sst.sh
+
+6. fld-to-fld grd forecast: mlp_bp.fld.CV.sh
+

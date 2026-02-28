@@ -1,0 +1,63 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/telcon
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/attr/telcon
+#
+var=z200
+mtx=var
+tmax=42
+nmod=7 
+zonal=raw # raw or raw
+#ts=pc
+ncut=5
+ts=rpc
+#ncut=nmod
+hs=tp  #hemisphere
+sst=hadoisst
+#
+cp $lcdir/trd_rsd.wtd.f $tmp/trd.f
+cd $tmp
+#
+if [ "$mtx" = cor ]; then id=1; fi
+if [ "$mtx" = var ]; then id=0; fi
+cat > parm.h << eof
+       parameter(ltime=$tmax)
+       parameter(imx=144,jmx=73)
+       parameter(nmod=$nmod)
+       parameter(ncut=$ncut)
+eof
+#
+#for season in djf mam jja son; do
+for season in djf; do
+#
+\rm $tmp/fort.*         
+#
+gfortran -o trd.x trd.f
+echo "done compiling"
+
+#
+ ln -s $datadir/$var.$zonal.$season.80-cur.gr         fort.10
+ ln -s $datadir/rsd_${ts}.cmap.$season.$hs.$mtx.wtd.gr   fort.11
+ ln -s $datadir/corr.cmaprsd_${ts}_vs_z200.djf.wtd.$zonal.gr    fort.12
+ ln -s $datadir/trd_rsd_${ts}.$var.$season.wtd.$zonal.gr   fort.20
+#
+trd.x 
+#
+cat>$datadir/trd_rsd_${ts}.$var.$season.wtd.$zonal.ctl<<EOF
+dset $datadir/trd_rsd_${ts}.$var.$season.wtd.$zonal.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef  144 linear   0. 2.5
+ydef   73 linear -90. 2.5
+zdef    1 levels 1
+tdef 999 linear jan1980  1yr
+vars   1
+trd 0 99 trd of rsd
+endvars
+EOF
+#
+done
+

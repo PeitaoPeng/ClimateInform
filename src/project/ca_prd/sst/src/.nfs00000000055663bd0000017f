@@ -1,0 +1,146 @@
+#!/bin/sh
+
+set -eaux
+#cccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+# for skill check and other diagnostics
+#ccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+ 
+lcdir=/cpc/home/wd52pp/project/ca_prd/sst/src
+datadir=/cpc/home/wd52pp/data/casst
+tmp=/cpc/home/wd52pp/tmp
+if [ ! -d $tmp ] ; then
+  mkdir -p $tmp
+fi
+outdata=/cpc/home/wd52pp/data/casst
+#
+cd $tmp
+#
+#sst_analysis=ersst      
+sst_analysis=hadoisst
+
+#eof_range=tp_np   #30S-60N
+ eof_range=tp_ml   #45S-45N
+#
+icseason=amj
+ic_mid_mon=may
+nyear=68  # 1948-2015
+nseason=`expr $nyear - 2 - 32`
+nic=4  #number of ICs
+neof=8  #number of EOFs
+mlead=10  #maximum lead
+mld=`expr $mlead + 1` 
+#
+cp $lcdir/ca_sst_skill.f $tmp/ca_sst_skill.f
+
+#
+cat > parm.h << eof
+      parameter(ims=180,jms=89)   !input sst dimension
+      parameter(nseason=$nseason)
+      parameter(nld=$mld)
+      parameter(nic=$nic)
+      parameter(neof=$neof)
+eof
+#
+gfortran -o skill.x ca_sst_skill.f
+echo "done compiling"
+
+#/bin/rm $tmp/fort.*
+#
+ln -s $datadir/ca_hcst.${sst_analysis}.15.$icseason.1ics.${eof_range}.gr fort.11
+ln -s $datadir/ca_hcst.${sst_analysis}.20.$icseason.1ics.${eof_range}.gr fort.12
+ln -s $datadir/ca_hcst.${sst_analysis}.25.$icseason.1ics.${eof_range}.gr fort.13
+ln -s $datadir/ca_hcst.${sst_analysis}.30.$icseason.1ics.${eof_range}.gr fort.14
+ln -s $datadir/ca_hcst.${sst_analysis}.35.$icseason.1ics.${eof_range}.gr fort.15
+ln -s $datadir/ca_hcst.${sst_analysis}.40.$icseason.1ics.${eof_range}.gr fort.16
+ln -s $datadir/ca_hcst.${sst_analysis}.45.$icseason.1ics.${eof_range}.gr fort.17
+ln -s $datadir/ca_hcst.${sst_analysis}.50.$icseason.1ics.${eof_range}.gr fort.18
+ln -s $datadir/ca_hcst.${sst_analysis}.55.$icseason.1ics.${eof_range}.gr fort.19
+ln -s $datadir/ca_hcst.${sst_analysis}.60.$icseason.1ics.${eof_range}.gr fort.20
+ln -s $datadir/ca_hcst.${sst_analysis}.65.$icseason.1ics.${eof_range}.gr fort.21
+ln -s $datadir/ca_hcst.${sst_analysis}.70.$icseason.1ics.${eof_range}.gr fort.22
+ln -s $datadir/ca_hcst.${sst_analysis}.15.$icseason.2ics.${eof_range}.gr fort.23
+ln -s $datadir/ca_hcst.${sst_analysis}.20.$icseason.2ics.${eof_range}.gr fort.24
+ln -s $datadir/ca_hcst.${sst_analysis}.25.$icseason.2ics.${eof_range}.gr fort.25
+ln -s $datadir/ca_hcst.${sst_analysis}.30.$icseason.2ics.${eof_range}.gr fort.26
+ln -s $datadir/ca_hcst.${sst_analysis}.35.$icseason.2ics.${eof_range}.gr fort.27
+ln -s $datadir/ca_hcst.${sst_analysis}.40.$icseason.2ics.${eof_range}.gr fort.28
+ln -s $datadir/ca_hcst.${sst_analysis}.45.$icseason.2ics.${eof_range}.gr fort.29
+ln -s $datadir/ca_hcst.${sst_analysis}.50.$icseason.2ics.${eof_range}.gr fort.30
+ln -s $datadir/ca_hcst.${sst_analysis}.55.$icseason.2ics.${eof_range}.gr fort.31
+ln -s $datadir/ca_hcst.${sst_analysis}.60.$icseason.2ics.${eof_range}.gr fort.32
+ln -s $datadir/ca_hcst.${sst_analysis}.65.$icseason.2ics.${eof_range}.gr fort.33
+ln -s $datadir/ca_hcst.${sst_analysis}.70.$icseason.2ics.${eof_range}.gr fort.34
+ln -s $datadir/ca_hcst.${sst_analysis}.15.$icseason.3ics.${eof_range}.gr fort.35
+ln -s $datadir/ca_hcst.${sst_analysis}.20.$icseason.3ics.${eof_range}.gr fort.36
+ln -s $datadir/ca_hcst.${sst_analysis}.25.$icseason.3ics.${eof_range}.gr fort.37
+ln -s $datadir/ca_hcst.${sst_analysis}.30.$icseason.3ics.${eof_range}.gr fort.38
+ln -s $datadir/ca_hcst.${sst_analysis}.35.$icseason.3ics.${eof_range}.gr fort.39
+ln -s $datadir/ca_hcst.${sst_analysis}.40.$icseason.3ics.${eof_range}.gr fort.40
+ln -s $datadir/ca_hcst.${sst_analysis}.45.$icseason.3ics.${eof_range}.gr fort.41
+ln -s $datadir/ca_hcst.${sst_analysis}.50.$icseason.3ics.${eof_range}.gr fort.42
+ln -s $datadir/ca_hcst.${sst_analysis}.55.$icseason.3ics.${eof_range}.gr fort.43
+ln -s $datadir/ca_hcst.${sst_analysis}.60.$icseason.3ics.${eof_range}.gr fort.44
+ln -s $datadir/ca_hcst.${sst_analysis}.65.$icseason.3ics.${eof_range}.gr fort.45
+ln -s $datadir/ca_hcst.${sst_analysis}.70.$icseason.3ics.${eof_range}.gr fort.46
+ln -s $datadir/ca_hcst.${sst_analysis}.15.$icseason.4ics.${eof_range}.gr fort.47
+ln -s $datadir/ca_hcst.${sst_analysis}.20.$icseason.4ics.${eof_range}.gr fort.48
+ln -s $datadir/ca_hcst.${sst_analysis}.25.$icseason.4ics.${eof_range}.gr fort.49
+ln -s $datadir/ca_hcst.${sst_analysis}.30.$icseason.4ics.${eof_range}.gr fort.50
+ln -s $datadir/ca_hcst.${sst_analysis}.35.$icseason.4ics.${eof_range}.gr fort.51
+ln -s $datadir/ca_hcst.${sst_analysis}.40.$icseason.4ics.${eof_range}.gr fort.52
+ln -s $datadir/ca_hcst.${sst_analysis}.45.$icseason.4ics.${eof_range}.gr fort.53
+ln -s $datadir/ca_hcst.${sst_analysis}.50.$icseason.4ics.${eof_range}.gr fort.54
+ln -s $datadir/ca_hcst.${sst_analysis}.55.$icseason.4ics.${eof_range}.gr fort.55
+ln -s $datadir/ca_hcst.${sst_analysis}.60.$icseason.4ics.${eof_range}.gr fort.56
+ln -s $datadir/ca_hcst.${sst_analysis}.65.$icseason.4ics.${eof_range}.gr fort.57
+ln -s $datadir/ca_hcst.${sst_analysis}.70.$icseason.4ics.${eof_range}.gr fort.58
+#
+ln -s $outdata/ac3d.${sst_analysis}.${eof_range}.gr fort.85
+ln -s $outdata/avgac3d.${sst_analysis}.${eof_range}.gr fort.86
+ln -s $outdata/avgac1d.${sst_analysis}.${eof_range}.gr fort.87
+#
+skill.x 
+#
+cat>$outdata/ac3d.${sst_analysis}.${eof_range}.ctl<<EOF
+dset ^ac3d.${sst_analysis}.${eof_range}.gr
+undef -9.99E+8
+title EXP1
+xdef  180 linear   0. 2.
+ydef   89 linear -88. 2.
+zdef  1 linear 1 1
+tdef  $mld linear ${ic_mid_mon}1981 1mon
+vars  1
+ac    1 99 ac skill
+endvars
+EOF
+#
+cat>$outdata/avgac3d.${sst_analysis}.${eof_range}.ctl<<EOF
+dset ^avgac3d.${sst_analysis}.${eof_range}.gr
+undef -9.99E+8
+title EXP1
+xdef  8 linear   0. 1.
+ydef  4 linear   0. 1.
+zdef  1 linear 1 1
+tdef  $mld linear ${ic_mid_mon}1981 1mon
+vars  1
+ac    1 99 ac skill
+endvars
+EOF
+#
+cat>$outdata/avgac1d.${sst_analysis}.${eof_range}.ctl<<EOF
+dset ^avgac1d.${sst_analysis}.${eof_range}.gr
+undef -9.99E+8
+title EXP1
+xdef  11 linear   0. 1.
+ydef  1 linear   0. 1.
+zdef  1 linear 1 1
+tdef  1 linear ${ic_mid_mon}1981 1mon
+vars  5
+ac1   1 99 for ics=1
+ac2   1 99 for ics=2
+ac3   1 99 for ics=3
+ac4   1 99 for ics=4
+ac    1 99 for all esm
+endvars
+EOF
+#

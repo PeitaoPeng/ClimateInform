@@ -1,0 +1,5 @@
+
+bstate.3mavg.scr: for basic and target state of wavy
+prate.3mavg.scr: for forcing of wavy
+plot.scr: plot for attribution PPT
+pat_cor.scr: pattern corr used in plot

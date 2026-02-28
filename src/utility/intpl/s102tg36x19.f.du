@@ -1,0 +1,225 @@
+      PARAMETER (NDS=102,NDX=36,NDY=19,NDXH=161,NDyH=81,NDZH=9,
+     2    ndl=13,nde=15,ndwmo=3)
+C      PROGRAM S102TG36X19  
+c       UNGER SEPT 2007.
+C        READS AN ARRAY OF 102 CLIMATE DIVISIONS AND PUTS IT ON TO THE 36X19 2
+C        DEGREE GRID AS A STANDARDIZED ANOMALY FORECAST.
+c       FILES ARE OPENED IN SUBROUTINE OFSTG36
+C        FILE NUMBER 10 = 1/2 DEGREE GRID TO 102 DIVISION MAPPING FILE
+C                    11 = CLIMATOLOGY FILE OF 102 DIVISION DATA
+C                    12 = INPUT FILE FOR 102 DIVISIONAL DATA
+C                    13  = OUTPUT FILE FOR 36X19 DATA
+C
+C
+C   SUBROUTINES - SUBROUTINES GOOD ONLY FOR THIS PROGRAM ARE COMPILED LOCALLY
+C                AND ARE INCLUDED IN THIS CODE
+C        OFSTG36 - COMPILED LOCALLY - OPENS FILES INPUT FIRST FILE NUMBER, USES
+C              THE NEXT 4 UNIT NUMBERS.
+C        INSTG36 - COMPILED LOCALLY, PROVIDES INPUT PROGRAM CONTROL PARAMETERS 
+C                  JY1,M1 (JY2,J2)= FIRST(LAST) YEAR AND MONTH TO TRANSLATE
+C        JYA,MA - APPEND DATA AFTER THIS YEAR AND MONTH. 
+c        nlead - number of lead times in dataset
+C        kvar  = variable number for processing
+C        kens = number of ensemble forecasts
+C     RMISS = MISSING INDICATOR
+C      jhn = ratio of output to input grid resolution 2/.5 = 4
+C     jxh1,jxh2,jyh1,jyh2 = start and end of x and y half-degree grid in
+c                     copy to output grid.
+C        ndxh,ndyh.ndzh = x,y, dimension of half degree mapping file
+c
+c       RDCLIMCD = climotology reading subroutine.
+C       ADDYR = YEAR AND MONTH ADDING ROUTINE.
+C       TFORM = IF ANY TRANSFORMATION IS REQUIRED TO MAKE DATA GAUSSIAN    
+C     RDFOR1 = READS A 1=MEMBER FORECAST
+C     RDFOR  = READS AN NDE MEMBER ENSEMBLE
+C  VARIABLES
+C                            
+C    NDS = 102 = DIMENSION OF INPUT ARRAY
+C   NDX,NDY = DIMENSION OF FINAL OUTPUT ARRAY
+C    NDXH,NDYH = DIMENSION OF INTERMEDIATE HALF-DEGREE ARRAY
+C     NDZH     = QUARTER DEGREE RESOLUTION WEIGHT TO HALF DEGREE SQUARE
+C    NDL, NDE,NDWMO = DIMENSIONS FOR LEAD TIMES, ensembles, wmo climos.  
+c     f(ndl,nde,nds) = forecasts for lead, ensemble member, 102 division number
+c    c(2,nds,12,ndwmo) = climo (mean=1, stnd. dev=2) for nds divisions, 12 months and
+c           ndwmo decades.            
+C      ts=transformed forecast data (102 divisions)
+c      mx,w = arrays from mapping files.   
+c       z  standardized anomaly on 102 division
+c   kcx  = temporary array for printing stuff.
+c
+      DIMENSION zg(ndx,ndy),zgh(ndxh,ndyh),f(ndl,nde,nds),
+     2  C(2,nds,12,ndwmo),mx(ndxh,ndyh,ndzh),w(ndzh),ts(nds),
+     3   z(nds),kcx(ndx)
+      jrec=0
+      CALL OFSTG36(10)
+      CALL INSTG36(JY1,M1,JY2,M2,JYA,MA,nlead,mx,w,
+     2  kvar,kens,RMISS,jhn,jyh1,jyh2,jxh1,jxh2,ndxh,ndyh,ndzh)
+      print 91, jy1,m1,jy2,m2,jya,ma,nlead,kvar,kens
+ 91   FORMAT('Process between ',2I5,' and',2I5,'append ',2I5,   
+     2   'leads ',I5,'var ',I5,' ensembles',I5)
+      CALL RDCLIMCD(11,c,kvar,ndwmo,nds)
+      print 92,ndxh,ndyh,ndx,ndy,jxh1,jxh2,jyh1,jyh2,jhn
+  92  FORMAT('Grids ',4I4, ' translation ',5i4)
+      IF(jya .GT. 0) THEN
+        jyymma=jya*100+ma
+      ELSE
+         jyymma=-100
+      ENDIF
+      DO 200 jyr=jy1,jy2
+C         this statement calculates the decade index for the climo file. 
+      jwmo= (jyr-1)/10-197
+      IF(jwmo .LT. 1) jwmo=1
+      jm1=1
+      jm2=12
+      IF(jyr .EQ. jy1) jm1=m1
+      IF(jyr .EQ. jy2) jm2=m2
+      DO 200 jm=jm1,jm2
+      jyymm=jyr*100+jm
+      print 93,jyymm
+  93  FORMAT(' Processing ',I8)
+      IF(jyymm .LT. jyymma) THEN
+C      IF APPENDING ONTO EXISTING DATA, CALCULATE RECORD NUMBERS OF INPUT AND OUTPUT
+       jrec=(jyr-jy1)*12*nlead*nde + (jm-1)*nlead*nde+1
+       jrec2=(jyr-jy1)*12*nlead*nde + (jm-1)*nlead*nde+1
+C          now copy all the existing data       
+       DO 100 jl=1,nlead
+       READ(14,rec=jrec) zg
+       WRITE(13,rec=jrec2) zg
+ 100   CONTINUE
+      ELSE
+C       Work on new data to append.
+C         USE THIS ROUTINE FOR ONE-MEMBER FORECASTS
+         CALL RDFOR1(12,f,jyr,jm,1,kyrmn,rmiss,ndl,nde,nds)
+c          USE THE ROUTINE BELOW FOR MULTI-MEMBER ENSEMBLES
+C         CALL RDFOR(11,f,JY,jm,1,kyrmn,kvar,rmiss,
+C     2  ndl,nde,nds)
+C
+       print 94,nlead,kens,jyr,jm,kyrmn
+ 94    FORMAT(' Begining ',6I8)
+       
+	DO 190 jl=1,nlead
+	DO 190 je=1,kens
+C          provides ability to transform forecasts
+        IF(kvar .EQ. 2) THEN
+	  CALL TFORM(f,ts,jl,je,ndl,nde,nds)
+	ELSE
+	   DO 105 js=1,nds
+	   ts(js)=f(jl,je,js)
+  105      CONTINUE
+           print 106,ts(96)
+  106      FORMAT(' Sample print ',3F10.4)
+        ENDIF
+C          this adds the lead time and the initial month, +1 for to
+C           center the three month target season, jmx used to find climo
+	jlp=jl+1
+        CALL ADDYR(jyr,jm,jlp,jyrx,jmx)
+	print 107,jyr,jm,madd,jyrx,jmx
+ 107    FORMAT(' dates ',5I9)
+	DO 110  js=1,nds
+  110   z(js)=(ts(js)-c(1,js,jmx,jwmo))/c(2,js,jmx,jwmo)
+         Print 106,z(96),c(1,96,jmx,jwmo),c(2,96,jmx,jwmo)
+C           zero array, and go through a quarter degree map of the 
+c           102 FD's and put into a 1/2 degree grid, averaging the 
+c           forecast values.
+	DO 120 ky=1,ndyh
+	DO 120 kx=1,ndxh
+  120	zgh(kx,ky)=0.
+	DO 130 kyh=1,ndyh
+	DO 130 kxh=1,ndxh
+	DO 130 kzh=1,ndzh
+	js=ABS(mx(kxh,kyh,kzh))
+	zgh(kxh,kyh)=zgh(kxh,kyh)+w(kzh)*z(js)
+ 130    CONTINUE
+C          next put the 1/2 degree grid onto the 2 degree grid, again 
+C          averaging.
+        rhn2=1./REAL(jhn*jhn)
+        DO 140 ky=1,ndy
+        DO 140 kx=1,ndx
+  140   zg(kx,ky)=0.              
+        DO 150 kyh=jyh1,jyh2,jhn
+        ky=(kyh-jyh1)/jhn +1
+        DO 150 kxh=jxh1,jxh2,jhn
+        kx=(kxh-jxh1)/jhn +1
+	kyhp=kyh+jhn-1 
+	kxhp=kxh+jhn-1
+	sum=0. 
+        DO 145 kyh2=kyh,kyhp
+        DO 145 kxh2=kxh,kxhp
+        sum=sum+zgh(kxh2,kyh2)
+ 145    CONTINUE
+        zg(kx,ky)=sum*rhn2
+ 150    CONTINUE
+C          WRITE IT OUT AND WRITE A CUTE LITTLE ASCII PRINT ON FT06 TO CHECK
+        print 1091,jrec,jm,jl,jmx
+ 1091   FORMAT('I10',5I10)
+        jrec=jrec+1
+        WRITE(13,rec=jrec) zg
+        DO 125 jy=19,1,-1
+	DO 124 jx=1,36
+        kcx(jx)=(zg(jx,jy))*10
+        IF(kcx(jx) .LT. -9) kcx(jx)=-9
+ 124    CONTINUE       
+ 125    PRINT 122,(kcx(jx),jx=1,36)
+ 122    FORMAT(36I2)
+ 190    CONTINUE
+        
+      ENDIF
+   
+  200 CONTINUE
+      PRINT 201
+ 201  FORMAT(' Program complete ')
+      STOP
+      END
+      SUBROUTINE INSTG36(JY1,M1,JY2,M2,JYA,MA,nlead,mx,w,
+     2  kvar,kens,rmiss,jhn,jyh1,jyh2,jxh1,jxh2,ndxh,ndyh,ndzh)         
+      DIMENSION mx(ndxh,ndyh,ndzh),w(ndzh),wx(9)
+       DATA wx /.0625,.125,.0625,.125,.25,.125,.0625,.125,.0625/
+      DO 90 ix=1,9
+  90  w(ix)=wx(ix)
+      jy1=1979
+      m1=1
+      jy2=2007
+      m2=9
+      jya=-9
+      ma=-9
+      nlead=13
+      kvar=1
+      kens=1
+      rmiss=-9999.
+      jhn=4
+      jyh1=1
+      jyh2=78
+      jxh1=20
+      jxh2=158
+      DO 100 jy=1,ndyh
+      DO 100 jx=1,ndxh
+      READ(10,91) kx,ky,(mx(jx,jy,jq),jq=1,ndzh)
+   91 FORMAT(11I4)
+  100 CONTINUE
+      CLOSE(10)
+      RETURN
+      END
+      SUBROUTINE OFSTG36(NU)
+      OPEN(NU,file=
+     2'/export/lnx225/wd53du/conustp/data/fd102161x81.dat')
+      NUP=NU+1
+      OPEN(NUP,file=
+     2'/export/lnx225/wd53du/cddata/mn3102t.dat')
+      NUP=NUp+1
+      OPEN(NUP,file=
+     2'/export/lnx225/wd53du/conustp/data/ccat3.dat')
+      NUP=NUp+1
+      OPEN(NUP,file=
+     2'/export/lnx225/wd53du/conustp/data/ccat36x19.gds'
+     3  ,access='direct',recl=36*19*4)
+      RETURN
+      END      
+	SUBROUTINE TFORM(f,ts,jl,je,ndl,nde,nds)
+      DIMENSION f(ndl,nde,nds),ts(nds)
+      DO 100 js=1,nds
+      ts(js)=SQRT(f(jl,je,js))
+ 100  CONTINUE
+       RETURN
+       END
+       
+      

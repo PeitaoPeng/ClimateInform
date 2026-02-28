@@ -1,0 +1,33 @@
+set -x  
+#
+# run bmodel R15 version on sgi9
+#
+lcdir=/cpc/home/wd52pp/utility/barotr
+modelsrc=/cpc/home/wd52pp/utility/barotr/src_model
+datadir=/cpc/home/wd52pp/data/attr/djf16-17
+datadir2=/cpc/home/wd52pp/project/attr/djf16-17
+wkdir=/cpc/home/wd52pp/utility/barotr/wkdir
+#
+/bin/rm $wkdir/*.*
+#
+cp $modelsrc/*.f $wkdir/.   
+#
+cd     $wkdir
+#    ln -s $datadir/bminput.psi_div.200mb.djfm2013-14.gr  fort.20
+#    ln -s $datadir/bminput.psi_div.200mb.djfm2013-14.cfsr.gr  fort.20
+#    ln -s $datadir/bminput.psi_div.200mb.djf2014-15.cfsr.gr  fort.20
+#     ln -s $datadir/bminput.psi_div.200mb.djfm2013-14.para.gr  fort.20
+#    ln -s $datadir2/prate.djfm2013-14.avg.para.esm.R15.gr     fort.21
+#    ln -s $datadir2/div200.djfm.esm.goga-toga.gr     fort.21
+
+#    ln -s $datadir2/prate.djfm2013-14.avg.R15.gr      fort.21
+     ln -s $datadir/bminput.psi_div.200mb.djf2016-17.cfsr.gr fort.20
+     ln -s $datadir/prate.djf.R15.gr     fort.21
+     ln -s $datadir/vortfrc200_enso_djfm.R15.gr   fort.30
+     ln -s $datadir/matix.R2_clim_200             fort.34
+     ln -s $lcdir/bmodel_out.gr                   fort.80
+gfortran -o bmR15.x bmodelR15.f bmodelR15.s.f ttforce.s.f \
+               wvflx.tn.s.f norsou.f lae_sol.s.f \
+               hsmooth.s.f 
+bmR15.x > out
+mv out $lcdir

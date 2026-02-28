@@ -1,0 +1,45 @@
+#!/bin/sh
+
+set -eaux
+
+#
+ lcdir=/cpc/home/wd52pp/project/attr/djf15-16
+ datadir=/cpc/home/wd52pp/data/attr/djf51-16
+ tmp=/cpc/home/wd52pp/tmp
+#
+sst=hadoisst
+season=djf
+tmax=67 
+mtx=var
+
+nmod=6
+#
+cp rsd_sstpc.detrd.f $tmp/detrd.f
+cd $tmp
+#
+cat > parm.h << eof
+       parameter(ltime=$tmax)
+       parameter(nmod=$nmod)
+eof
+#
+\rm fort.*
+
+   ln -s $datadir/rsd_pc.hadoisst.$season.tp.$mtx.gr fort.10
+   ln -s $datadir/rsd_sstpc.$season.detrd.$mtx.gr fort.51
+#
+gfortran detrd.f
+a.out
+#
+cat>$datadir/rsd_sstpc.$season.detrd.$mtx.ctl<<EOF
+dset $datadir/rsd_sstpc.$season.detrd.$mtx.gr
+undef -9999.0
+title Realtime Surface Obs
+xdef    1 linear 0 2.8125
+ydef    1 linear -90 2.8125
+zdef    1 levels 200
+tdef 999 linear jan1950  1yr
+vars   2
+cf1   0 99 ts of trend mode
+cf2   0 99 detrended cf1
+endvars
+EOF

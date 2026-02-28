@@ -1,0 +1,686 @@
+#!/bin/sh
+
+set -eaux
+
+#=========================================================
+# MLR correcting NMME forecasted
+# this version calculated EOF for obs once, so as to output EOF/PC
+#=========================================================
+lcdir=/cpc/home/wd52pp/project/NA_prd/src
+tmp=/cpc/consistency/tmp_ann
+if [ ! -d $tmp ] ; then
+  mkdir -p $tmp
+fi
+
+datadir1=/cpc/consistency/NA_prd/obs
+datadir2=/cpc/consistency/NA_prd/nmme
+datadir3=/cpc/consistency/NA_prd/skill
+#
+cd $tmp
+# 
+for curmo in 11; do
+#for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+#
+curyr=2020
+model=NMME
+tool=mlr
+varn=2V
+varm=prate
+varo=prate
+#varm=tmp2m
+#varo=tmp2m
+
+lastyr=`expr $curyr - 1`
+nextyr=`expr $curyr + 1`
+nyr=`expr $lastyr - 1981`  # hcst yr #
+nyrp1=`expr $nyr + 1`      # hcst_yr + cur_yr
+
+tgtyr=$curyr
+if [ $curmo = 12 ]; then tgtyr=$nextyr; fi
+#
+#ngrdm=5136
+ngrdm=8280
+ngrd=2525
+#ngrd=1128
+nmod=12
+nmodm=12
+nleadmon=7
+nleadss=7
+imx=360
+jmx=181
+#
+# have input data to ANN package =======================================
+#
+imon=$curmo
+if [ $imon = 01 ]; then icmonw=jan; tmons=feb; fi
+if [ $imon = 02 ]; then icmonw=feb; tmons=mar; fi
+if [ $imon = 03 ]; then icmonw=mar; tmons=apr; fi
+if [ $imon = 04 ]; then icmonw=apr; tmons=may; fi
+if [ $imon = 05 ]; then icmonw=may; tmons=jun; fi
+if [ $imon = 06 ]; then icmonw=jun; tmons=jul; fi
+if [ $imon = 07 ]; then icmonw=jul; tmons=aug; fi
+if [ $imon = 08 ]; then icmonw=aug; tmons=sep; fi
+if [ $imon = 09 ]; then icmonw=sep; tmons=oct; fi
+if [ $imon = 10 ]; then icmonw=oct; tmons=nov; fi
+if [ $imon = 11 ]; then icmonw=nov; tmons=dec; fi
+if [ $imon = 12 ]; then icmonw=dec; tmons=jan; fi
+#
+#for tp in mon ss; do
+ for tp in ss; do
+
+if [ $tp = 'mon' ]; then nlead=$nleadmon; fi
+if [ $tp = 'ss' ];  then nlead=$nleadss; fi
+
+tlongobs=`expr $nyrp1 \* $nlead`  # 
+
+ld=1
+while  [ $ld -le $nlead ]
+do
+#
+# correction for dynamic model fcst
+#
+cat > parm.h << eof
+       parameter(nt=$nyr)
+       parameter(imx=$imx,jmx=$jmx)
+       parameter(is=191,ie=300,js=111,je=161) 
+c      parameter(is=221,ie=300,js=111,je=141) 
+       parameter(ism=1,iem=360,jsm=71,jem=161) 
+c      parameter(ism=1,iem=360,jsm=71,jem=111) 
+       parameter(nmod=$nmod,nmodm=$nmodm)
+       parameter(ngrd=$ngrd)
+       parameter(ngrdm=$ngrdm)
+       parameter(nld=$nlead)
+       parameter(ld=$ld)
+       parameter(undef=-9.99E+8)
+       parameter(ridge=0.05,del=0.05)
+eof
+#
+cat > correct.f << EOF
+      program input_data
+      include "parm.h"
+      dimension w2d(imx,jmx),w2d2(imx,jmx),w2d3(imx,jmx)
+      dimension w3d(imx,jmx,nt),w3d2(imx,jmx,nt),w3dm(imx,jmx,nt)
+      dimension land(imx,jmx)
+C
+      dimension ts1(nt),ts2(nt),tso(nt)
+      dimension ts3(nt-1),ts4(nt-1)
+      dimension aaa(ngrdm,nt),wk(nt,ngrdm)
+      dimension aaa2(ngrd,nt),wk2(nt,ngrd)
+      dimension xlat(jmx),coslat(jmx),cosr(jmx)
+      dimension eval(nt),evec(ngrdm,nt),coef(nt,nt)
+      dimension eval2(nt),evec2(ngrd,nt),coef2(nt,nt)
+      real weval(nt),wevec(ngrdm,nt),wcoef(nt,nt)
+      real weval2(nt),wevec2(ngrd,nt),wcoef2(nt,nt)
+      real reval(nmodm),revec(ngrdm,nmodm),rcoef(nmodm,nt)
+      real revec2(ngrd,nmod),rcoef2(nmod,nt)
+      real tt(nmodm,nmodm),rwk(ngrdm),rwk2(ngrdm,nmodm)
+      real tt2(nmod,nmod),rwk3(ngrd),rwk4(ngrd,nmod)
+      real corr(imx,jmx),regr(imx,jmx),regro(imx,jmx,nmod)
+      real rpcm(nmodm,nt),rpcm2(nmodm,nt-1),rpcmtgt(nmodm)
+      real rpco(nmod,nt-1),rpcf(nmod)
+      real prd(imx,jmx,nt),wt(nmodm)
+      real corm(imx,jmx),rmsm(imx,jmx)
+      real corp(imx,jmx),rmsp(imx,jmx)
+C
+      open(unit=10,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(unit=11,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(unit=20,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(unit=21,form='unformatted',access='direct',recl=4*imx*jmx)
+
+      open(unit=30,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(unit=40,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(unit=50,form='unformatted',access='direct',recl=4*imx*jmx)
+      open(unit=41,form='unformatted',access='direct',recl=4*nt)
+      open(unit=51,form='unformatted',access='direct',recl=4*nt)
+c*************************************************
+C
+C== have coslat
+C
+      do j=1,jmx
+        xlat(j)=-90+(j-1)*1.
+        coslat(j)=cos(xlat(j)*3.14159/180)  !for EOF use
+        cosr(j)=sqrt(coslat(j))  !for EOF use
+      enddo
+C
+C read obs & model data
+
+      irm=ld
+      iro=nld+ld
+      do it=1,nt
+
+        read(10,rec=iro) w2d        !obs data
+        read(20,rec=irm) w2d2       !model hcst
+        read(21,rec=irm) w2d3       !model hcst sst
+
+        do i=1,imx
+        do j=1,jmx
+           w3d(i,j,it)=w2d(i,j)
+           w3d2(i,j,it)=w2d2(i,j)
+           w3dm(i,j,it)=w2d3(i,j)
+        enddo
+        enddo
+
+        print *, 'iro=',iro
+        iro=iro+nld
+        irm=irm+nld
+      enddo ! it loop
+c
+      read(11,rec=1) land
+c
+c EOF analysis for model data
+c
+C select grid data
+      do it=1,nt
+      ig=0
+      do i=ism,iem,2
+      do j=jsm,jem,2
+c       if(land(i,j).lt.1) then
+        ig=ig+1
+        aaa(ig,it)=cosr(j)*w3dm(i,j,it)
+c       endif
+      enddo
+      enddo
+      print *, 'ngrdm=',ig
+      enddo
+C EOF analysis
+      call eofs(aaa,ngrdm,nt,nt,eval,evec,coef,wk,id)
+      call REOFS(aaa,ngrdm,nt,nt,wk,id,weval,wevec,wcoef,
+     &           nmodm,reval,revec,rcoef,tt,rwk,rwk2)
+      print *, 'eval=',eval
+C
+C normalize rcoef and have patterns
+      iw=0
+      do m=1,nmodm
+        do it=1,nt
+        ts1(it)=rcoef(m,it)
+        enddo
+        call normal(ts1,nt)
+
+        do it=1,nt
+        rpcm(m,it)=ts1(it)
+        enddo
+c
+        do j=1,jmx
+        do i=1,imx
+
+c       if(land(i,j).lt.1) then
+
+        do it=1,nt
+        ts2(it)=w3dm(i,j,it)
+        enddo
+
+        call regr_t(ts1,ts2,nt,corr(i,j),regr(i,j))
+c       else
+
+c       corr(i,j)=undef
+c       regr(i,j)=undef
+
+c       endif
+
+        enddo
+        enddo
+
+        iw=iw+1
+        write(40,rec=iw) corr
+        iw=iw+1
+        write(40,rec=iw) regr
+      enddo
+c
+c write out rpc of model
+      do m=1,nmodm
+        do it=1,nt
+          ts1(it)=rpcm(m,it)
+        enddo
+        write(41,rec=m) ts1
+      enddo
+c
+c EOF for obs
+c
+      DO it=1,nt
+        ig=0
+        do i=is,ie
+        do j=js,je
+        if(land(i,j).gt.0) then
+        ig=ig+1
+        aaa2(ig,it)=cosr(j)*w3d(i,j,it)
+        endif
+        enddo
+        enddo
+        print *, 'ngrdo=',ig
+      ENDDO  ! it loop
+c
+C EOF analysis for OBS
+      call eofs(aaa2,ngrd,nt,nt,eval2,evec2,coef2,wk2,id)
+      call REOFS(aaa2,ngrd,nt,nt,wk2,id,weval2,wevec2,wcoef2,
+     &           nmod,reval,revec2,rcoef2,tt2,rwk3,rwk4)
+      print *, 'obs eval=',eval2
+C
+C normalize rcoef2 and have patterns
+      iw=0
+      do m=1,nmod
+        do it=1,nt
+          ts1(it)=rcoef2(m,it)
+        enddo
+        call normal(ts1,nt)
+
+        do it=1,nt
+          rcoef2(m,it)=ts1(it)
+        enddo
+
+        do j=1,jmx
+        do i=1,imx
+
+        if(land(i,j).gt.0) then
+
+        do it=1,nt
+          ts2(it)=w3d(i,j,it)
+        enddo
+
+        call regr_t(ts1,ts2,nt,corr(i,j),regr(i,j))
+        else
+
+        corr(i,j)=undef
+        regr(i,j)=undef
+
+        endif
+
+        regro(i,j,m)=regr(i,j)
+
+        enddo
+        enddo
+        iw=iw+1
+        write(50,rec=iw) corr
+        iw=iw+1
+        write(50,rec=iw) regr
+      enddo ! m loop
+
+c write out rpc of OBS
+      do m=1,nmod
+        do it=1,nt
+          ts1(it)=rcoef2(m,it)
+        enddo
+        write(51,rec=m) ts1
+      enddo
+c
+c CV-1 for RPC forecast
+C
+      call setzero_3d(prd,imx,jmx,nt)
+
+      DO itgt=1,nt  !loop over target yr
+
+c select rpcm of tgtyr
+        do m=1,nmodm
+          rpcmtgt(m)=rpcm(m,itgt)
+        enddo
+
+c select rcoef2 of non-tgtyr
+
+        it = 0
+        DO iy = 1, nt
+
+        IF(iy == itgt)  PRINT *,'iy=',iy
+
+        IF(iy /= itgt)  then
+
+        it = it + 1
+
+C rpc of model
+        do m=1,nmod
+          rpcm2(m,it)=rpcm(m,iy)
+          rpco(m,it)=rcoef2(m,iy)
+        enddo
+        ENDIF
+      ENDDO ! iy loop
+
+c
+c forecast rpc for itgt 
+      DO m=1,nmod
+
+        do it=1,nt-1
+        ts3(it)=rpco(m,it)
+        enddo
+        call normal(ts3,nt-1)
+        
+        rdg=ridge
+        go to 212
+ 211    continue
+        rdg=rdg+del
+ 212    continue
+
+        call get_mlr_wt(ts3,rpcm2,wt,nmodm,nt-1,rdg)
+
+        wts=0
+        do k=1,nmodm
+        wts=wts+wt(k)*wt(k)
+        enddo
+c       write(6,*) 'target yr=',itgt,'wts=',wts
+        if(wts.gt.0.5) go to 211
+
+        rpcf(m)=0
+        do n=1,nmodm
+          rpcf(m)=rpcf(m)+wt(n)*rpcmtgt(n)
+        enddo
+      ENDDO !m loop
+     
+c forecasted var on grids
+      do i=1,imx
+      do j=1,jmx
+
+      if(land(i,j).gt.0) then
+        do m=1,nmod
+          prd(i,j,itgt)=prd(i,j,itgt)+rpcf(m)*regro(i,j,m)
+        enddo
+      else
+          prd(i,j,itgt)=undef
+      endif
+
+      enddo
+      enddo
+
+      ENDDO  ! itgt loop
+c
+C skill calculation
+      do i=1,imx
+      do j=1,jmx
+      if(land(i,j).gt.0) then
+        do it=1,nt
+          tso(it)=w3d(i,j,it)
+          ts1(it)=w3d2(i,j,it)
+          ts2(it)=prd(i,j,it)
+        enddo
+        call acrms_t(ts1,tso,corm(i,j),rmsm(i,j),nt)
+        call acrms_t(ts2,tso,corp(i,j),rmsp(i,j),nt)
+      else
+        corm(i,j)=undef
+        rmsm(i,j)=undef
+        corp(i,j)=undef
+        rmsp(i,j)=undef
+      endif
+      enddo
+      enddo
+
+      iw=1
+      write(30,rec=iw) corm
+      iw=iw+1 
+      write(30,rec=iw) rmsm
+      iw=iw+1 
+      write(30,rec=iw) corp
+      iw=iw+1 
+      write(30,rec=iw) rmsp
+
+      STOP
+      END
+
+      subroutine acrms_t(f,o,ac,rms,n)
+      dimension f(n),o(n)
+
+      oo=0.
+      ff=0.
+      of=0.
+      rms=0
+      do i=1,n
+        oo=oo+o(i)*o(i)
+        ff=ff+f(i)*f(i)
+        of=of+f(i)*o(i)
+        rms=rms+(f(i)-o(i))*(f(i)-o(i))
+      enddo
+      tt=float(n)
+      stdo=sqrt(oo/tt)
+      stdf=sqrt(ff/tt)
+      of=of/tt
+      ac=of/(stdo*stdf)
+      rms=sqrt(rms/tt)
+c
+      return
+      end
+
+      SUBROUTINE setzero_3d(fld,n,m,k)
+      real fld(n,m,k)
+      do i=1,n
+      do j=1,m
+      do l=1,k
+         fld(i,j,l)=0.0
+      enddo
+      enddo
+      enddo
+      return
+      end
+
+      subroutine normal(x,n)
+      dimension x(n)
+      avg=0
+      do i=1,n
+        avg=avg+x(i)/float(n)
+      enddo
+      var=0
+      do i=1,n
+        var=var+(x(i)-avg)*(x(i)-avg)/float(n)
+      enddo
+      std=sqrt(var)
+      do i=1,n
+        x(i)=(x(i)-avg)/std
+      enddo
+      return
+      end
+C
+      SUBROUTINE regr_t(f1,f2,ltime,cor,reg)
+
+      real f1(ltime),f2(ltime)
+
+      cor=0.
+      sd1=0.
+      sd2=0.
+
+      do it=1,ltime
+         cor=cor+f1(it)*f2(it)/float(ltime)
+         sd1=sd1+f1(it)*f1(it)/float(ltime)
+         sd2=sd2+f2(it)*f2(it)/float(ltime)
+      enddo
+
+      sd1=sd1**0.5
+      sd2=sd2**0.5
+      reg=cor/(sd1)
+      cor=cor/(sd1*sd2)
+
+      return
+      end
+EOF
+#
+cp $lcdir/reof.s.f reof.s.f
+cp $lcdir/mlr.s.f  mlr.s.f
+#
+\rm fort.*
+ gfortran -o prd.x reof.s.f  mlr.s.f correct.f
+ ln -s $datadir1/obs.$varo.$tp.${icmonw}_ic.1981-2020.ld1-7.anom.gr fort.10
+ ln -s $datadir1/land1x1mask.gr                                    fort.11
+ ln -s $datadir2/$model.$varo.$tp.${icmonw}_ic.1982-2020.ld1-$nlead.esm.anom.gr fort.20
+ ln -s $datadir2/$model.$varm.$tp.${icmonw}_ic.1982-2020.ld1-$nlead.esm.anom.gr fort.21
+ ln -s acrms.$ld                           fort.30
+ ln -s eofm.$ld fort.40
+ ln -s eofo.$ld fort.50
+ ln -s rpcm.$ld fort.41
+ ln -s rpco.$ld fort.51
+ prd.x
+#
+ld=$(( ld+1 ))
+done  # for ld
+
+#cat them together
+mv acrms.1 skill.1
+mv eofm.1 em.1
+mv eofo.1 eo.1
+mv rpcm.1 pm.1
+mv rpco.1 po.1
+ld=2
+while  [ $ld -le $nlead ]
+do
+ldm=$((ld-1))
+
+cat skill.$ldm  acrms.$ld > skill.$ld
+cat em.$ldm  eofm.$ld > em.$ld
+cat eo.$ldm  eofo.$ld > eo.$ld
+cat pm.$ldm  rpcm.$ld > pm.$ld
+cat po.$ldm  rpco.$ld > po.$ld
+
+\rm skill.$ldm
+\rm em.$ldm
+\rm eo.$ldm
+\rm pm.$ldm
+\rm po.$ldm
+
+ld=$(( ld+1 ))
+done  # for ld
+#
+mv skill.$nlead $datadir3/skill.$tool.NMME_${varm}_2_$varo.$tp.${icmonw}_ic.1982-$lastyr.ld1-$nlead.$varn.test.gr
+
+cat>$datadir3/skill.$tool.NMME_${varm}_2_$varo.$tp.${icmonw}_ic.1982-$lastyr.ld1-$nlead.$varn.test.ctl<<EOF
+dset ^skill.$tool.NMME_${varm}_2_$varo.$tp.${icmonw}_ic.1982-$lastyr.ld1-$nlead.$varn.test.gr
+undef -9.99e+8
+*
+TITLE model
+*
+XDEF $imx LINEAR    0.  1.
+YDEF $jmx LINEAR  -90.  1.
+zdef 1 linear 1 1
+tdef $nlead linear jan1982 1yr
+vars  4
+accm 0 99 acc of corrrected
+rmsm 0 99 rms of corrected
+accp 0 99 acc of corrrected
+rmsp 0 99 rms of corrected
+endvars
+EOF
+mv em.$nlead $datadir3/eof.NMME_${varm}.${icmonw}_ic.1982-$lastyr.ld1-$nlead.gr
+mv eo.$nlead $datadir3/eof.OBS_${varo}.${icmonw}_ic.1982-$lastyr.ld1-$nlead.gr
+mv pm.$nlead $datadir3/rpc.NMME_${varm}.${icmonw}_ic.1982-$lastyr.ld1-$nlead.gr
+mv po.$nlead $datadir3/rpc.OBS_${varm}.${icmonw}_ic.1982-$lastyr.ld1-$nlead.gr
+
+cat>$datadir3/eof.NMME_${varm}.${icmonw}_ic.1982-$lastyr.ld1-$nlead.ctl<<EOF
+dset ^eof.NMME_${varm}.${icmonw}_ic.1982-$lastyr.ld1-$nlead.gr
+undef -9.99e+8
+*
+TITLE model
+*
+XDEF $imx LINEAR    0.  1.
+YDEF $jmx LINEAR  -90.  1.
+zdef 1 linear 1 1
+tdef $nlead linear jan1982 1yr
+vars 24
+c1 0 99 eof1
+r1 0 99 eof1
+c2 0 99 eof2
+r2 0 99 eof2
+c3 0 99 eof3
+r3 0 99 eof3
+c4 0 99 eof4
+r4 0 99 eof4
+c5 0 99 eof5
+r5 0 99 eof5
+c6 0 99 eof6
+r6 0 99 eof6
+c7 0 99 eof7
+r7 0 99 eof7
+c8 0 99 eof8
+r8 0 99 eof8
+c9 0 99 eof9
+r9 0 99 eof9
+c10 0 99 eof10
+r10 0 99 eof10
+c11 0 99 eof11
+r11 0 99 eof11
+c12 0 99 eof12
+r12 0 99 eof12
+endvars
+EOF
+cat>$datadir3/eof.OBS_${varo}.${icmonw}_ic.1982-$lastyr.ld1-$nlead.ctl<<EOF
+dset ^eof.OBS_${varo}.${icmonw}_ic.1982-$lastyr.ld1-$nlead.gr
+undef -9.99e+8
+*
+TITLE model
+*
+XDEF $imx LINEAR    0.  1.
+YDEF $jmx LINEAR  -90.  1.
+zdef 1 linear 1 1
+tdef $nlead linear jan1982 1yr
+vars 24
+c1 0 99 eof1
+r1 0 99 eof1
+c2 0 99 eof2
+r2 0 99 eof2
+c3 0 99 eof3
+r3 0 99 eof3
+c4 0 99 eof4
+r4 0 99 eof4
+c5 0 99 eof5
+r5 0 99 eof5
+c6 0 99 eof6
+r6 0 99 eof6
+c7 0 99 eof7
+r7 0 99 eof7
+c8 0 99 eof8
+r8 0 99 eof8
+c9 0 99 eof9
+r9 0 99 eof9
+c10 0 99 eof10
+r10 0 99 eof10
+c11 0 99 eof11
+r11 0 99 eof11
+c12 0 99 eof12
+r12 0 99 eof12
+endvars
+EOF
+#
+cat>$datadir3/rpc.NMME_${varo}.${icmonw}_ic.1982-$lastyr.ld1-$nlead.ctl<<EOF
+dset ^rpc.NMME_${varo}.${icmonw}_ic.1982-$lastyr.ld1-$nlead.gr
+undef -9.99e+8
+*
+TITLE model
+*
+XDEF $nyr LINEAR    0.  1.
+YDEF 1 LINEAR  -90.  1.
+zdef 1 linear 1 1
+tdef $nlead linear jan1982 1yr
+vars 12
+p1 0 99 m1
+p2 0 99 m2
+p3 0 99 m3
+p4 0 99 m4
+p5 0 99 m5
+p6 0 99 m6
+p7 0 99 m7
+p8 0 99 m8
+p9 0 99 m9
+p10 0 99 m10
+p11 0 99 m11
+p12 0 99 m12
+endvars
+EOF
+#
+cat>$datadir3/rpc.OBS_${varo}.${icmonw}_ic.1982-$lastyr.ld1-$nlead.ctl<<EOF
+dset ^rpc.OBS_${varo}.${icmonw}_ic.1982-$lastyr.ld1-$nlead.gr
+undef -9.99e+8
+*
+TITLE model
+*
+XDEF $nyr LINEAR    0.  1.
+YDEF 1 LINEAR  -90.  1.
+zdef 1 linear 1 1
+tdef $nlead linear jan1982 1yr
+vars 12
+p1 0 99 m1
+p2 0 99 m2
+p3 0 99 m3
+p4 0 99 m4
+p5 0 99 m5
+p6 0 99 m6
+p7 0 99 m7
+p8 0 99 m8
+p9 0 99 m9
+p10 0 99 m10
+p11 0 99 m11
+p12 0 99 m12
+endvars
+EOF
+
+done  # for tp
+done  # for curmo

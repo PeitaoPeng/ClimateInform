@@ -1,0 +1,186 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/cpc/home/wd52pp/project/attr/opr_wvflx
+tmp=/cpc/home/wd52pp/tmp
+datadir=/cpc/home/wd52pp/data/attr
+#
+ var=psi200
+#
+nyear=39  # 1979-curr; current year is counted
+tot_mon=458  # total month number; tot_mon=423 for jfm2014
+season=djf
+ssyr=DJF2016-17
+#
+cp $lcdir/src/*.f $tmp/.
+cd $tmp
+#
+imax=144
+jmax=73
+#=======================================
+# have psi200 clim and anom from CFSR
+#=======================================
+smon=`expr $tot_mon - 2`
+cat >havedata<<EOF
+run data_psi.gs
+EOF
+#
+cat >data_psi.gs<<EOF
+'reinit'
+'open /cpc/cfsr/archive/month_l/pgb/pgbl06.gdas.ctl'
+'set x 1 $imax'
+'set y 1 $jmax'
+'set z 23'
+'set gxout fwrite'
+'set fwrite $var.$season.gr'
+'set t 1 12'
+'define clim=ave(STRMprs,t+24,t=384,1yr)'
+'modify clim seasonal'
+'set t 1'
+'d ave(clim,t=$smon,t=$tot_mon)'
+'d ave(STRMprs-clim,t=$smon,t=$tot_mon)'
+'c'
+EOF
+#
+#===========================================
+# excute grads data process
+#===========================================
+grads -l <havedata
+#===========================================
+# have ctl for psi200
+#===========================================
+cat>$var.$season.ctl<<EOF
+dset ^$var.$season.gr
+UNDEF   -999.0
+TITLE psi200
+*
+XDEF 144 LINEAR  0.0  2.5
+*
+YDEF  73 LINEAR  -90  2.5
+*
+ZDEF 1 LEVELS 1
+*
+TDEF 30 LINEAR  JAN2013 1MO
+*
+VARS 2
+cpsi  0  99 psi clim
+apsi  0  99 psi anom
+ENDVARS
+EOF
+#===========================================
+# calculate wvflx
+#===========================================
+#
+gfortran -o wvflx.x wvflx.tn.f wvflx.tn.s.f norsou.f bmodelR15.s.f intp2d.f setxy.f
+echo "done compiling"
+#
+/bin/rm $tmp/fort.*         
+#
+ ln -s $var.$season.gr       fort.20
+ ln -s $datadir/wvflx.tn.$season.gr   fort.80
+#
+wvflx.x > $lcdir/wvflx.out
+#
+cat>$datadir/wvflx.tn.$season.ctl<<EOF
+dset $datadir/wvflx.tn.$season.gr
+UNDEF   -999.0
+options yrev
+TITLE wvflx
+*
+XDEF 64 LINEAR  0.0  5.625
+*
+YDEF 40 GAUSR15 1
+*
+ZDEF 1 LEVELS 1
+*
+TDEF 30 LINEAR  JAN2013 1MO
+*
+VARS 3
+apsi  0  99 psi anom
+xflx  0  99 x-component of TN FLX
+yflx  0  99 y-component of TN FLX
+ENDVARS
+EOF
+#
+#===========================================
+# plot
+#===========================================
+cat >wvplot<<EOF
+run wvplot.gs
+EOF
+#
+cat >wvplot.gs<<EOF
+'reinit'
+'run /cpc/home/wd52pp/bin/white.gs'
+'run /cpc/home/wd52pp/bin/rgbset.gs'
+*
+'open /cpc/home/wd52pp/data/attr/wvflx.tn.$season.ctl'
+*
+'set string 1 tc 5'
+'set strsiz 0.15 0.15'
+'draw string 5.5 7.5 200mb PSI Anom & TN Wave Activity Fluxes, $ssyr'
+*---------------------------set dimsnesion, page size and style
+*'define u1=skip(0.2*xflx,2,2)'
+*'define v1=skip(0.2*yflx,2,2)'
+'define u1=0.2*xflx'
+'define v1=0.2*yflx'
+nframe=1
+nframe2=1
+nframe3=1
+xmin0=1.;  xlen=9;  xgap=0.2
+ymax0=8.; ylen=-7;  ygap=-0.65
+*
+iframe=1
+while ( iframe <= nframe )
+  icx=1; if (iframe > nframe2); icx=2; endif
+  if (iframe > nframe3); icx=3; endif
+  xmin=xmin0+(icx-1)*(xlen+xgap)
+  xmax=xmin+xlen
+  icy=iframe; if (iframe > nframe2); icy=iframe-nframe2; endif
+  if (iframe > nframe3); icy=iframe-nframe3; endif
+  ymax=ymax0+(icy-1)*(ylen+ygap)
+  ymin=ymax+ylen
+  tlx=xmin-0.5
+  tly=ymax-2.
+  bx=5.5
+  by=ymin-0.15
+* say xmin; say xmax; say ymin; say ymax
+  'set vpage 0 8.5 0 11'
+  'set parea 'xmin' 'xmax' 'ymin' 'ymax
+*
+'set t 1'
+'set lon 0 360'
+'set lat  -90 90'
+'set yaxis -90 90 30'
+*'set frame off'
+'set grads off'
+*'set grid off'
+'set gxout shaded'
+'set clevs -5 -4. -3. -2. -1 1 2 3 4 5'
+'set ccols   49 47 45 43 41 0 21 23 25 27 29'
+'d 1000000*hdivg(0.2*xflx,0.2*yflx)'
+'set gxout contour'
+'set ccolor 4'
+'d 0.000001*(apsi-ave(apsi,lon=0,lon=360,-b))'
+'set gxout vector'
+*'set arrscl  0.5 100'
+*'set arrowhead 0.05'
+'set ccolor 1'
+'d maskout(u1,sqrt(u1*u1+v1*v1)-1);maskout(v1,sqrt(u1*u1+v1*v1)-1)';
+'run /cpc/home/wd52pp/bin/dline.gs 0 0 360 0'
+'run /cpc/home/wd52pp/bin/dline.gs 180 -90 180 90'
+'set string 1 tl 6 90'
+'set strsiz 0.14 0.14'
+'set string 1 tl 5 0'
+
+iframe=iframe+1
+endwhile
+'run /cpc/home/wd52pp/bin/cbarn2.gs 1. 0 'bx' 'by''
+'print'
+'printim wvflx.$season.png gif x800 y600'
+EOF
+#===========================================
+grads -l <wvplot
+#===========================================
+mv wvflx.$season.png $lcdir

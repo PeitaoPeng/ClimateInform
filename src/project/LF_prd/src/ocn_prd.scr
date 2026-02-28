@@ -1,0 +1,35 @@
+#!/bin/sh
+
+set -eaux
+
+lcdir=/export-6/sgi9/wd52pp/project/LF_prd/src
+tmp=/export-6/sgi9/wd52pp/tmp
+datadir=/export-6/cacsrv1/wd52pp/LF_prd
+#
+longtime=53
+ntprd=22
+imax=128
+jmax=64
+np=1   #3-points runing mean
+#
+/bin/rm $tmp/*.*         
+cp $lcdir/ocn_prd.f $tmp/.
+cd $tmp
+unlimit
+#
+cat > parm.h << eof
+       parameter(ltime=$longtime)
+       parameter(imax=$imax,jmax=$jmax)
+       parameter(ntprd=$ntprd)
+eof
+#
+#
+f77 -o ocn_prd.x ocn_prd.f
+echo "done compiling"
+
+#
+ ln -s $datadir/temp_cams_land.jfm.50-02.i3e      fort.10
+ ln -s $datadir/ocn_prd_temp_cams.jfm.81-02.i3e    fort.20
+ ln -s $datadir/temp_cams_land.jfm.81-02.verify.i3e    fort.30
+#
+ocn_prd.x
