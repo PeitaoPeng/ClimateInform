@@ -1,6 +1,0 @@
-      SUBROUTINE SAVABG(NSAV,A,B,G,N,KLEV)
-      DIMENSION A(N,N),B(N),G(N,N)
-      WRITE(NSAV) KLEV
-      WRITE(NSAV) A,B,G
-      RETURN
-      END

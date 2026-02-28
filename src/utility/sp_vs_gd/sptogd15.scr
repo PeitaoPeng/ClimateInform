@@ -1,7 +1,0 @@
-#!/bin/sh
-set -eaux
-
-f77 spctogrd15.f glats.f genpnme15.f fftgcm.f 
-a.out > out2
-   
-ja -s

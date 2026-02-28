@@ -1,9 +1,0 @@
-#crontab on cpcwork2 is UTC time
-MAILTO=peitao.peng@noaa.gov
-
-### have psi200 ic
-55 12 * * * /cpc/home/wd52pp/project/ca_prd/wk34/opr/realtime.mkdir.sh > /cpc/home/wd52pp/data/wk34_fcst/ca/0log1 2>&1
-57 12 * * * /cpc/home/wd52pp/project/ca_prd/wk34/opr/realtime.have_ic_psi.R1.sh > /cpc/home/wd52pp/data/wk34_fcst/ca/0log1 2>&1 
-00 13 * * * /cpc/home/wd52pp/project/ca_prd/wk34/opr/realtime.ca_w34.sat.sh > /cpc/home/wd52pp/data/wk34_fcst/ca/0log1 2>&1 
-05 13 * * * /cpc/home/wd52pp/project/ca_prd/wk34/opr/realtime.ca_w34.prcp.sh > /cpc/home/wd52pp/data/wk34_fcst/ca/0log1 2>&1 
-10 13 * * * /cpc/home/wd52pp/project/ca_prd/wk34/opr/realtime.ca_w34.z500.sh > /cpc/home/wd52pp/data/wk34_fcst/ca/0log1 2>&1 

@@ -1,7 +1,0 @@
-'open LAND_MASK_LAND-SEA_0.500deg.lnx.ctl'
-'set x 1 720'
-'set y 1 360'
-'set z 1'
-'set gxout fwrite'
-'set fwrite LAND_MASK_LAND-SEA_0.500deg.big'
-'d land'

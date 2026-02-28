@@ -1,1 +1,0 @@
-      parameter(ltime=6)

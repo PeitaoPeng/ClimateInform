@@ -1,7 +1,0 @@
-
-Attached is my "home-made" SSA codes. There are four files in the tar file (ssa.j, ssa.f, recon_ssa.j, recon_ssa.f). With a time series written in direct-access format, I first run ssa.j (ssa.f) to decompose the data, then run recon_ssa.j (recon_ssa.f) to reconstruct each of the modes. The control parameter is "lag", which determines the number of modes. I usually give lag as about 10% of total data size (n). The long-term mean of the time series should be removed before being used as the input
-
-ssa.svd.* use svd decomposition for eof calculation
-ssa.eof.* use EOF decomposition for eof calculation
-
-

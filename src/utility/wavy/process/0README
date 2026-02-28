@@ -1,8 +1,0 @@
-
-1.have_cdas_clim1981-2010.gs: have grid climate of Psfc, DIV, VOR and TMP
-2.have_cdas_jan1981-curr.gs:  have grid data Jan1981-curr
-3.have_monthly_clim.gs or have_seasonal_clim.gs
-4.have_monthly_target.gs or have_seasonal_target.gs
-
-5.p_2_sig.scr for data from pressure levels to sigma levels
-6.grd_2_spec.R15.scr for data from 144x73 to R15 spec

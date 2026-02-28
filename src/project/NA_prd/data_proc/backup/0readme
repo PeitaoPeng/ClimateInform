@@ -1,6 +1,0 @@
-
-get_NMME_hcst_esm_data.scr: have esm for ind model
-anom.CFSv2_CCSM4.scr: anom of the two models
-anom.M1-3.scr: anom of other models
-anom.NMME_esm.scr: anom of NMME
-anom.OBS.scr: anom of verification data
