@@ -1,5 +1,0 @@
-	echo Making Numerical Recipes Demonstration output
-Making Numerical Recipes Demonstration output
-	for distrib in `cat make_list`; do \
-	for resdir in $distrib/demo/results; do \
-	(cd $resdir && /bin/make all "LIBDIR = /recipes/lib"  "FC = f77" "CCKR = cc -cckr" "CCANSI = cc -ansi"  "FFLAGS = -O"  "CFLAGSANSI = -I../include" "CFLAGSKR = -I../include"  "FBIN = ../bin" "CBIN = ../bin" "FLIB = librecipes_f.a"  "CANSILIB = librecipes_c.a" "CKRLIB = librecipes_ckr.a"  "RANLIB = /bin/ar -ts"  "AR = /bin/ar" "ARFLAGS = crv" "SHELL = /bin/sh"); done; done

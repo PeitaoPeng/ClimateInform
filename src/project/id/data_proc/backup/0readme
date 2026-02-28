@@ -1,6 +1,0 @@
-
-NMME_hcst_esm.scr: have esm for ind model
-ind_model_clim_std.scr: ind model clim and std
-NMME_clim_std.scr: have NMME esm and their clim&std
-NMME_prob_fcst.scr: have NMME prob
-OBS_clim_std.vfc_data.scr: have verification data

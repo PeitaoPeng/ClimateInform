@@ -1,8 +1,0 @@
-#! /bin/sh
-#
-pop -e 18 -i DATA.dbl -o TEST -c 3 -p  > OUTPUT.this
-#
-rm TEST.apop TEST.apope TEST.eof TEST.eofc TEST.eofsp TEST.pop TEST.popc \
-   TEST.pope TEST.popsp TEST.var TEST.filt
-#
-exit

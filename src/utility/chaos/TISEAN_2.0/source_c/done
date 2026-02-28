@@ -1,5 +1,0 @@
-makenoise: bug in noiselevel (equidist, %) noise sqrt(2) too small
-mem_spec: aenderung der normierung (*sqrt(length))
-mutual: aenderung der normierung (->standard)
-myfgets: new routine to handle too long input lines
-get_series, get_multi_series: modified due to myfgets
