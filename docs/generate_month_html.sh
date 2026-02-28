@@ -79,7 +79,7 @@ cat >> "$OUTFILE" <<EOF
 
 <section class="variable-section">
     <div class="variable-header">
-	<h2>Sea Surface Temperature (SST)</h2>
+	<h2>Sea Surface Temp (SST)</h2>
         <span class="variable-toggle">Hide</span>
     </div>
 
