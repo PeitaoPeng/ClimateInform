@@ -101,7 +101,8 @@ sed -i "s|<a href=\"pages/forecasts/[0-9]\{4\}.html\">Latest Forecasts</a>|<a hr
 
 echo "Updating website repo..."
 cd $HOME/ClimateInform
-git add .
+#git add .
+git add docs/pages/forecasts/
 git commit -m "Auto-update website for $YEAR" || echo "No changes to commit."
 git push
 
