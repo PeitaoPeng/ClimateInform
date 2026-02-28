@@ -85,7 +85,7 @@ cat >> "$OUTFILE" <<EOF
 
     <div class="variable-body">
 
-    <h3>SST: Forecast & ACC Skill</h3>
+    <h3>Forecast & ACC Skill</h3>
     <div class="forecast-pair-grid">
 EOF
 
