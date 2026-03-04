@@ -99,8 +99,22 @@ sed -i "s|<a href=\"pages/forecasts/[0-9]\{4\}.html\">Latest Forecasts</a>|<a hr
 
 echo "Updating website repo..."
 cd $HOME/ClimateInform
-#git add .
+
+echo "Updating website repo..."
+cd $HOME/ClimateInform
+
+# Always pull BEFORE generating or staging anything
 git pull --rebase
+
+# Stage everything the pipeline generated
+git add -A
+
+# Single commit for all website updates
+git commit -m "Update forecasts for YEAR=$YEAR" || echo "No changes to commit."
+
+# Push once
+git push
+
 git add docs/pages/forecasts/
 git commit -m "Auto-update website for $YEAR" || echo "No changes to commit."
 git push
