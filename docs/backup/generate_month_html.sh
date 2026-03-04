@@ -47,11 +47,11 @@ cat > "$OUTFILE" <<EOF
 <div id="header"></div>
 
 <main>
-<h1>${YEAR}-${MONTH_PAD} Climate Forecast</h1>
-<p>Forecast maps for ${YEAR}-${MONTH_PAD}, organized by variable and lead time.</p>
+<h1>${YEAR}-${MONTH_PAD} Seasonal Climate Forecast</h1>
+<p>Maps are organized by variable and lead time.</p>
 
 <section>
-<h2>Niño3.4 Index Forecast and Skill — <span class="enso-phase">${ENSO_PHASE}</span></h2>
+<h2>Niño3.4 Index Forecast and Skill<span class="enso-phase">${ENSO_PHASE}</span></h2>
 
 <div class="forecast-pair-grid">
     <div class="forecast-pair-row">
@@ -79,13 +79,13 @@ cat >> "$OUTFILE" <<EOF
 
 <section class="variable-section">
     <div class="variable-header">
-        <h2>SST</h2>
+	<h2>Sea Surface Temperature (SST)</h2>
         <span class="variable-toggle">Hide</span>
     </div>
 
     <div class="variable-body">
 
-    <h3>SST: Forecast & ACC Skill</h3>
+    <h3>Forecast & ACC Skill</h3>
     <div class="forecast-pair-grid">
 EOF
 
@@ -123,17 +123,20 @@ VARS="t2m prec"
 ###############################################
 for VAR in $VARS; do
 
+	if [ $VAR = t2m ]; then VARt=Temperature; fi
+	if [ $VAR = prec ]; then VARt=Precipitation; fi
+
 cat >> "$OUTFILE" <<EOF
 
 <section class="variable-section">
     <div class="variable-header">
-        <h2>${VAR}</h2>
+        <h2>${VARt} Forecast</h2>
         <span class="variable-toggle">Hide</span>
     </div>
 
     <div class="variable-body">
 
-    <h3>${VAR}: Deterministic & Probabilistic Forecasts</h3>
+    <h3>Deterministic(Det) & Probabilistic(Prob) Forecasts</h3>
     <div class="forecast-pair-grid">
 EOF
 
@@ -171,7 +174,7 @@ EOF
 
     if $HAS_ACC || $HAS_HSS || $HAS_RPSS; then
 cat >> "$OUTFILE" <<EOF
-    <h3>Skill Maps</h3>
+    <h3>Skill Maps for ${VARt}</h3>
     <div class="skill-matrix">
         <div class="skill-matrix-header">
             <div class="skill-matrix-cell">Lead</div>

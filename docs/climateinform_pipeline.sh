@@ -1,32 +1,30 @@
 #!/bin/bash
 set -euo pipefail
 
-cyr=`date --date='today' '+%Y'`
-mcur=`date --date='today' '+%m'`  # current month
+curyr=`date --date='today' '+%Y'`
+#curmo=`date --date='today' '+%m'`  # current month
 
-#cyr=2026
-#for mcur in 01 02 03 04 05 06 07 08 09 10 11 12; do
-#for mcur in 01 02 03 04 05 06 07 08 09 10 11 12; do
-#for mcur in 02; do
+#curyr=2025
+#for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+#for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+for curmo in 01; do
 #
-if [ $mcur = 01 ]; then icmon=12; icmonc=Dec; fi
-if [ $mcur = 02 ]; then icmon=1;  icmonc=Jan; fi
-if [ $mcur = 03 ]; then icmon=2;  icmonc=Feb; fi
-if [ $mcur = 04 ]; then icmon=3;  icmonc=Mar; fi
-if [ $mcur = 05 ]; then icmon=4;  icmonc=Apr; fi
-if [ $mcur = 06 ]; then icmon=5;  icmonc=May; fi
-if [ $mcur = 07 ]; then icmon=6;  icmonc=Jun; fi
-if [ $mcur = 08 ]; then icmon=7;  icmonc=Jul; fi
-if [ $mcur = 09 ]; then icmon=8;  icmonc=Aug; fi
-if [ $mcur = 10 ]; then icmon=9;  icmonc=Sep; fi
-if [ $mcur = 11 ]; then icmon=10; icmonc=Oct; fi
-if [ $mcur = 12 ]; then icmon=11; icmonc=Nov; fi
+if [ $curmo = 01 ]; then cmon=1; fi
+if [ $curmo = 02 ]; then cmon=2; fi
+if [ $curmo = 03 ]; then cmon=3; fi
+if [ $curmo = 04 ]; then cmon=4; fi
+if [ $curmo = 05 ]; then cmon=5; fi
+if [ $curmo = 06 ]; then cmon=6; fi
+if [ $curmo = 07 ]; then cmon=7; fi
+if [ $curmo = 08 ]; then cmon=8; fi
+if [ $curmo = 09 ]; then cmon=9; fi
+if [ $curmo = 10 ]; then cmon=10; fi
+if [ $curmo = 11 ]; then cmon=11; fi
+if [ $curmo = 12 ]; then cmon=12; fi
 #
-icyr=$cyr
-if [ $icmon = 12 ]; then icyr=`expr $cyr - 1`; fi
+YEAR=$curyr
+MONTH=$cmon
 
-YEAR=$icyr
-MONTH=$icmon
 LOG_DIR="logs"
 mkdir -p "$LOG_DIR"
 LOG_FILE="${LOG_DIR}/pipeline_${YEAR}_$(date +%Y%m%d_%H%M%S).log"
@@ -59,7 +57,7 @@ for MONTH in {1..12}; do
 done
 
 echo "Generating yearly overview page..."
-./docs/generate_year_html.sh "$YEAR"
+./docs/generate_year_html.sh "$YEAR" 
 
 echo "Rebuilding Forecast Archive in index.html..."
 
@@ -102,6 +100,7 @@ sed -i "s|<a href=\"pages/forecasts/[0-9]\{4\}.html\">Latest Forecasts</a>|<a hr
 echo "Updating website repo..."
 cd $HOME/ClimateInform
 #git add .
+git pull --rebase
 git add docs/pages/forecasts/
 git commit -m "Auto-update website for $YEAR" || echo "No changes to commit."
 git push
@@ -115,4 +114,4 @@ git push
 echo "============================================================"
 echo " ClimateInform Pipeline Completed Successfully"
 echo "============================================================"
-#done
+done

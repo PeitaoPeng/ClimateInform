@@ -34,10 +34,10 @@ cat > "$OUTFILE" <<EOF
 
 <main>
     <h1>${YEAR} Climate Forecast Overview</h1>
-    <p>Select an initial month below to view detailed forecast maps.</p>
+    <p>Select an <span style="color: red;"><b>initial</b></span> month below to view detailed forecast maps</p>
 
     <section>
-        <h2>Monthly Forecasts</h2>
+        <h2>Seasonal Forecasts with Input through Following Months</h3>
         <ul>
 EOF
 

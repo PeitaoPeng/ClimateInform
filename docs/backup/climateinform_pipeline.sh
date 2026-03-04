@@ -1,13 +1,13 @@
 #!/bin/bash
 set -euo pipefail
 
-cyr=`date --date='today' '+%Y'`
-mcur=`date --date='today' '+%m'`  # current month
+#cyr=`date --date='today' '+%Y'`
+#mcur=`date --date='today' '+%m'`  # current month
 
-#cyr=2026
+cyr=2026
 #for mcur in 01 02 03 04 05 06 07 08 09 10 11 12; do
 #for mcur in 01 02 03 04 05 06 07 08 09 10 11 12; do
-#for mcur in 02; do
+for mcur in 02; do
 #
 if [ $mcur = 01 ]; then icmon=12; icmonc=Dec; fi
 if [ $mcur = 02 ]; then icmon=1;  icmonc=Jan; fi
@@ -63,24 +63,46 @@ echo "Generating yearly overview page..."
 
 echo "Rebuilding Forecast Archive in index.html..."
 
-ARCHIVE_HTML=""
-for f in $HOME/ClimateInform/docs/pages/forecasts/[0-9][0-9][0-9][0-9].html; do
-    YEAR=$(basename "$f" .html)
-    ARCHIVE_HTML="${ARCHIVE_HTML}    <tr><td><a href=\"pages/forecasts/${YEAR}.html\">${YEAR} Forecasts</a></td></tr>\n"
-done
+awk -v YEAR="$YEAR" '
+  /<!-- ARCHIVE-START -->/ {
+      print;
+      in_block = 1;
+      next;
+  }
 
-awk '
-  /<!-- ARCHIVE-START -->/ { print; print new; skip=1; next }
-  /<!-- ARCHIVE-END -->/   { skip=0 }
-  skip==0 { print }
+  /<!-- ARCHIVE-END -->/ {
+      in_block = 0;
+
+      # Insert newest year first
+      print "    <tr><td><a href=\"pages/forecasts/" YEAR ".html\">" YEAR " Forecasts</a></td></tr>";
+
+      # Insert older years (yearly only, no monthly)
+      cmd = "ls docs/pages/forecasts/[0-9][0-9][0-9][0-9].html 2>/dev/null | sed -E \"s/.*\\/([0-9]{4})\\.html/\\1/\" | sort -r";
+      while ((cmd | getline y) > 0) {
+          if (y != YEAR) {
+              print "    <tr><td><a href=\"pages/forecasts/" y ".html\">" y " Forecasts</a></td></tr>";
+          }
+      }
+      close(cmd);
+
+      print;  # ARCHIVE-END
+      next;
+  }
+
+  # Skip old archive content
+  in_block == 1 { next }
+
+  # Print everything else unchanged
+  { print }
 ' "$REPO_ROOT/docs/index.html" > "$REPO_ROOT/docs/index.tmp" \
-    && mv "$REPO_ROOT/docs/index.tmp" "$REPO_ROOT/docs/index.html"
+  && mv "$REPO_ROOT/docs/index.tmp" "$REPO_ROOT/docs/index.html"
 
 sed -i "s|<a href=\"pages/forecasts/[0-9]\{4\}.html\">Latest Forecasts</a>|<a href=\"pages/forecasts/${YEAR}.html\">Latest Forecasts</a>|" "$REPO_ROOT/docs/index.html"
 
 echo "Updating website repo..."
 cd $HOME/ClimateInform
-git add .
+#git add .
+git add docs/pages/forecasts/
 git commit -m "Auto-update website for $YEAR" || echo "No changes to commit."
 git push
 
@@ -93,4 +115,4 @@ git push
 echo "============================================================"
 echo " ClimateInform Pipeline Completed Successfully"
 echo "============================================================"
-#done
+done
