@@ -1,10 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
-curyr=`date --date='today' '+%Y'`
+#curyr=`date --date='today' '+%Y'`
 #curmo=`date --date='today' '+%m'`  # current month
 
-#curyr=2025
+curyr=2025
 #for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
 #for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
 for curmo in 01; do
