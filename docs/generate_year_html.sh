@@ -36,8 +36,8 @@ cat > "$OUTFILE" <<EOF
     <h1>${YEAR} Climate Forecast Overview</h1>
 
     <section>
-    <h2>Seasonal Forecasts Starting from Following Months</h3>
-    <p>Select a starting month to view detailed forecast maps</p>
+    <h2>Seasonal Forecasts Issued at the Beginning of Each Month</h3>
+    <p>Select a month to view detailed forecast maps</p>
         <ul>
 EOF
 

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>2026-03 Forecast | ClimateInform</title>
+<link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+<div id="header"></div>
+
+<main>
+<h1>2026-03 Seasonal Climate Forecast</h1>
+<p>Maps are organized by variable and lead time.</p>
+
+<section>
+<h2>Niño3.4 Index Forecast and Skill<span class="enso-phase">Neutral ENSO</span></h2>
+
+<div class="forecast-pair-grid">
+    <div class="forecast-pair-row">
+        <div class="forecast-cell">
+            <a href="https://raw.githubusercontent.com/PeitaoPeng/pngs/main/2026/3/nino34_fcst.png" target="_blank">
+                <img src="https://raw.githubusercontent.com/PeitaoPeng/pngs/main/2026/3/nino34_fcst.png" alt="Niño3.4 Forecast">
+            </a>
+            <p>Niño3.4 SST Index Forecast</p>
+        </div>
+        <div class="forecast-cell">
+            <a href="https://raw.githubusercontent.com/PeitaoPeng/pngs/main/2026/3/skill_nino34.png" target="_blank">
+                <img src="https://raw.githubusercontent.com/PeitaoPeng/pngs/main/2026/3/skill_nino34.png" alt="Niño3.4 Skill">
+            </a>
+            <p>Niño3.4 Forecast Skill (ACC)</p>
+        </div>
+    </div>
+</div>
+</section>
+
+<section class="variable-section">
+    <div class="variable-header">
+	<h2>Sea Surface Temperature (SST)</h2>
+        <span class="variable-toggle">Hide</span>
+    </div>
+
+    <div class="variable-body">
+
+    <h3>Forecast & ACC Skill</h3>
+    <div class="forecast-pair-grid">
+    </div> <!-- forecast-pair-grid -->
+    </div> <!-- variable-body -->
+</section>
+
+<section class="variable-section">
+    <div class="variable-header">
+	<h2>Temperature(T2m) Forecast</h2>
+        <span class="variable-toggle">Hide</span>
+    </div>
+
+    <div class="variable-body">
+
+    <h3>Deterministic(Det) & Probabilistic(Prob)</h3>
+
+    <div class="forecast-pair-grid">
+    </div> <!-- forecast-pair-grid -->
+    </div> <!-- variable-body -->
+</section>
+
+
+<section class="variable-section">
+    <div class="variable-header">
+	<h2>Precipitation(Prec) Forecast</h2>
+        <span class="variable-toggle">Hide</span>
+    </div>
+
+    <div class="variable-body">
+
+    <h3>Deterministic(Det) & Probabilistic(Prob)</h3>
+
+    <div class="forecast-pair-grid">
+    </div> <!-- forecast-pair-grid -->
+    </div> <!-- variable-body -->
+</section>
+
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.variable-header').forEach(function (header) {
+        header.addEventListener('click', function () {
+            const body = header.nextElementSibling;
+            const toggle = header.querySelector('.variable-toggle');
+            const hidden = body.style.display === 'none';
+            body.style.display = hidden ? 'block' : 'none';
+            toggle.textContent = hidden ? 'Hide' : 'Show';
+        });
+    });
+});
+</script>
+
+<div id="footer"></div>
+</body>
+</html>
