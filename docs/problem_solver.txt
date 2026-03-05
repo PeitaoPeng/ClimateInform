@@ -1,0 +1,6 @@
+
+cd ~/ClimateInform
+git add docs/climateinform_pipeline.sh docs/upload_pngs.sh
+git commit -m "Fix pipeline scripts"
+git pull --rebase
+

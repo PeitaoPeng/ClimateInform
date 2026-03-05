@@ -5,8 +5,8 @@ set -euo pipefail
 #curmo=`date --date='today' '+%m'`  # current month
 
 curyr=2026
-for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-#for curmo in 01 02; do
+#for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
+for curmo in 01 02; do
 #
 if [ $curmo = 01 ]; then cmon=1; fi
 if [ $curmo = 02 ]; then cmon=2; fi
@@ -39,9 +39,6 @@ echo " Log: $LOG_FILE"
 echo "============================================================"
 
 trap 'echo "[ERROR] Pipeline failed. See log: $LOG_FILE" >&2' ERR
-
-
-# git pull --rebase
 
 if [ -f "./docs/upload_pngs.sh" ]; then
     echo "Running PNG upload script..."
@@ -103,7 +100,7 @@ echo "Updating website repo..."
 cd $HOME/ClimateInform
 
 # Always pull BEFORE generating or staging anything
-  git pull --rebase
+git pull --rebase
 
 # Stage everything the pipeline generated
 git add -A
