@@ -16,8 +16,7 @@ MONTH=$2
 # ===== CONFIGURATION =====
 REPO_SSH="git@github.com:PeitaoPeng/pngs.git"
 LOCAL_DIR="$HOME/tmp/pngs"                     # local clone of pngs repo
-#SOURCE_DATA_DIR="$HOME/ss_fcst/pcr/$YEAR/$MONTH_NOZERO"   # where PNGs live
-SOURCE_DATA_DIR="$HOME/ss_fcst/pcr/$YEAR/$MONTH"   # where PNGs live
+SOURCE_DATA_DIR="$HOME/data/ss_fcst/pcr/$YEAR/$MONTH"   # where PNGs live
 
 echo "============================================================"
 echo " Uploading PNGs for YEAR=$YEAR  MONTH=$MONTH"
