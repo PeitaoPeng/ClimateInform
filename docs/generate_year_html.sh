@@ -37,7 +37,7 @@ cat > "$OUTFILE" <<EOF
 
     <section>
     <h2>Seasonal Forecasts Issued at the Beginning of Each Month</h3>
-    <p>Select a month to view detailed forecast maps</p>
+    <p>Select an issuing month below to view detailed forecast maps</p>
         <ul>
 EOF
 

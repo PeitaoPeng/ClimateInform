@@ -1,6 +1,12 @@
-
+before run 2025:
 cd ~/ClimateInform
 git add docs/climateinform_pipeline.sh docs/upload_pngs.sh
 git commit -m "Fix pipeline scripts"
+git pull --rebase
+
+before run 2026:
+cd ~/ClimateInform
+git add -A
+git commit -m "Add 2026 forecast HTML pages"
 git pull --rebase
 
