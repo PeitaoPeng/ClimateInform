@@ -13,5 +13,6 @@ git commit -m "Add 2026 forecast HTML pages"
 git pull --rebase
 
 echo "============================================================"
-echo " clean working tree completed
+echo " clean working tree completed"
+echo "============================================================"
 

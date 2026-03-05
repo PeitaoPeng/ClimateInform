@@ -13,5 +13,5 @@ git commit -m "Add or update about_us.html"
 git push
 
 echo "============================================================"
-echo " Upload complete
+echo " Upload completed"
 echo "============================================================"
