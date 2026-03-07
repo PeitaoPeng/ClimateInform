@@ -136,9 +136,7 @@ cat >> "$OUTFILE" <<EOF
     </div>
 
     <div class="variable-body">
-
     <h3>Deterministic(Det) & Probabilistic(Prob)</h3>
-
     <div class="forecast-pair-grid">
 EOF
 
@@ -176,7 +174,10 @@ EOF
 
     if $HAS_ACC || $HAS_HSS || $HAS_RPSS; then
 cat >> "$OUTFILE" <<EOF
-    <h3>Skill Maps for ${VARt}(${VARh})</h3>
+    <h3>Skill Maps for ${VARt}(${VARh}) (from cross-validated hinfcasts)</h3>
+    <div class="variable-body">
+    <h3>(from cross-validated hinfcasts)</h3>
+    <div class="forecast-pair-grid">
     <div class="skill-matrix">
         <div class="skill-matrix-header">
             <div class="skill-matrix-cell">Lead</div>
