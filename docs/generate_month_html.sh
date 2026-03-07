@@ -174,7 +174,11 @@ EOF
 
     if $HAS_ACC || $HAS_HSS || $HAS_RPSS; then
 cat >> "$OUTFILE" <<EOF
-    <h2>Skill Maps for ${VARt}(${VARh})</h2>
+<section class="variable-section">
+    <div class="variable-header">
+	<h2>Skill Maps for ${VARt}(${VARh})</h2>
+        <span class="variable-toggle">Hide</span>
+    </div>
 
     <div class="variable-body">
     <h3>based on cross-validated hindcasts</h3>
