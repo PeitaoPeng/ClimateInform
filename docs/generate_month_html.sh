@@ -48,7 +48,7 @@ cat > "$OUTFILE" <<EOF
 <div id="header"></div>
 
 <main>
-<h1>${YEAR}-${MONTH_PAD} Seasonal Climate Forecast</h1>
+<h1>${YEAR}-${MONTH_PAD} Seasonal Climate Forecasts</h1>
 <p>Maps are organized by variable and lead time.</p>
 
 <section>
