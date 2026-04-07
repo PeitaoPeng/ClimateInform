@@ -27,3 +27,9 @@ privileged     	off
 verbose        	off
 vi             	off
 xtrace         	off
+[main 372f128] Add 2026 forecast HTML pages
+ 2 files changed, 29 insertions(+)
+ delete mode 100644 docs/.upload_files.sh.swp
+ create mode 100644 docs/0log1
+error: cannot pull with rebase: You have unstaged changes.
+error: please commit or stash them.
