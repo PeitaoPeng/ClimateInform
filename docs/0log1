@@ -27,7 +27,3 @@ privileged     	off
 verbose        	off
 vi             	off
 xtrace         	off
-[main ca30d58] Add 2026 forecast HTML pages
- 1 file changed, 6 deletions(-)
-error: cannot pull with rebase: You have unstaged changes.
-error: please commit or stash them.
