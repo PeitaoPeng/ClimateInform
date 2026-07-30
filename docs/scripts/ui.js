@@ -75,7 +75,8 @@ function updateMap() {
 
     // Construct filename: variable_maptype.lead.png
     const filename = `${variable}_${maptype}.${lead}.png`;
-    const path = `/pngs/${year}/${month}/${filename}`;
+    const path = `https://raw.githubusercontent.com/PeitaoPeng/pngs/main/${year}/${month}/${filename}`;
+
 
     // Try loading the image
     img.src = path;
