@@ -55,42 +55,47 @@
     <h2 style="color:#003366;">Seasonal Forecasts</h2>
     <p>Select forecast options below to view maps</p>
 
-    <!-- CPC-style control row -->
-    <div class="control-row">
-        <label>Issue Year:</label>
-        <select id="year-select"></select>
+<!-- CPC-style control rows -->
 
-        <label>Issue Month:</label>
-        <select id="month-select"></select>
+<!-- Row 1: Issue Year + Issue Month -->
+<div class="control-row">
+    <label>Issue Year:</label>
+    <select id="year-select"></select>
 
-        <label>Variable:</label>
-        <select id="variable-select">
-            <option value="sst">SST</option>
-            <option value="t2m">Temperature</option>
-            <option value="prec">Precipitation</option>
-        </select>
+    <label>Issue Month:</label>
+    <select id="month-select"></select>
+</div>
 
-        <label>Map Type:</label>
-        <select id="maptype-select">
-            <option value="det">Anomaly</option>
-            <option value="prob">Probability</option>
-            <option value="ACC">Skill(ACC)</option>
-            <option value="HSS">Skill(HSS)</option>
-            <option value="RPSS">Skill(RPSS)</option>
-        </select>
+<!-- Row 2: Variable + Map Type + Lead -->
+<div class="control-row">
+    <label>Variable:</label>
+    <select id="variable-select">
+        <option value="sst">SST</option>
+        <option value="t2m">Temperature</option>
+        <option value="prec">Precipitation</option>
+    </select>
 
-        <label>Lead:</label>
-        <select id="lead-select">
-            <option value="0">Lead 0</option>
-            <option value="1">Lead 1</option>
-            <option value="2">Lead 2</option>
-            <option value="3">Lead 3</option>
-            <option value="4">Lead 4</option>
-            <option value="5">Lead 5</option>
-            <option value="6">Lead 6</option>
-            <option value="7">Lead 7</option>
-        </select>
-    </div>
+    <label>Map Type:</label>
+    <select id="maptype-select">
+        <option value="anom">Anomaly</option>
+        <option value="prob">Probability</option>
+        <option value="ACC">Skill(ACC)</option>
+        <option value="HSS">Skill(HSS)</option>
+        <option value="RPSS">Skill(RPSS)</option>
+    </select>
+
+    <label>Lead:</label>
+    <select id="lead-select">
+        <option value="0">Lead 0</option>
+        <option value="1">Lead 1</option>
+        <option value="2">Lead 2</option>
+        <option value="3">Lead 3</option>
+        <option value="4">Lead 4</option>
+        <option value="5">Lead 5</option>
+        <option value="6">Lead 6</option>
+        <option value="7">Lead 7</option>
+    </select>
+</div>
 
     <!-- Map display -->
     <img id="map-display" src="/assets/placeholder.png" alt="Seasonal Forecast Map">
