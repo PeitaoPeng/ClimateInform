@@ -1,128 +1,150 @@
 #!/bin/bash
 set -euo pipefail
 
-curyr=`date --date='today' '+%Y'`
-curmo=`date --date='today' '+%m'`  # current month
+# ------------------------------------------------------------
+# Dry-run mode: ./climateinform_pipeline.sh --dry
+# ------------------------------------------------------------
+DRYRUN=0
+if [[ "${1:-}" == "--dry" ]]; then
+    DRYRUN=1
+    echo "Running in DRY-RUN mode — no files will be modified."
+fi
 
-#curyr=2025
-#for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
-#for curmo in 01 02; do
-#curmo=01
-#
-if [ $curmo = 01 ]; then cmon=1; fi
-if [ $curmo = 02 ]; then cmon=2; fi
-if [ $curmo = 03 ]; then cmon=3; fi
-if [ $curmo = 04 ]; then cmon=4; fi
-if [ $curmo = 05 ]; then cmon=5; fi
-if [ $curmo = 06 ]; then cmon=6; fi
-if [ $curmo = 07 ]; then cmon=7; fi
-if [ $curmo = 08 ]; then cmon=8; fi
-if [ $curmo = 09 ]; then cmon=9; fi
-if [ $curmo = 10 ]; then cmon=10; fi
-if [ $curmo = 11 ]; then cmon=11; fi
-if [ $curmo = 12 ]; then cmon=12; fi
-#
+run() {
+    if [[ $DRYRUN -eq 1 ]]; then
+        echo "[DRYRUN] $*"
+    else
+        eval "$*"
+    fi
+}
+
+# ------------------------------------------------------------
+# Rollback on failure (atomic pipeline)
+# ------------------------------------------------------------
+rollback() {
+    echo "[ROLLBACK] Restoring last clean state..."
+    git reset --hard HEAD
+    git clean -fd
+    echo "[ROLLBACK] Completed."
+}
+trap rollback ERR
+
+# ------------------------------------------------------------
+# Current year/month
+# ------------------------------------------------------------
+curyr=$(date +%Y)
+curmo=$(date +%m)
+
+case "$curmo" in
+  01) cmon=1 ;;
+  02) cmon=2 ;;
+  03) cmon=3 ;;
+  04) cmon=4 ;;
+  05) cmon=5 ;;
+  06) cmon=6 ;;
+  07) cmon=7 ;;
+  08) cmon=8 ;;
+  09) cmon=9 ;;
+  10) cmon=10 ;;
+  11) cmon=11 ;;
+  12) cmon=12 ;;
+esac
+
 YEAR=$curyr
 MONTH=$cmon
 
-LOG_DIR="logs"
+REPO_ROOT="/home/ppeng/ClimateInform"
+DOCS_ROOT="$REPO_ROOT/docs"
+
+LOG_DIR="$REPO_ROOT/logs"
 mkdir -p "$LOG_DIR"
 LOG_FILE="${LOG_DIR}/pipeline_${YEAR}_$(date +%Y%m%d_%H%M%S).log"
 
-REPO_ROOT="/home/ppeng/ClimateInform"
 cd "$REPO_ROOT"
 
 exec > >(tee -a "$LOG_FILE") 2>&1
 
 echo "============================================================"
-echo " ClimateInform Pipeline Starting for YEAR = $YEAR"
+echo " ClimateInform Pipeline Starting for YEAR = $YEAR, MONTH = $MONTH"
 echo " Log: $LOG_FILE"
 echo "============================================================"
 
-trap 'echo "[ERROR] Pipeline failed. See log: $LOG_FILE" >&2' ERR
+# ------------------------------------------------------------
+# 1. Detect missing PNGs
+# ------------------------------------------------------------
+echo "Checking for missing PNGs..."
 
-if [ -f "./docs/upload_pngs.sh" ]; then
+PNG_DIR="/home/ppeng/data/ss_fcst/pcr/$YEAR/$MONTH"
+
+if [[ -d "$PNG_DIR" ]]; then
+    missing=0
+    for f in "$PNG_DIR"/*.png; do
+        if [[ ! -f "$f" ]]; then
+            echo "WARNING: Missing PNG: $f"
+            missing=1
+        fi
+    done
+
+    if [[ $missing -eq 1 ]]; then
+        echo "WARNING: Some PNGs are missing for $YEAR-$MONTH"
+    else
+        echo "All PNGs present for $YEAR-$MONTH"
+    fi
+else
+    echo "WARNING: PNG directory not found: $PNG_DIR"
+fi
+
+# ------------------------------------------------------------
+# 2. Upload PNGs
+# ------------------------------------------------------------
+if [[ -f "$DOCS_ROOT/upload_pngs.sh" ]]; then
     echo "Running PNG upload script..."
-    ./docs/upload_pngs.sh "$YEAR" "$MONTH"
+    run "$DOCS_ROOT/upload_pngs.sh $YEAR $MONTH"
 else
     echo "WARNING: upload_pngs.sh not found — skipping upload step."
 fi
 
-echo "Generating monthly HTML pages..."
-for MONTH in {1..12}; do
-    if [ -d "/home/ppeng/data/ss_fcst/pcr/$YEAR/$MONTH" ]; then
-        echo " → Generating page for $YEAR-$MONTH"
-        ./docs/generate_month_html.sh "$YEAR" "$MONTH"
+# ------------------------------------------------------------
+# 3. Timestamp updates
+# ------------------------------------------------------------
+timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+
+echo "Updating timestamps..."
+
+run "sed -i \"s|<!--TIMESTAMP-->|Last updated: $timestamp|g\" $DOCS_ROOT/index.html"
+
+for f in "$DOCS_ROOT/pages/forecasts/seasonal.html" \
+         "$DOCS_ROOT/pages/forecasts/monthly.html"; do
+    if [[ -f "$f" ]]; then
+        run "sed -i \"s|<!--UPDATED-->|Updated: $timestamp|g\" \"$f\""
+        echo "Updated timestamp in $(basename "$f")"
+    else
+        echo "WARNING: Missing forecast page: $f"
     fi
 done
 
-echo "Generating yearly overview page..."
-./docs/generate_year_html.sh "$YEAR" 
+# ------------------------------------------------------------
+# 4. Diff summary before commit
+# ------------------------------------------------------------
+echo "============================================================"
+echo " Diff Summary (pre-commit)"
+echo "============================================================"
+git status
+git diff --stat
+echo "============================================================"
 
-echo "Rebuilding Forecast Archive in index.html..."
-
-awk -v YEAR="$YEAR" '
-  /<!-- ARCHIVE-START -->/ {
-      print;
-      in_block = 1;
-      next;
-  }
-
-  /<!-- ARCHIVE-END -->/ {
-      in_block = 0;
-
-      # Insert newest year first
-      print "    <tr><td><a href=\"pages/forecasts/" YEAR ".html\">" YEAR " Forecasts</a></td></tr>";
-
-      # Insert older years (yearly only, no monthly)
-      cmd = "ls docs/pages/forecasts/[0-9][0-9][0-9][0-9].html 2>/dev/null | sed -E \"s/.*\\/([0-9]{4})\\.html/\\1/\" | sort -r";
-      while ((cmd | getline y) > 0) {
-          if (y != YEAR) {
-              print "    <tr><td><a href=\"pages/forecasts/" y ".html\">" y " Forecasts</a></td></tr>";
-          }
-      }
-      close(cmd);
-
-      print;  # ARCHIVE-END
-      next;
-  }
-
-  # Skip old archive content
-  in_block == 1 { next }
-
-  # Print everything else unchanged
-  { print }
-' "$REPO_ROOT/docs/index.html" > "$REPO_ROOT/docs/index.tmp" \
-  && mv "$REPO_ROOT/docs/index.tmp" "$REPO_ROOT/docs/index.html"
-
-sed -i "s|<a href=\"pages/forecasts/[0-9]\{4\}.html\">Latest Forecasts</a>|<a href=\"pages/forecasts/${YEAR}.html\">Latest Forecasts</a>|" "$REPO_ROOT/docs/index.html"
-
+# ------------------------------------------------------------
+# 5. Git workflow
+# ------------------------------------------------------------
 echo "Updating website repo..."
-cd $HOME/ClimateInform
+cd "$REPO_ROOT"
 
-# Always pull BEFORE generating or staging anything
-git pull --rebase
-
-# Stage everything the pipeline generated
-git add -A
-
-# Single commit for all website updates
-git commit -m "Update forecasts for YEAR=$YEAR" || echo "No changes to commit."
-
-# Push once
-git push
-
-git add docs/pages/forecasts/
-git commit -m "Auto-update website for $YEAR" || echo "No changes to commit."
-git push
-
-echo "Updating top-level index.html..."
-cd $HOME/ClimateInform
-git add docs/index.html
-git commit -m "Update index.html" || echo "No changes to commit."
-git push
+run "git pull --rebase"
+run "git add -A"
+run "git commit -m \"Interactive site update for YEAR=$YEAR\" || echo \"No changes to commit.\""
+run "git push"
 
 echo "============================================================"
 echo " ClimateInform Pipeline Completed Successfully"
 echo "============================================================"
-#done
+

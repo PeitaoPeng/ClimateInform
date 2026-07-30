@@ -1,18 +1,24 @@
 #!/bin/bash
-set -euo 
+set -euo pipefail
 
-# ============================================================
-# Clean the working tree before run pipline file
-# Usage:
-#     ./clean_working_tree.sh
-# ============================================================
+echo "============================================================"
+echo " Cleaning ClimateInform Working Tree"
+echo "============================================================"
 
-cd ~/ClimateInform
+cd /home/ppeng/ClimateInform
+
+echo "Staging all modified and untracked files..."
 git add -A
-git commit -m "Add 2026 forecast HTML pages"
-git pull --rebase
+
+echo "Committing..."
+git commit -m "Clean working tree before pipeline run" || echo "No changes to commit."
+
+echo "Pushing..."
+git push
 
 echo "============================================================"
-echo " clean working tree completed"
+echo " Working tree cleaned."
+echo " Current Git status:"
 echo "============================================================"
+git status
 

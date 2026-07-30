@@ -1,349 +1,207 @@
 /* ---------------------------------------------------------
-   ClimateInform — Base Theme
-   Clean, CPC-inspired, readable scientific layout
-   drop directly into: website/css/style.css
+   Global Reset
 ----------------------------------------------------------*/
-
-/* Global reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Body styling */
+/* ---------------------------------------------------------
+   Body
+----------------------------------------------------------*/
 body {
     font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.6;
-    background: #f7f7f7;
+    background: #ffffff;
     color: #222;
-    padding-bottom: 40px;
+    line-height: 1.6;
 }
 
-/* Links */
-a {
-    color: #005ea2;
-    text-decoration: none;
+/* ---------------------------------------------------------
+   Fixed Header
+----------------------------------------------------------*/
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #003366;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 26px;
+    font-weight: 700;
+    border-bottom: 4px solid #0055a5;
+    z-index: 1000;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
-a:hover {
+
+header span {
+    font-size: 18px;
+    font-weight: 400;
+    display: block;
+    margin-top: 6px;
+    color: #cce0ff;
+}
+
+/* ---------------------------------------------------------
+   Scroll Progress Bar
+----------------------------------------------------------*/
+#scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    background-color: #0055a5;
+    width: 0%;
+    z-index: 1002;
+    transition: width 0.25s ease-out;
+}
+
+/* ---------------------------------------------------------
+   Left Navigation Column
+----------------------------------------------------------*/
+#left-nav {
+    width: 200px;
+    float: left;
+    background-color: #f2f2f2;
+    border-right: 1px solid #ccc;
+    padding: 15px;
+    min-height: 100vh;
+    margin-top: 120px; /* below fixed header */
+}
+
+#left-nav table {
+    width: 100%;
+}
+
+#left-nav td {
+    padding: 8px 0;
+}
+
+#left-nav a {
+    color: #003366;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+#left-nav a:hover {
+    text-decoration: underline;
+}
+
+#left-nav strong {
+    color: #003366;
+    font-size: 15px;
+}
+
+/* ---------------------------------------------------------
+   Main Content Area
+----------------------------------------------------------*/
+#main-content {
+    margin-left: 220px; /* space for left nav */
+    padding: 20px;
+    margin-top: 120px; /* space for fixed header */
+}
+
+/* ---------------------------------------------------------
+   Fixed Footer
+----------------------------------------------------------*/
+footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f2f2f2;
+    color: #333;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 14px;
+    border-top: 1px solid #ccc;
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+footer a {
+    color: #003366;
+    text-decoration: none;
+    font-weight: 600;
+    margin: 0 6px;
+}
+
+footer a:hover {
     text-decoration: underline;
 }
 
 /* ---------------------------------------------------------
-   Header
+   Back-to-Top Button
 ----------------------------------------------------------*/
-header {
-    background: #4b2e83; /* Deep CPC-style purple */
-    color: white;
-    padding: 20px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-header .logo img {
-    height: 50px;
-}
-
-nav ul {
-    list-style: none;
-    display: flex;
-    gap: 25px;
-}
-
-nav ul li a {
-    color: white;
-    font-weight: 600;
-    font-size: 1rem;
-}
-nav ul li a:hover {
-    opacity: 0.8;
-}
-
-/* ---------------------------------------------------------
-   Main content
-----------------------------------------------------------*/
-main {
-    max-width: 900px;
-    margin: 40px auto;
-    padding: 0 20px;
-}
-
-main h1 {
-    font-size: 2.2rem;
-    margin-bottom: 20px;
-    color: #333;
-}
-
-main h2 {
-    font-size: 1.6rem;
-    margin-top: 30px;
-    margin-bottom: 10px;
-    color: #444;
-}
-
-main p {
-    margin-bottom: 15px;
-    font-size: 1.05rem;
-}
-
-/* Section blocks */
-section {
-    background: white;
-    padding: 20px;
-    margin: 25px 0;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-}
-
-/* Lists */
-ul {
-    margin-left: 20px;
-    margin-top: 10px;
-}
-ul li {
-    margin-bottom: 8px;
-}
-
-/* ---------------------------------------------------------
-   Footer
-----------------------------------------------------------*/
-footer {
-    background: #4b2e83;
-    color: white;
-    text-align: center;
-    padding: 15px 0;
-    margin-top: 40px;
-    font-size: 0.9rem;
-}
-
-/* ---------------------------------------------------------
-   Responsive layout
-----------------------------------------------------------*/
-@media (max-width: 700px) {
-    header {
-        flex-direction: column;
-        text-align: center;
-        gap: 15px;
-    }
-
-    nav ul {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    main {
-        padding: 0 15px;
-    }
-}
-
-/* ---------------------------------------------------------
-   Forecast Gallery Layout
-   make it more fancy
-----------------------------------------------------------*/
-
-.gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
-    margin-top: 20px;
-}
-
-.gallery-item {
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 15px;
-    text-align: center;
-}
-
-.gallery-item img {
-    width: 100%;
-    height: auto;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-}
-
-.gallery-item p {
-    margin-top: 10px;
-    font-size: 0.95rem;
-    color: #444;
-}
-
-/* Three-panel skill map layout */
-.skill-three {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-    margin-top: 20px;
-}
-
-.skill-three a {
-    text-align: center;
-    text-decoration: none;
-    color: #333;
-}
-
-.skill-three img {
-    width: 100%;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    transition: transform 0.2s ease-in-out;
-}
-
-.skill-three img:hover {
-    transform: scale(1.03);
-}
-
-.skill-three p {
-    margin-top: 8px;
-    font-size: 0.95rem;
-}
-
-@media (max-width: 900px) {
-    .skill-three {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Collapsible variable sections */
-.variable-section {
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 12px 16px;
-    margin-bottom: 28px;
-}
-
-.variable-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-}
-
-.variable-header h2 {
-    margin: 0;
-}
-
-.variable-toggle {
-    font-size: 0.9rem;
-    color: #0077cc;
-}
-
-/* Lead slider */
-.lead-slider {
-    margin: 12px 0 20px 0;
-}
-
-.lead-slider label {
-    font-size: 0.9rem;
-    margin-right: 10px;
-}
-
-/* Three-panel skill map layout */
-.skill-three {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
-    margin-top: 20px;
-}
-
-.skill-three a {
-    text-align: center;
-    text-decoration: none;
-    color: #333;
-}
-
-.skill-three img {
-    width: 100%;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    transition: transform 0.2s ease-in-out;
-}
-
-.skill-three img:hover {
-    transform: scale(1.03);
-}
-
-.skill-three p {
-    margin-top: 8px;
-    font-size: 0.95rem;
-}
-
-@media (max-width: 900px) {
-    .skill-three {
-        grid-template-columns: 1fr;
-    }
-}
-
-.enso-phase {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    margin-left: 8px;
+#back-to-top {
+    position: fixed;
+    bottom: 70px;
+    right: 25px;
+    background-color: #003366;
     color: #fff;
-}
-.enso-warm { background: #d9534f; }
-.enso-cold { background: #337ab7; }
-.enso-neutral { background: #5cb85c; }
-
-.forecast-pair-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.forecast-pair-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-.forecast-cell img {
-    width: 100%;
-    max-width: 350px;   /* controls thumbnail size */
-    height: auto;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    border: none;
+    border-radius: 50%;
+    width: 42px;
+    height: 42px;
+    font-size: 22px;
     cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+    z-index: 1001;
 }
 
-.forecast-cell p {
-    text-align: center;
-    font-size: 0.9rem;
-    margin-top: 4px;
+#back-to-top.visible {
+    opacity: 1;
 }
 
-.skill-matrix {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 12px;
+/* ---------------------------------------------------------
+   Responsive Adjustments
+----------------------------------------------------------*/
+@media (max-width: 768px) {
+    header {
+        font-size: 20px;
+        padding: 16px 0;
+    }
+
+    header span {
+        font-size: 15px;
+    }
+
+    #left-nav {
+        width: 160px;
+    }
+
+    #main-content {
+        margin-left: 180px;
+        margin-top: 100px;
+    }
+
+    footer {
+        font-size: 12px;
+        padding: 8px 0;
+    }
 }
 
-.skill-matrix-header,
-.skill-matrix-row {
-    display: grid;
-    grid-template-columns: 0.6fr 1fr 1fr 1fr; /* Lead | ACC | HSS | RPSS */
-    gap: 8px;
-    align-items: center;
-}
+@media (max-width: 480px) {
+    #left-nav {
+        width: 140px;
+    }
 
-.skill-matrix-cell {
-    text-align: center;
-}
+    #main-content {
+        margin-left: 160px;
+        margin-top: 90px;
+    }
 
-.skill-matrix-header .skill-matrix-cell {
-    font-weight: bold;
-}
+    header {
+        font-size: 18px;
+        padding: 14px 0;
+    }
 
-.skill-matrix img {
-    width: 100%;
-    max-width: 220px;
-    height: auto;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    header span {
+        font-size: 14px;
+    }
 }
 

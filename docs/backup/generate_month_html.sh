@@ -3,6 +3,7 @@ set -euo pipefail
 
 YEAR="$1"
 MONTH="$2"
+
 MONTH_PAD=$(printf "%02d" "$MONTH")
 
 PNG_ROOT="/home/ppeng/data/ss_fcst/pcr"
@@ -47,7 +48,7 @@ cat > "$OUTFILE" <<EOF
 <div id="header"></div>
 
 <main>
-<h1>${YEAR}-${MONTH_PAD} Seasonal Climate Forecast</h1>
+<h1>${YEAR}-${MONTH_PAD} Seasonal Climate Forecasts</h1>
 <p>Maps are organized by variable and lead time.</p>
 
 <section>
@@ -123,20 +124,19 @@ VARS="t2m prec"
 ###############################################
 for VAR in $VARS; do
 
-	if [ $VAR = t2m ]; then VARt=Temperature; fi
-	if [ $VAR = prec ]; then VARt=Precipitation; fi
+	if [ $VAR = t2m ]; then VARt=Temperature; VARh=T2m; fi
+	if [ $VAR = prec ]; then VARt=Precipitation; VARh=Prec; fi
 
 cat >> "$OUTFILE" <<EOF
 
 <section class="variable-section">
     <div class="variable-header">
-        <h2>${VARt} Forecast</h2>
+	<h2>${VARt}(${VARh}) Forecast</h2>
         <span class="variable-toggle">Hide</span>
     </div>
 
     <div class="variable-body">
-
-    <h3>Deterministic(Det) & Probabilistic(Prob) Forecasts</h3>
+    <h3>Deterministic(Det) & Probabilistic(Prob)</h3>
     <div class="forecast-pair-grid">
 EOF
 
@@ -174,7 +174,16 @@ EOF
 
     if $HAS_ACC || $HAS_HSS || $HAS_RPSS; then
 cat >> "$OUTFILE" <<EOF
-    <h3>Skill Maps for ${VARt}</h3>
+<section class="variable-section">
+    <div class="variable-header">
+	<h2>Skill Maps for ${VARt}(${VARh})</h2>
+        <span class="variable-toggle">Hide</span>
+    </div>
+
+    <div class="variable-body">
+    <h3>based on cross-validated hindcasts</h3>
+    <div class="forecast-pair-grid">
+
     <div class="skill-matrix">
         <div class="skill-matrix-header">
             <div class="skill-matrix-cell">Lead</div>

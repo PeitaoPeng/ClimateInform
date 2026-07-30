@@ -34,10 +34,10 @@ cat > "$OUTFILE" <<EOF
 
 <main>
     <h1>${YEAR} Climate Forecast Overview</h1>
-    <p>Select an <span style="color: red;"><b>initial</b></span> month below to view detailed forecast maps</p>
 
     <section>
-        <h2>Seasonal Forecasts with Input through Following Months</h3>
+    <h2>Seasonal Forecasts Issued at the Beginning of Each Month</h3>
+    <p>Select an issuing month below to view detailed forecast maps</p>
         <ul>
 EOF
 
@@ -45,7 +45,7 @@ EOF
 # MONTH LINKS (safe, no stdout captured)
 ###############################################
 for M in $MONTHS; do
-    MONTH_PAD=$(printf "%02d" "$M")
+     MONTH_PAD=$(printf "%02d" "$M")
 cat >> "$OUTFILE" <<EOF
             <li><a href="${YEAR}-${MONTH_PAD}.html">${YEAR}-${MONTH_PAD}</a></li>
 EOF

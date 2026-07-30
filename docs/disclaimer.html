@@ -1,18 +1,84 @@
-<HTML>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Disclaimer – ClimateInform</title>
 
-	<div class="disclaimer" style="
-    width: 70%;
-    margin: 20px auto;
-    padding: 15px;
-    border: 1px solid #999;
-    background-color: #f7f7f7;
-    font-family: Arial, sans-serif;
-    font-size: 18px;
-    line-height: 1.5;
-">
-<div style="font-size: 28px; font-weight: bold; margin-bottom: 12px;">
-  <b><span style="color: blue;">Disclaimer</span></b><br<br>
-</div>
-  <span style="color: brown;">ClimateInform Corp.</span> provides real-time and short-term climate forecast information for public use. These forecasts are generated using the best available data and scientific methods; however, past forecast skill does not guarantee future performance. We acknowledge NOAA for providing the timely and publicly available environmental data that support these forecast products. All products and information on this website are offered "as is," without any expressed or implied warranties. Users are solely responsible for how they interpret and apply the information provided. <span style="color: brown;">ClimateInform Corp.</span>  assumes no liability for any decisions, actions, or outcomes resulting from the use of its forecasts or products.
-</div>
+    <!-- Shared stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Shared UI JavaScript -->
+    <script src="scripts/ui.js" defer></script>
+</head>
+
+<body>
+
+    <!-- Fixed Header -->
+    <header>
+        ClimateInform
+        <span>Disclaimer</span>
+    </header>
+
+    <!-- Scroll Progress Bar -->
+    <div id="scroll-progress"></div>
+
+    <!-- Left Navigation Column -->
+    <div id="left-nav">
+        <table>
+            <tr><td><a href="about_us.html">About Us</a></td></tr>
+            <tr><td><a href="disclaimer.html">Disclaimer</a></td></tr>
+
+            <tr><td><strong>Forecasts</strong></td></tr>
+            <tr><td><a href="pages/forecasts/seasonal.html">Seasonal Forecast</a></td></tr>
+            <tr><td><a href="pages/forecasts/monthly.html">Monthly Forecast</a></td></tr>
+
+            <tr><td><a href="contact.html">Contact</a></td></tr>
+        </table>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content">
+
+        <h2 style="color:#003366; margin-bottom: 15px;">Disclaimer</h2>
+
+        <p>
+            ClimateInform.com provides short‑term climate forecast information for public use.
+            These forecasts are generated using the best available data and scientific methods;
+            however, <strong>past forecast skill does not guarantee future performance</strong>.
+        </p>
+
+        <p style="margin-top: 15px;">
+            All products and information on this website are offered “as is,” without any expressed
+            or implied warranties. Users are solely responsible for how they interpret and apply
+            the information provided.
+        </p>
+
+        <p style="margin-top: 15px;">
+            ClimateInform.com assumes no liability for any decisions, actions, or outcomes resulting
+            from the use of its forecasts or products.
+        </p>
+
+        <hr style="margin: 25px 0;">
+
+        <p>
+            If you have questions about this disclaimer or suggestions for improvement,
+            please contact us at:
+            <a href="mailto:contact@ClimateInform.com"><b>contact@ClimateInform.com</b></a>
+        </p>
+
+    </div>
+
+    <!-- Fixed Footer -->
+    <footer>
+        © 2026 ClimateInform Corp |
+        <a href="disclaimer.html">Disclaimer</a> |
+        <a href="contact.html">Contact</a> |
+        <a href="about_us.html">About Us</a>
+    </footer>
+
+    <!-- Back-to-Top Button -->
+    <button id="back-to-top" title="Back to Top">↑</button>
+
+</body>
+</html>
 
