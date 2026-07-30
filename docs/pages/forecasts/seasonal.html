@@ -2,95 +2,110 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>ClimateInform Seasonal Forecasts</title>
+    <title>Seasonal Forecasts | ClimateInform</title>
 
-    <!-- Link to shared stylesheet -->
-    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/scripts/ui.js" defer></script>
 
-    <!-- Link to shared UI JavaScript -->
-    <script src="../../scripts/ui.js" defer></script>
+    <style>
+        .control-row {
+            margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+        }
+        select {
+            padding: 6px;
+            font-size: 15px;
+        }
+        #map-display {
+            width: 100%;
+            max-width: 900px;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- Fixed Header -->
-    <header>
-        ClimateInform Seasonal Forecasts
-        <span>Forecasts and Verification</span>
-    </header>
+<header>
+    ClimateInform Seasonal Forecasts
+    <span>Interactive CPC‑Style Viewer</span>
+</header>
 
-    <!-- Scroll Progress Bar -->
-    <div id="scroll-progress"></div>
+<div id="scroll-progress"></div>
 
-    <!-- Left Navigation Column -->
-    <div id="left-nav">
-        <table>
-            <tr><td><a href="../../about_us.html">About Us</a></td></tr>
-            <tr><td><a href="../../disclaimer.html">Disclaimer</a></td></tr>
+<div id="left-nav">
+    <table>
+        <tr><td><a href="/about_us.html">About Us</a></td></tr>
+        <tr><td><a href="/disclaimer.html">Disclaimer</a></td></tr>
 
-            <tr><td><strong>Forecasts</strong></td></tr>
-            <tr><td><a href="seasonal.html">Seasonal Forecast</a></td></tr>
-            <tr><td><a href="monthly.html">Monthly Forecast</a></td></tr>
+        <tr><td><strong>Forecasts</strong></td></tr>
+        <tr><td><a href="/pages/forecasts/seasonal.html">Seasonal Forecast</a></td></tr>
+        <tr><td><a href="/pages/forecasts/monthly.html">Monthly Forecast</a></td></tr>
 
-            <tr><td><a href="../../contact.html">Contact</a></td></tr>
-        </table>
+        <tr><td><a href="/contact.html">Contact</a></td></tr>
+    </table>
+</div>
+
+<div id="main-content">
+
+    <h2 style="color:#003366;">Seasonal Forecasts</h2>
+    <p>Select forecast options below to view maps.</p>
+
+    <!-- CPC-style control row -->
+    <div class="control-row">
+        <label>Year:</label>
+        <select id="year-select"></select>
+
+        <label>Month:</label>
+        <select id="month-select"></select>
+
+        <label>Variable:</label>
+        <select id="variable-select">
+            <option value="sst">SST</option>
+            <option value="t2m">Temperature</option>
+            <option value="prec">Precipitation</option>
+        </select>
+
+        <label>Map Type:</label>
+        <select id="maptype-select">
+            <option value="anom">Anomaly</option>
+            <option value="ACC">ACC</option>
+            <option value="HSS">HSS</option>
+            <option value="RPSS">RPSS</option>
+            <option value="prob">Probability</option>
+            <option value="det">Deterministic</option>
+        </select>
+
+        <label>Lead:</label>
+        <select id="lead-select">
+            <option value="0">Lead 0</option>
+            <option value="1">Lead 1</option>
+            <option value="2">Lead 2</option>
+            <option value="3">Lead 3</option>
+            <option value="4">Lead 4</option>
+            <option value="5">Lead 5</option>
+            <option value="6">Lead 6</option>
+            <option value="7">Lead 7</option>
+        </select>
     </div>
 
-    <!-- Main Content -->
-    <div id="main-content">
+    <!-- Map display -->
+    <img id="map-display" src="/assets/placeholder.png" alt="Seasonal Forecast Map">
 
-        <h2 style="color:#003366; margin-bottom: 15px;">Seasonal Forecasts</h2>
+</div>
 
-        <p>
-            ClimateInform provides seasonal forecasts based on advanced statistical and dynamical models.
-            Below you will find the latest seasonal outlooks, Nino3.4 predictions, and verification maps.
-        </p>
+<footer>
+    © 2026 ClimateInform Corp |
+    <a href="/disclaimer.html">Disclaimer</a> |
+    <a href="/contact.html">Contact</a> |
+    <a href="/about_us.html">About Us</a>
+</footer>
 
-        <hr style="margin: 20px 0;">
-
-        <!-- Seasonal Forecast Maps Section -->
-        <h3 style="color:#003366;">Seasonal Outlook Maps</h3>
-        <p>Latest seasonal forecast maps will appear here.</p>
-
-        <div style="margin: 20px 0;">
-            <!-- Placeholder for your seasonal maps -->
-            <img src="placeholder_map.png" alt="Seasonal Forecast Map" style="width:80%; border:1px solid #ccc;">
-        </div>
-
-        <hr style="margin: 20px 0;">
-
-        <!-- Nino3.4 Section -->
-        <h3 style="color:#003366;">Nino3.4 Predictions</h3>
-        <p>Latest Nino3.4 SST anomaly forecasts.</p>
-
-        <div style="margin: 20px 0;">
-            <!-- Placeholder for Nino3.4 plot -->
-            <img src="placeholder_nino34.png" alt="Nino3.4 Forecast" style="width:80%; border:1px solid #ccc;">
-        </div>
-
-        <hr style="margin: 20px 0;">
-
-        <!-- Verification Section -->
-        <h3 style="color:#003366;">Forecast Verification</h3>
-        <p>Skill maps and verification statistics will appear here.</p>
-
-        <div style="margin: 20px 0;">
-            <!-- Placeholder for verification map -->
-            <img src="placeholder_verification.png" alt="Verification Map" style="width:80%; border:1px solid #ccc;">
-        </div>
-
-    </div>
-
-    <!-- Fixed Footer -->
-    <footer>
-        © 2026 ClimateInform Corp |
-        <a href="../../disclaimer.html">Disclaimer</a> |
-        <a href="../../contact.html">Contact</a> |
-        <a href="../../about_us.html">About Us</a>
-    </footer>
-
-    <!-- Back-to-Top Button -->
-    <button id="back-to-top" title="Back to Top">↑</button>
+<button id="back-to-top" title="Back to Top">↑</button>
 
 </body>
 </html>
