@@ -97,6 +97,22 @@ fi
 # ------------------------------------------------------------
 # 2. Upload PNGs
 # ------------------------------------------------------------
+# ------------------------------------------------------------
+# Ensure /home/ppeng/pngs is a valid git repo
+# ------------------------------------------------------------
+PNG_REPO="/home/ppeng/pngs"
+
+echo "Checking PNG repo at $PNG_REPO..."
+
+if [[ ! -d "$PNG_REPO/.git" ]]; then
+    echo "PNG repo missing or not a git repository. Recreating..."
+    rm -rf "$PNG_REPO"
+    git clone https://github.com/PeitaoPeng/pngs.git "$PNG_REPO"
+    echo "PNG repo cloned successfully."
+else
+    echo "PNG repo exists and is a valid git repository."
+fi
+
 if [[ -f "$DOCS_ROOT/upload_pngs.sh" ]]; then
     echo "Running PNG upload script..."
     run "$DOCS_ROOT/upload_pngs.sh $YEAR $MONTH"
