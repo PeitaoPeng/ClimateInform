@@ -221,28 +221,22 @@ footer a:hover {
 </style>
 
 <style>
+.nino-wrapper {
+    max-width: 900px;     /* keeps the three images close */
+    margin: 0 auto;       /* centers the block */
+    display: block;       /* critical */
+}
+
 .nino-row {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    gap: 6px;
+    gap: 6px;             /* tight spacing */
     margin-top: 20px;
 }
 
 .nino-panel {
-    max-width: 280px;   /* ⭐ critical: stops stretching */
-    width: 100%;        /* allow responsive scaling */
-    height: auto;
-}
-
-.nino-panel {
-    width: 30%;
-    min-width: 260px;
-}
-
-.nino-panel {
-    width: 30%;             /* ⭐ real width that matches your PNGs */
-    min-width: 260px;       /* ⭐ prevents forced spacing */
+    max-width: 280px;     /* prevents stretching */
+    width: 100%;          /* responsive */
     height: auto;
 }
 </style>

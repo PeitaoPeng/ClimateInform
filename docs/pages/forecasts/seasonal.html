@@ -26,19 +26,33 @@
         margin-top: 20px;
     }
 
-    .nino-row {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: flex-start;
-        gap: 20px;
-        margin-top: 20px;
-    }
-    .nino-panel {
-        width: 48%;
-        min-width: 400px;
-    }
+    <style>
+
+    .nino-wrapper {
+    max-width: 900px;     /* ⭐ keeps the three images close */
+    margin: 0 auto;       /* ⭐ centers the whole block */
+}
+
+.nino-row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+}
+
+.nino-panel {
+    width: 30%;
+    height: auto;
+}
 </style>
+
+<div class="nino-wrapper">
+    <div class="nino-row">
+        <img class="nino-panel" id="nino_fcst_img">
+        <img class="nino-panel" id="nino_prob_img">
+        <img class="nino-panel" id="nino_skill_img">
+    </div>
+</div>
+
 
 </head>
 
@@ -96,26 +110,20 @@
   <h3 style="text-align:left;">NINO3.4 Index Forecasts</h3>
   <p><span class="lightblue">Click the plots to enlarge</span></p>
 
-  <div class="nino-row">
+  <div class="nino-wrapper">
+    <div class="nino-row">
+        <a id="nino_fcst_link" target="_blank">
+            <img class="nino-panel" id="nino_fcst_img">
+        </a>
 
-    <a id="nino_fcst_link" target="_blank">
-        <img id="nino_fcst_img"
-             class="nino-panel"
-             alt="NINO3.4 Forecast">
-    </a>
+        <a id="nino_prob_link" target="_blank">
+            <img class="nino-panel" id="nino_prob_img">
+        </a>
 
-    <a id="nino_prob_link" target="_blank">
-        <img id="nino_prob_img"
-             class="nino-panel"
-             alt="NINO3.4 Probabilistic Forecast">
-    </a>
-
-    <a id="nino_skill_link" target="_blank">
-        <img id="nino_skill_img"
-             class="nino-panel"
-             alt="NINO3.4 Skill">
-    </a>
-
+        <a id="nino_skill_link" target="_blank">
+            <img class="nino-panel" id="nino_skill_img">
+        </a>
+    </div>
 </div>
 
 </section>
