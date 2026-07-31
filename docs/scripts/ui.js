@@ -58,6 +58,7 @@ function populateYearMonth() {
 }
 
 // ⭐ NEW: NINO3.4 loader (parallel to map loader)
+//
 function updateNino34() {
     const year = document.getElementById("year-select").value;
     const month = document.getElementById("month-select").value;
@@ -65,11 +66,20 @@ function updateNino34() {
     const base = "https://raw.githubusercontent.com/PeitaoPeng/pngs/main";
     const path = `${base}/${year}/${month}`;
 
-    const fcst = document.getElementById("nino34-fcst");
-    const skill = document.getElementById("nino34-skill");
+    const fcstImg  = document.getElementById("nino34-fcst");
+    const skillImg = document.getElementById("nino34-skill");
 
-    if (fcst) fcst.src = `${path}/nino34_fcst.png`;
-    if (skill) skill.src = `${path}/nino34_skill.png`;
+    const fcstLink  = document.getElementById("nino34-fcst-link");
+    const skillLink = document.getElementById("nino34-skill-link");
+
+    const fcstURL  = `${path}/nino34_fcst.png`;
+    const skillURL = `${path}/nino34_skill.png`;
+
+    if (fcstImg)  fcstImg.src  = fcstURL;
+    if (skillImg) skillImg.src = skillURL;
+
+    if (fcstLink)  fcstLink.href  = fcstURL;
+    if (skillLink) skillLink.href = skillURL;
 }
 
 function updateMap() {
@@ -122,4 +132,3 @@ document.addEventListener("DOMContentLoaded", () => {
     // ⭐ Load first map + NINO3.4 automatically
     setTimeout(updateMap, 100);
 });
-
