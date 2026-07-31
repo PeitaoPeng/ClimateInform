@@ -66,17 +66,19 @@ function updateNino34() {
     const base = "https://raw.githubusercontent.com/PeitaoPeng/pngs/main";
     const path = `${base}/${year}/${month}`;
 
-    const fcstImg  = document.getElementById("nino34-fcst");
-    const skillImg = document.getElementById("nino34-skill");
-
-    const fcstLink  = document.getElementById("nino34-fcst-link");
-    const skillLink = document.getElementById("nino34-skill-link");
-
     const fcstURL  = `${path}/nino34_fcst.png`;
     const skillURL = `${path}/nino34_skill.png`;
 
+    // Images
+    const fcstImg  = document.getElementById("nino34-fcst");
+    const skillImg = document.getElementById("nino34-skill");
+
     if (fcstImg)  fcstImg.src  = fcstURL;
     if (skillImg) skillImg.src = skillURL;
+
+    // Click-to-enlarge links
+    const fcstLink  = document.getElementById("nino34-fcst-link");
+    const skillLink = document.getElementById("nino34-skill-link");
 
     if (fcstLink)  fcstLink.href  = fcstURL;
     if (skillLink) skillLink.href = skillURL;
