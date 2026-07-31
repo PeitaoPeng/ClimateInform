@@ -93,6 +93,15 @@ function attachListeners() {
     });
 }
 
+function loadNino34(year, month) {
+    const base = "https://raw.githubusercontent.com/PeitaoPeng/pngs/main";
+
+    const path = `${base}/${year}/${month}`;
+
+    document.getElementById("nino34-fcst").src = `${path}/nino34_fcst.png`;
+    document.getElementById("nino34-skill").src = `${path}/nino34_skill.png`;
+}
+
 // ---------------------------------------------------------
 // Initialize interactive forecast pages
 // ---------------------------------------------------------
