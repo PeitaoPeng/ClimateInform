@@ -224,12 +224,12 @@ footer a:hover {
     display: flex;
     flex-direction: row;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
 }
 
 .nino-panel {
     width: 20%;
-    min-width: 220px; 
+    min-width: 150px; 
 }
 
 </style>
