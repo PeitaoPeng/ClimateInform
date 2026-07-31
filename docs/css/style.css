@@ -223,15 +223,15 @@ footer a:hover {
 <style>
 .nino-row {
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap;        /* allows clean wrapping */
     justify-content: center;
-    gap: 8px;
+    gap: 6px;               /* tighter spacing */
+    margin-top: 20px;
 }
 
 .nino-panel {
-    width: 20%;
-    min-width: 50px; 
+    flex: 1 1 260px;        /* natural width, minimum 260px */
+    max-width: 30%;         /* three images fit tightly */
 }
-
 </style>
 
