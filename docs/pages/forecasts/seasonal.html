@@ -66,16 +66,17 @@
 </div>
 
 <!-- NINO3.4 Display Section -->
-<section id="nino34-display">
-  <h3>NINO3.4 Index Forecast</h3>
+<section id="nino34-display" style="margin-top:20px;">
+  <h3 style="text-align:center;">NINO3.4 Index Forecast</h3>
 
-  <div class="nino34-buttons">
-    <button id="nino34-plot-btn">View NINO34</button>
-  </div>
+  <div id="nino34-plots" style="display:flex; justify-content:center; gap:20px; margin-top:10px;">
+    <a href="nino34_fcst.png" target="_blank">
+      <img src="nino34_fcst.png" width="400" alt="NINO3.4 Forecast">
+    </a>
 
-  <div id="nino34-content" style="display:none;">
-    <img src="/plots/nino34_fcst.png" alt="NINO3.4 Forecast">
-    <img src="/plots/nino34_skill.png" alt="NINO3.4 Skill">
+    <a href="skill_nino34.png" target="_blank">
+      <img src="skill_nino34.png" width="400" alt="NINO3.4 Forecast Skill">
+    </a>
   </div>
 </section>
 
