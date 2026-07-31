@@ -102,6 +102,7 @@ header span {
     padding: 20px;
     margin-top: 120px;
     padding-bottom: 120px;   /* ⭐ prevents footer from blocking map */
+    padding-left: 0px; 
 }
 
 /* ---------------------------------------------------------
