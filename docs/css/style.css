@@ -205,3 +205,17 @@ footer a:hover {
     }
 }
 
+<style>
+.left-column {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 10px;
+}
+
+.lightblue {
+    color: #66ccff;
+    font-weight: 500;
+}
+</style>
+
