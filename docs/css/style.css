@@ -219,3 +219,18 @@ footer a:hover {
 }
 </style>
 
+<style>
+  .nino-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  .nino-panel {
+    width: 48%;
+    min-width: 400px;
+  }
+</style>
+

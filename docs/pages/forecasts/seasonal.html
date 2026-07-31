@@ -78,24 +78,14 @@
 </div>
 
 <!-- NINO3.4 Display Section -->
-<section id="nino34-display" style="margin-top:20px;">
+<section id="nino34-display">
+  <h3 style="text-align:center;">NINO3.4 Index Forecasts</h3>
+  <p><span class="lightblue">Click the plots to enlarge</span></p>
 
-<h3>NINO3.4 Index</h3>
-
-<div class="left-column">
-
-    <p><span class="lightblue">Click the plots to enlarge</span></p>
-
-    <a id="nino34-fcst-link" target="_blank">
-        <img id="nino34-fcst" width="400" alt="NINO3.4 Forecast Lines" style="margin-bottom: 10px;">
-    </a>
-
-    <a id="nino34-skill-link" target="_blank">
-        <img id="nino34-skill" width="400" alt="NINO3.4 Forecast Skill">
-    </a>
-
-</div>
-
+  <div class="nino-row">
+    <div id="nino34-plot1" class="nino-panel"></div>
+    <div id="nino34-plot2" class="nino-panel"></div>
+  </div>
 </section>
 
 <!-- Row 2: Variable + Map Type + Lead -->
@@ -146,6 +136,13 @@
 </footer>
 
 <button id="back-to-top" title="Back to Top">↑</button>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<script>
+  Plotly.newPlot("nino34-plot1", data1, layout1);
+  Plotly.newPlot("nino34-plot2", data2, layout2);
+</script>
 
 </body>
 </html>
