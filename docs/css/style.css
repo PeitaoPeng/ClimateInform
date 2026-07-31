@@ -229,8 +229,8 @@ footer a:hover {
 
 .nino-row {
     display: flex;
-    justify-content: center;
-    gap: 6px;             /* tight spacing */
+    justify-content: flex-start;   /* ⭐ left-align the plots */
+    gap: 6px;
     margin-top: 20px;
 }
 
