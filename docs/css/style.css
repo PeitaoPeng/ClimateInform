@@ -98,7 +98,7 @@ header span {
    Main Content Area
 ----------------------------------------------------------*/
 #main-content {
-    margin-left: 220px;
+    margin-left: 160px;
     padding: 20px;
     margin-top: 120px;
     padding-bottom: 120px;   /* ⭐ prevents footer from blocking map */
@@ -223,11 +223,14 @@ footer a:hover {
 <style>
 .nino-row {
     display: flex;
-    flex-wrap: nowrap;      /* ⭐ keep all 3 on one line */
+    flex-wrap: nowrap;
     justify-content: center;
-    align-items: flex-start;
-    gap: 6px;               /* ⭐ tight spacing */
-    margin-top: 20px;
+    gap: 6px;
+}
+
+.nino-panel {
+    width: 30%;
+    min-width: 260px;
 }
 
 .nino-panel {
