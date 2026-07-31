@@ -66,20 +66,25 @@ function updateNino34(year, month) {
     const path = `${base}/${year}/${month}`;
 
     const fcstURL  = `${path}/nino34_fcst.png`;
+    const probURL  = `${path}/nino34_prob.png`;   // ⭐ NEW
     const skillURL = `${path}/nino34_skill.png`;
 
     // Images
     const fcstImg  = document.getElementById("nino_fcst_img");
+    const probImg  = document.getElementById("nino_prob_img");   // ⭐ NEW
     const skillImg = document.getElementById("nino_skill_img");
 
     if (fcstImg)  fcstImg.src  = fcstURL;
+    if (probImg)  probImg.src  = probURL;          // ⭐ NEW
     if (skillImg) skillImg.src = skillURL;
 
     // Click-to-enlarge links
     const fcstLink  = document.getElementById("nino_fcst_link");
+    const probLink  = document.getElementById("nino_prob_link"); // ⭐ NEW
     const skillLink = document.getElementById("nino_skill_link");
 
     if (fcstLink)  fcstLink.href  = fcstURL;
+    if (probLink)  probLink.href  = probURL;       // ⭐ NEW
     if (skillLink) skillLink.href = skillURL;
 }
 
