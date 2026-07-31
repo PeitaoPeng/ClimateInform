@@ -57,21 +57,6 @@ function populateYearMonth() {
     monthSel.value = new Date().getMonth() + 1;
 }
 
-// ⭐ NEW: NINO3.4 loader (parallel to map loader)
-function updateNino34() {
-    const year = document.getElementById("year-select").value;
-    const month = document.getElementById("month-select").value;
-
-    const base = "https://raw.githubusercontent.com/PeitaoPeng/pngs/main";
-    const path = `${base}/${year}/${month}`;
-
-    const fcst = document.getElementById("nino34-fcst");
-    const skill = document.getElementById("nino34-skill");
-
-    if (fcst) fcst.src = `${path}/nino34_fcst.png`;
-    if (skill) skill.src = `${path}/nino34_skill.png`;
-}
-
 function updateMap() {
     const img = document.getElementById("map-display");
     if (!img) return;
@@ -91,9 +76,6 @@ function updateMap() {
         img.src = "/assets/missing.png";
         img.alt = "Map not available";
     };
-
-    // ⭐ Critical: update NINO3.4 in parallel
-    updateNino34();
 }
 
 function attachListeners() {
@@ -111,6 +93,15 @@ function attachListeners() {
     });
 }
 
+function loadNino34(year, month) {
+    const base = "https://raw.githubusercontent.com/PeitaoPeng/pngs/main";
+
+    const path = `${base}/${year}/${month}`;
+
+    document.getElementById("nino34-fcst").src = `${path}/nino34_fcst.png`;
+    document.getElementById("nino34-skill").src = `${path}/nino34_skill.png`;
+}
+
 // ---------------------------------------------------------
 // Initialize interactive forecast pages
 // ---------------------------------------------------------
@@ -119,7 +110,23 @@ document.addEventListener("DOMContentLoaded", () => {
     populateYearMonth();
     attachListeners();
 
-    // ⭐ Load first map + NINO3.4 automatically
+    // ⭐ Critical fix: ensure first map loads correctly
     setTimeout(updateMap, 100);
 });
+
+function loadNino34(year, month) {
+    const base = "https://raw.githubusercontent.com/PeitaoPeng/pngs/main";
+    const path = `${base}/${year}/${month}`;
+
+    document.getElementById("nino34-fcst").src  = `${path}/nino34_fcst.png`;
+    document.getElementById("nino34-skill").src = `${path}/nino34_skill.png`;
+}
+
+function updateAll() {
+    const year = yearSelect.value;
+    const month = monthSelect.value;
+
+    loadMap(year, month);      // your existing map loader
+    loadNino34(year, month);   // now NINO3.4 loads the same way
+}
 
