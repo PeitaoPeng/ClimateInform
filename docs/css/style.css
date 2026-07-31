@@ -223,9 +223,16 @@ footer a:hover {
 <style>
 .nino-row {
     display: flex;
-    flex-wrap: nowrap;
     justify-content: center;
+    align-items: flex-start;
     gap: 6px;
+    margin-top: 20px;
+}
+
+.nino-panel {
+    max-width: 280px;   /* ⭐ critical: stops stretching */
+    width: 100%;        /* allow responsive scaling */
+    height: auto;
 }
 
 .nino-panel {
