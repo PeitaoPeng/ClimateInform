@@ -223,7 +223,7 @@ footer a:hover {
 <style>
 .nino-wrapper {
     max-width: 900px;
-    margin-left: 20px;
+    margin-left: -20px;
 }
 
 .nino-row {
