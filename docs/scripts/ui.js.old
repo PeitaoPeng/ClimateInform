@@ -27,7 +27,7 @@ if (backToTopBtn) {
 }
 
 // ---------------------------------------------------------
-// Populate Year + Month Selectors
+// Interactive Forecast Map Loader (Seasonal + Monthly)
 // ---------------------------------------------------------
 
 function populateYearMonth() {
@@ -57,11 +57,12 @@ function populateYearMonth() {
     monthSel.value = new Date().getMonth() + 1;
 }
 
-// ---------------------------------------------------------
-// NINO3.4 Loader (PNG-based)
-// ---------------------------------------------------------
+// ⭐ NEW: NINO3.4 loader (parallel to map loader)
+//
+function updateNino34() {
+    const year = document.getElementById("year-select").value;
+    const month = document.getElementById("month-select").value;
 
-function updateNino34(year, month) {
     const base = "https://raw.githubusercontent.com/PeitaoPeng/pngs/main";
     const path = `${base}/${year}/${month}`;
 
@@ -69,23 +70,19 @@ function updateNino34(year, month) {
     const skillURL = `${path}/nino34_skill.png`;
 
     // Images
-    const fcstImg  = document.getElementById("nino_fcst_img");
-    const skillImg = document.getElementById("nino_skill_img");
+    const fcstImg  = document.getElementById("nino34-fcst");
+    const skillImg = document.getElementById("nino34-skill");
 
     if (fcstImg)  fcstImg.src  = fcstURL;
     if (skillImg) skillImg.src = skillURL;
 
     // Click-to-enlarge links
-    const fcstLink  = document.getElementById("nino_fcst_link");
-    const skillLink = document.getElementById("nino_skill_link");
+    const fcstLink  = document.getElementById("nino34-fcst-link");
+    const skillLink = document.getElementById("nino34-skill-link");
 
     if (fcstLink)  fcstLink.href  = fcstURL;
     if (skillLink) skillLink.href = skillURL;
 }
-
-// ---------------------------------------------------------
-// Map Loader (Seasonal + Monthly)
-// ---------------------------------------------------------
 
 function updateMap() {
     const img = document.getElementById("map-display");
@@ -107,13 +104,9 @@ function updateMap() {
         img.alt = "Map not available";
     };
 
-    // ⭐ Update NINO3.4 PNGs in parallel
-    updateNino34(year, month);
+    // ⭐ Critical: update NINO3.4 in parallel
+    updateNino34();
 }
-
-// ---------------------------------------------------------
-// Attach Listeners
-// ---------------------------------------------------------
 
 function attachListeners() {
     const ids = [
@@ -131,14 +124,27 @@ function attachListeners() {
 }
 
 // ---------------------------------------------------------
-// Initialize Page
+// Initialize interactive forecast pages
 // ---------------------------------------------------------
 
 document.addEventListener("DOMContentLoaded", () => {
     populateYearMonth();
     attachListeners();
 
-    // Load initial map + NINO3.4
+    // ⭐ Load first map + NINO3.4 automatically
     setTimeout(updateMap, 100);
 });
+
+function updateNinoPlots(year, month) {
+    const base = "https://raw.githubusercontent.com/PeitaoPeng/pngs/main";
+
+    const fcstPath = `${base}/${year}/${month}/nino34_fcst.png`;
+    const skillPath = `${base}/${year}/${month}/nino34_skill.png`;
+
+    document.getElementById("nino_fcst_img").src = fcstPath;
+    document.getElementById("nino_fcst_link").href = fcstPath;
+
+    document.getElementById("nino_skill_img").src = skillPath;
+    document.getElementById("nino_skill_link").href = skillPath;
+}
 
