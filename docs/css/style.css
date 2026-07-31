@@ -222,16 +222,14 @@ footer a:hover {
 
 <style>
 .nino-wrapper {
-    max-width: 900px;     /* keeps the three images close */
-    margin: 0 auto;       /* centers the block */
-    display: block;       /* critical */
+    max-width: 900px;
+    margin-left: 20px;
 }
 
 .nino-row {
     display: flex;
-    justify-content: flex-start;   /* ⭐ left-align the plots */
+    justify-content: flex-start;
     gap: 6px;
-    margin-top: 20px;
 }
 
 .nino-panel {
