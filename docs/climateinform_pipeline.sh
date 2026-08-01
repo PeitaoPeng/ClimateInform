@@ -32,8 +32,10 @@ trap rollback ERR
 # ------------------------------------------------------------
 # Current year/month
 # ------------------------------------------------------------
-curyr=$(date +%Y)
-curmo=$(date +%m)
+#curyr=$(date +%Y)
+#curmo=$(date +%m)
+curyr=2026
+curmo=07
 
 case "$curmo" in
   01) cmon=1 ;;
