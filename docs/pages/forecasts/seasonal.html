@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="/css/style.css">
 
     <style>
-        /* Existing controls */
         .control-row {
             margin: 20px 0;
             display: flex;
@@ -27,7 +26,7 @@
         }
 
         /* NINO section */
-        #nino34-display { margin-left: -10px; }
+        #nino34-display { margin-top: 30px; }
         .nino-wrapper { max-width: 900px; margin: 0; }
         .nino-row { display: flex; justify-content: flex-start; gap: 6px; }
         .nino-panel { max-width: 280px; width: 100%; height: auto; }
@@ -47,10 +46,8 @@
         <tr><td><a href="/index.html">🏠 Home</a></td></tr>
         <tr><td><a href="/about_us.html">About Us</a></td></tr>
         <tr><td><a href="/disclaimer.html">Disclaimer</a></td></tr>
-
         <tr><td><a href="/pages/forecasts/seasonal.html">Seasonal Forecast</a></td></tr>
         <tr><td><a href="/pages/forecasts/monthly.html">Monthly Forecast</a></td></tr>
-
         <tr><td><a href="/contact.html">Contact</a></td></tr>
     </table>
 </div>
@@ -58,6 +55,18 @@
 <div id="main-content">
 
     <h2 style="color:#003366;">Seasonal Forecasts</h2>
+
+    <!-- NINO3.4 Display Section (MUST BE INSIDE main-content) -->
+    <section id="nino34-display">
+      <h3 style="text-align:left;">NINO3.4 Index Forecast</h3>
+
+      <div class="nino-wrapper">
+        <div class="nino-row">
+          <img id="nino34-fcst" class="nino-panel" alt="NINO3.4 Forecast">
+          <img id="nino34-skill" class="nino-panel" alt="NINO3.4 Skill">
+        </div>
+      </div>
+    </section>
 
     <!-- Row 1: Issue Year + Issue Month -->
     <div class="control-row">
@@ -107,18 +116,6 @@
 
 </div> <!-- END main-content -->
 
-<!-- NINO3.4 Display Section -->
-<section id="nino34-display" style="margin-top:20px;">
-  <h3 style="text-align:left;">NINO3.4 Index Forecast</h3>
-
-  <div class="nino-wrapper">
-    <div class="nino-row">
-      <img id="nino34-fcst" class="nino-panel" alt="NINO3.4 Forecast">
-      <img id="nino34-skill" class="nino-panel" alt="NINO3.4 Skill">
-    </div>
-  </div>
-</section>
-
 <footer>
     © 2026 ClimateInform Corp |
     <a href="/disclaimer.html">Disclaimer</a> |
@@ -130,7 +127,7 @@
 
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-<!-- IMPORTANT: ui.js MUST be last -->
+<!-- ui.js MUST be last -->
 <script src="/scripts/ui.js"></script>
 
 </body>
