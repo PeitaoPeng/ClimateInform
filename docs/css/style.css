@@ -98,7 +98,8 @@ header span {
    Main Content Area
 ----------------------------------------------------------*/
 #main-content {
-    margin-left: 200px;
+    margin-left: 180px;   /* shift entire content right */
+    max-width: 900px;     /* keep content nicely centered */
     padding: 20px;
     margin-top: 120px;
     padding-bottom: 120px;   /* ⭐ prevents footer from blocking map */
