@@ -56,18 +56,6 @@
 
     <h2 style="color:#003366;">Seasonal Forecasts</h2>
 
-    <!-- NINO3.4 Display Section (MUST BE INSIDE main-content) -->
-    <section id="nino34-display">
-      <h3 style="text-align:left;">NINO3.4 Index Forecast</h3>
-
-      <div class="nino-wrapper">
-        <div class="nino-row">
-          <img id="nino34-fcst" class="nino-panel" alt="NINO3.4 Forecast">
-          <img id="nino34-skill" class="nino-panel" alt="NINO3.4 Skill">
-        </div>
-      </div>
-    </section>
-
     <!-- Row 1: Issue Year + Issue Month -->
     <div class="control-row">
         <label>Issue Year:</label>
@@ -111,6 +99,18 @@
         </select>
     </div>
 
+    <!-- NINO3.4 Display Section (NOW BELOW the grids) -->
+    <section id="nino34-display">
+      <h3 style="text-align:left;">NINO3.4 Index Forecast</h3>
+
+      <div class="nino-wrapper">
+        <div class="nino-row">
+          <img id="nino34-fcst" class="nino-panel" alt="NINO3.4 Forecast">
+          <img id="nino34-skill" class="nino-panel" alt="NINO3.4 Skill">
+        </div>
+      </div>
+    </section>
+
     <!-- Map display -->
     <img id="map-display" src="/assets/placeholder.png" alt="Seasonal Forecast Map">
 
@@ -126,8 +126,6 @@
 <button id="back-to-top" title="Back to Top">↑</button>
 
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-
-<!-- ui.js MUST be last -->
 <script src="/scripts/ui.js"></script>
 
 </body>
