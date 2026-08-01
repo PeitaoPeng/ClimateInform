@@ -37,7 +37,7 @@ function populateYearMonth() {
     if (!yearSel || !monthSel) return;
 
     const currentYear = new Date().getFullYear();
-    const startYear = 2020;
+    const startYear = 2025;
 
     for (let y = currentYear; y >= startYear; y--) {
         const opt = document.createElement("option");
