@@ -26,7 +26,7 @@
         }
 
         /* NINO section */
-        #nino34-display { margin-top: 30px; }
+        #nino34-display { margin-top: 20px; }
         .nino-wrapper { max-width: 900px; margin: 0; }
         .nino-row { display: flex; justify-content: flex-start; gap: 6px; }
         .nino-panel { max-width: 280px; width: 100%; height: auto; }
@@ -65,6 +65,18 @@
         <select id="month-select"></select>
     </div>
 
+    <!-- NINO3.4 Display Section (IMMEDIATELY after Year/Month) -->
+    <section id="nino34-display">
+      <h3 style="text-align:left;">NINO3.4 Index Forecast</h3>
+
+      <div class="nino-wrapper">
+        <div class="nino-row">
+          <img id="nino34-fcst" class="nino-panel" alt="NINO3.4 Forecast">
+          <img id="nino34-skill" class="nino-panel" alt="NINO3.4 Skill">
+        </div>
+      </div>
+    </section>
+
     <!-- Row 2: Variable + Map Type + Lead -->
     <h3>Maps of Forecast & Skill</h3>
     <p><span style="color:#66ccff;">Select options below to view maps</span></p>
@@ -98,18 +110,6 @@
             <option value="7">Lead 7</option>
         </select>
     </div>
-
-    <!-- NINO3.4 Display Section (NOW BELOW the grids) -->
-    <section id="nino34-display">
-      <h3 style="text-align:left;">NINO3.4 Index Forecast</h3>
-
-      <div class="nino-wrapper">
-        <div class="nino-row">
-          <img id="nino34-fcst" class="nino-panel" alt="NINO3.4 Forecast">
-          <img id="nino34-skill" class="nino-panel" alt="NINO3.4 Skill">
-        </div>
-      </div>
-    </section>
 
     <!-- Map display -->
     <img id="map-display" src="/assets/placeholder.png" alt="Seasonal Forecast Map">
