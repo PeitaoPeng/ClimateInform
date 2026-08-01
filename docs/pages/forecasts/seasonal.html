@@ -27,28 +27,6 @@ select {
     margin-top: 20px;
 }
 
-/* NINO section */
-#nino34-display {
-    margin-left: -10px;   /* optional small shift */
-}
-
-.nino-wrapper {
-    max-width: 900px;
-    margin: 0;            /* stops centering */
-}
-
-.nino-row {
-    display: flex;
-    justify-content: flex-start;   /* left-aligns the plots */
-    gap: 6px;
-}
-
-.nino-panel {
-    max-width: 280px;
-    width: 100%;
-    height: auto;
-}
-
 </style>
 
 </head>
@@ -88,28 +66,6 @@ select {
     <label>Issue Month:</label>
     <select id="month-select"></select>
 </div>
-
-<!-- NINO3.4 Display Section -->
-<section id="nino34-display">
-  <h3 style="text-align:left;">NINO3.4 Index Forecasts</h3>
-  <p><span class="lightblue">Click the plots to enlarge</span></p>
-
-  <div class="nino-wrapper">
-    <div class="nino-row">
-        <a id="nino_fcst_link" target="_blank">
-            <img class="nino-panel" id="nino_fcst_img">
-        </a>
-
-        <a id="nino_prob_link" target="_blank">
-            <img class="nino-panel" id="nino_prob_img">
-        </a>
-
-        <a id="nino_skill_link" target="_blank">
-            <img class="nino-panel" id="nino_skill_img">
-        </a>
-    </div>
-  </div>
-</section>
 
 <!-- Row 2: Variable + Map Type + Lead -->
   <h3>Maps of Forecast & Skill</h3>
@@ -171,4 +127,27 @@ select {
 
 </body>
 </html>
+
+<!-- NINO3.4 Display Section -->
+/* NINO section */
+#nino34-display {
+    margin-left: -10px;
+}
+
+.nino-wrapper {
+    max-width: 900px;
+    margin: 0;
+}
+
+.nino-row {
+    display: flex;
+    justify-content: flex-start;
+    gap: 6px;
+}
+
+.nino-panel {
+    max-width: 280px;
+    width: 100%;
+    height: auto;
+}
 

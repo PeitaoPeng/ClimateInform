@@ -241,3 +241,25 @@ footer a:hover {
 
 </style>
 
+/* NINO section */
+#nino34-display {
+    margin-left: -10px;   /* optional small shift */
+}
+
+.nino-wrapper {
+    max-width: 900px;
+    margin: 0;            /* stops centering */
+}
+
+.nino-row {
+    display: flex;
+    justify-content: flex-start;   /* left-aligns the plots */
+    gap: 6px;
+}
+
+.nino-panel {
+    max-width: 280px;
+    width: 100%;
+    height: auto;
+}
+
