@@ -28,22 +28,19 @@ select {
 }
 
 /* NINO section */
-#nino34-display h3 {
-    margin-left: 10px;
-    margin-bottom: 10px;
+#nino34-display {
+    margin-left: -10px;   /* optional small shift */
 }
 
 .nino-wrapper {
     max-width: 900px;
-    margin: 0 auto;
-    display: block;
+    margin: 0;            /* stops centering */
 }
 
 .nino-row {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;   /* left-aligns the plots */
     gap: 6px;
-    margin-top: 20px;
 }
 
 .nino-panel {
@@ -51,6 +48,7 @@ select {
     width: 100%;
     height: auto;
 }
+
 </style>
 
 </head>
@@ -82,19 +80,6 @@ select {
     <h2 style="color:#003366;">Seasonal Forecasts</h2>
 
 <!-- Row 1: Issue Year + Issue Month -->
-<style>
-.left-column {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;   /* left alignment */
-    margin-left: 10px;
-}
-
-.lightblue {
-    color: #66ccff;
-    font-weight: 500;
-}
-</style>
 
 <div class="control-row">
     <label>Issue Year:</label>
