@@ -102,7 +102,7 @@ header span {
     padding: 20px;
     margin-top: 120px;
     padding-bottom: 120px;   /* ⭐ prevents footer from blocking map */
-    padding-left: 0px; 
+    padding-left: 5px; 
 }
 
 /* ---------------------------------------------------------
@@ -224,19 +224,20 @@ footer a:hover {
 <style>
 .nino-wrapper {
     max-width: 900px;
-    margin-left: 20px;
+    margin: 0;                 /* ⭐ stops centering */
 }
 
 .nino-row {
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-start;   /* ⭐ left-aligns the plots */
     gap: 6px;
 }
 
 .nino-panel {
-    max-width: 280px;     /* prevents stretching */
-    width: 100%;          /* responsive */
+    max-width: 280px;
+    width: 100%;
     height: auto;
 }
+
 </style>
 
