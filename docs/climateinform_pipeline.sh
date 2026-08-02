@@ -34,7 +34,7 @@ trap rollback ERR
 # ------------------------------------------------------------
 #curyr=$(date +%Y)
 #curmo=$(date +%m)
-curyr=2026
+curyr=2025
 for curmo in 01 02 03 04 05 06 07 08 09 10 11 12; do
 #curmo=07
 
