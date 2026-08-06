@@ -1,1 +1,6 @@
-cron.realtime.data_prd.sh: line 9: 30: command not found
++ codedir=/home/ppeng/ClimateInform/docs
++ bash /home/ppeng/ClimateInform/docs/clean_working_tree.sh
+============================================================
+ Cleaning ClimateInform Working Tree
+============================================================
+Staging all modified and untracked files...
