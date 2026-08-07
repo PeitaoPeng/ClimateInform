@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Us – ClimateInform</title>
+
+    <!-- Shared stylesheet -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Shared UI JavaScript -->
+    <script src="scripts/ui.js" defer></script>
+</head>
+
+<body>
+
+    <!-- Fixed Header -->
+    <header>
+        ClimateInform
+        <span>About Our Organization</span>
+    </header>
+
+    <!-- Scroll Progress Bar -->
+    <div id="scroll-progress"></div>
+
+    <!-- Left Navigation Column -->
+    <div id="left-nav">
+        <table>
+        	<tr><td><a href="/index.html">🏠 Home</a></td></tr>
+            <tr><td><a href="about_us.html">About Us</a></td></tr>
+            <tr><td><a href="disclaimer.html">Disclaimer</a></td></tr>
+
+            <tr><td><a href="pages/forecasts/seasonal.html">Seasonal Forecast</a></td></tr>
+            <tr><td><a href="pages/forecasts/monthly.html">Monthly Forecast</a></td></tr>
+
+            <tr><td><a href="contact.html">Contact</a></td></tr>
+        </table>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content">
+
+        <h2 style="color:#003366; margin-bottom: 15px;">About ClimateInform</h2>
+
+        <p>
+            ClimateInform is an independent climate forecasting initiative based in Virginia, USA.
+            Our mission is to provide reliable, scientifically grounded short‑term climate forecasts
+            to support decision‑making in agriculture, energy, water resources, and public planning.
+        </p>
+
+        <hr style="margin: 20px 0;">
+
+        <h3 style="color:#003366;">Our Focus</h3>
+        <p>
+            We specialize in:
+        </p>
+
+        <ul style="margin-left: 20px; margin-bottom: 20px;">
+            <li>Development of climate forecast tools</li>
+            <li>Application of machine learning to climate prediction</li>
+            <li>Predictability and prediction of monthly and seasonal climate</li>
+            <li>Arrtribution diagnostics of extreme climate anomalies</li>
+            <li>Forecast verification and skill assessment</li>
+        </ul>
+
+        <hr style="margin: 20px 0;">
+
+        <h3 style="color:#003366;">Our Approach</h3>
+        <p>
+            ClimateInform integrates statistical models, dynamical model guidance, and hybrid
+            methodologies to produce forecasts that are both scientifically rigorous and easy to interpret.
+        </p>
+
+        <p>
+            We emphasize transparency, reproducibility, and clarity in all our forecast products.
+        </p>
+
+        <hr style="margin: 20px 0;">
+
+        <h3 style="color:#003366;">Our Location</h3>
+        <p>
+            ClimateInform Corp<br>
+            Virginia, USA
+        </p>
+
+        <hr style="margin: 20px 0;">
+
+        <h3 style="color:#003366;">Our Commitment</h3>
+        <p>
+            We are committed to improving public understanding of climate variability and
+            providing accessible tools for interpreting climate forecasts.
+        </p>
+
+    </div>
+
+    <!-- Fixed Footer -->
+    <footer>
+        © 2026 ClimateInform Corp |
+        <a href="disclaimer.html">Disclaimer</a> |
+        <a href="contact.html">Contact</a> |
+        <a href="about_us.html">About Us</a>
+    </footer>
+
+    <!-- Back-to-Top Button -->
+    <button id="back-to-top" title="Back to Top">↑</button>
+
+</body>
+</html>
+
