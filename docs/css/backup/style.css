@@ -18,7 +18,7 @@ body {
 }
 
 /* ---------------------------------------------------------
-   Fixed Header (Improved for CIC)
+   Fixed Header
 ----------------------------------------------------------*/
 header {
     position: fixed;
@@ -28,31 +28,19 @@ header {
     background-color: #003366;
     color: #fff;
     text-align: center;
-
-    /* Adjusted spacing for longer title */
-    padding: 18px 0 16px 0;
-
-    /* Slightly reduced font size for better balance */
-    font-size: 24px;
+    padding: 20px 0;
+    font-size: 26px;
     font-weight: 700;
-
     border-bottom: 4px solid #0055a5;
     z-index: 1000;
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-
-    /* Improve readability of longer text */
-    letter-spacing: 0.3px;
 }
 
-/* Subtitle */
 header span {
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 400;
     display: block;
-
-    /* Slightly tighter spacing */
-    margin-top: 4px;
-
+    margin-top: 6px;
     color: #cce0ff;
 }
 
