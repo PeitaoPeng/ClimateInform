@@ -102,7 +102,15 @@ function updateMap() {
     const maptype = document.getElementById("maptype-select").value;
     const lead = document.getElementById("lead-select").value;
 
-    const filename = `${variable}_${maptype}.${lead}.png`;
+//  const filename = `${variable}_${maptype}.${lead}.png`;
+let filename;
+
+if (window.location.pathname.includes("monthly")) {
+    filename = `${variable}_${maptype}.${lead}.mon.png`;
+} else {
+    filename = `${variable}_${maptype}.${lead}.png`;
+}
+
     const path = `https://raw.githubusercontent.com/PeitaoPeng/pngs/main/${year}/${month}/${filename}`;
 
     img.src = path;
