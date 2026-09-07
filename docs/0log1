@@ -4,3 +4,285 @@
  Cleaning ClimateInform Working Tree
 ============================================================
 Staging all modified and untracked files...
+Committing...
+[main 2e53753] Clean working tree before pipeline run
+ 1 file changed, 6 insertions(+), 207 deletions(-)
+ rewrite docs/0log1 (98%)
+Pushing...
+To github.com:PeitaoPeng/ClimateInform.git
+   9be64f1..2e53753  main -> main
+============================================================
+ Working tree cleaned.
+ Current Git status:
+============================================================
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   docs/0log1
+
+no changes added to commit (use "git add" and/or "git commit -a")
++ bash /home/ppeng/ClimateInform/docs/climateinform_pipeline.sh
+============================================================
+ ClimateInform Pipeline Starting for YEAR = 2026, MONTH = 1
+ Log: /home/ppeng/ClimateInform/logs/pipeline_2026_20260906_193003.log
+============================================================
+Checking for missing PNGs...
+All PNGs present for 2026-1
+Checking PNG repo at /home/ppeng/pngs...
+PNG repo exists and is a valid git repository.
+Running PNG upload script...
+============================================================
+ Uploading PNGs for YEAR=2026  MONTH=1
+ Source directory: /home/ppeng/data/ss_fcst/pcr/2026/1
+ Destination repo: /home/ppeng/pngs
+============================================================
+Copying PNG and HTML files into pngs repo...
+'/home/ppeng/data/ss_fcst/pcr/2026/1/nino34_fcst.png' -> '/home/ppeng/pngs/2026/1/nino34_fcst.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/nino34_prob.png' -> '/home/ppeng/pngs/2026/1/nino34_prob.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/nino34_skill.png' -> '/home/ppeng/pngs/2026/1/nino34_skill.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_ACC.0.mon.png' -> '/home/ppeng/pngs/2026/1/prec_ACC.0.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_ACC.0.png' -> '/home/ppeng/pngs/2026/1/prec_ACC.0.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_ACC.1.mon.png' -> '/home/ppeng/pngs/2026/1/prec_ACC.1.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_ACC.1.png' -> '/home/ppeng/pngs/2026/1/prec_ACC.1.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_ACC.2.mon.png' -> '/home/ppeng/pngs/2026/1/prec_ACC.2.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_ACC.2.png' -> '/home/ppeng/pngs/2026/1/prec_ACC.2.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_ACC.3.mon.png' -> '/home/ppeng/pngs/2026/1/prec_ACC.3.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_ACC.3.png' -> '/home/ppeng/pngs/2026/1/prec_ACC.3.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_ACC.4.mon.png' -> '/home/ppeng/pngs/2026/1/prec_ACC.4.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_ACC.4.png' -> '/home/ppeng/pngs/2026/1/prec_ACC.4.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_ACC.5.mon.png' -> '/home/ppeng/pngs/2026/1/prec_ACC.5.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_ACC.5.png' -> '/home/ppeng/pngs/2026/1/prec_ACC.5.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_ACC.6.mon.png' -> '/home/ppeng/pngs/2026/1/prec_ACC.6.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_ACC.6.png' -> '/home/ppeng/pngs/2026/1/prec_ACC.6.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_ACC.7.mon.png' -> '/home/ppeng/pngs/2026/1/prec_ACC.7.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_ACC.7.png' -> '/home/ppeng/pngs/2026/1/prec_ACC.7.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_HSS.0.mon.png' -> '/home/ppeng/pngs/2026/1/prec_HSS.0.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_HSS.0.png' -> '/home/ppeng/pngs/2026/1/prec_HSS.0.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_HSS.1.mon.png' -> '/home/ppeng/pngs/2026/1/prec_HSS.1.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_HSS.1.png' -> '/home/ppeng/pngs/2026/1/prec_HSS.1.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_HSS.2.mon.png' -> '/home/ppeng/pngs/2026/1/prec_HSS.2.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_HSS.2.png' -> '/home/ppeng/pngs/2026/1/prec_HSS.2.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_HSS.3.mon.png' -> '/home/ppeng/pngs/2026/1/prec_HSS.3.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_HSS.3.png' -> '/home/ppeng/pngs/2026/1/prec_HSS.3.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_HSS.4.mon.png' -> '/home/ppeng/pngs/2026/1/prec_HSS.4.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_HSS.4.png' -> '/home/ppeng/pngs/2026/1/prec_HSS.4.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_HSS.5.mon.png' -> '/home/ppeng/pngs/2026/1/prec_HSS.5.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_HSS.5.png' -> '/home/ppeng/pngs/2026/1/prec_HSS.5.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_HSS.6.mon.png' -> '/home/ppeng/pngs/2026/1/prec_HSS.6.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_HSS.6.png' -> '/home/ppeng/pngs/2026/1/prec_HSS.6.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_HSS.7.mon.png' -> '/home/ppeng/pngs/2026/1/prec_HSS.7.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_HSS.7.png' -> '/home/ppeng/pngs/2026/1/prec_HSS.7.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_RPSS.0.mon.png' -> '/home/ppeng/pngs/2026/1/prec_RPSS.0.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_RPSS.0.png' -> '/home/ppeng/pngs/2026/1/prec_RPSS.0.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_RPSS.1.mon.png' -> '/home/ppeng/pngs/2026/1/prec_RPSS.1.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_RPSS.1.png' -> '/home/ppeng/pngs/2026/1/prec_RPSS.1.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_RPSS.2.mon.png' -> '/home/ppeng/pngs/2026/1/prec_RPSS.2.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_RPSS.2.png' -> '/home/ppeng/pngs/2026/1/prec_RPSS.2.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_RPSS.3.mon.png' -> '/home/ppeng/pngs/2026/1/prec_RPSS.3.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_RPSS.3.png' -> '/home/ppeng/pngs/2026/1/prec_RPSS.3.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_RPSS.4.mon.png' -> '/home/ppeng/pngs/2026/1/prec_RPSS.4.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_RPSS.4.png' -> '/home/ppeng/pngs/2026/1/prec_RPSS.4.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_RPSS.5.mon.png' -> '/home/ppeng/pngs/2026/1/prec_RPSS.5.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_RPSS.5.png' -> '/home/ppeng/pngs/2026/1/prec_RPSS.5.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_RPSS.6.mon.png' -> '/home/ppeng/pngs/2026/1/prec_RPSS.6.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_RPSS.6.png' -> '/home/ppeng/pngs/2026/1/prec_RPSS.6.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_RPSS.7.mon.png' -> '/home/ppeng/pngs/2026/1/prec_RPSS.7.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_RPSS.7.png' -> '/home/ppeng/pngs/2026/1/prec_RPSS.7.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_det.0.mon.png' -> '/home/ppeng/pngs/2026/1/prec_det.0.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_det.0.png' -> '/home/ppeng/pngs/2026/1/prec_det.0.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_det.1.mon.png' -> '/home/ppeng/pngs/2026/1/prec_det.1.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_det.1.png' -> '/home/ppeng/pngs/2026/1/prec_det.1.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_det.2.mon.png' -> '/home/ppeng/pngs/2026/1/prec_det.2.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_det.2.png' -> '/home/ppeng/pngs/2026/1/prec_det.2.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_det.3.mon.png' -> '/home/ppeng/pngs/2026/1/prec_det.3.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_det.3.png' -> '/home/ppeng/pngs/2026/1/prec_det.3.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_det.4.mon.png' -> '/home/ppeng/pngs/2026/1/prec_det.4.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_det.4.png' -> '/home/ppeng/pngs/2026/1/prec_det.4.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_det.5.mon.png' -> '/home/ppeng/pngs/2026/1/prec_det.5.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_det.5.png' -> '/home/ppeng/pngs/2026/1/prec_det.5.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_det.6.mon.png' -> '/home/ppeng/pngs/2026/1/prec_det.6.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_det.6.png' -> '/home/ppeng/pngs/2026/1/prec_det.6.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_det.7.mon.png' -> '/home/ppeng/pngs/2026/1/prec_det.7.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_det.7.png' -> '/home/ppeng/pngs/2026/1/prec_det.7.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_prob.0.mon.png' -> '/home/ppeng/pngs/2026/1/prec_prob.0.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_prob.0.png' -> '/home/ppeng/pngs/2026/1/prec_prob.0.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_prob.1.mon.png' -> '/home/ppeng/pngs/2026/1/prec_prob.1.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_prob.1.png' -> '/home/ppeng/pngs/2026/1/prec_prob.1.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_prob.2.mon.png' -> '/home/ppeng/pngs/2026/1/prec_prob.2.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_prob.2.png' -> '/home/ppeng/pngs/2026/1/prec_prob.2.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_prob.3.mon.png' -> '/home/ppeng/pngs/2026/1/prec_prob.3.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_prob.3.png' -> '/home/ppeng/pngs/2026/1/prec_prob.3.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_prob.4.mon.png' -> '/home/ppeng/pngs/2026/1/prec_prob.4.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_prob.4.png' -> '/home/ppeng/pngs/2026/1/prec_prob.4.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_prob.5.mon.png' -> '/home/ppeng/pngs/2026/1/prec_prob.5.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_prob.5.png' -> '/home/ppeng/pngs/2026/1/prec_prob.5.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_prob.6.mon.png' -> '/home/ppeng/pngs/2026/1/prec_prob.6.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_prob.6.png' -> '/home/ppeng/pngs/2026/1/prec_prob.6.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_prob.7.mon.png' -> '/home/ppeng/pngs/2026/1/prec_prob.7.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/prec_prob.7.png' -> '/home/ppeng/pngs/2026/1/prec_prob.7.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/skill_nino34.png' -> '/home/ppeng/pngs/2026/1/skill_nino34.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_ACC.0.png' -> '/home/ppeng/pngs/2026/1/sst_ACC.0.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_ACC.1.png' -> '/home/ppeng/pngs/2026/1/sst_ACC.1.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_ACC.2.png' -> '/home/ppeng/pngs/2026/1/sst_ACC.2.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_ACC.3.png' -> '/home/ppeng/pngs/2026/1/sst_ACC.3.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_ACC.4.png' -> '/home/ppeng/pngs/2026/1/sst_ACC.4.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_ACC.5.png' -> '/home/ppeng/pngs/2026/1/sst_ACC.5.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_ACC.6.png' -> '/home/ppeng/pngs/2026/1/sst_ACC.6.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_ACC.7.png' -> '/home/ppeng/pngs/2026/1/sst_ACC.7.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_HSS.0.png' -> '/home/ppeng/pngs/2026/1/sst_HSS.0.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_HSS.1.png' -> '/home/ppeng/pngs/2026/1/sst_HSS.1.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_HSS.2.png' -> '/home/ppeng/pngs/2026/1/sst_HSS.2.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_HSS.3.png' -> '/home/ppeng/pngs/2026/1/sst_HSS.3.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_HSS.4.png' -> '/home/ppeng/pngs/2026/1/sst_HSS.4.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_HSS.5.png' -> '/home/ppeng/pngs/2026/1/sst_HSS.5.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_HSS.6.png' -> '/home/ppeng/pngs/2026/1/sst_HSS.6.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_HSS.7.png' -> '/home/ppeng/pngs/2026/1/sst_HSS.7.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_RPSS.0.png' -> '/home/ppeng/pngs/2026/1/sst_RPSS.0.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_RPSS.1.png' -> '/home/ppeng/pngs/2026/1/sst_RPSS.1.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_RPSS.2.png' -> '/home/ppeng/pngs/2026/1/sst_RPSS.2.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_RPSS.3.png' -> '/home/ppeng/pngs/2026/1/sst_RPSS.3.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_RPSS.4.png' -> '/home/ppeng/pngs/2026/1/sst_RPSS.4.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_RPSS.5.png' -> '/home/ppeng/pngs/2026/1/sst_RPSS.5.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_RPSS.6.png' -> '/home/ppeng/pngs/2026/1/sst_RPSS.6.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_RPSS.7.png' -> '/home/ppeng/pngs/2026/1/sst_RPSS.7.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_anom.0.png' -> '/home/ppeng/pngs/2026/1/sst_anom.0.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_anom.1.png' -> '/home/ppeng/pngs/2026/1/sst_anom.1.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_anom.2.png' -> '/home/ppeng/pngs/2026/1/sst_anom.2.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_anom.3.png' -> '/home/ppeng/pngs/2026/1/sst_anom.3.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_anom.4.png' -> '/home/ppeng/pngs/2026/1/sst_anom.4.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_anom.5.png' -> '/home/ppeng/pngs/2026/1/sst_anom.5.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_anom.6.png' -> '/home/ppeng/pngs/2026/1/sst_anom.6.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_anom.7.png' -> '/home/ppeng/pngs/2026/1/sst_anom.7.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_det.0.png' -> '/home/ppeng/pngs/2026/1/sst_det.0.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_det.1.png' -> '/home/ppeng/pngs/2026/1/sst_det.1.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_det.2.png' -> '/home/ppeng/pngs/2026/1/sst_det.2.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_det.3.png' -> '/home/ppeng/pngs/2026/1/sst_det.3.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_det.4.png' -> '/home/ppeng/pngs/2026/1/sst_det.4.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_det.5.png' -> '/home/ppeng/pngs/2026/1/sst_det.5.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_det.6.png' -> '/home/ppeng/pngs/2026/1/sst_det.6.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_det.7.png' -> '/home/ppeng/pngs/2026/1/sst_det.7.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_prob.0.png' -> '/home/ppeng/pngs/2026/1/sst_prob.0.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_prob.1.png' -> '/home/ppeng/pngs/2026/1/sst_prob.1.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_prob.2.png' -> '/home/ppeng/pngs/2026/1/sst_prob.2.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_prob.3.png' -> '/home/ppeng/pngs/2026/1/sst_prob.3.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_prob.4.png' -> '/home/ppeng/pngs/2026/1/sst_prob.4.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_prob.5.png' -> '/home/ppeng/pngs/2026/1/sst_prob.5.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_prob.6.png' -> '/home/ppeng/pngs/2026/1/sst_prob.6.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/sst_prob.7.png' -> '/home/ppeng/pngs/2026/1/sst_prob.7.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_ACC.0.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_ACC.0.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_ACC.0.png' -> '/home/ppeng/pngs/2026/1/t2m_ACC.0.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_ACC.1.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_ACC.1.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_ACC.1.png' -> '/home/ppeng/pngs/2026/1/t2m_ACC.1.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_ACC.2.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_ACC.2.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_ACC.2.png' -> '/home/ppeng/pngs/2026/1/t2m_ACC.2.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_ACC.3.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_ACC.3.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_ACC.3.png' -> '/home/ppeng/pngs/2026/1/t2m_ACC.3.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_ACC.4.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_ACC.4.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_ACC.4.png' -> '/home/ppeng/pngs/2026/1/t2m_ACC.4.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_ACC.5.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_ACC.5.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_ACC.5.png' -> '/home/ppeng/pngs/2026/1/t2m_ACC.5.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_ACC.6.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_ACC.6.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_ACC.6.png' -> '/home/ppeng/pngs/2026/1/t2m_ACC.6.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_ACC.7.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_ACC.7.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_ACC.7.png' -> '/home/ppeng/pngs/2026/1/t2m_ACC.7.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_HSS.0.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_HSS.0.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_HSS.0.png' -> '/home/ppeng/pngs/2026/1/t2m_HSS.0.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_HSS.1.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_HSS.1.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_HSS.1.png' -> '/home/ppeng/pngs/2026/1/t2m_HSS.1.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_HSS.2.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_HSS.2.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_HSS.2.png' -> '/home/ppeng/pngs/2026/1/t2m_HSS.2.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_HSS.3.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_HSS.3.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_HSS.3.png' -> '/home/ppeng/pngs/2026/1/t2m_HSS.3.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_HSS.4.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_HSS.4.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_HSS.4.png' -> '/home/ppeng/pngs/2026/1/t2m_HSS.4.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_HSS.5.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_HSS.5.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_HSS.5.png' -> '/home/ppeng/pngs/2026/1/t2m_HSS.5.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_HSS.6.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_HSS.6.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_HSS.6.png' -> '/home/ppeng/pngs/2026/1/t2m_HSS.6.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_HSS.7.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_HSS.7.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_HSS.7.png' -> '/home/ppeng/pngs/2026/1/t2m_HSS.7.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_RPSS.0.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_RPSS.0.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_RPSS.0.png' -> '/home/ppeng/pngs/2026/1/t2m_RPSS.0.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_RPSS.1.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_RPSS.1.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_RPSS.1.png' -> '/home/ppeng/pngs/2026/1/t2m_RPSS.1.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_RPSS.2.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_RPSS.2.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_RPSS.2.png' -> '/home/ppeng/pngs/2026/1/t2m_RPSS.2.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_RPSS.3.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_RPSS.3.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_RPSS.3.png' -> '/home/ppeng/pngs/2026/1/t2m_RPSS.3.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_RPSS.4.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_RPSS.4.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_RPSS.4.png' -> '/home/ppeng/pngs/2026/1/t2m_RPSS.4.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_RPSS.5.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_RPSS.5.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_RPSS.5.png' -> '/home/ppeng/pngs/2026/1/t2m_RPSS.5.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_RPSS.6.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_RPSS.6.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_RPSS.6.png' -> '/home/ppeng/pngs/2026/1/t2m_RPSS.6.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_RPSS.7.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_RPSS.7.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_RPSS.7.png' -> '/home/ppeng/pngs/2026/1/t2m_RPSS.7.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_det.0.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_det.0.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_det.0.png' -> '/home/ppeng/pngs/2026/1/t2m_det.0.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_det.1.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_det.1.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_det.1.png' -> '/home/ppeng/pngs/2026/1/t2m_det.1.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_det.2.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_det.2.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_det.2.png' -> '/home/ppeng/pngs/2026/1/t2m_det.2.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_det.3.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_det.3.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_det.3.png' -> '/home/ppeng/pngs/2026/1/t2m_det.3.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_det.4.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_det.4.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_det.4.png' -> '/home/ppeng/pngs/2026/1/t2m_det.4.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_det.5.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_det.5.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_det.5.png' -> '/home/ppeng/pngs/2026/1/t2m_det.5.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_det.6.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_det.6.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_det.6.png' -> '/home/ppeng/pngs/2026/1/t2m_det.6.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_det.7.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_det.7.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_det.7.png' -> '/home/ppeng/pngs/2026/1/t2m_det.7.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_prob.0.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_prob.0.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_prob.0.png' -> '/home/ppeng/pngs/2026/1/t2m_prob.0.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_prob.1.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_prob.1.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_prob.1.png' -> '/home/ppeng/pngs/2026/1/t2m_prob.1.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_prob.2.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_prob.2.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_prob.2.png' -> '/home/ppeng/pngs/2026/1/t2m_prob.2.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_prob.3.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_prob.3.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_prob.3.png' -> '/home/ppeng/pngs/2026/1/t2m_prob.3.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_prob.4.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_prob.4.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_prob.4.png' -> '/home/ppeng/pngs/2026/1/t2m_prob.4.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_prob.5.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_prob.5.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_prob.5.png' -> '/home/ppeng/pngs/2026/1/t2m_prob.5.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_prob.6.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_prob.6.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_prob.6.png' -> '/home/ppeng/pngs/2026/1/t2m_prob.6.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_prob.7.mon.png' -> '/home/ppeng/pngs/2026/1/t2m_prob.7.mon.png'
+'/home/ppeng/data/ss_fcst/pcr/2026/1/t2m_prob.7.png' -> '/home/ppeng/pngs/2026/1/t2m_prob.7.png'
+No HTML files found.
+Staging changes in pngs repo...
+Committing...
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+No changes to commit.
+Pushing...
+Everything up-to-date
+============================================================
+ Upload complete for 2026-1
+============================================================
+Updating timestamps...
+Updated timestamp in seasonal.html
+Updated timestamp in monthly.html
+============================================================
+ Diff Summary (pre-commit)
+============================================================
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   docs/0log1
+
+no changes added to commit (use "git add" and/or "git commit -a")
+ docs/0log1 | 276 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 276 insertions(+)
+============================================================
+Updating website repo...
+error: cannot pull with rebase: You have unstaged changes.
+error: please commit or stash them.
