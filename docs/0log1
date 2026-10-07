@@ -4,3 +4,75 @@
  Cleaning ClimateInform Working Tree
 ============================================================
 Staging all modified and untracked files...
+Committing...
+[main f0453b5] Clean working tree before pipeline run
+ 1 file changed, 6 insertions(+), 288 deletions(-)
+ rewrite docs/0log1 (98%)
+Pushing...
+To github.com:PeitaoPeng/ClimateInform.git
+   6557e9c..f0453b5  main -> main
+============================================================
+ Working tree cleaned.
+ Current Git status:
+============================================================
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   docs/0log1
+
+no changes added to commit (use "git add" and/or "git commit -a")
++ bash /home/ppeng/ClimateInform/docs/climateinform_pipeline.sh
+============================================================
+ ClimateInform Pipeline Starting for YEAR = 2026, MONTH = 10
+ Log: /home/ppeng/ClimateInform/logs/pipeline_2026_20261006_193002.log
+============================================================
+Checking for missing PNGs...
+WARNING: Missing PNG: /home/ppeng/data/ss_fcst/pcr/2026/10/*.png
+WARNING: Some PNGs are missing for 2026-10
+Checking PNG repo at /home/ppeng/pngs...
+PNG repo exists and is a valid git repository.
+Running PNG upload script...
+============================================================
+ Uploading PNGs for YEAR=2026  MONTH=10
+ Source directory: /home/ppeng/data/ss_fcst/pcr/2026/10
+ Destination repo: /home/ppeng/pngs
+============================================================
+Copying PNG and HTML files into pngs repo...
+No PNGs found.
+No HTML files found.
+Staging changes in pngs repo...
+Committing...
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+No changes to commit.
+Pushing...
+Everything up-to-date
+============================================================
+ Upload complete for 2026-10
+============================================================
+Updating timestamps...
+Updated timestamp in seasonal.html
+Updated timestamp in monthly.html
+============================================================
+ Diff Summary (pre-commit)
+============================================================
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   docs/0log1
+
+no changes added to commit (use "git add" and/or "git commit -a")
+ docs/0log1 | 66 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 66 insertions(+)
+============================================================
+Updating website repo...
+error: cannot pull with rebase: You have unstaged changes.
+error: please commit or stash them.
